@@ -1,4 +1,4 @@
-package com.projecthub;
+package com.projecthub.model;
 
 public class Submission {
     private final int submissionId;

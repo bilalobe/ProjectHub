@@ -1,4 +1,4 @@
-package com.projecthub;
+package com.projecthub.model;
 
 public class Project {
     private int id;
