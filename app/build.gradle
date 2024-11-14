@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'application' // For creating executable JARs
-    id 'org.springframework.boot' version '2.5.4' // Spring Boot plugin
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE' // Spring dependency management
+    id 'org.springframework.boot' version '3.0.0' // Updated Spring Boot plugin
+    id 'io.spring.dependency-management' version '1.1.0' // Updated Spring dependency management
 }
 
 group 'io.projecthub'
@@ -25,7 +25,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'com.projecthub.Main'
+    mainClass = 'com.projecthub.Main' // Replace with your main class
 }
 
 test {
@@ -39,4 +39,5 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } // Include dependencies in the JAR
     }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE // Handle duplicate entries
 }
