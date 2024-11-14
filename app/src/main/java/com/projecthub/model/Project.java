@@ -1,47 +1,87 @@
 package com.projecthub.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Project {
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
-    private String deadline;
     private String description;
 
-    public Project(int id, String name, String deadline, String description) {
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Team team;
+
+    // Default constructor required by JPA
+    public Project() {
+    }
+
+    // Constructor with all fields
+    public Project(Long id, String name, String description, Team team) {
         this.id = id;
         this.name = name;
-        this.deadline = deadline;
         this.description = description;
+        this.team = team;
     }
 
-    public int getId() {
+    // Constructor without id (for new Projects)
+    public Project(String name, String description, Team team) {
+        this.name = name;
+        this.description = description;
+        this.team = team;
+    }
+
+    // Getters and setters
+    public Long getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(String deadline) {
-        this.deadline = deadline;
-    }
-
     public String getDescription() {
         return description;
     }
 
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    @Override
+    public String toString() {
+        return "Project{id=" + id + ", name='" + name + "', description='" + description + "', team=" + team + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Project project = (Project) o;
+        return id != null && id.equals(project.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
