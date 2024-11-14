@@ -5,3 +5,6 @@
 build
 
 .fake
+
+# Ignore application.properties file
+app/src/main/resources/application.properties
