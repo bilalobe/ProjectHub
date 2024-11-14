@@ -1,8 +1,17 @@
 package com.projecthub.model;
 
-import jakarta.persistence.*;
+import com.projecthub.middleware.listener.ProjectEntityListener;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
+@EntityListeners(ProjectEntityListener.class)
 public class Project {
 
     @Id
