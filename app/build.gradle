@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'io.projecthub'
-version '1.0-SNAPSHOT'
+version '0.1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -16,6 +16,7 @@ dependencies {
     // Spring Boot starters
     implementation 'org.springframework.boot:spring-boot-starter' // Core Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA and Hibernate support
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 
     // PostgreSQL driver
     implementation 'org.postgresql:postgresql:42.5.4' // PostgreSQL JDBC driver
@@ -23,6 +24,10 @@ dependencies {
     // OpenCSV for CSV handling
     implementation 'com.opencsv:opencsv:5.7.1' // CSV parsing library
 
+    // Swagger dependencies
+    implementation 'io.springfox:springfox-boot-starter:3.0.0' // Swagger support
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0' // Swagger UI
+    
     // Testing dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot test starter
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
