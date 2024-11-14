@@ -16,5 +16,12 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 logging.level.org.springframework=INFO
 logging.level.com.mycompany=DEBUG
 
+# Security configuration
+spring.security.user.name=user
+spring.security.user.password=password
+
+# File configuration
+app.projects.filepath=projects.csv
+
 # Other configurations
 spring.application.name=ProjectHubApplication
