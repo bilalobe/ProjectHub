@@ -25,7 +25,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'com.projecthub.Main' // Replace with your main class
+    mainClass = 'com.projecthub.ProjectHubApplication' // Replace with your main class
 }
 
 test {
