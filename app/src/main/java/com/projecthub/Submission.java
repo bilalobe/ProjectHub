@@ -1,47 +1,38 @@
 package com.projecthub;
 
 public class Submission {
-    private int projectId;
-    private int studentId;
-    private String filePath;
-    private double grade;
+    private final int submissionId;
+    private final int projectId;
+    private final int studentId;
+    private final String filePath;
+    private final Integer grade;
 
-    public Submission(int projectId, int studentId, String filePath, double grade) {
+    public Submission(int submissionId, int projectId, int studentId, String filePath, Integer grade) {
+        this.submissionId = submissionId;
         this.projectId = projectId;
         this.studentId = studentId;
         this.filePath = filePath;
         this.grade = grade;
+    }
+
+    // Getters and setters
+    public int getSubmissionId() {
+        return submissionId;
     }
 
     public int getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(int projectId) {
-        this.projectId = projectId;
-    }
-
     public int getStudentId() {
         return studentId;
-    }
-
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
     }
 
     public String getFilePath() {
         return filePath;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public double getGrade() {
+    public Integer getGrade() {
         return grade;
-    }
-
-    public void setGrade(double grade) {
-        this.grade = grade;
     }
 }
