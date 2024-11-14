@@ -39,5 +39,9 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } // Include dependencies in the JAR
     }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE // Handle duplicate entries
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    filePermissions {
+        fileMode = 0755
+    }
 }
