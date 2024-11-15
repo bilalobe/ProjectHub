@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.projecthub.dto.UserSummary;
 import com.projecthub.model.User;
 import com.projecthub.service.UserService;
 
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping
-    public String createUser(@Valid @RequestBody User user) {
+    public String createUser(@Valid @RequestBody UserSummary user) {
         userService.saveUser(user);
         return "User created successfully";
     }
