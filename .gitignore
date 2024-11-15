@@ -5,3 +5,6 @@
 build
 
 .fake
+
+# Ignore application.properties file
+*.properties

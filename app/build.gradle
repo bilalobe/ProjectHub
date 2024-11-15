@@ -1,31 +1,52 @@
 plugins {
     id 'java'
     id 'application' // For creating executable JARs
-    id 'org.springframework.boot' version '3.0.0' // Updated Spring Boot plugin
-    id 'io.spring.dependency-management' version '1.1.0' // Updated Spring dependency management
+    id 'org.springframework.boot' version '3.0.0'
+    id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group 'io.projecthub'
-version '1.0-SNAPSHOT'
+version '0.1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation 'com.opencsv:opencsv:5.7.1' // For easy CSV handling
-    implementation 'org.springframework.boot:spring-boot-starter' // Spring Boot starter
+    // Spring Boot starters
+    implementation 'org.springframework.boot:spring-boot-starter' // Core Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA and Hibernate support
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web' // Spring Web MVC
+ 
+    // PostgreSQL driver
+    implementation 'org.postgresql:postgresql:42.5.4' // PostgreSQL JDBC driver
+
+    // OpenCSV for CSV handling
+    implementation 'com.opencsv:opencsv:5.7.1' // CSV parsing library
+
+    // Swagger dependencies
+    implementation 'io.springfox:springfox-boot-starter:3.0.0' // Swagger support
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0' // Swagger UI
+    
+    // Spring Security dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-config'
+    implementation 'org.springframework.security:spring-security-web'
+
+    // Testing dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot test starter
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-    
-    // JavaFX dependencies (commented out)
+
+    // JavaFX dependencies
     // implementation 'org.openjfx:javafx-controls:16'
     // implementation 'org.openjfx:javafx-fxml:16'
 }
 
 application {
-    mainClass = 'com.projecthub.Main' // Replace with your main class
+    mainClass = 'com.projecthub.ProjectHubApplication'
 }
 
 test {
@@ -34,7 +55,7 @@ test {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.projecthub.Main' // Required for executable JAR
+        attributes 'Main-Class': 'com.projecthub.ProjectHubApplication' // Required for executable JAR
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } // Include dependencies in the JAR
