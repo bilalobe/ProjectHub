@@ -1,6 +1,7 @@
 package com.projecthub.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,8 +10,8 @@ import org.springframework.stereotype.Service;
 import com.projecthub.model.School;
 import com.projecthub.repository.custom.CustomSchoolRepository;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Service
 @Tag(name = "School Service", description = "Operations pertaining to schools in ProjectHub")
@@ -44,5 +45,9 @@ public class SchoolService {
     })
     public void deleteSchool(Long id) {
         schoolRepository.deleteById(id);
+    }
+
+    public Optional<School> getSchoolById(Long id) {
+        return schoolRepository.findById(id);
     }
 }

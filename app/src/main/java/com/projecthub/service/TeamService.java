@@ -10,8 +10,8 @@ import com.projecthub.model.Team;
 import com.projecthub.model.User;
 import com.projecthub.repository.custom.CustomTeamRepository;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Service
 @Tag(name = "Team Service", description = "Operations pertaining to teams in ProjectHub")
@@ -60,5 +60,9 @@ public class TeamService {
     @Operation(summary = "Delete a team by ID")
     public void deleteTeam(Long id) {
         teamRepository.deleteById(id);
+    }
+
+    public List<Team> getTeamsByClassId(Long classId) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

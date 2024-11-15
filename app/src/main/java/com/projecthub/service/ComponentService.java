@@ -28,4 +28,8 @@ public class ComponentService {
     public void deleteComponent(Long id) {
         componentRepository.deleteById(id);
     }
+
+    public List<Component> getComponentsByProjectId(Long projectId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
