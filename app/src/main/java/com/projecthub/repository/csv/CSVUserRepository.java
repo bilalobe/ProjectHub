@@ -25,7 +25,6 @@ public abstract class CSVUserRepository implements CustomUserRepository {
     @Value("${app.users.filepath}")
     private String usersFilePath;
 
-    @Override
     public User save(User user) {
         try {
             List<User> users = findAll();
