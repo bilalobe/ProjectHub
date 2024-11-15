@@ -13,11 +13,11 @@ import com.projecthub.dto.UserSummary;
 import com.projecthub.model.User;
 import com.projecthub.repository.custom.CustomUserRepository;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 @Service
-@Api(value = "User Service", description = "Operations pertaining to users in ProjectHub")
+@Tag(name = "User Service", description = "Operations pertaining to users in ProjectHub")
 public class UserService {
 
     private final CustomUserRepository userRepository;
@@ -28,45 +28,55 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @ApiOperation(value = "View a list of all users", response = List.class)
+    @Operation(summary = "View a list of all users")
     @PreAuthorize("hasRole('USER')")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    @ApiOperation(value = "Find user by ID")
+    @Operation(summary = "Find user by ID")
     @PreAuthorize("hasRole('USER')")
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
-    @ApiOperation(value = "Save a user")
+    @Operation(summary = "Save a user")
     @PreAuthorize("hasRole('USER')")
-    public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+    public User saveUser(UserSummary userDTO) {
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        return userRepository.save(userDTO);
     }
 
-    @ApiOperation(value = "Delete a user by ID")
+    @Operation(summary = "Delete a user by ID")
     @PreAuthorize("hasRole('USER')")
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
-    @ApiOperation(value = "Get user summary", response = UserSummary.class)
+    @Operation(summary = "Get user summary")
     @PreAuthorize("hasRole('USER')")
     public UserSummary getUserSummary(Long id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("User not found"));
-        return new UserSummary(user);
+        return new UserSummary(
+            user.getId(),
+            user.getUsername(),
+            user.getPassword(),
+            user.getTeam() != null ? user.getTeam().getId() : null
+        );
     }
 
-    @ApiOperation(value = "Get team members summary", response = List.class)
+    @Operation(summary = "Get team members summary")
     @PreAuthorize("hasRole('USER')")
     public List<UserSummary> getTeamMembersSummary(Long teamId) {
         return userRepository.findByTeamId(teamId)
             .stream()
-            .map(UserSummary::new)
+            .map(user -> new UserSummary(
+                user.getId(),
+                user.getUsername(), 
+                user.getPassword(),
+                user.getTeam() != null ? user.getTeam().getId() : null
+            ))
             .collect(Collectors.toList());
     }
 }

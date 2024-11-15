@@ -10,11 +10,11 @@ import com.projecthub.model.Team;
 import com.projecthub.model.User;
 import com.projecthub.repository.custom.CustomTeamRepository;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 @Service
-@Api(value = "Team Service", description = "Operations pertaining to teams in ProjectHub")
+@Tag(name = "Team Service", description = "Operations pertaining to teams in ProjectHub")
 public class TeamService {
 
     private final CustomTeamRepository teamRepository;
@@ -27,7 +27,7 @@ public class TeamService {
         this.userService = userService;
     }
 
-    @ApiOperation(value = "Add user to team")
+    @Operation(summary = "Add user to team")
     public Team addTeamMember(Long teamId, Long userId) {
         Optional<Team> teamOpt = teamRepository.findById(teamId);
         if (!teamOpt.isPresent()) {
@@ -47,17 +47,17 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-    @ApiOperation(value = "View a list of available teams", response = List.class)
+    @Operation(summary = "View a list of available teams")
     public List<Team> getAllTeams() {
         return teamRepository.findAll();
     }
 
-    @ApiOperation(value = "Save a team")
+    @Operation(summary = "Save a team")
     public Team saveTeam(Team team) {
         return teamRepository.save(team);
     }
 
-    @ApiOperation(value = "Delete a team by ID")
+    @Operation(summary = "Delete a team by ID")
     public void deleteTeam(Long id) {
         teamRepository.deleteById(id);
     }
