@@ -1,7 +1,16 @@
 package com.projecthub.model;
 
-import jakarta.persistence.*;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 /**
  * Represents a team within a school.
@@ -24,6 +33,9 @@ public class Team {
     // One-to-Many relationship with Project
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Project> projects;
+
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    private List<User> members;
 
     // Default constructor required by JPA
     public Team() {
@@ -60,6 +72,10 @@ public class Team {
         return projects;
     }
 
+    public List<User> getMembers() {
+        return members;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -74,6 +90,10 @@ public class Team {
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
+    }
+
+    public void setMembers(List<User> members) {
+        this.members = members;
     }
 
     // Override toString method

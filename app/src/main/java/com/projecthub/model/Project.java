@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -23,6 +24,10 @@ public class Project {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Team team;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
 
     // Default constructor required by JPA
     public Project() {
@@ -60,6 +65,10 @@ public class Project {
         return team;
     }
 
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -74,6 +83,10 @@ public class Project {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 
     @Override
