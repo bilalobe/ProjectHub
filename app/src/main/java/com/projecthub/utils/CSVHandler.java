@@ -14,6 +14,7 @@ import com.projecthub.model.Project;
 import com.projecthub.model.Student;
 import com.projecthub.model.Submission;
 import com.projecthub.model.Team;
+import com.projecthub.model.User;
 
 public class CSVHandler {
 
@@ -178,6 +179,49 @@ public class CSVHandler {
                 String[] record = {
                         String.valueOf(team.getId()),
                         team.getName()
+                };
+                writer.writeNext(record);
+            }
+        }
+    }
+
+    public static List<User> readUsersFromCSV(String filePath) throws IOException {
+        List<User> users = new ArrayList<>();
+        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+            ColumnPositionMappingStrategy<User> strategy = new ColumnPositionMappingStrategy<>();
+            strategy.setType(User.class);
+            String[] memberFieldsToBindTo = {"id", "username", "password", "teamId"};
+            strategy.setColumnMapping(memberFieldsToBindTo);
+
+            String[] nextLine;
+            while ((nextLine = reader.readNext()) != null) {
+                User user = new User(
+                        Long.valueOf(nextLine[0]),
+                        nextLine[1],
+                        nextLine[2],
+                        new Team(Long.valueOf(nextLine[3]), null, null, new ArrayList<>())
+                );
+                users.add(user);
+            }
+        } catch (CsvValidationException | IOException e) {
+            throw new IOException("Error reading users from CSV", e);
+        }
+        return users;
+    }
+
+    public static void writeUsersToCSV(List<User> users, String filePath) throws IOException {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
+            ColumnPositionMappingStrategy<User> strategy = new ColumnPositionMappingStrategy<>();
+            strategy.setType(User.class);
+            String[] memberFieldsToBindTo = {"id", "username", "password", "teamId"};
+            strategy.setColumnMapping(memberFieldsToBindTo);
+
+            for (User user : users) {
+                String[] record = {
+                        String.valueOf(user.getId()),
+                        user.getUsername(),
+                        user.getPassword(),
+                        String.valueOf(user.getTeam().getId())
                 };
                 writer.writeNext(record);
             }
