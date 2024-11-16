@@ -43,14 +43,14 @@ public class ClassController {
     }
 
     @PostMapping
-    public Class createClass(@RequestBody Class classEntity) {
-        return classService.saveClass(classEntity);
+    public Class createClass(@RequestBody Class Class) {
+        return classService.saveClass(Class);
     }
 
     @PutMapping("/{id}")
-    public Class updateClass(@PathVariable Long id, @RequestBody Class classEntity) {
-        classEntity.setId(id);
-        return classService.saveClass(classEntity);
+    public Class updateClass(@PathVariable Long id, @RequestBody Class Class) {
+        Class.setId(id);
+        return classService.saveClass(Class);
     }
 
     @DeleteMapping("/{id}")
