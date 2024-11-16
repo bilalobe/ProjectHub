@@ -2,7 +2,6 @@ package com.projecthub.ui;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-
 import com.projecthub.ProjectHubApplication;
 
 import javafx.application.Application;
@@ -21,8 +20,8 @@ public class ProjectHubFX extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-        loader.setControllerFactory(springContext::getBean);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjectHubFX.fxml"));
+        loader.setControllerFactory(springContext::getBean); // Integrate Spring Beans
         Parent root = loader.load();
 
         Scene scene = new Scene(root);
