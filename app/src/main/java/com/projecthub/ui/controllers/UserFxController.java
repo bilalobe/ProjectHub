@@ -1,23 +1,23 @@
 package com.projecthub.ui.controllers;
 
-import com.projecthub.dto.UserSummary;
-import com.projecthub.model.User;
-import com.projecthub.service.UserService;
-
-import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import com.projecthub.dto.UserSummary;
+import com.projecthub.model.User;
+import com.projecthub.service.UserService;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 
 @Component
-public class UserFxController {
+public class UserFXController {
 
     @Autowired
     private UserService userService;
@@ -73,7 +73,11 @@ public class UserFxController {
         }
 
         UserSummary UserSummary = new UserSummary(null, username, password, null); // Assuming no teamId for now
-        userService.saveUser(UserSummary);
+        User user = new User();
+        user.setId(UserSummary.getId());
+        user.setUsername(UserSummary.getUsername());
+        user.setPassword(UserSummary.getPassword());
+        userService.saveUser(user);
         loadUsers();
     }
 
@@ -108,7 +112,11 @@ public class UserFxController {
         }
 
         UserSummary UserSummary = new UserSummary(userId, username, password, null); // Assuming no teamId for now
-        userService.saveUser(UserSummary);
+        User user = new User();
+        user.setId(UserSummary.getId());
+        user.setUsername(UserSummary.getUsername());
+        user.setPassword(UserSummary.getPassword());
+        userService.saveUser(user);
         loadUsers();
     }
 
