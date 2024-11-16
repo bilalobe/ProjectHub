@@ -1,17 +1,19 @@
 package com.projecthub.ui.controllers;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.projecthub.model.School;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
 import com.projecthub.utils.ui.TreeItemWrapper;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
-
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import javafx.scene.control.TreeView;
 
 @Component
 public class ProjectHubFXController {
@@ -73,7 +75,7 @@ public class ProjectHubFXController {
                 parentItem.getChildren().add(classItem);
             }
         }
-        // Similar logic for ClassEntity, Team, Project, Component
+        // Similar logic for Class, Team, Project, Component
     }
 
     // Custom TreeCell to handle editing or custom display
