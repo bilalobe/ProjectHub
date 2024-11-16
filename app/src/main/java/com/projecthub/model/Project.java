@@ -21,6 +21,7 @@ public class Project {
 
     private String name;
     private String description;
+    private String deadline;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Team team;
@@ -69,6 +70,10 @@ public class Project {
         return createdBy;
     }
 
+    public String getDeadline() {
+        return deadline;
+    }
+    
     public void setId(Long id) {
         this.id = id;
     }
@@ -89,6 +94,10 @@ public class Project {
         this.createdBy = createdBy;
     }
 
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
+    }
+
     @Override
     public String toString() {
         return "Project{id=" + id + ", name='" + name + "', description='" + description + "', team=" + team + "}";
@@ -106,4 +115,6 @@ public class Project {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+
 }
