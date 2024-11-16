@@ -1,60 +1,68 @@
 plugins {
     id 'java'
     id 'application' // For creating executable JARs
-    id 'org.openjfx.javafxplugin' version '0.1.0' // JavaFX plugin
-    id 'org.springframework.boot' version '3.3.5' // Updated Spring Boot plugin
-    id 'io.spring.dependency-management' version '1.1.6' // Updated Spring dependency management
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'jpro-gradle-plugin'
 }
 
 group 'com.projecthub'
+version '0.1.0-SNAPSHOT'
+
 repositories {
     mavenCentral()
-    maven { url 'https://repo.spring.io/release' } // Spring repository
+    maven { url 'https://repo.spring.io/release' }
+    maven { url "https://sandec.jfrog.io/artifactory/repo" }
 }
 
 dependencies {
     // JavaFX dependencies
-    implementation 'org.openjfx:javafx-controls:+'
-    implementation 'org.openjfx:javafx-fxml:+'
+    implementation 'org.openjfx:javafx-controls:23.0.1'
+    implementation 'org.openjfx:javafx-fxml:23.0.1'
+    implementation 'org.openjfx:javafx-graphics:23.0.1'
+    implementation 'org.openjfx:javafx-media:23.0.1'
+    implementation 'org.openjfx:javafx-web:23.0.1'
+
+    // JPro dependencies
+    implementation 'one.jpro:jpro-webapi:2024.4.1'
 
     // OpenCSV for CSV handling
-    implementation 'com.opencsv:opencsv:+'
+    implementation 'com.opencsv:opencsv:5.5.2'
 
-    // Spring Boot starters
-    implementation 'org.springframework.boot:spring-boot-starter' // Core Spring Boot
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA and Hibernate support
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    // Spring Boot dependencies
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web' // Spring Web MVC
 
     // PostgreSQL driver
-    implementation 'org.postgresql:postgresql:+'
+    runtimeOnly 'org.postgresql:postgresql:42.3.1'
 
-    // Springdoc OpenAPI Dependencies
-    implementation 'org.springdoc:springdoc-openapi-ui:1.8.0' // Use the latest version available
-    implementation 'org.springdoc:springdoc-openapi-data-rest:1.8.0' // If using Spring Data REST
-
-    // Spring Security dependencies
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.security:spring-security-config'
-    implementation 'org.springframework.security:spring-security-web'
-
-    // Jakarta dependencies
-    implementation 'jakarta.persistence:jakarta.persistence-api:3.2.0'
-    implementation 'jakarta.servlet:jakarta.servlet-api:6.1.0'
+    // Springdoc OpenAPI for Swagger v3
+    implementation 'org.springdoc:springdoc-openapi-ui:1.8.0'
+    implementation 'org.springdoc:springdoc-openapi-data-rest:1.8.0'
+    implementation 'org.springdoc:springdoc-openapi-security:1.8.0'
 
     // Testing dependencies
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:+'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:+'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 application {
-    mainClass = 'com.projecthub.ui.ProjectHubFX' // Update with your JavaFX main class
+    mainClass = 'com.projecthub.ui.ProjectHubFX'
 }
 
 javafx {
-    version = '23' // Use the appropriate JavaFX version
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
+    version = '23.0.1'
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.web' ]
+}
+
+jpro {
+    // jpro server port
+    port = 8080
 }
 
 test {
@@ -63,10 +71,10 @@ test {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.projecthub.ui.ProjectHubFX' // Required for executable JAR
+        attributes 'Main-Class': 'com.projecthub.ui.ProjectHubFX'
     }
     from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } // Include dependencies in the JAR
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
