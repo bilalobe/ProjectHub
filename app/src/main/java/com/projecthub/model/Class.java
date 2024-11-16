@@ -27,7 +27,7 @@ public class Class {
     private School school;
 
     // One-to-Many relationship with Team
-    @OneToMany(mappedBy = "classEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "Class", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Team> teams;
 
     public Class() {}
