@@ -42,9 +42,29 @@ public class UserService {
 
     @Operation(summary = "Save a user")
     @PreAuthorize("hasRole('USER')")
-    public User saveUser(UserSummary userDTO) {
-        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        return userRepository.save(userDTO);
+    public User saveUser(User user) {
+        validateUser(user);
+        encodePassword(user);
+        User savedUser = userRepository.save(user);
+        // logger.info("User saved successfully with ID: {}", savedUser.getId());
+        return savedUser;
+    }
+
+    private void validateUser(User user) {
+        if (user.getUsername() == null || user.getUsername().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
+        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
+        if (existingUser.isPresent() && !existingUser.get().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("Username is already taken");
+        }
+    }
+
+    private void encodePassword(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 
     @Operation(summary = "Delete a user by ID")
