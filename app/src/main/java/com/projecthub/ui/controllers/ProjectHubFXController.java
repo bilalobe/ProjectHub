@@ -1,19 +1,23 @@
 package com.projecthub.ui.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.projecthub.utils.PopulatorUtility;
+import com.projecthub.model.School;
+import com.projecthub.ui.viewmodels.ProjectHubViewModel;
+import com.projecthub.utils.ui.TreeItemWrapper;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
 
-@org.springframework.stereotype.Component
-public class ProjectHubFXController<School> {
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ProjectHubFXController {
 
     @Autowired
-    private PopulatorUtility populatorUtility;
+    private ProjectHubViewModel viewModel;
 
     @FXML
     private TreeView<String> schoolTreeView;
@@ -21,39 +25,63 @@ public class ProjectHubFXController<School> {
     @FXML
     private TextField searchField;
 
-    private TreeItem<String> rootItem;
-
     @FXML
     public void initialize() {
-        loadSchools();
-        setupSearchFilter();
+        bindProperties();
+        setupTreeView();
     }
 
-    private void loadSchools() {
-        rootItem = new TreeItem<>("Schools");
-        rootItem.setExpanded(true);
+    private void bindProperties() {
+        searchField.textProperty().bindBidirectional(viewModel.searchQueryProperty());
+    }
+
+    private void setupTreeView() {
+        TreeItem<String> rootItem = new TreeItem<>("Schools");
         schoolTreeView.setRoot(rootItem);
-        populatorUtility.populateSchools(rootItem);
-    }
+        schoolTreeView.setShowRoot(true);
 
-    private void setupSearchFilter() {
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            schoolTreeView.setRoot(buildFilteredTree(newValue.toLowerCase()));
-        });
-    }
-
-    private TreeItem<String> buildFilteredTree(String filter) {
-        TreeItem<String> filteredRoot = new TreeItem<>("Schools");
-        filteredRoot.setExpanded(true);
-
-        
-
-        for (TreeItem<String> school : rootItem.getChildren()) {
-            if (school.getValue().toLowerCase().contains(filter)) {
-                filteredRoot.getChildren().add(school);
-            }
+        for (TreeItemWrapper wrapper : viewModel.getTreeItems()) {
+            TreeItem<String> treeItem = createTreeItem(wrapper);
+            rootItem.getChildren().add(treeItem);
         }
 
-        return filteredRoot;
+        schoolTreeView.setCellFactory((TreeView<String> param) -> new TextFieldTreeCellImpl());
+    }
+
+    private TreeItem<String> createTreeItem(TreeItemWrapper wrapper) {
+        TreeItem<String> treeItem = new TreeItem<>(wrapper.getName());
+        treeItem.setExpanded(false);
+
+        // Lazy loading mechanism
+        treeItem.addEventHandler(TreeItem.branchExpandedEvent(), event -> {
+            if (treeItem.getChildren().isEmpty()) {
+                loadChildren(treeItem, wrapper);
+            }
+        });
+
+        return treeItem;
+    }
+
+    private void loadChildren(TreeItem<String> parentItem, TreeItemWrapper parentWrapper) {
+        Object data = parentWrapper.getData();
+
+        if (data instanceof School school) {
+            List<com.projecthub.model.Class> classes = viewModel.getClassesBySchoolId(school.getId());
+            for (com.projecthub.model.Class cls : classes) {
+                var classWrapper = new TreeItemWrapper(cls.getName(), cls);
+                TreeItem<String> classItem = createTreeItem(classWrapper);
+                parentItem.getChildren().add(classItem);
+            }
+        }
+        // Similar logic for ClassEntity, Team, Project, Component
+    }
+
+    // Custom TreeCell to handle editing or custom display
+    private static class TextFieldTreeCellImpl extends TreeCell<String> {
+        @Override
+        public void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+            setText(empty ? null : item);
+        }
     }
 }
