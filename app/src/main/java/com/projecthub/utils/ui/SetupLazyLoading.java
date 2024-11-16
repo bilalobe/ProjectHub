@@ -1,4 +1,4 @@
-package com.projecthub.utils;
+package com.projecthub.utils.ui;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
