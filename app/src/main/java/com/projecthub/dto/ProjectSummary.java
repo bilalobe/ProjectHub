@@ -7,6 +7,7 @@ public class ProjectSummary {
     private String name;
     private String description;
     private Long teamId;
+    private String deadline;
 
     public ProjectSummary() {}
 
@@ -15,6 +16,7 @@ public class ProjectSummary {
         this.name = project.getName();
         this.description = project.getDescription();
         this.teamId = project.getTeam().getId();
+        this.deadline = project.getDeadline();
     }
 
     public ProjectSummary(Long id, String name, String description, Long teamId) {
@@ -52,5 +54,13 @@ public class ProjectSummary {
 
     public void setTeamId(Long teamId) {
         this.teamId = teamId;
+    }
+
+    public String getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
     }
 }
