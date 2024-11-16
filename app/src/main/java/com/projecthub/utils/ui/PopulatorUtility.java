@@ -1,4 +1,4 @@
-package com.projecthub.utils;
+package com.projecthub.utils.ui;
 
 // Model imports
 import com.projecthub.model.Class;
