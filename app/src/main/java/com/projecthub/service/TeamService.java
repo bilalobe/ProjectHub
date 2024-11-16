@@ -3,12 +3,12 @@ package com.projecthub.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.projecthub.model.Team;
 import com.projecthub.model.User;
-import com.projecthub.repository.custom.CustomTeamRepository;
+import com.projecthub.repository.jpa.TeamRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,11 +17,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Team Service", description = "Operations pertaining to teams in ProjectHub")
 public class TeamService {
 
-    private final CustomTeamRepository teamRepository;
+    private final TeamRepository teamRepository;
     private final UserService userService;
 
+    @Autowired
     public TeamService(
-            @Qualifier("csvTeamRepository") CustomTeamRepository teamRepository,
+            TeamRepository teamRepository,
             UserService userService) {
         this.teamRepository = teamRepository;
         this.userService = userService;
@@ -41,11 +42,11 @@ public class TeamService {
 
         Team team = teamOpt.get();
         User user = userOpt.get();
-        
+
         user.setTeam(team);
         team.getMembers().add(user);
-        return teamRepository.save(team);
-    }
+        userService.saveUser(user);
+        return teamRepository.save(team);    }
 
     @Operation(summary = "View a list of available teams")
     public List<Team> getAllTeams() {
@@ -62,7 +63,20 @@ public class TeamService {
         teamRepository.deleteById(id);
     }
 
+    /**
+     * Retrieves the name of the team based on the provided team ID.
+     *
+     * @param teamId the ID of the team
+     * @return the name of the team, or "N/A" if not found
+     */
+    public String getTeamNameById(Long teamId) {
+        return teamRepository.findById(teamId)
+                .map(Team::getName)
+                .orElse("N/A");
+    }
+
+    @Operation(summary = "Get teams by class ID")
     public List<Team> getTeamsByClassId(Long classId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return teamRepository.findByClassId(classId);
     }
 }
