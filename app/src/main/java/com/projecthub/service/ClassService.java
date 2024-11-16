@@ -31,8 +31,8 @@ public class ClassService {
         return classRepository.findById(id);
     }
 
-    public Class saveClass(Class classEntity) {
-        return classRepository.save(classEntity);
+    public Class saveClass(Class Class) {
+        return classRepository.save(Class);
     }
 
     public void deleteClass(Long id) {
