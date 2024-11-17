@@ -1,7 +1,10 @@
 package com.projecthub.model;
 
+import java.util.List;
+
 import com.projecthub.middleware.listener.ProjectEntityListener;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
@@ -10,7 +13,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
+/**
+ * Represents a project within a team.
+ * A project can have multiple components and submissions.
+ */
 @Entity
 @EntityListeners(ProjectEntityListener.class)
 public class Project {
@@ -29,6 +37,18 @@ public class Project {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
     private User createdBy;
+
+    /**
+     * The list of components in the project.
+     */
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Component> components;
+
+    /**
+     * The list of submissions for the project.
+     */
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Submission> submissions;
 
     // Default constructor required by JPA
     public Project() {
@@ -73,7 +93,23 @@ public class Project {
     public String getDeadline() {
         return deadline;
     }
-    
+
+    public List<Component> getComponents() {
+        return components;
+    }
+
+    public void setComponents(List<Component> components) {
+        this.components = components;
+    }
+
+    public List<Submission> getSubmissions() {
+        return submissions;
+    }
+
+    public void setSubmissions(List<Submission> submissions) {
+        this.submissions = submissions;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -115,6 +151,4 @@ public class Project {
     public int hashCode() {
         return getClass().hashCode();
     }
-
-
 }

@@ -1,7 +1,16 @@
 package com.projecthub.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
+/**
+ * Represents a submission made by a student for a project.
+ */
 @Entity
 public class Submission {
 
@@ -13,12 +22,22 @@ public class Submission {
     private String timestamp;
     private Integer grade;
 
-    // Many-to-One relationship with Student
-    @Column(name = "student_id")
+    /**
+     * The student who made the submission.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    /**
+     * The project for which the submission was made.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
+
     private Long studentId;
 
-    // Many-to-One relationship with Project
-    @Column(name = "project_id")
     private Long projectId;
 
     // Default constructor required by JPA
@@ -42,6 +61,14 @@ public class Submission {
         this.timestamp = timestamp;
     }
 
+    // Constructor with student and project entities
+    public Submission(Student student, Project project, String content, String timestamp) {
+        this.student = student;
+        this.project = project;
+        this.content = content;
+        this.timestamp = timestamp;
+    }
+
     // Getters and setters
     public Long getId() {
         return id;
@@ -56,11 +83,11 @@ public class Submission {
     }
 
     public Long getStudentId() {
-        return studentId;
+        return student != null ? student.getId() : null;
     }
 
     public Long getProjectId() {
-        return projectId;
+        return project != null ? project.getId() : null;
     }
 
     public Long getSubmissionId() {
@@ -99,11 +126,27 @@ public class Submission {
         this.grade = grade;
     }
 
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
     // Override toString method
     @Override
     public String toString() {
-        return "Submission{id=" + id + ", content='" + content + "', timestamp='" + timestamp 
-               + "', studentId=" + studentId + ", projectId=" + projectId 
-               + ", grade=" + grade + "}";
+        return "Submission{id=" + id + ", content='" + content + "', timestamp='" + timestamp
+                + "', studentId=" + studentId + ", projectId=" + projectId
+                + ", grade=" + grade + "}";
     }
 }

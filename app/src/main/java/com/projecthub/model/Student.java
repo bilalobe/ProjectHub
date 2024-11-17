@@ -1,11 +1,20 @@
 package com.projecthub.model;
 
-import jakarta.persistence.*;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 /**
  * Represents a student in the system.
- * A student can have multiple submissions.
+ * A student can have multiple submissions and belongs to a team.
  */
 @Entity
 public class Student {
@@ -27,6 +36,13 @@ public class Student {
      */
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Submission> submissions;
+
+    /**
+     * The team that the student belongs to.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     /**
      * Default constructor required by JPA.
@@ -54,6 +70,17 @@ public class Student {
      */
     public Student(String name) {
         this.name = name;
+    }
+
+    /**
+     * Constructs a new student with the specified name and team.
+     *
+     * @param name the student's name
+     * @param team the team the student belongs to
+     */
+    public Student(String name, Team team) {
+        this.name = name;
+        this.team = team;
     }
 
     // Getters and Setters
@@ -110,6 +137,24 @@ public class Student {
      */
     public void setSubmissions(List<Submission> submissions) {
         this.submissions = submissions;
+    }
+
+    /**
+     * Returns the team that the student belongs to.
+     *
+     * @return the team
+     */
+    public Team getTeam() {
+        return team;
+    }
+
+    /**
+     * Sets the team that the student belongs to.
+     *
+     * @param team the team
+     */
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     /**

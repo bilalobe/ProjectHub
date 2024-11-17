@@ -13,8 +13,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 /**
- * Represents a team within a school.
- * Teams can work on multiple projects and contain multiple students.
+ * Represents a team within a cohort.
+ * Teams can have multiple users and projects.
  */
 @Entity
 public class Team {
@@ -25,6 +25,13 @@ public class Team {
 
     private String name;
 
+    /**
+     * The cohort to which the team belongs.
+     */
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cohort_id")
+    private Cohort cohort;
+
     // Many-to-One relationship with School
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "school_id")
@@ -34,6 +41,9 @@ public class Team {
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Project> projects;
 
+    /**
+     * The list of users in the team.
+     */
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private List<User> members;
 
@@ -53,6 +63,12 @@ public class Team {
     public Team(String name, School school) {
         this.name = name;
         this.school = school;
+    }
+
+    // Constructor with cohort
+    public Team(String name, Cohort cohort) {
+        this.name = name;
+        this.cohort = cohort;
     }
 
     // Getters and setters
@@ -76,6 +92,10 @@ public class Team {
         return members;
     }
 
+    public Cohort getCohort() {
+        return cohort;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -94,6 +114,10 @@ public class Team {
 
     public void setMembers(List<User> members) {
         this.members = members;
+    }
+
+    public void setCohort(Cohort cohort) {
+        this.cohort = cohort;
     }
 
     // Override toString method

@@ -12,6 +12,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+/**
+ * Represents a cohort within a school.
+ * Cohorts contain multiple teams.
+ */
 @Entity
 public class Cohort {
 
@@ -26,8 +30,10 @@ public class Cohort {
     @JoinColumn(name = "school_id")
     private School school;
 
-    // One-to-Many relationship with Team
-    @OneToMany(mappedBy = "Cohort", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    /**
+     * The list of teams in the cohort.
+     */
+    @OneToMany(mappedBy = "cohort", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Team> teams;
 
     public Cohort() {}

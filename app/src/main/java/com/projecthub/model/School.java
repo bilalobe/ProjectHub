@@ -3,6 +3,10 @@ package com.projecthub.model;
 import jakarta.persistence.*;
 import java.util.List;
 
+/**
+ * Represents a school in the system.
+ * A school contains multiple cohorts.
+ */
 @Entity
 public class School {
 
@@ -15,6 +19,12 @@ public class School {
     // One-to-Many relationship with Team
     @OneToMany(mappedBy = "school", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Team> teams;
+
+    /**
+     * The list of cohorts in the school.
+     */
+    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Cohort> cohorts;
 
     // Default constructor required by JPA
     public School() {
@@ -45,6 +55,10 @@ public class School {
         return teams;
     }
 
+    public List<Cohort> getCohorts() {
+        return cohorts;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -55,6 +69,10 @@ public class School {
 
     public void setTeams(List<Team> teams) {
         this.teams = teams;
+    }
+
+    public void setCohorts(List<Cohort> cohorts) {
+        this.cohorts = cohorts;
     }
 
     // Override toString method
