@@ -39,7 +39,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     // PostgreSQL driver
-    runtimeOnly 'org.postgresql:postgresql:42.3.9'
+    runtimeOnly 'org.postgresql:postgresql:42.7.4'
 
     // Springdoc OpenAPI for Swagger v3
     implementation 'org.springdoc:springdoc-openapi-ui:1.8.0'
