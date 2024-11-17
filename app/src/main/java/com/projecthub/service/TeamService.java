@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.projecthub.model.Team;
-import com.projecthub.model.User;
+import com.projecthub.model.AppUser;
 import com.projecthub.repository.jpa.TeamRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,13 +35,13 @@ public class TeamService {
             throw new RuntimeException("Team not found with id: " + teamId);
         }
 
-        Optional<User> userOpt = userService.findById(userId);
+        Optional<AppUser> userOpt = userService.findById(userId);
         if (!userOpt.isPresent()) {
             throw new RuntimeException("User not found with id: " + userId);
         }
 
         Team team = teamOpt.get();
-        User user = userOpt.get();
+        AppUser user = userOpt.get();
 
         user.setTeam(team);
         team.getMembers().add(user);
