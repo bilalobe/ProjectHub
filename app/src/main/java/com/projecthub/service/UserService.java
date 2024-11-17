@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.projecthub.dto.UserSummary;
-import com.projecthub.model.User;
+import com.projecthub.model.AppUser;
 import com.projecthub.repository.custom.CustomUserRepository;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,40 +30,40 @@ public class UserService {
 
     @Operation(summary = "View a list of all users")
     @PreAuthorize("hasRole('USER')")
-    public List<User> getAllUsers() {
+    public List<AppUser> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Operation(summary = "Find user by ID")
     @PreAuthorize("hasRole('USER')")
-    public Optional<User> findById(Long id) {
+    public Optional<AppUser> findById(Long id) {
         return userRepository.findById(id);
     }
 
     @Operation(summary = "Save a user")
     @PreAuthorize("hasRole('USER')")
-    public User saveUser(User user) {
+    public AppUser saveUser(AppUser user) {
         validateUser(user);
         encodePassword(user);
-        User savedUser = userRepository.save(user);
+        AppUser savedUser = userRepository.save(user);
         // logger.info("User saved successfully with ID: {}", savedUser.getId());
         return savedUser;
     }
 
-    private void validateUser(User user) {
+    private void validateUser(AppUser user) {
         if (user.getUsername() == null || user.getUsername().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty");
         }
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
             throw new IllegalArgumentException("Password cannot be null or empty");
         }
-        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
+        Optional<AppUser> existingUser = userRepository.findByUsername(user.getUsername());
         if (existingUser.isPresent() && !existingUser.get().getId().equals(user.getId())) {
             throw new IllegalArgumentException("Username is already taken");
         }
     }
 
-    private void encodePassword(User user) {
+    private void encodePassword(AppUser user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 
@@ -76,7 +76,7 @@ public class UserService {
     @Operation(summary = "Get user summary")
     @PreAuthorize("hasRole('USER')")
     public UserSummary getUserSummary(Long id) {
-        User user = userRepository.findById(id)
+        AppUser user = userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("User not found"));
         return new UserSummary(
             user.getId(),
@@ -98,5 +98,10 @@ public class UserService {
                 user.getTeam() != null ? user.getTeam().getId() : null
             ))
             .collect(Collectors.toList());
+    }
+
+    public List<AppUser> getUsersByTeamId(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getUsersByTeamId'");
     }
 }

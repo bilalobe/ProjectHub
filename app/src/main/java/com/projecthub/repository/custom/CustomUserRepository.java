@@ -3,13 +3,13 @@ package com.projecthub.repository.custom;
 import java.util.List;
 import java.util.Optional;
 
-import com.projecthub.model.User;
+import com.projecthub.model.AppUser;
 
 public interface CustomUserRepository {
-    List<User> findAll();
-    User save(User user);
+    List<AppUser> findAll();
+    AppUser save(AppUser user);
     void deleteById(Long userId);
-    Optional<User> findById(Long id);
-    List<User> findByTeamId(Long teamId);
-    Optional<User> findByUsername(String username);
+    Optional<AppUser> findById(Long id);
+    List<AppUser> findByTeamId(Long teamId);
+    Optional<AppUser> findByUsername(String username);
 }
