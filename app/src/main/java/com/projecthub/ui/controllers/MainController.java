@@ -1,5 +1,12 @@
 package com.projecthub.ui.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+
 import com.projecthub.dto.ProjectSummary;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
 import com.projecthub.utils.ui.TreeItemWrapper;
@@ -8,21 +15,30 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
+/**
+ * Main controller for the application.
+ */
 @Component
-public class MainController<projectDetails> {
+public class MainController {
 
     @Autowired
     private ProjectHubViewModel viewModel;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @FXML
     private TreeView<TreeItemWrapper> schoolTreeView;
@@ -54,6 +70,12 @@ public class MainController<projectDetails> {
     @FXML
     private TableColumn<ComponentSummary, String> componentDescriptionColumn;
 
+    @FXML
+    private BorderPane mainBorderPane;
+
+    @FXML
+    private TreeView<String> navigationTreeView;
+
     private ObservableList<ComponentSummary> componentList;
 
     @FXML
@@ -62,6 +84,7 @@ public class MainController<projectDetails> {
         setupTreeView();
         setupComponentsTable();
         bindDetailVisibility();
+        setupNavigationTree();
     }
 
     private void bindProperties() {
@@ -160,6 +183,103 @@ public class MainController<projectDetails> {
         teamField.clear();
         deadlineField.clear();
         componentList.clear();
+    }
+
+    /**
+     * Sets up the navigation tree.
+     */
+    private void setupNavigationTree() {
+        TreeItem<String> rootItem = new TreeItem<>("ProjectHub");
+
+        TreeItem<String> cohortsItem = new TreeItem<>("Cohorts");
+        TreeItem<String> teamsItem = new TreeItem<>("Teams");
+        TreeItem<String> studentsItem = new TreeItem<>("Students");
+
+        rootItem.getChildren().addAll(cohortsItem, teamsItem, studentsItem);
+        navigationTreeView.setRoot(rootItem);
+        navigationTreeView.setShowRoot(false);
+
+        navigationTreeView.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> handleNavigationSelection(newValue));
+    }
+
+    /**
+     * Handles navigation selection changes.
+     *
+     * @param selectedItem the selected TreeItem
+     */
+    private void handleNavigationSelection(TreeItem<String> selectedItem) {
+        if (selectedItem != null) {
+            String selectedText = selectedItem.getValue();
+            switch (selectedText) {
+                case "Cohorts":
+                    loadCohortView();
+                    break;
+                case "Teams":
+                    loadTeamView();
+                    break;
+                case "Students":
+                    loadStudentView();
+                    break;
+                default:
+                    // Handle other selections
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Loads the Cohort view.
+     */
+    private void loadCohortView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CohortDetails.fxml"));
+            loader.setControllerFactory(applicationContext::getBean);
+            AnchorPane cohortPane = loader.load();
+            CohortDetailsController controller = loader.getController();
+            // Set the cohort data
+            // controller.setCohort(selectedCohort);
+            mainBorderPane.setCenter(cohortPane);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exceptions
+        }
+    }
+
+    /**
+     * Loads the Team view.
+     */
+    private void loadTeamView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/TeamDetails.fxml"));
+            loader.setControllerFactory(applicationContext::getBean);
+            AnchorPane teamPane = loader.load();
+            TeamDetailsController controller = loader.getController();
+            // Set the team data
+            // controller.setTeam(selectedTeam);
+            mainBorderPane.setCenter(teamPane);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exceptions
+        }
+    }
+
+    /**
+     * Loads the Student view.
+     */
+    private void loadStudentView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/StudentDetails.fxml"));
+            loader.setControllerFactory(applicationContext::getBean);
+            AnchorPane studentPane = loader.load();
+            StudentDetailsController controller = loader.getController();
+            // Set the student data
+            // controller.setStudent(selectedStudent);
+            mainBorderPane.setCenter(studentPane);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exceptions
+        }
     }
 
     // DTO for component summary

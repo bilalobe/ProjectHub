@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.UserSummary;
-import com.projecthub.model.User;
+import com.projecthub.model.AppUser;
 import com.projecthub.service.UserService;
 
 import javafx.collections.FXCollections;
@@ -54,9 +54,9 @@ public class UserFXController {
     }
 
     private void loadUsers() {
-        List<User> users = userService.getAllUsers();
+        List<AppUser> users = userService.getAllUsers();
         ObservableList<String> items = FXCollections.observableArrayList();
-        for (User user : users) {
+        for (AppUser user : users) {
             items.add(user.getId() + ": " + user.getUsername());
         }
         userListView.setItems(items);
@@ -73,7 +73,7 @@ public class UserFXController {
         }
 
         UserSummary UserSummary = new UserSummary(null, username, password, null); // Assuming no teamId for now
-        User user = new User();
+        AppUser user = new AppUser();
         user.setId(UserSummary.getId());
         user.setUsername(UserSummary.getUsername());
         user.setPassword(UserSummary.getPassword());
@@ -112,13 +112,11 @@ public class UserFXController {
         }
 
         UserSummary UserSummary = new UserSummary(userId, username, password, null); // Assuming no teamId for now
-        User user = new User();
+        AppUser user = new AppUser();
         user.setId(UserSummary.getId());
         user.setUsername(UserSummary.getUsername());
         user.setPassword(UserSummary.getPassword());
         userService.saveUser(user);
         loadUsers();
     }
-
-    // Additional UI handling methods can be added here
 }
