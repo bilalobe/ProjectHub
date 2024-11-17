@@ -45,7 +45,7 @@ public class Team {
      * The list of users in the team.
      */
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
-    private List<User> members;
+    private List<AppUser> members;
 
     // Default constructor required by JPA
     public Team() {
@@ -88,7 +88,7 @@ public class Team {
         return projects;
     }
 
-    public List<User> getMembers() {
+    public List<AppUser> getMembers() {
         return members;
     }
 
@@ -112,7 +112,7 @@ public class Team {
         this.projects = projects;
     }
 
-    public void setMembers(List<User> members) {
+    public void setMembers(List<AppUser> members) {
         this.members = members;
     }
 

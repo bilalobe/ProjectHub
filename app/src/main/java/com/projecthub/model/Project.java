@@ -36,7 +36,7 @@ public class Project {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
-    private User createdBy;
+    private AppUser createdBy;
 
     /**
      * The list of components in the project.
@@ -86,7 +86,7 @@ public class Project {
         return team;
     }
 
-    public User getCreatedBy() {
+    public AppUser getCreatedBy() {
         return createdBy;
     }
 
@@ -126,7 +126,7 @@ public class Project {
         this.team = team;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(AppUser createdBy) {
         this.createdBy = createdBy;
     }
 
