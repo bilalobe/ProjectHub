@@ -1,19 +1,19 @@
 package com.projecthub.ui.controllers;
 
-import com.projecthub.model.Class;
+import com.projecthub.model.Cohort;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClassDetailsController {
+public class CohortDetailsController {
 
     @FXML
     private Label classNameLabel;
 
-    private Class Class;
+    private Cohort Class;
 
-    public void setClass(Class Class) {
+    public void setCohort(Cohort Class) {
         this.Class = Class;
         updateUI();
     }

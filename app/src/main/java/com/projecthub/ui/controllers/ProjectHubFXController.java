@@ -68,14 +68,13 @@ public class ProjectHubFXController {
         Object data = parentWrapper.getData();
 
         if (data instanceof School school) {
-            List<com.projecthub.model.Class> classes = viewModel.getClassesBySchoolId(school.getId());
-            for (com.projecthub.model.Class cls : classes) {
+            List<com.projecthub.model.Cohort> classes = viewModel.getClassesBySchoolId(school.getId());
+            for (com.projecthub.model.Cohort cls : classes) {
                 var classWrapper = new TreeItemWrapper(cls.getName(), cls);
                 TreeItem<String> classItem = createTreeItem(classWrapper);
                 parentItem.getChildren().add(classItem);
             }
         }
-        // Similar logic for Class, Team, Project, Component
     }
 
     // Custom TreeCell to handle editing or custom display

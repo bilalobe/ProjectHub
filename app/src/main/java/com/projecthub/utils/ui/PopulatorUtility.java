@@ -1,33 +1,32 @@
 package com.projecthub.utils.ui;
 
-// Model imports
-import com.projecthub.model.Class;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.projecthub.model.Cohort;
 import com.projecthub.model.School;
 import com.projecthub.model.Team;
-
-// Service imports
-import com.projecthub.service.ClassService;
+import com.projecthub.service.CohortService;
 import com.projecthub.service.ComponentService;
 import com.projecthub.service.ProjectService;
 import com.projecthub.service.SchoolService;
 import com.projecthub.service.TeamService;
 
-// JavaFX imports
 import javafx.scene.control.TreeItem;
 
-import java.util.List;
-
-// Spring imports
-import org.springframework.beans.factory.annotation.Autowired;
-
-@org.springframework.stereotype.Component
+/**
+ * Utility class for populating JavaFX TreeViews with data.
+ */
+@Component
 public class PopulatorUtility {
 
     @Autowired
     private SchoolService schoolService;
 
     @Autowired
-    private ClassService classService;
+    private CohortService cohortService;
 
     @Autowired
     private TeamService teamService;
@@ -38,46 +37,70 @@ public class PopulatorUtility {
     @Autowired
     private ComponentService componentService;
 
+    /**
+     * Populates the TreeView with Schools.
+     *
+     * @param parentItem the root TreeItem to which Schools are added
+     */
     public void populateSchools(TreeItem<String> parentItem) {
         List<School> schools = schoolService.getAllSchools();
         for (School school : schools) {
             TreeItem<String> schoolItem = new TreeItem<>(school.getName());
+            schoolItem.setExpanded(false);
             parentItem.getChildren().add(schoolItem);
+            populateCohorts(schoolItem, school.getId());
         }
     }
 
-    public void populateClasses(TreeItem<String> parentItem, Long parentId) {
-        List<Class> classes = classService.getClassesBySchoolId(parentId);
-        for (Class cls : classes) {
-            TreeItem<String> classItem = new TreeItem<>(cls.getName());
-            classItem.setExpanded(false);
-            parentItem.getChildren().add(classItem);
+    /**
+     * Populates the TreeView with Cohorts under a School.
+     *
+     * @param parentItem the TreeItem of the School
+     * @param schoolId   the ID of the School
+     */
+    public void populateCohorts(TreeItem<String> parentItem, Long schoolId) {
+        List<Cohort> cohorts = cohortService.getCohortsBySchoolId(schoolId);
+        for (Cohort cohort : cohorts) {
+            TreeItem<String> cohortItem = new TreeItem<>(cohort.getName());
+            cohortItem.setExpanded(false);
+            parentItem.getChildren().add(cohortItem);
+            populateTeams(cohortItem, cohort.getId());
         }
     }
 
-    public void populateTeams(TreeItem<String> parentItem, Long parentId) {
-        List<Team> teams = teamService.getTeamsByClassId(parentId);
+    /**
+     * Populates the TreeView with Teams under a Cohort.
+     *
+     * @param parentItem the TreeItem of the Cohort
+     * @param cohortId   the ID of the Cohort
+     */
+    public void populateTeams(TreeItem<String> parentItem, Long cohortId) {
+        List<Team> teams = teamService.getTeamsByCohortId(cohortId);
         for (Team team : teams) {
             TreeItem<String> teamItem = new TreeItem<>(team.getName());
             teamItem.setExpanded(false);
             parentItem.getChildren().add(teamItem);
+            populateProjects(teamItem, team.getId());
         }
     }
 
-    public void populateProjects(TreeItem<String> parentItem, Long parentId) {
-        var projects = projectService.getProjectsByTeamId(parentId);
-        for (var project : projects) {
-            TreeItem<String> projectItem = new TreeItem<>(project.getName());
-            projectItem.setExpanded(false);
-            parentItem.getChildren().add(projectItem);
-        }
+    /**
+     * Populates the TreeView with Projects under a Team.
+     *
+     * @param parentItem the TreeItem of the Team
+     * @param teamId     the ID of the Team
+     */
+    public void populateProjects(TreeItem<String> parentItem, Long teamId) {
+        // Implement this method based on your Project model and service
     }
 
-    public void populateComponents(TreeItem<String> parentItem, Long parentId) {
-        List<com.projecthub.model.Component> components = componentService.getComponentsByProjectId(parentId);
-        for (com.projecthub.model.Component component : components) {
-            TreeItem<String> componentItem = new TreeItem<>(component.getName());
-            parentItem.getChildren().add(componentItem);
-        }
+    /**
+     * Populates the TreeView with Components under a Project.
+     *
+     * @param parentItem the TreeItem of the Project
+     * @param projectId  the ID of the Project
+     */
+    public void populateComponents(TreeItem<String> parentItem, Long projectId) {
+        // Implement this method based on your Component model and service
     }
 }

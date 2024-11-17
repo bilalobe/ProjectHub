@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.projecthub.model.School;
 import com.projecthub.service.SchoolService;
-import com.projecthub.service.ClassService;
+import com.projecthub.service.CohortService;
 import com.projecthub.service.TeamService;
 import com.projecthub.service.ComponentService;
 import com.projecthub.ui.controllers.MainController.ComponentSummary;
@@ -24,7 +24,7 @@ public class ProjectHubViewModel {
     private SchoolService schoolService;
 
     @Autowired
-    private ClassService classService;
+    private CohortService classService;
 
     @Autowired
     private TeamService teamService;
@@ -70,8 +70,8 @@ public class ProjectHubViewModel {
      * @param id the ID of the school
      * @return a list of Class objects associated with the school
      */
-    public List<com.projecthub.model.Class> getClassesBySchoolId(Long id) {
-        return classService.getClassesBySchoolId(id);
+    public List<com.projecthub.model.Cohort> getClassesBySchoolId(Long id) {
+        return classService.getCohortsBySchoolId(id);
     }
 
     /**

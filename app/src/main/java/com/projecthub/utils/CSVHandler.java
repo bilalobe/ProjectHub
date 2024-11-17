@@ -116,8 +116,8 @@ public class CSVHandler {
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 Student student = new Student(
-                        Long.parseLong(nextLine[0]),
-                        nextLine[1]
+                        Long.valueOf(nextLine[0]),
+                        nextLine[1], null
                 );
                 students.add(student);
             }

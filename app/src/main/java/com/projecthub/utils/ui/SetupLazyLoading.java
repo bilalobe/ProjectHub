@@ -24,7 +24,7 @@ public class SetupLazyLoading {
             TreeItem<String> source = event.getSource();
             if (source.getChildren().isEmpty()) {
                 switch (level) {
-                    case "School" -> populatorUtility.populateClasses(source, parentId);
+                    case "School" -> populatorUtility.populateCohorts(source, parentId);
                     case "Class" -> populatorUtility.populateTeams(source, parentId);
                     case "Team" -> populatorUtility.populateProjects(source, parentId);
                     case "Project" -> populatorUtility.populateComponents(source, parentId);

@@ -13,7 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class Class {
+public class Cohort {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,19 +27,19 @@ public class Class {
     private School school;
 
     // One-to-Many relationship with Team
-    @OneToMany(mappedBy = "Class", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "Cohort", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Team> teams;
 
-    public Class() {}
+    public Cohort() {}
 
-    public Class(Long id, String name, School school, List<Team> teams) {
+    public Cohort(Long id, String name, School school, List<Team> teams) {
         this.id = id;
         this.name = name;
         this.school = school;
         this.teams = teams;
     }
 
-    public Class(String name, School school) {
+    public Cohort(String name, School school) {
         this.name = name;
         this.school = school;
     }

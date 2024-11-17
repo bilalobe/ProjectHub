@@ -76,7 +76,7 @@ public class TeamService {
     }
 
     @Operation(summary = "Get teams by class ID")
-    public List<Team> getTeamsByClassId(Long classId) {
+    public List<Team> getTeamsByCohortId(Long classId) {
         return teamRepository.findByClassId(classId);
     }
 }

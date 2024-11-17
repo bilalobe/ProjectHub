@@ -1,13 +1,13 @@
 package com.projecthub.dto;
 
-public class ClassSummary {
+public class CohortSummary {
     private Long id;
     private String name;
     private Long schoolId;
 
-    public ClassSummary() {}
+    public CohortSummary() {}
 
-    public ClassSummary(Long id, String name, Long schoolId) {
+    public CohortSummary(Long id, String name, Long schoolId) {
         this.id = id;
         this.name = name;
         this.schoolId = schoolId;
