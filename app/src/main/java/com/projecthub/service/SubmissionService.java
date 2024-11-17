@@ -35,4 +35,9 @@ public class SubmissionService {
     public void deleteSubmission(Long id) {
         submissionRepository.deleteById(id);
     }
+
+    public List<Submission> getSubmissionsByStudentId(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSubmissionsByStudentId'");
+    }
 }
