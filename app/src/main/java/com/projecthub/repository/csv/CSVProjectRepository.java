@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.opencsv.CSVReader;
@@ -26,7 +27,7 @@ public abstract class CSVProjectRepository implements ProjectRepository {
     private String projectsFilePath;
 
     @Override
-    public List<Project> findAll() {
+    public @NonNull List<Project> findAll() {
         try (CSVReader reader = new CSVReader(new FileReader(projectsFilePath))) {
             ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Project.class);
@@ -87,8 +88,9 @@ public abstract class CSVProjectRepository implements ProjectRepository {
         }
     }
 
+    @SuppressWarnings("null")
     @Override
-    public <S extends Project> S save(S project) {
+    public @NonNull <S extends Project> S save(S project) {
         try {
             List<Project> projects = findAll();
             projects.removeIf(p -> p.getId().equals(project.getId()));
@@ -113,29 +115,4 @@ public abstract class CSVProjectRepository implements ProjectRepository {
         }
     }
 
-    @Override
-    public void deleteById(Long projectId) {
-        try {
-            List<Project> projects = findAll();
-            projects.removeIf(project -> project.getId().equals(projectId));
-
-            try (CSVWriter writer = new CSVWriter(new FileWriter(projectsFilePath))) {
-                ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(Project.class);
-                String[] memberFieldsToBindTo = {"id", "name", "description", "team"};
-                strategy.setColumnMapping(memberFieldsToBindTo);
-
-                StatefulBeanToCsv<Project> beanToCsv = new StatefulBeanToCsvBuilder<Project>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
-
-                try {
-                    beanToCsv.write(projects);
-                } catch (CsvRequiredFieldEmptyException ex) {
-                }
-            }
-        } catch (IOException | CsvDataTypeMismatchException  e) {
-            throw new RuntimeException("Error deleting project from CSV", e);
-        }
-    }
 }

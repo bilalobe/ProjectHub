@@ -7,4 +7,5 @@ build
 .fake
 
 # Ignore application.properties file
-*.properties
+application-dev.properties
+application-prod.properties

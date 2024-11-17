@@ -28,7 +28,12 @@ public class ProjectController {
     @GetMapping
     public List<ProjectSummary> getAllProjects() {
         return projectService.getAllProjects().stream()
-                .map(ProjectSummary::new)
+                .map(project -> new ProjectSummary(
+                    project.getId(),
+                    project.getName(),
+                    project.getDescription(),
+                    project.getTeamId() != null ? project.getTeamId() : null
+                ))
                 .collect(Collectors.toList());
     }
 

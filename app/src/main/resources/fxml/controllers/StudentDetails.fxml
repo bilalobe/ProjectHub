@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.projecthub.ui.controllers.StudentDetailsController"
+      spacing="10" padding="10">
+
+    <Label text="Student Details" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <HBox spacing="5">
+        <Label text="Student Name:" />
+        <Label fx:id="studentNameLabel" />
+    </HBox>
+
+    <Label text="Submissions" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+    <TableView fx:id="submissionTableView" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="submissionIdColumn" text="ID" prefWidth="50" />
+            <TableColumn fx:id="submissionProjectColumn" text="Project" prefWidth="150" />
+            <TableColumn fx:id="submissionGradeColumn" text="Grade" prefWidth="100" />
+        </columns>
+    </TableView>
+</VBox>

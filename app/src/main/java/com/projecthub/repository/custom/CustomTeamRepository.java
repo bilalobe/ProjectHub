@@ -10,4 +10,5 @@ public interface CustomTeamRepository {
     Team save(Team team);
     void deleteById(Long teamId);
     Optional<Team> findById(Long id);
+    Optional<Team> findTeamById(Object teamId);
 }

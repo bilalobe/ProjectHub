@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.projecthub.model.User;
+import com.projecthub.model.AppUser;
 import com.projecthub.service.UserService;
 
 import jakarta.validation.Valid;
@@ -24,12 +24,12 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<AppUser> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @PostMapping
-    public String createUser(@Valid @RequestBody User user) {
+    public String createUser(@Valid @RequestBody AppUser user) {
         userService.saveUser(user);
         return "User created successfully";
     }

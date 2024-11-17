@@ -20,7 +20,7 @@ import com.projecthub.model.School;
 import com.projecthub.repository.custom.CustomSchoolRepository;
 
 @Repository("csvSchoolRepository")
-public class CSVSchoolRepository implements CustomSchoolRepository {
+public abstract class CSVSchoolRepository implements CustomSchoolRepository {
 
     @Value("${app.schools.filepath}")
     private String schoolsFilePath;

@@ -14,7 +14,7 @@ import com.projecthub.model.Project;
 import com.projecthub.model.Student;
 import com.projecthub.model.Submission;
 import com.projecthub.model.Team;
-import com.projecthub.model.User;
+import com.projecthub.model.AppUser;
 
 public class CSVHandler {
 
@@ -116,8 +116,8 @@ public class CSVHandler {
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 Student student = new Student(
-                        Long.parseLong(nextLine[0]),
-                        nextLine[1]
+                        Long.valueOf(nextLine[0]),
+                        nextLine[1], null
                 );
                 students.add(student);
             }
@@ -185,17 +185,17 @@ public class CSVHandler {
         }
     }
 
-    public static List<User> readUsersFromCSV(String filePath) throws IOException {
-        List<User> users = new ArrayList<>();
+    public static List<AppUser> readUsersFromCSV(String filePath) throws IOException {
+        List<AppUser> users = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-            ColumnPositionMappingStrategy<User> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(User.class);
+            ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
+            strategy.setType(AppUser.class);
             String[] memberFieldsToBindTo = {"id", "username", "password", "teamId"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
-                User user = new User(
+                AppUser user = new AppUser(
                         Long.valueOf(nextLine[0]),
                         nextLine[1],
                         nextLine[2],
@@ -209,14 +209,14 @@ public class CSVHandler {
         return users;
     }
 
-    public static void writeUsersToCSV(List<User> users, String filePath) throws IOException {
+    public static void writeUsersToCSV(List<AppUser> users, String filePath) throws IOException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
-            ColumnPositionMappingStrategy<User> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(User.class);
+            ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
+            strategy.setType(AppUser.class);
             String[] memberFieldsToBindTo = {"id", "username", "password", "teamId"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            for (User user : users) {
+            for (AppUser user : users) {
                 String[] record = {
                         String.valueOf(user.getId()),
                         user.getUsername(),

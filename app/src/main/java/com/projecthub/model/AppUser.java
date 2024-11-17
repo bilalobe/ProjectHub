@@ -11,8 +11,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Represents a user in the system.
+ * Each user belongs to a team.
+ */
 @Entity
-public class User {
+public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,16 +31,19 @@ public class User {
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
+    /**
+     * The team that the user belongs to.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
 
     // Default constructor required by JPA
-    public User() {
+    public AppUser() {
     }
 
     // Constructor with all fields
-    public User(Long id, String username, String password, Team team) {
+    public AppUser(Long id, String username, String password, Team team) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -44,7 +51,7 @@ public class User {
     }
 
     // Constructor without id (for new Users)
-    public User(String username, String password, Team team) {
+    public AppUser(String username, String password, Team team) {
         this.username = username;
         this.password = password;
         this.team = team;

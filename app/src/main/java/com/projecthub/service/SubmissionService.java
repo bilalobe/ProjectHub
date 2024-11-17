@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import com.projecthub.model.Submission;
 import com.projecthub.repository.custom.CustomSubmissionRepository;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 @Service
-@Api(value = "Submission Service", description = "Operations pertaining to submissions in ProjectHub")
+@Tag(name = "Submission Service", description = "Operations pertaining to submissions in ProjectHub")
 public class SubmissionService {
 
     private final CustomSubmissionRepository submissionRepository;
@@ -21,18 +21,23 @@ public class SubmissionService {
         this.submissionRepository = submissionRepository;
     }
 
-    @ApiOperation(value = "View a list of all submissions", response = List.class)
+    @Operation(summary = "View a list of all submissions")
     public List<Submission> getAllSubmissions() {
         return submissionRepository.findAll();
     }
 
-    @ApiOperation(value = "Save a submission")
+    @Operation(summary = "Save a submission")
     public Submission saveSubmission(Submission submission) {
         return submissionRepository.save(submission);
     }
 
-    @ApiOperation(value = "Delete a submission by ID")
+    @Operation(summary = "Delete a submission by ID")
     public void deleteSubmission(Long id) {
         submissionRepository.deleteById(id);
+    }
+
+    public List<Submission> getSubmissionsByStudentId(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSubmissionsByStudentId'");
     }
 }

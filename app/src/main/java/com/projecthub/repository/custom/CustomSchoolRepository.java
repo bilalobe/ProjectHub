@@ -1,11 +1,16 @@
 package com.projecthub.repository.custom;
 
-import java.util.List;
-
 import com.projecthub.model.School;
+import java.util.List;
+import java.util.Optional;
 
 public interface CustomSchoolRepository {
-    List<School> findAll();
+
     School save(School school);
-    void deleteById(Long schoolId);
+
+    List<School> findAll();
+
+    Optional<School> findById(Long id);
+
+    void deleteById(Long id);
 }

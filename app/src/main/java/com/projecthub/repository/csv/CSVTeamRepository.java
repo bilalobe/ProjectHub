@@ -20,7 +20,7 @@ import com.projecthub.model.Team;
 import com.projecthub.repository.custom.CustomTeamRepository;
 
 @Repository("csvTeamRepository")
-public class CSVTeamRepository implements CustomTeamRepository {
+public abstract class CSVTeamRepository implements CustomTeamRepository {
 
     @Value("${app.teams.filepath}")
     private String teamsFilePath;

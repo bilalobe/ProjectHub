@@ -16,7 +16,7 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-import com.projecthub.model.User;
+import com.projecthub.model.AppUser;
 import com.projecthub.repository.custom.CustomUserRepository;
 
 @Repository("csvUserRepository")
@@ -26,19 +26,19 @@ public abstract class CSVUserRepository implements CustomUserRepository {
     private String usersFilePath;
 
     @Override
-    public User save(User user) {
+    public AppUser save(AppUser user) {
         try {
-            List<User> users = findAll();
+            List<AppUser> users = findAll();
             users.removeIf(u -> u.getId().equals(user.getId()));
             users.add(user);
 
             try (CSVWriter writer = new CSVWriter(new FileWriter(usersFilePath))) {
-                ColumnPositionMappingStrategy<User> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(User.class);
+                ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
+                strategy.setType(AppUser.class);
                 String[] memberFieldsToBindTo = {"id", "username", "password"};
                 strategy.setColumnMapping(memberFieldsToBindTo);
 
-                StatefulBeanToCsv<User> beanToCsv = new StatefulBeanToCsvBuilder<User>(writer)
+                StatefulBeanToCsv<AppUser> beanToCsv = new StatefulBeanToCsvBuilder<AppUser>(writer)
                         .withMappingStrategy(strategy)
                         .build();
 
@@ -52,14 +52,14 @@ public abstract class CSVUserRepository implements CustomUserRepository {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<AppUser> findAll() {
         try (CSVReader reader = new CSVReader(new FileReader(usersFilePath))) {
-            ColumnPositionMappingStrategy<User> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(User.class);
+            ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
+            strategy.setType(AppUser.class);
             String[] memberFieldsToBindTo = {"id", "username", "password"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            return new CsvToBeanBuilder<User>(reader)
+            return new CsvToBeanBuilder<AppUser>(reader)
                     .withMappingStrategy(strategy)
                     .build()
                     .parse();
@@ -71,16 +71,16 @@ public abstract class CSVUserRepository implements CustomUserRepository {
     @Override
     public void deleteById(Long userId) {
         try {
-            List<User> users = findAll();
+            List<AppUser> users = findAll();
             users.removeIf(user -> user.getId().equals(userId));
 
             try (CSVWriter writer = new CSVWriter(new FileWriter(usersFilePath))) {
-                ColumnPositionMappingStrategy<User> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(User.class);
+                ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
+                strategy.setType(AppUser.class);
                 String[] memberFieldsToBindTo = {"id", "username", "password"};
                 strategy.setColumnMapping(memberFieldsToBindTo);
 
-                StatefulBeanToCsv<User> beanToCsv = new StatefulBeanToCsvBuilder<User>(writer)
+                StatefulBeanToCsv<AppUser> beanToCsv = new StatefulBeanToCsvBuilder<AppUser>(writer)
                         .withMappingStrategy(strategy)
                         .build();
 

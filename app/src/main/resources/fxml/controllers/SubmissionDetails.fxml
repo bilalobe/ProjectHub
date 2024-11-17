@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.projecthub.ui.controllers.SubmissionDetailsController"
+      spacing="10" padding="10">
+
+    <Label text="Submission Details" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <GridPane hgap="10" vgap="10">
+        <Label text="Submission ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <Label fx:id="submissionIdLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+        <Label text="Student Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <Label fx:id="studentNameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+        <Label text="Project Name:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <Label fx:id="projectNameLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+        <Label text="Timestamp:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+        <Label fx:id="timestampLabel" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+        <Label text="Grade:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+        <TextField fx:id="gradeField" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+    </GridPane>
+
+    <Label text="Content:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+    <TextArea fx:id="contentArea" prefRowCount="10" editable="false" />
+
+    <Button text="Save Grade" onAction="#handleSaveGrade" />
+
+</VBox>

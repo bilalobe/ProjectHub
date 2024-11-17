@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import com.projecthub.model.Student;
 import com.projecthub.repository.custom.CustomStudentRepository;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 @Service
-@Api(value = "Student Service", description = "Operations pertaining to students in ProjectHub")
+@Tag(name = "Student Service", description = "Operations pertaining to students in ProjectHub")
 public class StudentService {
 
     private final CustomStudentRepository studentRepository;
@@ -21,17 +21,17 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    @ApiOperation(value = "View a list of all students", response = List.class)
+    @Operation(summary = "View a list of all students")
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
 
-    @ApiOperation(value = "Save a student")
+    @Operation(summary = "Save a student")
     public Student saveStudent(Student student) {
         return studentRepository.save(student);
     }
 
-    @ApiOperation(value = "Delete a student by ID")
+    @Operation(summary = "Delete a student by ID")
     public void deleteStudent(Long id) {
         studentRepository.deleteById(id);
     }

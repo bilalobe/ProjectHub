@@ -1,52 +1,69 @@
 plugins {
     id 'java'
     id 'application' // For creating executable JARs
-    id 'org.springframework.boot' version '3.0.0'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'jpro-gradle-plugin'
 }
 
-group 'io.projecthub'
+group 'com.projecthub'
 version '0.1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/release' }
+    maven { url "https://sandec.jfrog.io/artifactory/repo" }
 }
 
 dependencies {
-    // Spring Boot starters
-    implementation 'org.springframework.boot:spring-boot-starter' // Core Spring Boot
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA and Hibernate support
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web' // Spring Web MVC
- 
-    // PostgreSQL driver
-    implementation 'org.postgresql:postgresql:42.5.4' // PostgreSQL JDBC driver
+    // JavaFX dependencies
+    implementation 'org.openjfx:javafx-controls:23.0.1'
+    implementation 'org.openjfx:javafx-fxml:23.0.1'
+    implementation 'org.openjfx:javafx-graphics:23.0.1'
+    implementation 'org.openjfx:javafx-media:23.0.1'
+    implementation 'org.openjfx:javafx-web:23.0.1'
+
+    // JPro dependencies
+    implementation 'one.jpro:jpro-webapi:2024.4.1'
 
     // OpenCSV for CSV handling
-    implementation 'com.opencsv:opencsv:5.7.1' // CSV parsing library
+    implementation 'com.opencsv:opencsv:5.5.2'
 
-    // Swagger dependencies
-    implementation 'io.springfox:springfox-boot-starter:3.0.0' // Swagger support
-    implementation 'io.springfox:springfox-swagger-ui:3.0.0' // Swagger UI
-    
-    // Spring Security dependencies
+    // Spring Boot dependencies
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.security:spring-security-config'
-    implementation 'org.springframework.security:spring-security-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // PostgreSQL driver
+    runtimeOnly 'org.postgresql:postgresql:42.3.1'
+
+    // Springdoc OpenAPI for Swagger v3
+    implementation 'org.springdoc:springdoc-openapi-ui:1.8.0'
+    implementation 'org.springdoc:springdoc-openapi-data-rest:1.8.0'
+    implementation 'org.springdoc:springdoc-openapi-security:1.8.0'
 
     // Testing dependencies
-    testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot test starter
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-
-    // JavaFX dependencies
-    // implementation 'org.openjfx:javafx-controls:16'
-    // implementation 'org.openjfx:javafx-fxml:16'
 }
 
 application {
-    mainClass = 'com.projecthub.ProjectHubApplication'
+    mainClass = 'com.projecthub.ui.ProjectHubFX'
+}
+
+javafx {
+    version = '23.0.1'
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.web' ]
+}
+
+jpro {
+    // jpro server port
+    port = 8080
 }
 
 test {
@@ -55,14 +72,10 @@ test {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.projecthub.ProjectHubApplication' // Required for executable JAR
+        attributes 'Main-Class': 'com.projecthub.ui.ProjectHubFX'
     }
     from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } // Include dependencies in the JAR
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    filePermissions {
-        fileMode = 0755
-    }
 }

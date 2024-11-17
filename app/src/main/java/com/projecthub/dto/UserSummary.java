@@ -1,19 +1,38 @@
 package com.projecthub.dto;
 
-import com.projecthub.model.User;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
+/**
+ * Data Transfer Object for User entity.
+ * Used for creating and updating users.
+ */
 public class UserSummary {
+
     private Long id;
+
+    @NotBlank(message = "Username is mandatory")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;
 
-    public UserSummary() {}  // Default constructor
+    @NotBlank(message = "Password is mandatory")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+    private String password;
 
-    public UserSummary(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
+    private Long teamId;
+
+    public UserSummary() {
     }
 
-    // Getters and setters
+    public UserSummary(Long id, String username, String password, Long teamId) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.teamId = teamId;
+    }
+
+    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -28,5 +47,27 @@ public class UserSummary {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Sets the user's password.
+     * Note: Ensure that passwords are encoded before setting.
+     *
+     * @param password Raw password string
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Long getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Long teamId) {
+        this.teamId = teamId;
     }
 }
