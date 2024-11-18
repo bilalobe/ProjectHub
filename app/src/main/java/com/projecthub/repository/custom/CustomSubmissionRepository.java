@@ -8,4 +8,5 @@ public interface CustomSubmissionRepository {
     List<Submission> findAll();
     Submission save(Submission submission);
     void deleteById(Long submissionId);
+    List<Submission> findByStudentId(Long studentId);
 }
