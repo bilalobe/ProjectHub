@@ -2,7 +2,12 @@
   "name": "Gradle",
   "build": {
     "dockerfile": "Dockerfile",
-    "context": ".."
+    "context": "..",
+    "args": {
+      "USERNAME": "projecthub_devel",
+      "USER_UID": "1000",
+      "USER_GID": "1000"
+    }
   },
   "customizations": {
     "vscode": {
@@ -11,7 +16,7 @@
         "richardwillis.vscode-gradle"
       ],
       "settings": {
-        "java.home": "/docker-java-home",
+        "java.jdt.ls.java.home": "/docker-java-home",
         "java.configuration.runtimes": [
           {
             "name": "JavaSE-23",
@@ -21,6 +26,6 @@
       }
     }
   },
-  "postCreateCommand": "./gradlew clean",
-  "remoteUser": "PROJECTHUB_DEVEL"
+  "postCreateCommand": "sudo chown -R projecthub_devel:projecthub_devel /workspace && ./gradlew clean",
+  "remoteUser": "projecthub_devel"
 }
