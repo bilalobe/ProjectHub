@@ -1,14 +1,11 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:23-jdk-slim
-
-# Set the working directory
+# Stage 1: Build the application
+FROM openjdk:23-jdk-slim AS build
 WORKDIR /app
+COPY . .
+RUN ./gradlew build
 
-# Copy the build output
-COPY build/libs/projecthub-0.1.0-SNAPSHOT.jar app.jar
-
-# Expose the application's port
-EXPOSE 8080
-
-# Define the entry point
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Stage 2: Run the application
+FROM openjdk:23-jdk-slim
+WORKDIR /app
+COPY --from=build /app/build/libs/projecthub-0.1.0-SNAPSHOT.jar /app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]
