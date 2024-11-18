@@ -1,14 +1,12 @@
 # Ignore Gradle project-specific cache directory
 .gradle
 
-
 # Except for build/libs
 !build/libs/
-
+!app/build/libs/
 
 # Ignore Gradle build output directory
 build/
-
 
 # Ignore Maven project-specific cache directory
 .fake
