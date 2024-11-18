@@ -11,7 +11,7 @@ import com.projecthub.service.SchoolService;
 import com.projecthub.service.CohortService;
 import com.projecthub.service.TeamService;
 import com.projecthub.service.ComponentService;
-import com.projecthub.ui.controllers.MainController.ComponentSummary;
+import com.projecthub.dto.ComponentSummary;
 import com.projecthub.utils.ui.TreeItemWrapper;
 
 import java.util.List;
@@ -84,7 +84,8 @@ public class ProjectHubViewModel {
     }
 
     /**
-     * Retrieves the list of component summaries associated with a specific project ID.
+     * Retrieves the list of component summaries associated with a specific
+     * project ID.
      *
      * @param projectId the ID of the project
      * @return a list of ComponentSummary objects
@@ -92,7 +93,7 @@ public class ProjectHubViewModel {
     public List<ComponentSummary> getComponentsByProjectId(Long projectId) {
         List<com.projecthub.model.Component> components = componentService.getComponentsByProjectId(projectId);
         return components.stream()
-                .map(c -> new ComponentSummary(c.getName(), c.getDescription()))
+                .map(c -> new ComponentSummary(projectId, c.getName(), c.getDescription(), projectId))
                 .collect(Collectors.toList());
     }
 
