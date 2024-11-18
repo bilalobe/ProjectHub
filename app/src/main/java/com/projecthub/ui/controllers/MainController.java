@@ -1,12 +1,14 @@
 package com.projecthub.ui.controllers;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-
+import com.projecthub.dto.ComponentSummary;
 import com.projecthub.dto.ProjectSummary;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
 import com.projecthub.utils.ui.TreeItemWrapper;
@@ -77,7 +79,7 @@ public class MainController {
     private TreeView<String> navigationTreeView;
 
     private ObservableList<ComponentSummary> componentList;
-
+    
     @FXML
     public void initialize() {
         bindProperties();
@@ -103,7 +105,7 @@ public class MainController {
         }
 
         // Customize TreeCell to display names
-        schoolTreeView.setCellFactory(tv -> new TreeCell<>() {
+        schoolTreeView.setCellFactory(tv -> new TreeCell<TreeItemWrapper>() {
             @Override
             protected void updateItem(TreeItemWrapper item, boolean empty) {
                 super.updateItem(item, empty);
@@ -155,7 +157,7 @@ public class MainController {
     private void loadComponents(Long projectId) {
         List<com.projecthub.model.Component> components = viewModel.getComponentService().getComponentsByProjectId(projectId);
         List<ComponentSummary> componentSummaries = components.stream()
-                .map(component -> new ComponentSummary(component.getName(), component.getDescription()))
+                .map(component -> new ComponentSummary(projectId, component.getName(), component.getDescription(), projectId))
                 .collect(Collectors.toList());
         componentList.setAll(componentSummaries);
         componentsTable.setItems(componentList);
@@ -195,7 +197,7 @@ public class MainController {
         TreeItem<String> teamsItem = new TreeItem<>("Teams");
         TreeItem<String> studentsItem = new TreeItem<>("Students");
 
-        rootItem.getChildren().addAll(cohortsItem, teamsItem, studentsItem);
+        Collections.addAll(rootItem.getChildren(), cohortsItem, teamsItem, studentsItem);
         navigationTreeView.setRoot(rootItem);
         navigationTreeView.setShowRoot(false);
 
@@ -212,18 +214,12 @@ public class MainController {
         if (selectedItem != null) {
             String selectedText = selectedItem.getValue();
             switch (selectedText) {
-                case "Cohorts":
-                    loadCohortView();
-                    break;
-                case "Teams":
-                    loadTeamView();
-                    break;
-                case "Students":
-                    loadStudentView();
-                    break;
-                default:
+                case "Cohorts" -> loadCohortView();
+                case "Teams" -> loadTeamView();
+                case "Students" -> loadStudentView();
+                default -> {
                     // Handle other selections
-                    break;
+                }
             }
         }
     }
@@ -240,7 +236,7 @@ public class MainController {
             // Set the cohort data
             // controller.setCohort(selectedCohort);
             mainBorderPane.setCenter(cohortPane);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             // Handle exceptions
         }
@@ -279,35 +275,6 @@ public class MainController {
         } catch (Exception e) {
             e.printStackTrace();
             // Handle exceptions
-        }
-    }
-
-    // DTO for component summary
-    public static class ComponentSummary {
-        private String name;
-        private String description;
-
-        public ComponentSummary(String name, String description) {
-            this.name = name;
-            this.description = description;
-        }
-
-        // Getters and setters
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-           this.name = name;
-        }
-
-        public String getDescription() {
-           return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
         }
     }
 }
