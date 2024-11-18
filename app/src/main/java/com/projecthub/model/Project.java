@@ -2,11 +2,8 @@ package com.projecthub.model;
 
 import java.util.List;
 
-import com.projecthub.middleware.listener.ProjectEntityListener;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,11 +13,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 /**
- * Represents a project within a team.
- * A project can have multiple components and submissions.
+ * Represents a Project within a Team.
  */
 @Entity
-@EntityListeners(ProjectEntityListener.class)
 public class Project {
 
     @Id
@@ -28,127 +23,87 @@ public class Project {
     private Long id;
 
     private String name;
+
     private String description;
+
     private String deadline;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
     private Team team;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by")
-    private AppUser createdBy;
-
-    /**
-     * The list of components in the project.
-     */
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Component> components;
-
-    /**
-     * The list of submissions for the project.
-     */
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Submission> submissions;
+    private List<Task> tasks;
 
     // Default constructor required by JPA
-    public Project() {
-    }
+    public Project(Long long1, String string, Object object, Team team2) {}
 
-    // Constructor with all fields
-    public Project(Long id, String name, String description, Team team) {
-        this.id = id;
+    public Project(String name, String description, String deadline, Team team) {
         this.name = name;
         this.description = description;
+        this.deadline = deadline;
         this.team = team;
     }
 
-    // Constructor without id (for new Projects)
-    public Project(String name, String description, Team team) {
-        this.name = name;
-        this.description = description;
-        this.team = team;
-    }
+    public Project() {}
 
-    // Getters and setters
+    // Getters and Setters
     public Long getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public AppUser getCreatedBy() {
-        return createdBy;
-    }
-
-    public String getDeadline() {
-        return deadline;
-    }
-
-    public List<Component> getComponents() {
-        return components;
-    }
-
-    public void setComponents(List<Component> components) {
-        this.components = components;
-    }
-
-    public List<Submission> getSubmissions() {
-        return submissions;
-    }
-
-    public void setSubmissions(List<Submission> submissions) {
-        this.submissions = submissions;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
-    }
-
-    public void setCreatedBy(AppUser createdBy) {
-        this.createdBy = createdBy;
+    public String getDeadline() {
+        return deadline;
     }
 
     public void setDeadline(String deadline) {
         this.deadline = deadline;
     }
 
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
     @Override
     public String toString() {
-        return "Project{id=" + id + ", name='" + name + "', description='" + description + "', team=" + team + "}";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Project project = (Project) o;
-        return id != null && id.equals(project.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
+        return "Project{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", deadline='" + deadline + '\'' +
+                ", team=" + (team != null ? team.getName() : "null") +
+                '}';
     }
 }
