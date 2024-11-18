@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.projecthub.ui.controllers.TaskDetailsController"
+      spacing="10" padding="10">
+
+    <Label text="Task Management" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <HBox spacing="5">
+        <Label text="Search:" />
+        <TextField fx:id="searchField" />
+    </HBox>
+
+    <TableView fx:id="taskTableView" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="taskIdColumn" text="ID" prefWidth="50" />
+            <TableColumn fx:id="taskNameColumn" text="Name" prefWidth="150" />
+            <TableColumn fx:id="taskDescriptionColumn" text="Description" prefWidth="200" />
+            <TableColumn fx:id="taskStatusColumn" text="Status" prefWidth="100" />
+            <TableColumn fx:id="taskDueDateColumn" text="Due Date" prefWidth="100" />
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <Button text="Add Task" onAction="#handleAddTask" />
+        <Button text="Edit Task" onAction="#handleEditTask" />
+        <Button text="Delete Task" onAction="#handleDeleteTask" />
+    </HBox>
+</VBox>
