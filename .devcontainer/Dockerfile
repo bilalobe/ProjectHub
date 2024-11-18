@@ -13,9 +13,6 @@ RUN ./gradlew build
 # Use an official PostgreSQL Alpine image as a parent image
 FROM postgres:17-alpine
 
-# Set the working directory
-WORKDIR /home
-
 # Install necessary packages as root
 RUN apk update && apk add --no-cache \
     git \
