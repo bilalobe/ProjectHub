@@ -17,7 +17,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 @Component
-public class UserFXController {
+public class UserFxController {
 
     @Autowired
     private UserService userService;
