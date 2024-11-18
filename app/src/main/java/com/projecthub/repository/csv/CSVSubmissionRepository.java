@@ -20,7 +20,7 @@ import com.projecthub.model.Submission;
 import com.projecthub.repository.custom.CustomSubmissionRepository;
 
 @Repository("csvSubmissionRepository")
-public class CSVSubmissionRepository implements CustomSubmissionRepository {
+public abstract class CSVSubmissionRepository implements CustomSubmissionRepository {
 
     @Value("${app.submissions.filepath}")
     private String submissionsFilePath;
