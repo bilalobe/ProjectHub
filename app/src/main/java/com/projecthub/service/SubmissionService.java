@@ -37,7 +37,6 @@ public class SubmissionService {
     }
 
     public List<Submission> getSubmissionsByStudentId(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSubmissionsByStudentId'");
+        return submissionRepository.findByStudentId(id);
     }
 }
