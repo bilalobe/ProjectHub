@@ -1,0 +1,26 @@
+{
+  "name": "Gradle",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "richardwillis.vscode-gradle"
+      ],
+      "settings": {
+        "java.home": "/docker-java-home",
+        "java.configuration.runtimes": [
+          {
+            "name": "JavaSE-23",
+            "path": "/docker-java-home"
+          }
+        ]
+      }
+    }
+  },
+  "postCreateCommand": "./gradlew clean",
+  "remoteUser": "PROJECTHUB_DEVEL"
+}
