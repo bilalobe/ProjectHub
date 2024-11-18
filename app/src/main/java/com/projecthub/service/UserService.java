@@ -101,7 +101,6 @@ public class UserService {
     }
 
     public List<AppUser> getUsersByTeamId(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUsersByTeamId'");
+        return userRepository.findByTeamId(id);
     }
 }
