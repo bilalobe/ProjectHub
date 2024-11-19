@@ -67,7 +67,7 @@ jobs:
     - name: Build and push Docker image
       run: |
         IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/projecthub:latest
-        docker build -t $IMAGE_NAME .
+        docker build --build-arg JAR_FILE=app-0.1.0-SNAPSHOT.jar -t $IMAGE_NAME .
         docker push $IMAGE_NAME
 
     - name: Deploy with Docker Compose

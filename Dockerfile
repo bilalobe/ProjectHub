@@ -5,7 +5,7 @@ FROM gradle:8.11-jdk23 AS build
 WORKDIR /app
 
 # Copy gradle files for caching
-COPY build.gradle settings.gradle ./ 
+COPY build.gradle settings.gradle ./
 COPY gradle/ gradle/
 COPY gradlew ./ 
 
@@ -33,7 +33,8 @@ RUN groupadd --gid $USER_GID $USERNAME && \
 WORKDIR /app
 
 # Copy jar from build stage
-COPY --from=build /app/build/libs/*.jar app.jar
+ARG JAR_FILE
+COPY --from=build /app/build/libs/${JAR_FILE} app.jar
 RUN chown ${USERNAME}:${USERNAME} /app/app.jar
 
 # Use non-root user
