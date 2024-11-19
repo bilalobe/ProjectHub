@@ -35,22 +35,17 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PAT }}
-
-    - name: Build and test
-      run: |
-        chmod +x ./gradlew
-        ./gradlew build test --no-daemon
-      env:
-        GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=4"
-
+        # Add registry if not using Docker Hub
+        # registry: your-registry-url
+    
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
         push: true
-        tags: my-docker-repo/projecthub:latest
-        cache-from: type=registry,ref=my-docker-repo/projecthub:buildcache
-        cache-to: type=registry,ref=my-docker-repo/projecthub:buildcache,mode=max
+        tags: ${{ secrets.DOCKER_USERNAME }}/projecthub:latest
+        cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/projecthub:buildcache
+        cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/projecthub:buildcache,mode=max
         platforms: linux/amd64
 
     - name: Deploy with Docker Compose
