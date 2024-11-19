@@ -21,6 +21,7 @@ public class Submission {
     private String content;
     private String timestamp;
     private Integer grade;
+    private String filePath;
 
     /**
      * The student who made the submission.
@@ -36,32 +37,21 @@ public class Submission {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    private Long studentId;
-
-    private Long projectId;
-
     // Default constructor required by JPA
-    public Submission() {
+    public Submission(Long long1, Student student2, Project project2, String nextLine, Integer integer) {
     }
 
-    // Constructor with all fields
-    public Submission(Long id, Long projectId, Long studentId, String filePath, Integer grade) {
+    // Constructor with all fields (excluding redundant IDs)
+    public Submission(Long id, Student student, Project project, String content, String timestamp, Integer grade) {
         this.id = id;
-        this.projectId = projectId;
-        this.studentId = studentId;
-        this.content = filePath;
+        this.student = student;
+        this.project = project;
+        this.content = content;
+        this.timestamp = timestamp;
         this.grade = grade;
     }
 
     // Constructor without id (for new Submissions)
-    public Submission(Long studentId, Long projectId, String content, String timestamp) {
-        this.studentId = studentId;
-        this.projectId = projectId;
-        this.content = content;
-        this.timestamp = timestamp;
-    }
-
-    // Constructor with student and project entities
     public Submission(Student student, Project project, String content, String timestamp) {
         this.student = student;
         this.project = project;
@@ -82,24 +72,24 @@ public class Submission {
         return timestamp;
     }
 
-    public Long getStudentId() {
-        return student != null ? student.getId() : null;
-    }
-
-    public Long getProjectId() {
-        return project != null ? project.getId() : null;
-    }
-
-    public Long getSubmissionId() {
-        return id;
-    }
-
     public Integer getGrade() {
         return grade;
     }
 
+    public Student getStudent() {
+        return student;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
     public String getFilePath() {
-        return "/submissions/" + id + "/" + content;
+        return filePath;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setContent(String content) {
@@ -110,43 +100,31 @@ public class Submission {
         this.timestamp = timestamp;
     }
 
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
-    public void setSubmissionId(Long id) {
-        this.id = id;
-    }
-
     public void setGrade(Integer grade) {
         this.grade = grade;
-    }
-
-    public Student getStudent() {
-        return student;
     }
 
     public void setStudent(Student student) {
         this.student = student;
     }
 
-    public Project getProject() {
-        return project;
-    }
-
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     // Override toString method
     @Override
     public String toString() {
-        return "Submission{id=" + id + ", content='" + content + "', timestamp='" + timestamp
-                + "', studentId=" + studentId + ", projectId=" + projectId
-                + ", grade=" + grade + "}";
+        return "Submission{id=" + id + 
+               ", content='" + content + '\'' +
+               ", timestamp='" + timestamp + '\'' +
+               ", studentId=" + (student != null ? student.getId() : null) +
+               ", projectId=" + (project != null ? project.getId() : null) +
+               ", grade=" + grade + 
+               '}';
     }
 }
