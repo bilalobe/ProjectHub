@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.projecthub.dto.UserSummary;
+import com.projecthub.dto.AppUserSummary;
 import com.projecthub.model.AppUser;
 import com.projecthub.service.UserService;
 
@@ -72,7 +72,7 @@ public class UserFxController {
             return;
         }
 
-        UserSummary UserSummary = new UserSummary(null, username, password, null); // Assuming no teamId for now
+        AppUserSummary UserSummary = new AppUserSummary(null, username, password, null); // Assuming no teamId for now
         AppUser user = new AppUser();
         user.setId(UserSummary.getId());
         user.setUsername(UserSummary.getUsername());
@@ -111,7 +111,7 @@ public class UserFxController {
             return;
         }
 
-        UserSummary UserSummary = new UserSummary(userId, username, password, null); // Assuming no teamId for now
+        AppUserSummary UserSummary = new AppUserSummary(userId, username, password, null); // Assuming no teamId for now
         AppUser user = new AppUser();
         user.setId(UserSummary.getId());
         user.setUsername(UserSummary.getUsername());
