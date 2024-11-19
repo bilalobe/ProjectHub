@@ -1,5 +1,5 @@
 # Use the official Gradle image with Java 23 alpine as the base image
-FROM gradle:8.11-jdk23-alpine AS build
+FROM gradle:8.11-jdk23 AS build
 
 # Set the working directory
 WORKDIR /app
