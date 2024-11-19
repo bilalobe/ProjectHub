@@ -5,13 +5,12 @@ FROM gradle:8.11-jdk23 AS build
 WORKDIR /app
 
 # Copy gradle files for caching
-COPY build.gradle settings.gradle ./
-COPY gradle gradle/
-COPY gradlew ./
+COPY build.gradle settings.gradle ./ 
+COPY gradle/ gradle/
+COPY gradlew ./ 
 
 # Download dependencies
-RUN chmod +x ./gradlew && \
-    ./gradlew dependencies --no-daemon
+RUN chmod +x ./gradlew && ./gradlew dependencies --no-daemon
 
 # Copy source code
 COPY . .
@@ -27,8 +26,8 @@ ARG USERNAME=projecthub_devel
 ARG USER_UID=1001
 ARG USER_GID=$USER_UID
 
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
+RUN groupadd --gid $USER_GID $USERNAME && \
+    useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
 
 # Set working directory
 WORKDIR /app
