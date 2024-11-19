@@ -5,20 +5,45 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.exceptions.CsvValidationException;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.projecthub.model.Project;
 import com.projecthub.model.Student;
 import com.projecthub.model.Submission;
 import com.projecthub.model.Team;
 import com.projecthub.model.AppUser;
+import com.projecthub.service.ProjectService;
+import com.projecthub.service.StudentService;
+import com.projecthub.service.TeamService;
+import com.projecthub.service.SchoolService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class CSVHandler {
 
-    public static List<Submission> readSubmissionsFromCSV(String filePath) throws IOException {
+    @Autowired
+    private ProjectService projectService;
+
+    @Autowired
+    private StudentService studentService;
+
+    @Autowired
+    private TeamService teamService;
+
+    @Autowired
+    private SchoolService schoolService;
+
+    public List<Submission> readSubmissionsFromCSV(String filePath) throws IOException {
         List<Submission> submissions = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
             ColumnPositionMappingStrategy<Submission> strategy = new ColumnPositionMappingStrategy<>();
@@ -26,86 +51,92 @@ public class CSVHandler {
             String[] memberFieldsToBindTo = {"id", "projectId", "studentId", "content", "grade"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
+            List<Submission> csvSubmissions = new CsvToBeanBuilder<Submission>(reader)
+                    .withMappingStrategy(strategy)
+                    .build()
+                    .parse();
+
+            for (Submission csvSubmission : csvSubmissions) {
+                Project project = projectService.getProjectById(csvSubmission.getProject().getId()).orElse(null);
+                Student student = studentService.getStudentById(csvSubmission.getStudent().getId()).orElse(null);
                 Submission submission = new Submission(
-                        Long.valueOf(nextLine[0]),
-                        Long.valueOf(nextLine[1]),
-                        Long.valueOf(nextLine[2]),
-                        nextLine[3],
-                        nextLine[4] != null && !nextLine[4].isEmpty() ? Integer.parseInt(nextLine[4]) : null
+                    csvSubmission.getId(),
+                    student, // Pass the Student object
+                    project, // Pass the Project object
+                    csvSubmission.getContent(),
+                    csvSubmission.getGrade()
                 );
                 submissions.add(submission);
             }
-        } catch (CsvValidationException | IOException e) {
+        } catch (IOException e) {
             throw new IOException("Error reading submissions from CSV", e);
         }
         return submissions;
     }
 
-    public static void writeSubmissionsToCSV(List<Submission> submissions, String filePath) throws IOException {
+    public void writeSubmissionsToCSV(List<Submission> submissions, String filePath) throws IOException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
             ColumnPositionMappingStrategy<Submission> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Submission.class);
             String[] memberFieldsToBindTo = {"id", "projectId", "studentId", "content", "grade"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            for (Submission submission : submissions) {
-                String[] record = {
-                        String.valueOf(submission.getSubmissionId()),
-                        String.valueOf(submission.getProjectId()),
-                        String.valueOf(submission.getStudentId()),
-                        submission.getFilePath(),
-                        submission.getGrade() != null ? String.valueOf(submission.getGrade()) : ""
-                };
-                writer.writeNext(record);
-            }
+            StatefulBeanToCsv<Submission> beanToCsv = new StatefulBeanToCsvBuilder<Submission>(writer)
+                    .withMappingStrategy(strategy)
+                    .build();
+
+            beanToCsv.write(submissions);
+        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            throw new IOException("Error writing submissions to CSV", e);
         }
     }
 
-    public static List<Project> readProjectsFromCSV(String filePath) throws IOException {
+    public List<Project> readProjectsFromCSV(String filePath) throws IOException {
         List<Project> projects = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
             ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Project.class);
-            String[] memberFieldsToBindTo = {"id", "name", "description", "team"};
+            String[] memberFieldsToBindTo = {"id", "name", "description", "teamId"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
-                Project project = new Project(
-                        Long.valueOf(nextLine[0]),
-                        nextLine[1],
-                        nextLine[2],
-                        null // Assuming Team is not handled in CSV
-                );
+            List<Project> csvProjects = new CsvToBeanBuilder<Project>(reader)
+                    .withMappingStrategy(strategy)
+                    .build()
+                    .parse();
+
+            for (Project csvProject : csvProjects) {
+                Project project = new Project();
+                project.setId(csvProject.getId());
+                project.setName(csvProject.getName());
+                project.setDescription(csvProject.getDescription());
+                // Set team based on ID
+                project.setTeam(teamService.getTeamById(csvProject.getTeam().getId()).orElse(null));
                 projects.add(project);
             }
-        } catch (CsvValidationException | IOException e) {
+        } catch (IOException e) {
             throw new IOException("Error reading projects from CSV", e);
         }
         return projects;
     }
 
-    public static void writeProjectsToCSV(List<Project> projects, String filePath) throws IOException {
+    public void writeProjectsToCSV(List<Project> projects, String filePath) throws IOException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
             ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Project.class);
-            String[] memberFieldsToBindTo = {"id", "name", "description", "team"};
+            String[] memberFieldsToBindTo = {"id", "name", "description", "teamId"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            for (Project project : projects) {
-                String[] record = {
-                        String.valueOf(project.getId()),
-                        project.getName(),
-                        project.getDescription()
-                };
-                writer.writeNext(record);
-            }
+            StatefulBeanToCsv<Project> beanToCsv = new StatefulBeanToCsvBuilder<Project>(writer)
+                    .withMappingStrategy(strategy)
+                    .build();
+
+            beanToCsv.write(projects);
+        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            throw new IOException("Error writing projects to CSV", e);
         }
     }
 
-    public static List<Student> readStudentsFromCSV(String filePath) throws IOException {
+    public List<Student> readStudentsFromCSV(String filePath) throws IOException {
         List<Student> students = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
             ColumnPositionMappingStrategy<Student> strategy = new ColumnPositionMappingStrategy<>();
@@ -113,79 +144,85 @@ public class CSVHandler {
             String[] memberFieldsToBindTo = {"id", "name"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
-                Student student = new Student(
-                        Long.valueOf(nextLine[0]),
-                        nextLine[1], null
-                );
+            List<Student> csvStudents = new CsvToBeanBuilder<Student>(reader)
+                    .withMappingStrategy(strategy)
+                    .build()
+                    .parse();
+
+            for (Student csvStudent : csvStudents) {
+                Student student = new Student();
+                student.setId(csvStudent.getId());
+                student.setName(csvStudent.getName());
                 students.add(student);
             }
-        } catch (CsvValidationException | IOException e) {
+        } catch (IOException e) {
             throw new IOException("Error reading students from CSV", e);
         }
         return students;
     }
 
-    public static void writeStudentsToCSV(List<Student> students, String filePath) throws IOException {
+    public void writeStudentsToCSV(List<Student> students, String filePath) throws IOException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
             ColumnPositionMappingStrategy<Student> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Student.class);
             String[] memberFieldsToBindTo = {"id", "name"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            for (Student student : students) {
-                String[] record = {
-                        String.valueOf(student.getId()),
-                        student.getName()
-                };
-                writer.writeNext(record);
-            }
+            StatefulBeanToCsv<Student> beanToCsv = new StatefulBeanToCsvBuilder<Student>(writer)
+                    .withMappingStrategy(strategy)
+                    .build();
+
+            beanToCsv.write(students);
+        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            throw new IOException("Error writing students to CSV", e);
         }
     }
 
-    public static List<Team> readTeamsFromCSV(String filePath) throws IOException {
+    public List<Team> readTeamsFromCSV(String filePath) throws IOException {
         List<Team> teams = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
             ColumnPositionMappingStrategy<Team> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Team.class);
-            String[] memberFieldsToBindTo = {"id", "name", "school"};
+            String[] memberFieldsToBindTo = {"id", "name", "schoolId"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
-                Team team = new Team(
-                        Long.valueOf(nextLine[0]),
-                        nextLine[1],
-                        null, // Assuming School is not handled in CSV
-                        new ArrayList<>() // Assuming an empty list of projects
-                );
+            List<Team> csvTeams = new CsvToBeanBuilder<Team>(reader)
+                    .withMappingStrategy(strategy)
+                    .build()
+                    .parse();
+
+            for (Team csvTeam : csvTeams) {
+                Team team = new Team();
+                team.setId(csvTeam.getId());
+                team.setName(csvTeam.getName());
+                // Set school based on ID
+                team.setSchool(schoolService.getSchoolById(csvTeam.getSchool().getId()).orElse(null));
                 teams.add(team);
             }
-        } catch (CsvValidationException | IOException e) {
+        } catch (IOException e) {
             throw new IOException("Error reading teams from CSV", e);
         }
         return teams;
     }
 
-    public static void writeTeamsToCSV(List<Team> teams, String filePath) throws IOException {
+    public void writeTeamsToCSV(List<Team> teams, String filePath) throws IOException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
             ColumnPositionMappingStrategy<Team> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Team.class);
-            String[] memberFieldsToBindTo = {"id", "name", "school"};
+            String[] memberFieldsToBindTo = {"id", "name", "schoolId"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            for (Team team : teams) {
-                String[] record = {
-                        String.valueOf(team.getId()),
-                        team.getName()
-                };
-                writer.writeNext(record);
-            }
+            StatefulBeanToCsv<Team> beanToCsv = new StatefulBeanToCsvBuilder<Team>(writer)
+                    .withMappingStrategy(strategy)
+                    .build();
+
+            beanToCsv.write(teams);
+        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            throw new IOException("Error writing teams to CSV", e);
         }
     }
 
-    public static List<AppUser> readUsersFromCSV(String filePath) throws IOException {
+    public List<AppUser> readUsersFromCSV(String filePath) throws IOException {
         List<AppUser> users = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
             ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
@@ -193,38 +230,40 @@ public class CSVHandler {
             String[] memberFieldsToBindTo = {"id", "username", "password", "teamId"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
-                AppUser user = new AppUser(
-                        Long.valueOf(nextLine[0]),
-                        nextLine[1],
-                        nextLine[2],
-                        new Team(Long.valueOf(nextLine[3]), null, null, new ArrayList<>())
-                );
+            List<AppUser> csvUsers = new CsvToBeanBuilder<AppUser>(reader)
+                    .withMappingStrategy(strategy)
+                    .build()
+                    .parse();
+
+            for (AppUser csvUser : csvUsers) {
+                AppUser user = new AppUser();
+                user.setId(csvUser.getId());
+                user.setUsername(csvUser.getUsername());
+                user.setPassword(csvUser.getPassword());
+                // Set team based on ID
+                user.setTeam(Optional.ofNullable(teamService.getTeamById(csvUser.getTeam().getId()).orElse(null)).orElse(null));
                 users.add(user);
             }
-        } catch (CsvValidationException | IOException e) {
+        } catch (IOException e) {
             throw new IOException("Error reading users from CSV", e);
         }
         return users;
     }
 
-    public static void writeUsersToCSV(List<AppUser> users, String filePath) throws IOException {
+    public void writeUsersToCSV(List<AppUser> users, String filePath) throws IOException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
             ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(AppUser.class);
             String[] memberFieldsToBindTo = {"id", "username", "password", "teamId"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            for (AppUser user : users) {
-                String[] record = {
-                        String.valueOf(user.getId()),
-                        user.getUsername(),
-                        user.getPassword(),
-                        String.valueOf(user.getTeam().getId())
-                };
-                writer.writeNext(record);
-            }
+            StatefulBeanToCsv<AppUser> beanToCsv = new StatefulBeanToCsvBuilder<AppUser>(writer)
+                    .withMappingStrategy(strategy)
+                    .build();
+
+            beanToCsv.write(users);
+        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            throw new IOException("Error writing users to CSV", e);
         }
     }
 }
