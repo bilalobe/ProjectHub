@@ -1,25 +1,32 @@
-# Use the official Gradle image with Java 23 alpine as the base image
+# Stage 1: Build the application
 FROM gradle:8.11-jdk23 AS build
-
-# Set the working directory
 WORKDIR /app
 
-# Copy the Gradle wrapper and project files
+# Copy gradle config files first to cache dependencies
+COPY build.gradle settings.gradle ./
+COPY gradlew ./
+COPY gradle/wrapper/ gradle/wrapper/
+
+# Download dependencies
+RUN ./gradlew dependencies
+
+# Copy source code
 COPY . .
 
-# Run the Gradle build to download dependencies
-RUN ./gradlew build
+# Build the application
+RUN ./gradlew build --no-daemon
 
-# Use an official PostgreSQL Alpine image as a parent image
+# Stage 2: Final image with PostgreSQL and Java
 FROM postgres:17-alpine
 
-# Install necessary packages as root
+# Install OpenJDK and necessary packages
 RUN apk update && apk add --no-cache \
+    openjdk23 \
     git \
     curl \
     sudo
 
-# Create a non-root user and set permissions
+# Create a non-root user
 ARG USERNAME=projecthub_devel
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
@@ -29,14 +36,15 @@ RUN addgroup -g $USER_GID $USERNAME \
     && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
-# Set the default user
+# Copy the built application from the build stage
+COPY --from=build /app/build/libs/app-0.1.0-SNAPSHOT.jar /app/app.jar
+RUN chown ${USERNAME}:${USERNAME} /app/app.jar
+
+# Switch to non-root user
 USER $USERNAME
 
-# Copy the built application from the build image
-COPY --from=build /app/build/libs/app-0.1.0-SNAPSHOT.jar /app.jar
+# Expose PostgreSQL and application ports
+EXPOSE 5432 8080
 
-# Expose the application's port
-EXPOSE 8080
-
-# Run the application
-CMD ["java", "-jar", "/app.jar"]
+# Start both PostgreSQL and the Java application
+CMD ["sh", "-c", "sudo service postgresql start && java -jar /app/app.jar"]
