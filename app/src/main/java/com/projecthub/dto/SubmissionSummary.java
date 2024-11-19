@@ -12,9 +12,9 @@ public class SubmissionSummary {
     public SubmissionSummary() {}
 
     public SubmissionSummary(Submission submission) {
-        this.id = submission.getSubmissionId();
-        this.projectId = submission.getProjectId();
-        this.studentId = submission.getStudentId();
+        this.id = submission.getId();
+        this.projectId = submission.getProject() != null ? submission.getProject().getId() : null;
+        this.studentId = submission.getStudent() != null ? submission.getStudent().getId() : null;
         this.filePath = submission.getFilePath();
         this.grade = submission.getGrade();
     }

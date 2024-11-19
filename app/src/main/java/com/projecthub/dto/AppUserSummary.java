@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
  * Data Transfer Object for User entity.
  * Used for creating and updating users.
  */
-public class UserSummary {
+public class AppUserSummary {
 
     private Long id;
 
@@ -21,10 +21,10 @@ public class UserSummary {
 
     private Long teamId;
 
-    public UserSummary() {
+    public AppUserSummary() {
     }
 
-    public UserSummary(Long id, String username, String password, Long teamId) {
+    public AppUserSummary(Long id, String username, String password, Long teamId) {
         this.id = id;
         this.username = username;
         this.password = password;
