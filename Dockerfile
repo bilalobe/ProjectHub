@@ -1,9 +1,10 @@
 # Stage 1: Build the application
-FROM gradle:8.11-jdk23-alpine AS build
+FROM gradle:8.11-jdk23 AS build
 WORKDIR /app
+COPY gradlew gradlew
+COPY gradle/wrapper/ gradle/wrapper/
 COPY . .
 RUN ./gradlew build
-RUN ls -la /app/build/libs
 
 # Stage 2: Run the application
 FROM openjdk:23-jdk
