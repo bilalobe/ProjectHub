@@ -38,6 +38,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+    // Spring Data Commons for JacksonRepositoryPopulatorFactoryBean
+    implementation 'org.springframework.data:spring-data-commons'
+
     // PostgreSQL driver
     runtimeOnly 'org.postgresql:postgresql:42.7.4'
 
