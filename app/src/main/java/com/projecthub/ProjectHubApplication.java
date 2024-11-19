@@ -1,16 +1,30 @@
 package com.projecthub;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.Environment;
 
 @SpringBootApplication
+@ComponentScan(
+    basePackages = "com.projecthub",
+    excludeFilters = @ComponentScan.Filter(
+        type = FilterType.REGEX,
+        pattern = "com\\.projecthub\\.repository\\.(csv|jpa)\\..*"
+    )
+)
 public class ProjectHubApplication {
 
     private final Environment env;
 
     public ProjectHubApplication(Environment env) {
         this.env = env;
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(ProjectHubApplication.class, args);
     }
 
     @Bean
