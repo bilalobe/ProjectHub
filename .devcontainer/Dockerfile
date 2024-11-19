@@ -33,7 +33,7 @@ RUN addgroup -g $USER_GID $USERNAME \
 USER $USERNAME
 
 # Copy the built application from the build image
-COPY --from=build /app/build/libs/projecthub-0.1.0-SNAPSHOT.jar /app.jar
+COPY --from=build /app/build/libs/app-0.1.0-SNAPSHOT.jar /app.jar
 
 # Expose the application's port
 EXPOSE 8080
