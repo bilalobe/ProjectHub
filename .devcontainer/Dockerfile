@@ -21,6 +21,7 @@ FROM postgres:17-alpine
 
 # Install OpenJDK and necessary packages
 RUN apk update && apk add --no-cache \
+    apt-utils \
     openjdk23 \
     git \
     curl \

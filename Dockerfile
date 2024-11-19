@@ -1,47 +1,39 @@
 # Stage 1: Build the application
 FROM gradle:8.11-jdk23 AS build
+WORKDIR /app
+COPY gradlew gradlew
+COPY gradle/wrapper/ gradle/wrapper/
+COPY . .
+RUN ./gradlew build
 
-# Set working directory
+# Stage 2: Run the application
+FROM openjdk:23-jdk
 WORKDIR /app
 
-# Copy gradle files for caching
-COPY build.gradle settings.gradle ./
-COPY gradle/ gradle/
-COPY gradlew ./ 
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    apt-utils \
+    git \
+    curl \
+    sudo
 
-# Download dependencies
-RUN chmod +x ./gradlew && ./gradlew dependencies --no-daemon
-
-# Copy source code
-COPY . .
-
-# Build the application
-RUN ./gradlew build --no-daemon
-
-# Stage 2: Runtime
-FROM openjdk:23-jdk
-
-# Create non-root user
+# Create a non-root user
 ARG USERNAME=projecthub_devel
-ARG USER_UID=1001
+ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-RUN groupadd --gid $USER_GID $USERNAME && \
-    useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
+RUN groupadd --gid $USER_GID $USERNAME || echo "Group exists" \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
 
-# Set working directory
-WORKDIR /app
+# Set the non-root user and working directory
+USER $USERNAME
+WORKDIR /app 
 
 # Copy jar from build stage
-ARG JAR_FILE
-COPY --from=build /app/build/libs/${JAR_FILE} app.jar
-RUN chown ${USERNAME}:${USERNAME} /app/app.jar
+COPY --from=build /app/build/libs/app-0.1.0-SNAPSHOT.jar /app.jar
 
-# Use non-root user
-USER $USERNAME
-
-# Expose application port
+# Expose the application port and set the entry point
 EXPOSE 8080
-
-# Run application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
