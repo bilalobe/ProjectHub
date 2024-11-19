@@ -10,12 +10,12 @@ RUN ./gradlew build
 FROM openjdk:23-jdk
 WORKDIR /app
 
-# Install necessary packages
-RUN apt-get update && apt-get install -y \
-    apt-utils \
-    git \
-    curl \
-    sudo
+# # Install necessary packages
+# RUN apt-get update && apt-get install -y \
+#     apt-utils \
+#     git \
+#     curl \
+#     sudo
 
 # Create a non-root user
 ARG USERNAME=projecthub_devel
