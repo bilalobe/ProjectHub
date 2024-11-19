@@ -10,4 +10,5 @@ import com.projecthub.model.Team;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
     List<Team> findByClassId(Long classId);
+    public List<Team> findByCohortId(Long cohortId);
 }
