@@ -28,6 +28,13 @@ public class TeamService {
         this.userService = userService;
     }
 
+    /**
+     * Adds a user to a team.
+     *
+     * @param teamId the ID of the team
+     * @param userId the ID of the user
+     * @return the updated team
+     */
     @Operation(summary = "Add user to team")
     public Team addTeamMember(Long teamId, Long userId) {
         Optional<Team> teamOpt = teamRepository.findById(teamId);
@@ -46,18 +53,35 @@ public class TeamService {
         user.setTeam(team);
         team.getMembers().add(user);
         userService.saveUser(user);
-        return teamRepository.save(team);    }
+        return teamRepository.save(team);
+    }
 
+    /**
+     * Retrieves a list of all teams.
+     *
+     * @return a list of all teams
+     */
     @Operation(summary = "View a list of available teams")
     public List<Team> getAllTeams() {
         return teamRepository.findAll();
     }
 
+    /**
+     * Saves a team.
+     *
+     * @param team the team to save
+     * @return the saved team
+     */
     @Operation(summary = "Save a team")
     public Team saveTeam(Team team) {
         return teamRepository.save(team);
     }
 
+    /**
+     * Deletes a team by ID.
+     *
+     * @param id the ID of the team to delete
+     */
     @Operation(summary = "Delete a team by ID")
     public void deleteTeam(Long id) {
         teamRepository.deleteById(id);
@@ -75,8 +99,25 @@ public class TeamService {
                 .orElse("N/A");
     }
 
-    @Operation(summary = "Get teams by class ID")
-    public List<Team> getTeamsByCohortId(Long classId) {
-        return teamRepository.findByClassId(classId);
+    /**
+     * Retrieves teams by cohort ID.
+     *
+     * @param cohortId the ID of the cohort
+     * @return a list of teams in the cohort
+     */
+    @Operation(summary = "Get teams by cohort ID")
+    public List<Team> getTeamsByCohortId(Long cohortId) {
+        return teamRepository.findByCohortId(cohortId);
+    }
+
+    /**
+     * Retrieves a team by ID.
+     *
+     * @param id the ID of the team
+     * @return an Optional containing the team if found, or empty if not found
+     */
+    @Operation(summary = "Retrieve a team by ID")
+    public Optional<Team> getTeamById(Long id) {
+        return teamRepository.findById(id);
     }
 }

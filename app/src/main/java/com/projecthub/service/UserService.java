@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.projecthub.dto.UserSummary;
+import com.projecthub.dto.AppUserSummary;
 import com.projecthub.model.AppUser;
 import com.projecthub.repository.custom.CustomUserRepository;
 
@@ -75,10 +75,10 @@ public class UserService {
 
     @Operation(summary = "Get user summary")
     @PreAuthorize("hasRole('USER')")
-    public UserSummary getUserSummary(Long id) {
+    public AppUserSummary getUserSummary(Long id) {
         AppUser user = userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("User not found"));
-        return new UserSummary(
+        return new AppUserSummary(
             user.getId(),
             user.getUsername(),
             user.getPassword(),
@@ -88,10 +88,10 @@ public class UserService {
 
     @Operation(summary = "Get team members summary")
     @PreAuthorize("hasRole('USER')")
-    public List<UserSummary> getTeamMembersSummary(Long teamId) {
+    public List<AppUserSummary> getTeamMembersSummary(Long teamId) {
         return userRepository.findByTeamId(teamId)
             .stream()
-            .map(user -> new UserSummary(
+            .map(user -> new AppUserSummary(
                 user.getId(),
                 user.getUsername(), 
                 user.getPassword(),

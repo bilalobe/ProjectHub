@@ -49,9 +49,8 @@ public class ProjectService {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Successfully retrieved project"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Project not found")
     })
-    public Optional<ProjectSummary> getProjectById(Long id) {
-        Optional<Project> projectOpt = Optional.ofNullable(projectRepository.findProjectWithComponentsById(id));
-        return projectOpt.map(this::convertToDTO);
+    public Optional<Project> getProjectById(Long id) {
+        return projectRepository.findById(id);
     }
 
     @Operation(summary = "Find all projects for a team", responses = {
@@ -92,7 +91,7 @@ public class ProjectService {
         Project savedProject = projectRepository.save(project);
         return convertToDTO(savedProject);
     }
-
+    
     @Operation(summary = "Delete a project by ID", responses = {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Successfully deleted project"),
         @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Project not found")
