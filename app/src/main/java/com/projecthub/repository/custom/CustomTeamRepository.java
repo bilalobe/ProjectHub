@@ -11,4 +11,5 @@ public interface CustomTeamRepository {
     void deleteById(Long teamId);
     Optional<Team> findById(Long id);
     Optional<Team> findTeamById(Object teamId);
+    List<Team> findByCohortId(Long cohortId);
 }

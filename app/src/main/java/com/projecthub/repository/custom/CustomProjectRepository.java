@@ -1,6 +1,7 @@
 package com.projecthub.repository.custom;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.projecthub.model.Project;
 
@@ -10,4 +11,5 @@ public interface CustomProjectRepository {
     Project findProjectWithComponentsById(Long projectId);
     <S extends Project> S save(S project);
     void deleteById(Long projectId);
+    Optional<Project> findById(Long id);
 }
