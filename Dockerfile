@@ -10,12 +10,8 @@ RUN ./gradlew build
 FROM openjdk:23-jdk
 WORKDIR /app
 
-# # Install necessary packages
-# RUN apt-get update && apt-get install -y \
-#     apt-utils \
-#     git \
-#     curl \
-#     sudo
+# Create the sudoers.d directory if it does not exist
+RUN mkdir -p /etc/sudoers.d
 
 # Create a non-root user
 ARG USERNAME=projecthub_devel
