@@ -3,4 +3,4 @@ updates:
   - package-ecosystem: "maven"
     directory: "/" # Update this if your pom.xml is in a subdirectory
     schedule:
-      interval: "weekly"
+      interval: "daily"
