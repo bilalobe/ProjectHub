@@ -17,24 +17,45 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class Task {
 
+    /**
+     * The unique identifier for the task.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The name of the task.
+     */
     private String name;
 
+    /**
+     * The description of the task.
+     */
     private String description;
 
+    /**
+     * The status of the task.
+     */
     private String status;
 
+    /**
+     * The due date of the task.
+     */
     private LocalDate dueDate;
 
+    /**
+     * The user assigned to this task.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_user_id")
     private AppUser assignedUser;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
+    /**
+     * The project to which this task belongs.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
     // Default constructor required by JPA

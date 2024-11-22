@@ -18,21 +18,39 @@ import jakarta.persistence.OneToMany;
 @Entity
 public class Project {
 
+    /**
+     * The unique identifier for the project.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The name of the project.
+     */
     private String name;
 
+    /**
+     * The description of the project.
+     */
     private String description;
 
+    /**
+     * The deadline for the project.
+     */
     private String deadline;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
+    /**
+     * The team to which this project belongs.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    /**
+     * The list of tasks associated with this project.
+     */
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks;
 
     // Default constructor required by JPA

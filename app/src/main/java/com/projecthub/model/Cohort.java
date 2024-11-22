@@ -19,21 +19,29 @@ import jakarta.persistence.OneToMany;
 @Entity
 public class Cohort {
 
+    /**
+     * The unique identifier for the cohort.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The name of the cohort.
+     */
     private String name;
 
-    // Many-to-One relationship with School
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "school_id")
+    /**
+     * The school to which this cohort belongs.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "school_id", nullable = false)
     private School school;
 
     /**
      * The list of teams in the cohort.
      */
-    @OneToMany(mappedBy = "cohort", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cohort", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Team> teams;
 
     public Cohort() {}

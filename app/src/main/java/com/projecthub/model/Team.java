@@ -19,32 +19,42 @@ import jakarta.persistence.OneToMany;
 @Entity
 public class Team {
 
+    /**
+     * The unique identifier for the team.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The name of the team.
+     */
     private String name;
 
     /**
      * The cohort to which the team belongs.
      */
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "cohort_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "cohort_id", nullable = false)
     private Cohort cohort;
 
-    // Many-to-One relationship with School
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "school_id")
+    /**
+     * The school to which the team belongs.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "school_id", nullable = false)
     private School school;
 
-    // One-to-Many relationship with Project
-    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    /**
+     * The list of projects associated with the team.
+     */
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Project> projects;
 
     /**
      * The list of users in the team.
      */
-    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AppUser> members;
 
     // Default constructor required by JPA

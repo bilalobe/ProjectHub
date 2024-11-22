@@ -9,31 +9,37 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 /**
- * Represents a component within a project.
- * Components are modular parts of a project.
+ * Represents a component in a project.
  */
 @Entity
 public class Component {
 
+    /**
+     * The unique identifier for the component.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The name of the component.
+     */
     private String name;
+
+    /**
+     * The description of the component.
+     */
     private String description;
 
     /**
-     * The project that the component belongs to.
+     * The project to which this component belongs.
      */
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "project_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    // Default constructor required by JPA
-    public Component() {
-    }
+    public Component() {}
 
-    // Constructor with all fields
     public Component(Long id, String name, String description, Project project) {
         this.id = id;
         this.name = name;
@@ -41,14 +47,12 @@ public class Component {
         this.project = project;
     }
 
-    // Constructor without id (for new Components)
     public Component(String name, String description, Project project) {
         this.name = name;
         this.description = description;
         this.project = project;
     }
 
-    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -81,7 +85,6 @@ public class Component {
         this.project = project;
     }
 
-    // Override toString method
     @Override
     public String toString() {
         return "Component{id=" + id + ", name='" + name + "', description='" + description + "', project=" + project + "}";

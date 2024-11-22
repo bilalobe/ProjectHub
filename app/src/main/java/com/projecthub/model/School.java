@@ -1,7 +1,14 @@
 package com.projecthub.model;
 
-import jakarta.persistence.*;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 /**
  * Represents a school in the system.
@@ -10,20 +17,28 @@ import java.util.List;
 @Entity
 public class School {
 
+    /**
+     * The unique identifier for the school.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The name of the school.
+     */
     private String name;
 
-    // One-to-Many relationship with Team
-    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    /**
+     * The list of teams in the school.
+     */
+    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Team> teams;
 
     /**
      * The list of cohorts in the school.
      */
-    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cohort> cohorts;
 
     // Default constructor required by JPA

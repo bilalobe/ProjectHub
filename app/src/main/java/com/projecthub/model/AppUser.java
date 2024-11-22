@@ -18,15 +18,24 @@ import jakarta.validation.constraints.Size;
 @Entity
 public class AppUser {
 
+    /**
+     * The unique identifier for the user.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The username of the user.
+     */
     @NotBlank(message = "Username is mandatory")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     @Column(unique = true)
     private String username;
 
+    /**
+     * The password of the user.
+     */
     @NotBlank(message = "Password is mandatory")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
@@ -34,8 +43,8 @@ public class AppUser {
     /**
      * The team that the user belongs to.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     // Default constructor required by JPA

@@ -34,14 +34,14 @@ public class Student {
     /**
      * The list of submissions made by the student.
      */
-    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Submission> submissions;
 
     /**
      * The team that the student belongs to.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     /**
