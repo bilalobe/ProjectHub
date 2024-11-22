@@ -19,6 +19,10 @@ import com.projecthub.model.Project;
 import com.projecthub.model.Student;
 import com.projecthub.model.Submission;
 import com.projecthub.model.Team;
+import com.projecthub.dto.ProjectSummary;
+import com.projecthub.dto.SchoolSummary;
+import com.projecthub.dto.StudentSummary;
+import com.projecthub.dto.TeamSummary;
 import com.projecthub.model.AppUser;
 import com.projecthub.service.ProjectService;
 import com.projecthub.service.StudentService;
@@ -57,14 +61,19 @@ public class CSVHandler {
                     .parse();
 
             for (Submission csvSubmission : csvSubmissions) {
-                Project project = projectService.getProjectById(csvSubmission.getProject().getId()).orElse(null);
-                Student student = studentService.getStudentById(csvSubmission.getStudent().getId()).orElse(null);
+                Project project = projectService.getProjectById(csvSubmission.getProject().getId())
+                        .map(ProjectSummary::toProject)
+                        .orElse(null);
+                StudentSummary studentSummary = studentService.getStudentSummaryById(csvSubmission.getStudent().getId());
+                Student student = Optional.ofNullable(studentSummary)
+                        .map(StudentSummary::toStudent)
+                        .orElse(null);
                 Submission submission = new Submission(
                     csvSubmission.getId(),
                     student, // Pass the Student object
                     project, // Pass the Project object
                     csvSubmission.getContent(),
-                    csvSubmission.getGrade()
+                    filePath, csvSubmission.getGrade()
                 );
                 submissions.add(submission);
             }
@@ -110,7 +119,9 @@ public class CSVHandler {
                 project.setName(csvProject.getName());
                 project.setDescription(csvProject.getDescription());
                 // Set team based on ID
-                project.setTeam(teamService.getTeamById(csvProject.getTeam().getId()).orElse(null));
+                project.setTeam(teamService.getTeamById(csvProject.getTeam().getId())
+                        .map(TeamSummary::toTeam)
+                        .orElse(null));
                 projects.add(project);
             }
         } catch (IOException e) {
@@ -196,7 +207,9 @@ public class CSVHandler {
                 team.setId(csvTeam.getId());
                 team.setName(csvTeam.getName());
                 // Set school based on ID
-                team.setSchool(schoolService.getSchoolById(csvTeam.getSchool().getId()).orElse(null));
+                team.setSchool(schoolService.getSchoolById(csvTeam.getSchool().getId())
+                        .map(SchoolSummary::toSchool)
+                        .orElse(null));
                 teams.add(team);
             }
         } catch (IOException e) {
@@ -241,7 +254,9 @@ public class CSVHandler {
                 user.setUsername(csvUser.getUsername());
                 user.setPassword(csvUser.getPassword());
                 // Set team based on ID
-                user.setTeam(Optional.ofNullable(teamService.getTeamById(csvUser.getTeam().getId()).orElse(null)).orElse(null));
+                user.setTeam(teamService.getTeamById(csvUser.getTeam().getId())
+                        .map(TeamSummary::toTeam)
+                        .orElse(null));
                 users.add(user);
             }
         } catch (IOException e) {
