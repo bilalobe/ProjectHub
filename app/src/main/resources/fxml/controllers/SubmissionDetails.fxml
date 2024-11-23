@@ -31,6 +31,5 @@
     <Label text="Content:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
     <TextArea fx:id="contentArea" prefRowCount="10" editable="false" />
 
-    <Button text="Save Grade" onAction="#handleSaveGrade" />
-
+    <Button fx:id="saveGradeButton" text="Save Grade" onAction="#handleSaveGrade" />
 </VBox>
