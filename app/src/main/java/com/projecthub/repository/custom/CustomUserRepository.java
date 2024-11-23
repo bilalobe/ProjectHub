@@ -12,4 +12,6 @@ public interface CustomUserRepository {
     Optional<AppUser> findById(Long id);
     List<AppUser> findByTeamId(Long teamId);
     Optional<AppUser> findByUsername(String username);
+
+    public boolean existsById(Long userId);
 }

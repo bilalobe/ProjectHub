@@ -1,8 +1,11 @@
 package com.projecthub.repository.custom;
 
 import com.projecthub.model.School;
+
 import java.util.List;
 import java.util.Optional;
+
+import com.projecthub.dto.SchoolSummary;
 
 public interface CustomSchoolRepository {
 
@@ -13,4 +16,6 @@ public interface CustomSchoolRepository {
     Optional<School> findById(Long id);
 
     void deleteById(Long id);
+
+    public void save(SchoolSummary schoolSummary);
 }

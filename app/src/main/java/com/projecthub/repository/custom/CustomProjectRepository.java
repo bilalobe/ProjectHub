@@ -3,13 +3,15 @@ package com.projecthub.repository.custom;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.projecthub.dto.ProjectSummary;
 import com.projecthub.model.Project;
 
-public interface CustomProjectRepository {
-    List<Project> findAll();
+@Repository
+public interface CustomProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findAllByTeamId(Long teamId);
-    Project findProjectWithComponentsById(Long projectId);
-    <S extends Project> S save(S project);
-    void deleteById(Long projectId);
-    Optional<Project> findById(Long id);
+    Optional<Project> findProjectWithComponentsById(Long projectId);
+    public Project save(ProjectSummary projectSummary);
 }
