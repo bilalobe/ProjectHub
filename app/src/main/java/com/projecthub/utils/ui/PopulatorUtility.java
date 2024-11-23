@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.projecthub.model.Cohort;
-import com.projecthub.model.School;
-import com.projecthub.model.Team;
+import com.projecthub.dto.CohortSummary;
+import com.projecthub.dto.SchoolSummary;
+import com.projecthub.dto.TeamSummary;
 import com.projecthub.service.CohortService;
 import com.projecthub.service.ComponentService;
 import com.projecthub.service.ProjectService;
@@ -43,8 +43,8 @@ public class PopulatorUtility {
      * @param parentItem the root TreeItem to which Schools are added
      */
     public void populateSchools(TreeItem<String> parentItem) {
-        List<School> schools = schoolService.getAllSchools();
-        for (School school : schools) {
+        List<SchoolSummary> schools = schoolService.getAllSchools();
+        for (SchoolSummary school : schools) {
             TreeItem<String> schoolItem = new TreeItem<>(school.getName());
             schoolItem.setExpanded(false);
             parentItem.getChildren().add(schoolItem);
@@ -59,8 +59,8 @@ public class PopulatorUtility {
      * @param schoolId   the ID of the School
      */
     public void populateCohorts(TreeItem<String> parentItem, Long schoolId) {
-        List<Cohort> cohorts = cohortService.getCohortsBySchoolId(schoolId);
-        for (Cohort cohort : cohorts) {
+        List<CohortSummary> cohorts = cohortService.getCohortsBySchoolId(schoolId);
+        for (CohortSummary cohort : cohorts) {
             TreeItem<String> cohortItem = new TreeItem<>(cohort.getName());
             cohortItem.setExpanded(false);
             parentItem.getChildren().add(cohortItem);
@@ -75,8 +75,8 @@ public class PopulatorUtility {
      * @param cohortId   the ID of the Cohort
      */
     public void populateTeams(TreeItem<String> parentItem, Long cohortId) {
-        List<Team> teams = teamService.getTeamsByCohortId(cohortId);
-        for (Team team : teams) {
+        List<TeamSummary> teams = teamService.getTeamsByCohortId(cohortId);
+        for (TeamSummary team : teams) {
             TreeItem<String> teamItem = new TreeItem<>(team.getName());
             teamItem.setExpanded(false);
             parentItem.getChildren().add(teamItem);
