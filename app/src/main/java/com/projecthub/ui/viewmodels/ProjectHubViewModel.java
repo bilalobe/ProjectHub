@@ -1,21 +1,24 @@
 package com.projecthub.ui.viewmodels;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.projecthub.dto.CohortSummary;
+import com.projecthub.dto.ComponentSummary;
+import com.projecthub.dto.SchoolSummary;
+import com.projecthub.dto.TeamSummary;
+import com.projecthub.service.CohortService;
+import com.projecthub.service.ComponentService;
+import com.projecthub.service.SchoolService;
+import com.projecthub.service.TeamService;
+import com.projecthub.utils.ui.TreeItemWrapper;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.projecthub.model.School;
-import com.projecthub.service.SchoolService;
-import com.projecthub.service.CohortService;
-import com.projecthub.service.TeamService;
-import com.projecthub.service.ComponentService;
-import com.projecthub.dto.ComponentSummary;
-import com.projecthub.utils.ui.TreeItemWrapper;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Component
 public class ProjectHubViewModel {
@@ -49,8 +52,8 @@ public class ProjectHubViewModel {
     }
 
     private void loadTreeItems() {
-        List<School> schools = schoolService.getAllSchools();
-        for (School school : schools) {
+        List<SchoolSummary> schools = schoolService.getAllSchools();
+        for (SchoolSummary school : schools) {
             TreeItemWrapper schoolWrapper = new TreeItemWrapper(school.getName(), school);
             treeItems.add(schoolWrapper);
         }
@@ -70,7 +73,7 @@ public class ProjectHubViewModel {
      * @param id the ID of the school
      * @return a list of Class objects associated with the school
      */
-    public List<com.projecthub.model.Cohort> getClassesBySchoolId(Long id) {
+    public List<CohortSummary> getClassesBySchoolId(Long id) {
         return classService.getCohortsBySchoolId(id);
     }
 
@@ -91,7 +94,7 @@ public class ProjectHubViewModel {
      * @return a list of ComponentSummary objects
      */
     public List<ComponentSummary> getComponentsByProjectId(Long projectId) {
-        List<com.projecthub.model.Component> components = componentService.getComponentsByProjectId(projectId);
+        List<ComponentSummary> components = componentService.getComponentsByProjectId(projectId);
         return components.stream()
                 .map(c -> new ComponentSummary(projectId, c.getName(), c.getDescription(), projectId))
                 .collect(Collectors.toList());
@@ -104,6 +107,7 @@ public class ProjectHubViewModel {
      * @return the name of the team, or "N/A" if not found
      */
     public String getTeamNameById(Long teamId) {
-        return teamService.getTeamNameById(teamId);
+        TeamSummary team = teamService.getTeamById(teamId);
+        return team != null ? team.getName() : "N/A";
     }
 }
