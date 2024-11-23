@@ -30,6 +30,11 @@ public class School {
     private String name;
 
     /**
+     * The address of the school.
+     */
+    private String address;
+
+    /**
      * The list of teams in the school.
      */
     @OneToMany(mappedBy = "school", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -46,15 +51,17 @@ public class School {
     }
 
     // Constructor with all fields
-    public School(Long id, String name, List<Team> teams) {
+    public School(Long id, String name, String address, List<Team> teams) {
         this.id = id;
         this.name = name;
+        this.address = address;
         this.teams = teams;
     }
 
     // Constructor without id (for new Schools)
-    public School(String name) {
+    public School(String name, String address) {
         this.name = name;
+        this.address = address;
     }
 
     // Getters and setters
@@ -64,6 +71,10 @@ public class School {
 
     public String getName() {
         return name;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public List<Team> getTeams() {
@@ -82,6 +93,10 @@ public class School {
         this.name = name;
     }
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public void setTeams(List<Team> teams) {
         this.teams = teams;
     }
@@ -93,6 +108,6 @@ public class School {
     // Override toString method
     @Override
     public String toString() {
-        return "School{id=" + id + ", name='" + name + "'}";
+        return "School{id=" + id + ", name='" + name + "', address='" + address + "'}";
     }
 }
