@@ -1,14 +1,20 @@
 package com.projecthub.service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.projecthub.dto.TeamSummary;
+import com.projecthub.exception.ResourceNotFoundException;
+import com.projecthub.mapper.TeamMapper;
 import com.projecthub.model.Team;
 import com.projecthub.model.AppUser;
-import com.projecthub.repository.jpa.TeamRepository;
+import com.projecthub.repository.custom.CustomTeamRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,13 +23,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Team Service", description = "Operations pertaining to teams in ProjectHub")
 public class TeamService {
 
-    private final TeamRepository teamRepository;
+    private static final Logger logger = LoggerFactory.getLogger(TeamService.class);
+
+    private final CustomTeamRepository teamRepository;
     private final UserService userService;
 
     @Autowired
-    public TeamService(
-            TeamRepository teamRepository,
-            UserService userService) {
+    public TeamService(CustomTeamRepository teamRepository, UserService userService) {
         this.teamRepository = teamRepository;
         this.userService = userService;
     }
@@ -33,91 +39,86 @@ public class TeamService {
      *
      * @param teamId the ID of the team
      * @param userId the ID of the user
-     * @return the updated team
+     * @return the updated TeamSummary
+     * @throws ResourceNotFoundException if the team or user is not found
+     * @throws IllegalArgumentException if teamId or userId is null
      */
-    @Operation(summary = "Add user to team")
-    public Team addTeamMember(Long teamId, Long userId) {
-        Optional<Team> teamOpt = teamRepository.findById(teamId);
-        if (!teamOpt.isPresent()) {
-            throw new RuntimeException("Team not found with id: " + teamId);
+    @Operation(summary = "Add a user to a team")
+    @Transactional
+    public TeamSummary addUserToTeam(Long teamId, Long userId) throws ResourceNotFoundException {
+        logger.info("Adding user {} to team {}", userId, teamId);
+    
+        if (teamId == null || userId == null) {
+            throw new IllegalArgumentException("Team ID and User ID cannot be null");
         }
-
-        Optional<AppUser> userOpt = userService.findById(userId);
-        if (!userOpt.isPresent()) {
-            throw new RuntimeException("User not found with id: " + userId);
-        }
-
-        Team team = teamOpt.get();
-        AppUser user = userOpt.get();
-
-        user.setTeam(team);
+    
+        // Retrieve the team and user entities
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + teamId));
+    
+        AppUser user = userService.getAppUserById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+    
+        // Add user to team
         team.getMembers().add(user);
-        userService.saveUser(user);
-        return teamRepository.save(team);
+        teamRepository.save(team);
+    
+        logger.info("User {} added to team {}", userId, teamId);
+        return TeamMapper.toTeamSummary(team);
     }
 
     /**
-     * Retrieves a list of all teams.
+     * Retrieves all teams.
      *
-     * @return a list of all teams
+     * @return list of TeamSummary
      */
-    @Operation(summary = "View a list of available teams")
-    public List<Team> getAllTeams() {
-        return teamRepository.findAll();
-    }
-
-    /**
-     * Saves a team.
-     *
-     * @param team the team to save
-     * @return the saved team
-     */
-    @Operation(summary = "Save a team")
-    public Team saveTeam(Team team) {
-        return teamRepository.save(team);
-    }
-
-    /**
-     * Deletes a team by ID.
-     *
-     * @param id the ID of the team to delete
-     */
-    @Operation(summary = "Delete a team by ID")
-    public void deleteTeam(Long id) {
-        teamRepository.deleteById(id);
-    }
-
-    /**
-     * Retrieves the name of the team based on the provided team ID.
-     *
-     * @param teamId the ID of the team
-     * @return the name of the team, or "N/A" if not found
-     */
-    public String getTeamNameById(Long teamId) {
-        return teamRepository.findById(teamId)
-                .map(Team::getName)
-                .orElse("N/A");
-    }
-
-    /**
-     * Retrieves teams by cohort ID.
-     *
-     * @param cohortId the ID of the cohort
-     * @return a list of teams in the cohort
-     */
-    @Operation(summary = "Get teams by cohort ID")
-    public List<Team> getTeamsByCohortId(Long cohortId) {
-        return teamRepository.findByCohortId(cohortId);
+    @Operation(summary = "Get all teams")
+    public List<TeamSummary> getAllTeams() {
+        logger.info("Retrieving all teams");
+        return teamRepository.findAll().stream()
+                .map(TeamSummary::new)
+                .collect(Collectors.toList());
     }
 
     /**
      * Retrieves a team by ID.
      *
      * @param id the ID of the team
-     * @return an Optional containing the team if found, or empty if not found
+     * @return TeamSummary
+     * @throws ResourceNotFoundException if the team is not found
      */
-    @Operation(summary = "Retrieve a team by ID")
-    public Optional<Team> getTeamById(Long id) {
-        return teamRepository.findById(id);
+    @Operation(summary = "Get team by ID")
+    public TeamSummary getTeamById(Long id) throws ResourceNotFoundException {
+        logger.info("Retrieving team with ID {}", id);
+
+        if (id == null) {
+            throw new IllegalArgumentException("Team ID cannot be null");
+        }
+
+        return teamRepository.findById(id)
+                .map(TeamSummary::new)
+                .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + id));
+    }
+
+    @Operation(summary = "Create a new team")
+    public TeamSummary createTeam(TeamSummary teamSummary) {
+        // Map TeamSummary to Team entity
+        Team teamEntity = TeamMapper.toTeam(teamSummary, null, null); // Adjust as needed
+        Team savedTeam = teamRepository.save(teamEntity);
+        return TeamMapper.toTeamSummary(savedTeam);
+    }
+
+    @Operation(summary = "Delete a team by ID")
+    public void deleteTeam(Long id) throws ResourceNotFoundException {
+        if (!teamRepository.findById(id).isPresent()) {
+            throw new ResourceNotFoundException("Team not found with ID: " + id);
+        }
+        teamRepository.deleteById(id);
+    }
+
+    public List<TeamSummary> getTeamsByCohortId(Long cohortId) {
+        return teamRepository.findByCohortId(cohortId).stream()
+                .map(TeamSummary::new)
+                .collect(Collectors.toList());
     }
 }
