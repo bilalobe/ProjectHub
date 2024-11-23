@@ -62,11 +62,8 @@ public class Team {
     }
 
     // Constructor with all fields
-    public Team(Long id, String name, School school, List<Project> projects) {
+    public Team(Long id) {
         this.id = id;
-        this.name = name;
-        this.school = school;
-        this.projects = projects;
     }
 
     // Constructor without id (for new Teams)

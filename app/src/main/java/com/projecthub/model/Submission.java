@@ -51,7 +51,7 @@ public class Submission {
     private Project project;
 
     // Default constructor required by JPA
-    public Submission() {
+    public Submission(Long long1, Student student2, Long long2, Integer integer) {
     }
 
     // Constructor with all fields (excluding redundant IDs)
