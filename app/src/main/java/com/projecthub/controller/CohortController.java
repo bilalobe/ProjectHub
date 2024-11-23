@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.projecthub.model.Cohort;
+import com.projecthub.dto.CohortSummary;
 import com.projecthub.service.CohortService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,11 +34,11 @@ public class CohortController {
     /**
      * Retrieves all Cohorts.
      *
-     * @return a list of all Cohorts
+     * @return a list of all CohortSummary objects
      */
     @Operation(summary = "Get all Cohorts")
     @GetMapping
-    public List<Cohort> getAllCohorts() {
+    public List<CohortSummary> getAllCohorts() {
         return cohortService.getAllCohorts();
     }
 
@@ -46,11 +46,11 @@ public class CohortController {
      * Retrieves all Cohorts associated with a specific School.
      *
      * @param schoolId the ID of the School
-     * @return a list of Cohorts
+     * @return a list of CohortSummary objects
      */
     @Operation(summary = "Get Cohorts by School ID")
     @GetMapping("/school/{schoolId}")
-    public List<Cohort> getCohortsBySchoolId(@PathVariable Long schoolId) {
+    public List<CohortSummary> getCohortsBySchoolId(@PathVariable Long schoolId) {
         return cohortService.getCohortsBySchoolId(schoolId);
     }
 
@@ -58,11 +58,11 @@ public class CohortController {
      * Retrieves a Cohort by its ID.
      *
      * @param id the ID of the Cohort
-     * @return the Cohort
+     * @return the CohortSummary
      */
     @Operation(summary = "Get Cohort by ID")
     @GetMapping("/{id}")
-    public Cohort getCohortById(@PathVariable Long id) {
+    public CohortSummary getCohortById(@PathVariable Long id) {
         return cohortService.getCohortById(id)
                 .orElseThrow(() -> new RuntimeException("Cohort not found"));
     }
@@ -70,27 +70,27 @@ public class CohortController {
     /**
      * Creates a new Cohort.
      *
-     * @param cohort the Cohort to create
-     * @return the created Cohort
+     * @param cohortSummary the CohortSummary to create
+     * @return the created CohortSummary
      */
     @Operation(summary = "Create a new Cohort")
     @PostMapping
-    public Cohort createCohort(@RequestBody Cohort cohort) {
-        return cohortService.saveCohort(cohort);
+    public CohortSummary createCohort(@RequestBody CohortSummary cohortSummary) {
+        return cohortService.saveCohort(cohortSummary);
     }
 
     /**
      * Updates an existing Cohort.
      *
      * @param id     the ID of the Cohort to update
-     * @param cohort the updated Cohort details
-     * @return the updated Cohort
+     * @param cohortSummary the updated CohortSummary details
+     * @return the updated CohortSummary
      */
     @Operation(summary = "Update an existing Cohort")
     @PutMapping("/{id}")
-    public Cohort updateCohort(@PathVariable Long id, @RequestBody Cohort cohort) {
-        cohort.setId(id);
-        return cohortService.saveCohort(cohort);
+    public CohortSummary updateCohort(@PathVariable Long id, @RequestBody CohortSummary cohortSummary) {
+        cohortSummary.setId(id);
+        return cohortService.saveCohort(cohortSummary);
     }
 
     /**

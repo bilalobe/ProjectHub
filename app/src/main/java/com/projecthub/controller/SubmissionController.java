@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projecthub.dto.SubmissionSummary;
-import com.projecthub.model.Submission;
 import com.projecthub.service.SubmissionService;
 
 import jakarta.validation.Valid;
@@ -28,13 +27,13 @@ public class SubmissionController {
     @GetMapping
     public List<SubmissionSummary> getAllSubmissions() {
         return submissionService.getAllSubmissions().stream()
-                .map(SubmissionSummary::new)
+                .map(submission -> new SubmissionSummary())
                 .collect(Collectors.toList());
     }
 
     @PostMapping
-    public String createSubmission(@Valid @RequestBody Submission submission) {
-        submissionService.saveSubmission(submission);
+    public String createSubmission(@Valid @RequestBody SubmissionSummary submissionSummary) {
+        submissionService.saveSubmission(submissionSummary);
         return "Submission created successfully";
     }
 

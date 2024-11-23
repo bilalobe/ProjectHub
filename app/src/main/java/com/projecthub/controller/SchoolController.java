@@ -1,7 +1,6 @@
 package com.projecthub.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.projecthub.model.School;
+import com.projecthub.dto.SchoolSummary;
 import com.projecthub.service.SchoolService;
 
 @RestController
@@ -28,25 +27,25 @@ public class SchoolController {
     }
 
     @GetMapping
-    public List<School> getAllSchools() {
+    public List<SchoolSummary> getAllSchools() {
         return schoolService.getAllSchools();
     }
 
     @GetMapping("/{id}")
-    public Optional<School> getSchoolById(@PathVariable Long id) {
-        return Optional.of(schoolService.getSchoolById(id)
-                .orElseThrow(() -> new RuntimeException("School not found")));
+    public SchoolSummary getSchoolById(@PathVariable Long id) {
+        return schoolService.getSchoolById(id)
+                .orElseThrow(() -> new RuntimeException("School not found"));
     }
 
     @PostMapping
-    public School createSchool(@RequestBody School school) {
-        return schoolService.saveSchool(school);
+    public SchoolSummary createSchool(@RequestBody SchoolSummary schoolSummary) {
+        return schoolService.saveSchool(schoolSummary);
     }
 
     @PutMapping("/{id}")
-    public School updateSchool(@PathVariable Long id, @RequestBody School school) {
-        school.setId(id);
-        return schoolService.saveSchool(school);
+    public SchoolSummary updateSchool(@PathVariable Long id, @RequestBody SchoolSummary schoolSummary) {
+        schoolSummary.setId(id);
+        return schoolService.saveSchool(schoolSummary);
     }
 
     @DeleteMapping("/{id}")

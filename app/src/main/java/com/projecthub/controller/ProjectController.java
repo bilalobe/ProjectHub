@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projecthub.dto.ProjectSummary;
-import com.projecthub.model.Project;
+import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.service.ProjectService;
 
 import jakarta.validation.Valid;
@@ -28,24 +29,27 @@ public class ProjectController {
     @GetMapping
     public List<ProjectSummary> getAllProjects() {
         return projectService.getAllProjects().stream()
-                .map(project -> new ProjectSummary(
-                    project.getId(),
-                    project.getName(),
-                    project.getDescription(),
-                    project.getTeamId() != null ? project.getTeamId() : null
-                ))
+                .map(ProjectSummary::new)
                 .collect(Collectors.toList());
     }
 
     @PostMapping
-    public String createProject(@Valid @RequestBody Project project) {
-        projectService.saveProject(project);
-        return "Project created successfully";
+    public ResponseEntity<String> createProject(@Valid @RequestBody ProjectSummary projectSummary) {
+        try {
+            projectService.saveProject(projectSummary);
+            return ResponseEntity.ok("Project created successfully");
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(404).body("Error: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
-    public String deleteProject(@PathVariable Long id) {
-        projectService.deleteProject(id);
-        return "Project deleted successfully";
+    public ResponseEntity<String> deleteProject(@PathVariable Long id) {
+        try {
+            projectService.deleteProject(id);
+            return ResponseEntity.ok("Project deleted successfully");
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(404).body("Error: " + e.getMessage());
+        }
     }
 }

@@ -6,46 +6,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.projecthub.dto.StudentSummary;
-import com.projecthub.model.Student;
 import com.projecthub.service.StudentService;
 
+import jakarta.validation.Valid;
+
 @RestController
-@RequestMapping("/api/students")
+@RequestMapping("/students")
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
 
     /**
-     * Retrieves a list of all students.
-     *
-     * @return a list of all students
-     */
-    @GetMapping
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
-    }
-
-    /**
      * Retrieves a list of all student summaries.
      *
      * @return a list of all student summaries
      */
-    @GetMapping("/summaries")
-    public List<StudentSummary> getAllStudentSummaries() {
+    @GetMapping
+    public List<StudentSummary> getAllStudents() {
         return studentService.getAllStudentSummaries();
-    }
-
-    /**
-     * Retrieves a student by ID.
-     *
-     * @param id the ID of the student to retrieve
-     * @return a Student object
-     */
-    @GetMapping("/{id}")
-    public Student getStudentById(@PathVariable Long id) {
-        return studentService.getStudentById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found with id " + id));
     }
 
     /**
@@ -54,20 +33,21 @@ public class StudentController {
      * @param id the ID of the student to retrieve
      * @return a StudentSummary object
      */
-    @GetMapping("/summaries/{id}")
-    public StudentSummary getStudentSummaryById(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public StudentSummary getStudentById(@PathVariable Long id) {
         return studentService.getStudentSummaryById(id);
     }
 
     /**
      * Saves a student.
      *
-     * @param student the student to save
-     * @return the saved student
+     * @param studentSummary the student summary to save
+     * @return a message indicating the result
      */
     @PostMapping
-    public Student saveStudent(@RequestBody Student student) {
-        return studentService.saveStudent(student);
+    public String createStudent(@Valid @RequestBody StudentSummary studentSummary) {
+        studentService.saveStudent(studentSummary);
+        return "Student created successfully";
     }
 
     /**
