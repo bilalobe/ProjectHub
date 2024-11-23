@@ -3,9 +3,15 @@ package com.projecthub.repository.csv;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
@@ -21,11 +27,42 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.projecthub.model.Project;
 import com.projecthub.repository.custom.CustomProjectRepository;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+
 @Repository("csvProjectRepository")
 public abstract class CSVProjectRepository implements CustomProjectRepository {
 
+    private static final Logger logger = LoggerFactory.getLogger(CSVProjectRepository.class);
+    private final Validator validator;
+
     @Value("${app.projects.filepath}")
     private String projectsFilePath;
+
+    public CSVProjectRepository() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        this.validator = factory.getValidator();
+    }
+
+    private void backupCSVFile(String filePath) throws IOException {
+        Path source = Path.of(filePath);
+        Path backup = Path.of(filePath + ".backup");
+        Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
+        logger.info("Backup created for file: {}", filePath);
+    }
+
+    private void validateProject(Project project) {
+        Set<ConstraintViolation<Project>> violations = validator.validate(project);
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<Project> violation : violations) {
+                sb.append(violation.getMessage()).append("\n");
+            }
+            throw new IllegalArgumentException("Project validation failed: " + sb.toString());
+        }
+    }
 
     @Override
     public @NonNull List<Project> findAll() {
@@ -60,7 +97,9 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
 
     @Override
     public @NonNull <S extends Project> S save(S project) {
+        validateProject(project);
         try {
+            backupCSVFile(projectsFilePath);
             List<Project> projects = findAll();
             projects.removeIf(p -> p.getId().equals(project.getId()));
             projects.add(project);
@@ -78,8 +117,10 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
                 beanToCsv.write(projects);
             }
 
+            logger.info("Project saved successfully: {}", project);
             return project;
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            logger.error("Error saving project to CSV", e);
             throw new RuntimeException("Error saving project to CSV", e);
         }
     }
@@ -87,6 +128,7 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
     @Override
     public void deleteById(@NonNull Long projectId) {
         try {
+            backupCSVFile(projectsFilePath);
             List<Project> projects = findAll();
             projects.removeIf(p -> p.getId().equals(projectId));
 
@@ -102,7 +144,10 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
 
                 beanToCsv.write(projects);
             }
+
+            logger.info("Project deleted successfully: {}", projectId);
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            logger.error("Error deleting project from CSV", e);
             throw new RuntimeException("Error deleting project from CSV", e);
         }
     }

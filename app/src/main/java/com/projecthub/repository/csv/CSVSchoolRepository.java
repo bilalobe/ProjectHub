@@ -3,10 +3,21 @@ package com.projecthub.repository.csv;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
@@ -22,12 +33,40 @@ import com.projecthub.repository.custom.CustomSchoolRepository;
 @Repository("csvSchoolRepository")
 public abstract class CSVSchoolRepository implements CustomSchoolRepository {
 
+    private static final Logger logger = LoggerFactory.getLogger(CSVSchoolRepository.class);
+    private final Validator validator;
+
     @Value("${app.schools.filepath}")
     private String schoolsFilePath;
 
+    public CSVSchoolRepository() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        this.validator = factory.getValidator();
+    }
+
+    private void backupCSVFile(String filePath) throws IOException {
+        Path source = Path.of(filePath);
+        Path backup = Path.of(filePath + ".backup");
+        Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
+        logger.info("Backup created for file: {}", filePath);
+    }
+
+    private void validateSchool(School school) {
+        Set<ConstraintViolation<School>> violations = validator.validate(school);
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<School> violation : violations) {
+                sb.append(violation.getMessage()).append("\n");
+            }
+            throw new IllegalArgumentException("School validation failed: " + sb.toString());
+        }
+    }
+
     @Override
     public School save(School school) {
+        validateSchool(school);
         try {
+            backupCSVFile(schoolsFilePath);
             List<School> schools = findAll();
             schools.removeIf(s -> s.getId().equals(school.getId()));
             schools.add(school);
@@ -44,9 +83,10 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
 
                 beanToCsv.write(schools);
             }
-
+            logger.info("School saved successfully: {}", school);
             return school;
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            logger.error("Error saving school to CSV", e);
             throw new RuntimeException("Error saving school to CSV", e);
         }
     }
@@ -71,6 +111,7 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
     @Override
     public void deleteById(Long schoolId) {
         try {
+            backupCSVFile(schoolsFilePath);
             List<School> schools = findAll();
             schools.removeIf(school -> school.getId().equals(schoolId));
 
@@ -86,7 +127,9 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
 
                 beanToCsv.write(schools);
             }
+            logger.info("School deleted successfully: {}", schoolId);
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            logger.error("Error deleting school from CSV", e);
             throw new RuntimeException("Error deleting school from CSV", e);
         }
     }

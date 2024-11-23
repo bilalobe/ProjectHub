@@ -11,6 +11,10 @@ import com.projecthub.repository.custom.CustomSchoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import jakarta.validation.*;
+import java.nio.file.*;
 
 import java.io.*;
 import java.util.*;
@@ -19,15 +23,43 @@ import java.util.stream.Collectors;
 @Repository("csvCohortRepository")
 public class CSVCohortRepository implements CustomCohortRepository {
 
+    private static final Logger logger = LoggerFactory.getLogger(CSVCohortRepository.class);
+    private final Validator validator;
+
     @Value("${app.cohorts.filepath}")
     private String cohortsFilePath;
 
     @Autowired
     private CustomSchoolRepository schoolRepository;
 
+    public CSVCohortRepository() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        this.validator = factory.getValidator();
+    }
+
+    private void backupCSVFile(String filePath) throws IOException {
+        java.nio.file.Path source = java.nio.file.Path.of(filePath);
+        java.nio.file.Path backup = java.nio.file.Path.of(filePath + ".backup");
+        Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
+        logger.info("Backup created for file: {}", filePath);
+    }
+
+    private void validateCohort(Cohort cohort) {
+        Set<ConstraintViolation<Cohort>> violations = validator.validate(cohort);
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<Cohort> violation : violations) {
+                sb.append(violation.getMessage()).append("\n");
+            }
+            throw new IllegalArgumentException("Cohort validation failed: " + sb.toString());
+        }
+    }
+
     @Override
     public Cohort save(Cohort cohort) {
+        validateCohort(cohort);
         try {
+            backupCSVFile(cohortsFilePath);
             List<Cohort> cohorts = findAll();
             cohorts.removeIf(c -> c.getId().equals(cohort.getId()));
 
@@ -60,8 +92,10 @@ public class CSVCohortRepository implements CustomCohortRepository {
                 beanToCsv.write(csvCohorts);
             }
 
+            logger.info("Cohort saved successfully: {}", cohort);
             return cohort;
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            logger.error("Error saving cohort to CSV", e);
             throw new RuntimeException("Error saving cohort to CSV", e);
         }
     }
@@ -103,6 +137,7 @@ public class CSVCohortRepository implements CustomCohortRepository {
     @Override
     public void deleteById(Long id) {
         try {
+            backupCSVFile(cohortsFilePath);
             List<Cohort> cohorts = findAll();
             cohorts.removeIf(c -> c.getId().equals(id));
 
@@ -124,7 +159,9 @@ public class CSVCohortRepository implements CustomCohortRepository {
                 beanToCsv.write(csvCohorts);
             }
 
+            logger.info("Cohort deleted successfully: {}", id);
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            logger.error("Error deleting cohort from CSV", e);
             throw new RuntimeException("Error deleting cohort from CSV", e);
         }
     }

@@ -3,8 +3,14 @@ package com.projecthub.repository.csv;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -19,15 +25,48 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.projecthub.model.Team;
 import com.projecthub.repository.custom.CustomTeamRepository;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+
 @Repository("csvTeamRepository")
 public abstract class CSVTeamRepository implements CustomTeamRepository {
+
+    private static final Logger logger = LoggerFactory.getLogger(CSVTeamRepository.class);
+    private final Validator validator;
 
     @Value("${app.teams.filepath}")
     private String teamsFilePath;
 
+    public CSVTeamRepository() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        this.validator = factory.getValidator();
+    }
+
+    private void backupCSVFile(String filePath) throws IOException {
+        Path source = Path.of(filePath);
+        Path backup = Path.of(filePath + ".backup");
+        Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
+        logger.info("Backup created for file: {}", filePath);
+    }
+
+    private void validateTeam(Team team) {
+        Set<ConstraintViolation<Team>> violations = validator.validate(team);
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<Team> violation : violations) {
+                sb.append(violation.getMessage()).append("\n");
+            }
+            throw new IllegalArgumentException("Team validation failed: " + sb.toString());
+        }
+    }
+
     @Override
     public Team save(Team team) {
+        validateTeam(team);
         try {
+            backupCSVFile(teamsFilePath);
             List<Team> teams = findAll();
             teams.removeIf(t -> t.getId().equals(team.getId()));
             teams.add(team);
@@ -44,9 +83,10 @@ public abstract class CSVTeamRepository implements CustomTeamRepository {
 
                 beanToCsv.write(teams);
             }
-
+            logger.info("Team saved successfully: {}", team);
             return team;
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            logger.error("Error saving team to CSV", e);
             throw new RuntimeException("Error saving team to CSV", e);
         }
     }
@@ -71,6 +111,7 @@ public abstract class CSVTeamRepository implements CustomTeamRepository {
     @Override
     public void deleteById(Long teamId) {
         try {
+            backupCSVFile(teamsFilePath);
             List<Team> teams = findAll();
             teams.removeIf(team -> team.getId().equals(teamId));
 
@@ -86,7 +127,9 @@ public abstract class CSVTeamRepository implements CustomTeamRepository {
 
                 beanToCsv.write(teams);
             }
+            logger.info("Team deleted successfully: {}", teamId);
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            logger.error("Error deleting team from CSV", e);
             throw new RuntimeException("Error deleting team from CSV", e);
         }
     }
