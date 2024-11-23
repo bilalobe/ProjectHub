@@ -8,6 +8,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -47,10 +48,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                .anyRequest().authenticated()
+                    .requestMatchers("/public/**").permitAll() // Allow public access to specific URLs
+                    .anyRequest().authenticated()
                 )
                 .formLogin(withDefaults())
-                .oauth2Login(withDefaults()); // Enable OAuth2 login
+                .oauth2Login(withDefaults())
+                .httpBasic(withDefaults())
+                .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Use stateless sessions
+                );
 
         return http.build();
     }
