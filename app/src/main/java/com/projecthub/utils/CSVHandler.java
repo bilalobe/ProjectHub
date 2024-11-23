@@ -1,284 +1,467 @@
-package com.projecthub.utils;
+// package com.projecthub.utils;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+// import com.opencsv.CSVReader;
+// import com.opencsv.CSVWriter;
+// import com.opencsv.bean.*;
+// import com.opencsv.exceptions.CsvDataTypeMismatchException;
+// import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+// import com.projecthub.dto.*;
+// import com.projecthub.exception.ResourceNotFoundException;
+// import com.projecthub.mapper.*;
+// import com.projecthub.model.*;
+// import com.projecthub.service.*;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.stereotype.Component;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-import com.projecthub.model.Project;
-import com.projecthub.model.Student;
-import com.projecthub.model.Submission;
-import com.projecthub.model.Team;
-import com.projecthub.dto.ProjectSummary;
-import com.projecthub.dto.SchoolSummary;
-import com.projecthub.dto.StudentSummary;
-import com.projecthub.dto.TeamSummary;
-import com.projecthub.model.AppUser;
-import com.projecthub.service.ProjectService;
-import com.projecthub.service.StudentService;
-import com.projecthub.service.TeamService;
-import com.projecthub.service.SchoolService;
+// import java.io.FileReader;
+// import java.io.FileWriter;
+// import java.io.IOException;
+// import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+// @Component
+// public class CSVHandler {
 
-@Component
-public class CSVHandler {
+//     @Autowired
+//     private ProjectService projectService;
 
-    @Autowired
-    private ProjectService projectService;
+//     @Autowired
+//     private StudentService studentService;
 
-    @Autowired
-    private StudentService studentService;
+//     @Autowired
+//     private TeamService teamService;
 
-    @Autowired
-    private TeamService teamService;
+//     @Autowired
+//     private SchoolService schoolService;
 
-    @Autowired
-    private SchoolService schoolService;
+//     @Autowired
+//     private SubmissionService submissionService;
 
-    public List<Submission> readSubmissionsFromCSV(String filePath) throws IOException {
-        List<Submission> submissions = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-            ColumnPositionMappingStrategy<Submission> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(Submission.class);
-            String[] memberFieldsToBindTo = {"id", "projectId", "studentId", "content", "grade"};
-            strategy.setColumnMapping(memberFieldsToBindTo);
+//     /**
+//      * Reads submissions from a CSV file.
+//      *
+//      * @param filePath the path to the CSV file
+//      * @return a list of SubmissionSummary DTOs
+//      * @throws IOException if an I/O error occurs
+//      */
+//     public List<SubmissionSummary> readSubmissionsFromCSV(String filePath) throws IOException {
+//         List<SubmissionSummary> submissions = new ArrayList<>();
+//         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
 
-            List<Submission> csvSubmissions = new CsvToBeanBuilder<Submission>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+//             ColumnPositionMappingStrategy<SubmissionCSV> strategy = new ColumnPositionMappingStrategy<>();
+//             strategy.setType(SubmissionCSV.class);
+//             String[] memberFieldsToBindTo = {"id", "projectId", "studentId", "content", "grade"};
+//             strategy.setColumnMapping(memberFieldsToBindTo);
 
-            for (Submission csvSubmission : csvSubmissions) {
-                Project project = projectService.getProjectById(csvSubmission.getProject().getId())
-                        .map(ProjectSummary::toProject)
-                        .orElse(null);
-                StudentSummary studentSummary = studentService.getStudentSummaryById(csvSubmission.getStudent().getId());
-                Student student = Optional.ofNullable(studentSummary)
-                        .map(StudentSummary::toStudent)
-                        .orElse(null);
-                Submission submission = new Submission(
-                    csvSubmission.getId(),
-                    student, // Pass the Student object
-                    project, // Pass the Project object
-                    csvSubmission.getContent(),
-                    filePath, csvSubmission.getGrade()
-                );
-                submissions.add(submission);
-            }
-        } catch (IOException e) {
-            throw new IOException("Error reading submissions from CSV", e);
-        }
-        return submissions;
-    }
+//             List<SubmissionCSV> csvSubmissions = new CsvToBeanBuilder<SubmissionCSV>(reader)
+//                     .withMappingStrategy(strategy)
+//                     .withSkipLines(1) // Skip header if present
+//                     .build()
+//                     .parse();
 
-    public void writeSubmissionsToCSV(List<Submission> submissions, String filePath) throws IOException {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
-            ColumnPositionMappingStrategy<Submission> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(Submission.class);
-            String[] memberFieldsToBindTo = {"id", "projectId", "studentId", "content", "grade"};
-            strategy.setColumnMapping(memberFieldsToBindTo);
+//             for (SubmissionCSV csvSubmission : csvSubmissions) {
+//                 // Retrieve ProjectSummary
+//                 ProjectSummary projectSummary = projectService.getProjectById(csvSubmission.getProjectId())
+//                         .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + csvSubmission.getProjectId()));
 
-            StatefulBeanToCsv<Submission> beanToCsv = new StatefulBeanToCsvBuilder<Submission>(writer)
-                    .withMappingStrategy(strategy)
-                    .build();
+//                 // Retrieve StudentSummary
+//                 StudentSummary studentSummary = studentService.getStudentById(csvSubmission.getStudentId())
+//                         .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + csvSubmission.getStudentId()));
 
-            beanToCsv.write(submissions);
-        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
-            throw new IOException("Error writing submissions to CSV", e);
-        }
-    }
+//                 // Create SubmissionSummary
+//                 SubmissionSummary submissionSummary = new SubmissionSummary(
+//                         csvSubmission.getId(),
+//                         projectSummary.getId(),
+//                         studentSummary.getId(),
+//                         csvSubmission.getContent(),
+//                         csvSubmission.getGrade()
+//                 );
 
-    public List<Project> readProjectsFromCSV(String filePath) throws IOException {
-        List<Project> projects = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-            ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(Project.class);
-            String[] memberFieldsToBindTo = {"id", "name", "description", "teamId"};
-            strategy.setColumnMapping(memberFieldsToBindTo);
+//                 submissions.add(submissionSummary);
+//             }
+//         } catch (IOException e) {
+//             throw new IOException("Error reading submissions from CSV: " + e.getMessage(), e);
+//         }
+//         return submissions;
+//     }
 
-            List<Project> csvProjects = new CsvToBeanBuilder<Project>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+//     /**
+//      * Writes submissions to a CSV file.
+//      *
+//      * @param submissions the list of SubmissionSummary DTOs
+//      * @param filePath    the path to the CSV file
+//      * @throws IOException if an I/O error occurs
+//      */
+//     public void writeSubmissionsToCSV(List<SubmissionSummary> submissions, String filePath) throws IOException {
+//         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
 
-            for (Project csvProject : csvProjects) {
-                Project project = new Project();
-                project.setId(csvProject.getId());
-                project.setName(csvProject.getName());
-                project.setDescription(csvProject.getDescription());
-                // Set team based on ID
-                project.setTeam(teamService.getTeamById(csvProject.getTeam().getId())
-                        .map(TeamSummary::toTeam)
-                        .orElse(null));
-                projects.add(project);
-            }
-        } catch (IOException e) {
-            throw new IOException("Error reading projects from CSV", e);
-        }
-        return projects;
-    }
+//             ColumnPositionMappingStrategy<SubmissionCSV> strategy = new ColumnPositionMappingStrategy<>();
+//             strategy.setType(SubmissionCSV.class);
+//             String[] memberFieldsToBindTo = {"id", "projectId", "studentId", "content", "grade"};
+//             strategy.setColumnMapping(memberFieldsToBindTo);
 
-    public void writeProjectsToCSV(List<Project> projects, String filePath) throws IOException {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
-            ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(Project.class);
-            String[] memberFieldsToBindTo = {"id", "name", "description", "teamId"};
-            strategy.setColumnMapping(memberFieldsToBindTo);
+//             List<SubmissionCSV> csvSubmissions = new ArrayList<>();
+//             for (SubmissionSummary submission : submissions) {
+//                 SubmissionCSV csvSubmission = new SubmissionCSV(
+//                         submission.getId(),
+//                         submission.getProjectId(),
+//                         submission.getStudentId(),
+//                         submission.getContent(),
+//                         submission.getGrade()
+//                 );
+//                 csvSubmissions.add(csvSubmission);
+//             }
 
-            StatefulBeanToCsv<Project> beanToCsv = new StatefulBeanToCsvBuilder<Project>(writer)
-                    .withMappingStrategy(strategy)
-                    .build();
+//             StatefulBeanToCsv<SubmissionCSV> beanToCsv = new StatefulBeanToCsvBuilder<SubmissionCSV>(writer)
+//                     .withMappingStrategy(strategy)
+//                     .build();
 
-            beanToCsv.write(projects);
-        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
-            throw new IOException("Error writing projects to CSV", e);
-        }
-    }
+//             beanToCsv.write(csvSubmissions);
+//         } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+//             throw new IOException("Error writing submissions to CSV: " + e.getMessage(), e);
+//         }
+//     }
 
-    public List<Student> readStudentsFromCSV(String filePath) throws IOException {
-        List<Student> students = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-            ColumnPositionMappingStrategy<Student> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(Student.class);
-            String[] memberFieldsToBindTo = {"id", "name"};
-            strategy.setColumnMapping(memberFieldsToBindTo);
+//     // Similar methods for Projects, Students, Teams, and Users...
 
-            List<Student> csvStudents = new CsvToBeanBuilder<Student>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+//     // Helper inner classes to represent CSV mappings
+//     /**
+//      * Inner class to represent a Submission record in CSV.
+//      */
+//     private static class SubmissionCSV {
+//         private Long id;
+//         private Long projectId;
+//         private Long studentId;
+//         private String content;
+//         private Integer grade;
 
-            for (Student csvStudent : csvStudents) {
-                Student student = new Student();
-                student.setId(csvStudent.getId());
-                student.setName(csvStudent.getName());
-                students.add(student);
-            }
-        } catch (IOException e) {
-            throw new IOException("Error reading students from CSV", e);
-        }
-        return students;
-    }
+//         // Constructors, getters, and setters
 
-    public void writeStudentsToCSV(List<Student> students, String filePath) throws IOException {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
-            ColumnPositionMappingStrategy<Student> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(Student.class);
-            String[] memberFieldsToBindTo = {"id", "name"};
-            strategy.setColumnMapping(memberFieldsToBindTo);
+//         public SubmissionCSV() {}
 
-            StatefulBeanToCsv<Student> beanToCsv = new StatefulBeanToCsvBuilder<Student>(writer)
-                    .withMappingStrategy(strategy)
-                    .build();
+//         public SubmissionCSV(Long id, Long projectId, Long studentId, String content, Integer grade) {
+//             this.id = id;
+//             this.projectId = projectId;
+//             this.studentId = studentId;
+//             this.content = content;
+//             this.grade = grade;
+//         }
 
-            beanToCsv.write(students);
-        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
-            throw new IOException("Error writing students to CSV", e);
-        }
-    }
+//         // Getters and setters...
 
-    public List<Team> readTeamsFromCSV(String filePath) throws IOException {
-        List<Team> teams = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-            ColumnPositionMappingStrategy<Team> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(Team.class);
-            String[] memberFieldsToBindTo = {"id", "name", "schoolId"};
-            strategy.setColumnMapping(memberFieldsToBindTo);
+//         public Long getId() { return id; }
+//         public void setId(Long id) { this.id = id; }
+//         public Long getProjectId() { return projectId; }
+//         public void setProjectId(Long projectId) { this.projectId = projectId; }
+//         public Long getStudentId() { return studentId; }
+//         public void setStudentId(Long studentId) { this.studentId = studentId; }
+//         public String getContent() { return content; }
+//         public void setContent(String content) { this.content = content; }
+//         public Integer getGrade() { return grade; }
+//         public void setGrade(Integer grade) { this.grade = grade; }
+//     }
 
-            List<Team> csvTeams = new CsvToBeanBuilder<Team>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+//     // Similarly, create inner classes for ProjectCSV, StudentCSV, TeamCSV, AppUserCSV
 
-            for (Team csvTeam : csvTeams) {
-                Team team = new Team();
-                team.setId(csvTeam.getId());
-                team.setName(csvTeam.getName());
-                // Set school based on ID
-                team.setSchool(schoolService.getSchoolById(csvTeam.getSchool().getId())
-                        .map(SchoolSummary::toSchool)
-                        .orElse(null));
-                teams.add(team);
-            }
-        } catch (IOException e) {
-            throw new IOException("Error reading teams from CSV", e);
-        }
-        return teams;
-    }
+//     // For example:
 
-    public void writeTeamsToCSV(List<Team> teams, String filePath) throws IOException {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
-            ColumnPositionMappingStrategy<Team> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(Team.class);
-            String[] memberFieldsToBindTo = {"id", "name", "schoolId"};
-            strategy.setColumnMapping(memberFieldsToBindTo);
+//     /**
+//      * Inner class to represent a Project record in CSV.
+//      */
+//     private static class ProjectCSV {
+//         private Long id;
+//         private String name;
+//         private String description;
+//         private Long teamId;
 
-            StatefulBeanToCsv<Team> beanToCsv = new StatefulBeanToCsvBuilder<Team>(writer)
-                    .withMappingStrategy(strategy)
-                    .build();
+//         // Constructors, getters, and setters
 
-            beanToCsv.write(teams);
-        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
-            throw new IOException("Error writing teams to CSV", e);
-        }
-    }
+//         public ProjectCSV() {}
 
-    public List<AppUser> readUsersFromCSV(String filePath) throws IOException {
-        List<AppUser> users = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-            ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(AppUser.class);
-            String[] memberFieldsToBindTo = {"id", "username", "password", "teamId"};
-            strategy.setColumnMapping(memberFieldsToBindTo);
+//         public ProjectCSV(Long id, String name, String description, Long teamId) {
+//             this.id = id;
+//             this.name = name;
+//             this.description = description;
+//             this.teamId = teamId;
+//         }
 
-            List<AppUser> csvUsers = new CsvToBeanBuilder<AppUser>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+//         // Getters and setters...
 
-            for (AppUser csvUser : csvUsers) {
-                AppUser user = new AppUser();
-                user.setId(csvUser.getId());
-                user.setUsername(csvUser.getUsername());
-                user.setPassword(csvUser.getPassword());
-                // Set team based on ID
-                user.setTeam(teamService.getTeamById(csvUser.getTeam().getId())
-                        .map(TeamSummary::toTeam)
-                        .orElse(null));
-                users.add(user);
-            }
-        } catch (IOException e) {
-            throw new IOException("Error reading users from CSV", e);
-        }
-        return users;
-    }
+//         public Long getId() { return id; }
+//         public void setId(Long id) { this.id = id; }
+//         public String getName() { return name; }
+//         public void setName(String name) { this.name = name; }
+//         public String getDescription() { return description; }
+//         public void setDescription(String description) { this.description = description; }
+//         public Long getTeamId() { return teamId; }
+//         public void setTeamId(Long teamId) { this.teamId = teamId; }
+//     }
 
-    public void writeUsersToCSV(List<AppUser> users, String filePath) throws IOException {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
-            ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(AppUser.class);
-            String[] memberFieldsToBindTo = {"id", "username", "password", "teamId"};
-            strategy.setColumnMapping(memberFieldsToBindTo);
+//     // And similar for StudentCSV, TeamCSV, AppUserCSV
 
-            StatefulBeanToCsv<AppUser> beanToCsv = new StatefulBeanToCsvBuilder<AppUser>(writer)
-                    .withMappingStrategy(strategy)
-                    .build();
+//     // Provide read and write methods for projects:
 
-            beanToCsv.write(users);
-        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
-            throw new IOException("Error writing users to CSV", e);
-        }
-    }
-}
+//     /**
+//      * Reads projects from a CSV file.
+//      *
+//      * @param filePath the path to the CSV file
+//      * @return a list of ProjectSummary DTOs
+//      * @throws IOException if an I/O error occurs
+//      */
+//     public List<ProjectSummary> readProjectsFromCSV(String filePath) throws IOException {
+//         List<ProjectSummary> projects = new ArrayList<>();
+//         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+
+//             ColumnPositionMappingStrategy<ProjectCSV> strategy = new ColumnPositionMappingStrategy<>();
+//             strategy.setType(ProjectCSV.class);
+//             String[] memberFieldsToBindTo = {"id", "name", "description", "teamId"};
+//             strategy.setColumnMapping(memberFieldsToBindTo);
+
+//             List<ProjectCSV> csvProjects = new CsvToBeanBuilder<ProjectCSV>(reader)
+//                     .withMappingStrategy(strategy)
+//                     .withSkipLines(1)
+//                     .build()
+//                     .parse();
+
+//             for (ProjectCSV csvProject : csvProjects) {
+//                 // Retrieve TeamSummary
+//                 TeamSummary teamSummary = teamService.getTeamById(csvProject.getTeamId())
+//                         .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + csvProject.getTeamId()));
+
+//                 // Create ProjectSummary
+//                 ProjectSummary projectSummary = new ProjectSummary(
+//                         csvProject.getId(),
+//                         csvProject.getName(),
+//                         csvProject.getDescription(),
+//                         teamSummary.getId()
+//                 );
+
+//                 projects.add(projectSummary);
+//             }
+//         } catch (IOException e) {
+//             throw new IOException("Error reading projects from CSV: " + e.getMessage(), e);
+//         }
+//         return projects;
+//     }
+
+//     /**
+//      * Writes projects to a CSV file.
+//      *
+//      * @param projects the list of ProjectSummary DTOs to write
+//      * @param filePath the path to the CSV file
+//      * @throws IOException if an I/O error occurs
+//      */
+//     public void writeProjectsToCSV(List<ProjectSummary> projects, String filePath) throws IOException {
+//         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
+    
+//             ColumnPositionMappingStrategy<ProjectCSV> strategy = new ColumnPositionMappingStrategy<>();
+//             strategy.setType(ProjectCSV.class);
+//             String[] memberFieldsToBindTo = {"id", "name", "description", "teamId"};
+//             strategy.setColumnMapping(memberFieldsToBindTo);
+    
+//             List<ProjectCSV> csvProjects = new ArrayList<>();
+//             for (ProjectSummary project : projects) {
+//                 ProjectCSV csvProject = new ProjectCSV(
+//                         project.getId(),
+//                         project.getName(),
+//                         project.getDescription(),
+//                         project.getTeamId()
+//                 );
+//                 csvProjects.add(csvProject);
+//             }
+    
+//             StatefulBeanToCsv<ProjectCSV> beanToCsv = new StatefulBeanToCsvBuilder<ProjectCSV>(writer)
+//                     .withMappingStrategy(strategy)
+//                     .build();
+    
+//             beanToCsv.write(csvProjects);
+//         } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+//             throw new IOException("Error writing projects to CSV: " + e.getMessage(), e);
+//         }
+//     }
+
+//     /**
+//      * Reads students from a CSV file.
+//      *
+//      * @param filePath the path to the CSV file
+//      * @return a list of StudentSummary DTOs
+//      * @throws IOException if an I/O error occurs
+//      */
+//     public List<StudentSummary> readStudentsFromCSV(String filePath) throws IOException {
+//         List<StudentSummary> students = new ArrayList<>();
+//         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+    
+//             ColumnPositionMappingStrategy<StudentCSV> strategy = new ColumnPositionMappingStrategy<>();
+//             strategy.setType(StudentCSV.class);
+//             String[] memberFieldsToBindTo = {"id", "name", "teamId"};
+//             strategy.setColumnMapping(memberFieldsToBindTo);
+    
+//             List<StudentCSV> csvStudents = new CsvToBeanBuilder<StudentCSV>(reader)
+//                     .withMappingStrategy(strategy)
+//                     .withSkipLines(1) // Skip header if present
+//                     .build()
+//                     .parse();
+    
+//             for (StudentCSV csvStudent : csvStudents) {
+//                 // Create StudentSummary
+//                 StudentSummary studentSummary = new StudentSummary(
+//                         csvStudent.getId(),
+//                         csvStudent.getName(),
+//                         csvStudent.getTeamId()
+//                 );
+    
+//                 students.add(studentSummary);
+//             }
+//         } catch (IOException e) {
+//             throw new IOException("Error reading students from CSV: " + e.getMessage(), e);
+//         }
+//         return students;
+//     }
+
+//     /**
+//      * Writes students to a CSV file.
+//      *
+//      * @param students the list of StudentSummary DTOs to write
+//      * @param filePath the path to the CSV file
+//      * @throws IOException if an I/O error occurs
+//      */
+//     public void writeStudentsToCSV(List<StudentSummary> students, String filePath) throws IOException {
+//         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
+    
+//             ColumnPositionMappingStrategy<StudentCSV> strategy = new ColumnPositionMappingStrategy<>();
+//             strategy.setType(StudentCSV.class);
+//             String[] memberFieldsToBindTo = {"id", "name", "teamId"};
+//             strategy.setColumnMapping(memberFieldsToBindTo);
+    
+//             List<StudentCSV> csvStudents = new ArrayList<>();
+//             for (StudentSummary student : students) {
+//                 StudentCSV csvStudent = new StudentCSV(
+//                         student.getId(),
+//                         student.getName(),
+//                         student.getTeamId()
+//                 );
+//                 csvStudents.add(csvStudent);
+//             }
+    
+//             StatefulBeanToCsv<StudentCSV> beanToCsv = new StatefulBeanToCsvBuilder<StudentCSV>(writer)
+//                     .withMappingStrategy(strategy)
+//                     .build();
+    
+//             beanToCsv.write(csvStudents);
+//         } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+//             throw new IOException("Error writing students to CSV: " + e.getMessage(), e);
+//         }
+//     }
+
+//     /**
+//      * Reads teams from a CSV file.
+//      *
+//      * @param filePath the path to the CSV file
+//      * @return a list of TeamSummary DTOs
+//      * @throws IOException if an I/O error occurs
+//      */
+//     public List<TeamSummary> readTeamsFromCSV(String filePath) throws IOException {
+//         List<TeamSummary> teams = new ArrayList<>();
+//         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+    
+//             ColumnPositionMappingStrategy<TeamCSV> strategy = new ColumnPositionMappingStrategy<>();
+//             strategy.setType(TeamCSV.class);
+//             String[] memberFieldsToBindTo = {"id", "name", "schoolId", "cohortId"};
+//             strategy.setColumnMapping(memberFieldsToBindTo);
+    
+//             List<TeamCSV> csvTeams = new CsvToBeanBuilder<TeamCSV>(reader)
+//                     .withMappingStrategy(strategy)
+//                     .withSkipLines(1) // Skip header if present
+//                     .build()
+//                     .parse();
+    
+//             for (TeamCSV csvTeam : csvTeams) {
+//                 // Create TeamSummary
+//                 TeamSummary teamSummary = new TeamSummary(
+//                         csvTeam.getId(),
+//                         csvTeam.getName(),
+//                         csvTeam.getSchoolId(),
+//                         csvTeam.getCohortId()
+//                 );
+    
+//                 teams.add(teamSummary);
+//             }
+//         } catch (IOException e) {
+//             throw new IOException("Error reading teams from CSV: " + e.getMessage(), e);
+//         }
+//         return teams;
+//     }
+    
+//     /**
+//      * Writes teams to a CSV file.
+//      *
+//      * @param teams    the list of TeamSummary DTOs to write
+//      * @param filePath the path to the CSV file
+//      * @throws IOException if an I/O error occurs
+//      */
+//     public void writeTeamsToCSV(List<TeamSummary> teams, String filePath) throws IOException {
+//         try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
+    
+//             ColumnPositionMappingStrategy<TeamCSV> strategy = new ColumnPositionMappingStrategy<>();
+//             strategy.setType(TeamCSV.class);
+//             String[] memberFieldsToBindTo = {"id", "name", "schoolId", "cohortId"};
+//             strategy.setColumnMapping(memberFieldsToBindTo);
+    
+//             List<TeamCSV> csvTeams = new ArrayList<>();
+//             for (TeamSummary team : teams) {
+//                 TeamCSV csvTeam = new TeamCSV(
+//                         team.getId(),
+//                         team.getName(),
+//                         team.getSchoolId(),
+//                         team.getCohortId()
+//                 );
+//                 csvTeams.add(csvTeam);
+//             }
+    
+//             StatefulBeanToCsv<TeamCSV> beanToCsv = new StatefulBeanToCsvBuilder<TeamCSV>(writer)
+//                     .withMappingStrategy(strategy)
+//                     .build();
+    
+//             beanToCsv.write(csvTeams);
+//         } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+//             throw new IOException("Error writing teams to CSV: " + e.getMessage(), e);
+//         }
+//     }
+
+//         /**
+//      * Reads app users from a CSV file.
+//      *
+//      * @param filePath the path to the CSV file
+//      * @return a list of AppUserSummary DTOs
+//      * @throws IOException if an I/O error occurs
+//      */
+//     public List<AppUserSummary> readUsersFromCSV(String filePath) throws IOException {
+//         List<AppUserSummary> users = new ArrayList<>();
+//         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+    
+//             ColumnPositionMappingStrategy<AppUserCSV> strategy = new ColumnPositionMappingStrategy<>();
+//             strategy.setType(AppUserCSV.class);
+//             String[] memberFieldsToBindTo = {"id", "username", "teamId"};
+//             strategy.setColumnMapping(memberFieldsToBindTo);
+    
+//             List<AppUserCSV> csvUsers = new CsvToBeanBuilder<AppUserCSV>(reader)
+//                     .withMappingStrategy(strategy)
+//                     .withSkipLines(1) // Skip header if present
+//                     .build()
+//                     .parse();
+    
+//             for (AppUserCSV csvUser : csvUsers) {
+//                 // Create AppUserSummary
+//                 AppUserSummary userSummary = new AppUserSummary(
+//                         csvUser.getId(),
+//                         csvUser.getUsername(),
+//                         csvUser.getTeamId()
+//                 );
+    
+//                 users.add(userSummary);
+//             }
+//         } catch (IOException e) {
+//             throw new IOException("Error reading app users from CSV: " + e.getMessage(), e);
+//         }
+//         return users;
+//     }
+// }
