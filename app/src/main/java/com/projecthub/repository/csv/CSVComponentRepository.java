@@ -20,12 +20,11 @@ import com.projecthub.model.Component;
 import com.projecthub.repository.custom.CustomComponentRepository;
 
 @Repository("csvComponentRepository")
-public class CSVComponentRepository implements CustomComponentRepository {
+public abstract class CSVComponentRepository implements CustomComponentRepository {
 
     @Value("${app.components.filepath}")
     private String componentsFilePath;
 
-    @Override
     public Component save(Component component) {
         try {
             List<Component> components = findAll();

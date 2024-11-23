@@ -61,8 +61,7 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
                         .withMappingStrategy(strategy)
                         .build()
                         .write(tasks);
-            } catch (CsvDataTypeMismatchException ex) {
-            } catch (CsvRequiredFieldEmptyException ex) {
+            } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException ex) {
             }
         } catch (IOException e) {
             throw new RuntimeException("Error writing tasks to CSV", e);
@@ -87,8 +86,7 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
                     .write(tasks);
         } catch (IOException e) {
             throw new RuntimeException("Error writing tasks to CSV", e);
-        } catch (CsvDataTypeMismatchException ex) {
-        } catch (CsvRequiredFieldEmptyException ex) {
+        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException ex) {
         }
     }
 

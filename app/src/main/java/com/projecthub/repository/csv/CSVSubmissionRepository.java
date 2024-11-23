@@ -25,7 +25,6 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
     @Value("${app.submissions.filepath}")
     private String submissionsFilePath;
 
-    @Override
     public Submission save(Submission submission) {
         try {
             List<Submission> submissions = findAll();
