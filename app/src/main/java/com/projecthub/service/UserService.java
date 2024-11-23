@@ -8,13 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.projecthub.dto.AppUserSummary;
+import com.projecthub.exception.InvalidInputException;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.exception.UserAlreadyExistsException;
 import com.projecthub.mapper.AppUserMapper;
-import com.projecthub.model.Team;
 import com.projecthub.model.AppUser;
-import com.projecthub.repository.custom.CustomUserRepository;
+import com.projecthub.model.Team;
 import com.projecthub.repository.custom.CustomTeamRepository;
+import com.projecthub.repository.custom.CustomUserRepository;
 
 /**
  * Service class for managing users within the ProjectHub application.
@@ -51,6 +52,10 @@ public class UserService {
         if (userSummary.getTeam() != null) {
             team = teamRepository.findById(userSummary.getTeam())
                     .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + userSummary.getTeam()));
+        }
+
+        if (!passwordService.isPasswordStrong(password)) {
+            throw new InvalidInputException("Password does not meet strength criteria");
         }
 
         AppUser user = AppUserMapper.toAppUser(userSummary, team, passwordService, password);
@@ -129,5 +134,26 @@ public class UserService {
         user.setTeam(team);
         AppUser savedUser = userRepository.save(user);
         return AppUserMapper.toAppUserSummary(savedUser);
+    }
+
+    /**
+     * Resets the password for a user based on the provided user ID and new password.
+     * 
+     * @param userId the ID of the user whose password is to be reset
+     * @param newPassword the new password to set
+     * @throws ResourceNotFoundException if the user is not found
+     * @throws InvalidInputException if the new password does not meet strength criteria
+     */
+    public void resetPassword(Long userId, String newPassword) throws ResourceNotFoundException, InvalidInputException {
+        AppUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+
+        if (!passwordService.isPasswordStrong(newPassword)) {
+            throw new InvalidInputException("Password does not meet strength criteria");
+        }
+
+        String encodedPassword = passwordService.encodePassword(newPassword);
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
     }
 }

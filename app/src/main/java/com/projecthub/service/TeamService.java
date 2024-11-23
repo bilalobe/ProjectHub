@@ -3,17 +3,17 @@ package com.projecthub.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.projecthub.dto.TeamSummary;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.TeamMapper;
-import com.projecthub.model.Team;
 import com.projecthub.model.AppUser;
+import com.projecthub.model.Team;
 import com.projecthub.repository.custom.CustomTeamRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -120,5 +120,10 @@ public class TeamService {
         return teamRepository.findByCohortId(cohortId).stream()
                 .map(TeamSummary::new)
                 .collect(Collectors.toList());
+    }
+
+    @Operation(summary = "Save a team")
+    public Team saveTeam(Team team) {
+        return teamRepository.save(team);
     }
 }

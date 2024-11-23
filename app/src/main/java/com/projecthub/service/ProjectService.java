@@ -70,6 +70,19 @@ public class ProjectService {
     }
 
     /**
+     * Retrieves all projects associated with a team.
+     * 
+     * @param teamId the unique identifier of the team
+     * @return a list of all {@link ProjectSummary} objects associated with the team
+     */
+    public List<ProjectSummary> getProjectsByTeamId(Long teamId) {
+        List<Project> projects = projectRepository.findAllByTeamId(teamId);
+        return projects.stream()
+                .map(ProjectMapper::toProjectSummary)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Deletes a project based on its unique identifier.
      * 
      * @param id the unique identifier of the project to be deleted
