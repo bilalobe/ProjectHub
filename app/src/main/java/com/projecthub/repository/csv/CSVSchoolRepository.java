@@ -30,6 +30,9 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.projecthub.model.School;
 import com.projecthub.repository.custom.CustomSchoolRepository;
 
+/**
+ * CSV implementation of the CustomSchoolRepository interface.
+ */
 @Repository("csvSchoolRepository")
 public abstract class CSVSchoolRepository implements CustomSchoolRepository {
 
@@ -62,6 +65,12 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
         }
     }
 
+    /**
+     * Saves a school to the CSV file after validation and backup.
+     *
+     * @param school the School object to save
+     * @return the saved School object
+     */
     @Override
     public School save(School school) {
         validateSchool(school);
@@ -108,6 +117,11 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
         }
     }
 
+    /**
+     * Deletes a school by its ID.
+     *
+     * @param schoolId the ID of the school to delete
+     */
     @Override
     public void deleteById(Long schoolId) {
         try {

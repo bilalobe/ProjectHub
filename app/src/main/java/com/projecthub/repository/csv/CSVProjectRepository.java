@@ -32,6 +32,9 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
+/**
+ * CSV implementation of the CustomProjectRepository interface.
+ */
 @Repository("csvProjectRepository")
 public abstract class CSVProjectRepository implements CustomProjectRepository {
 
@@ -81,6 +84,12 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
         }
     }
 
+    /**
+     * Finds all projects associated with a specific team ID.
+     *
+     * @param teamId the ID of the team
+     * @return a list of projects belonging to the team
+     */
     @Override
     public List<Project> findAllByTeamId(Long teamId) {
         return findAll().stream()
@@ -88,6 +97,12 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
                 .toList();
     }
 
+    /**
+     * Finds a project along with its components by project ID.
+     *
+     * @param projectId the ID of the project
+     * @return an Optional containing the Project if found
+     */
     @Override
     public Optional<Project> findProjectWithComponentsById(Long projectId) {
         return findAll().stream()
@@ -95,6 +110,12 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
                 .findFirst();
     }
 
+    /**
+     * Saves a project to the CSV file after validation and backup.
+     *
+     * @param project the Project object to save
+     * @return the saved Project object
+     */
     @Override
     public @NonNull <S extends Project> S save(S project) {
         validateProject(project);
@@ -125,6 +146,11 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
         }
     }
 
+    /**
+     * Deletes a project by its ID.
+     *
+     * @param projectId the ID of the project to delete
+     */
     @Override
     public void deleteById(@NonNull Long projectId) {
         try {

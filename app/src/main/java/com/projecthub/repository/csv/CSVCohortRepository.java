@@ -20,6 +20,9 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * CSV implementation of the CustomCohortRepository interface.
+ */
 @Repository("csvCohortRepository")
 public class CSVCohortRepository implements CustomCohortRepository {
 
@@ -55,6 +58,12 @@ public class CSVCohortRepository implements CustomCohortRepository {
         }
     }
 
+    /**
+     * Saves a cohort to the CSV file after validation and backup.
+     *
+     * @param cohort the Cohort object to save
+     * @return the saved Cohort object
+     */
     @Override
     public Cohort save(Cohort cohort) {
         validateCohort(cohort);
@@ -134,6 +143,11 @@ public class CSVCohortRepository implements CustomCohortRepository {
                 .findFirst();
     }
 
+    /**
+     * Deletes a cohort by its ID.
+     *
+     * @param id the ID of the cohort to delete
+     */
     @Override
     public void deleteById(Long id) {
         try {
@@ -166,6 +180,12 @@ public class CSVCohortRepository implements CustomCohortRepository {
         }
     }
 
+    /**
+     * Finds all cohorts associated with a specific school ID.
+     *
+     * @param schoolId the ID of the school
+     * @return a list of cohorts belonging to the school
+     */
     @Override
     public List<Cohort> findBySchoolId(Long schoolId) {
         return findAll().stream()

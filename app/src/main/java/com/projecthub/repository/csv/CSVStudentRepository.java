@@ -31,6 +31,9 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
+/**
+ * CSV implementation of the CustomStudentRepository interface.
+ */
 @Repository("csvStudentRepository")
 public class CSVStudentRepository implements CustomStudentRepository {
 
@@ -52,6 +55,12 @@ public class CSVStudentRepository implements CustomStudentRepository {
         logger.info("Backup created for file: {}", filePath);
     }
 
+    /**
+     * Saves a student to the CSV file after validation and backup.
+     *
+     * @param student the Student object to save
+     * @return the saved Student object
+     */
     @Override
     public Student save(Student student) {
         validateStudent(student);
@@ -114,6 +123,11 @@ public class CSVStudentRepository implements CustomStudentRepository {
         }
     }
 
+    /**
+     * Deletes a student by their ID.
+     *
+     * @param studentId the ID of the student to delete
+     */
     @Override
     public void deleteById(Long studentId) {
         try {

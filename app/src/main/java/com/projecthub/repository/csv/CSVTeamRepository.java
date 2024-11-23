@@ -30,6 +30,9 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
+/**
+ * CSV implementation of the CustomTeamRepository interface.
+ */
 @Repository("csvTeamRepository")
 public abstract class CSVTeamRepository implements CustomTeamRepository {
 
@@ -62,6 +65,12 @@ public abstract class CSVTeamRepository implements CustomTeamRepository {
         }
     }
 
+    /**
+     * Saves a team to the CSV file after validation and backup.
+     *
+     * @param team the Team object to save
+     * @return the saved Team object
+     */
     @Override
     public Team save(Team team) {
         validateTeam(team);
@@ -108,6 +117,11 @@ public abstract class CSVTeamRepository implements CustomTeamRepository {
         }
     }
 
+    /**
+     * Deletes a team by its ID.
+     *
+     * @param teamId the ID of the team to delete
+     */
     @Override
     public void deleteById(Long teamId) {
         try {

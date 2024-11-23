@@ -30,6 +30,9 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.projecthub.model.AppUser;
 import com.projecthub.repository.custom.CustomUserRepository;
 
+/**
+ * CSV implementation of the CustomUserRepository interface.
+ */
 @Repository("csvUserRepository")
 public abstract class CSVUserRepository implements CustomUserRepository {
 
@@ -62,6 +65,12 @@ public abstract class CSVUserRepository implements CustomUserRepository {
         }
     }
 
+    /**
+     * Saves a user to the CSV file after validation and backup.
+     *
+     * @param user the AppUser object to save
+     * @return the saved AppUser object
+     */
     @Override
     public AppUser save(AppUser user) {
         validateUser(user);
@@ -108,6 +117,11 @@ public abstract class CSVUserRepository implements CustomUserRepository {
         }
     }
 
+    /**
+     * Deletes a user by their ID.
+     *
+     * @param userId the ID of the user to delete
+     */
     @Override
     public void deleteById(Long userId) {
         try {

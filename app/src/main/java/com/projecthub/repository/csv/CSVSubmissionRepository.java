@@ -30,6 +30,9 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
+/**
+ * CSV implementation of the CustomSubmissionRepository interface.
+ */
 @Repository("csvSubmissionRepository")
 public abstract class CSVSubmissionRepository implements CustomSubmissionRepository {
 
@@ -62,6 +65,12 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
         }
     }
 
+    /**
+     * Saves a submission to the CSV file after validation and backup.
+     *
+     * @param submission the Submission object to save
+     * @return the saved Submission object
+     */
     @Override
     public Submission save(Submission submission) {
         validateSubmission(submission);
@@ -109,6 +118,11 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
         }
     }
 
+    /**
+     * Deletes a submission by its ID.
+     *
+     * @param submissionId the ID of the submission to delete
+     */
     @Override
     public void deleteById(Long submissionId) {
         try {

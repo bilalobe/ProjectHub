@@ -77,6 +77,12 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
         }
     }
 
+    /**
+     * Saves a task to the CSV file after validation and backup.
+     *
+     * @param task the Task object to save
+     * @return the saved Task object
+     */
     @Override
     public Task save(Task task) {
         validateTask(task);
@@ -104,6 +110,11 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
         }
     }
 
+    /**
+     * Deletes a task by its ID.
+     *
+     * @param id the ID of the task to delete
+     */
     @Override
     public void deleteById(Long id) {
         try {
@@ -128,6 +139,12 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
         }
     }
 
+    /**
+     * Finds all tasks associated with a specific project ID.
+     *
+     * @param projectId the ID of the project
+     * @return a list of tasks belonging to the project
+     */
     @Override
     public List<Task> findByProjectId(Long projectId) {
         return findAll().stream()
@@ -135,6 +152,12 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Finds all tasks assigned to a specific user ID.
+     *
+     * @param userId the ID of the user
+     * @return a list of tasks assigned to the user
+     */
     @Override
     public List<Task> findByAssignedUserId(Long userId) {
         return findAll().stream()

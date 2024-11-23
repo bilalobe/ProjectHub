@@ -30,6 +30,9 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.projecthub.model.Component;
 import com.projecthub.repository.custom.CustomComponentRepository;
 
+/**
+ * CSV implementation of the CustomComponentRepository interface.
+ */
 @Repository("csvComponentRepository")
 public abstract class CSVComponentRepository implements CustomComponentRepository {
 
@@ -62,6 +65,12 @@ public abstract class CSVComponentRepository implements CustomComponentRepositor
         }
     }
 
+    /**
+     * Saves a component to the CSV file after validation and backup.
+     *
+     * @param component the Component object to save
+     * @return the saved Component object
+     */
     public Component save(Component component) {
         validateComponent(component);
         try {
@@ -107,6 +116,11 @@ public abstract class CSVComponentRepository implements CustomComponentRepositor
         }
     }
 
+    /**
+     * Deletes a component by its ID.
+     *
+     * @param componentId the ID of the component to delete
+     */
     @Override
     public void deleteById(Long componentId) {
         try {
