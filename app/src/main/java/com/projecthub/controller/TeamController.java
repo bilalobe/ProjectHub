@@ -1,7 +1,6 @@
 package com.projecthub.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +28,7 @@ public class TeamController {
     }
 
     @GetMapping("/{id}")
-    public Optional<TeamSummary> getTeamById(@PathVariable Long id) {
+    public TeamSummary getTeamById(@PathVariable Long id) {
         return teamService.getTeamById(id);
     }
 
