@@ -31,4 +31,24 @@
         <Button text="Edit Task" onAction="#handleEditTask" />
         <Button text="Delete Task" onAction="#handleDeleteTask" />
     </HBox>
+
+    <VBox fx:id="taskForm" spacing="10" padding="10" style="-fx-border-color: lightgray; -fx-border-width: 1; -fx-border-radius: 5;">
+        <HBox spacing="5">
+            <Label text="Name:" />
+            <TextField fx:id="taskNameField" />
+        </HBox>
+        <HBox spacing="5">
+            <Label text="Description:" />
+            <TextField fx:id="taskDescriptionField" />
+        </HBox>
+        <HBox spacing="5">
+            <Label text="Status:" />
+            <TextField fx:id="taskStatusField" />
+        </HBox>
+        <HBox spacing="5">
+            <Label text="Due Date:" />
+            <DatePicker fx:id="taskDueDatePicker" />
+        </HBox>
+        <Button fx:id="saveTaskButton" text="Save Task" />
+    </VBox>
 </VBox>
