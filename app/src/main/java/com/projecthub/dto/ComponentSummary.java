@@ -7,13 +7,29 @@ import com.projecthub.model.Component;
  * Used for transferring component data between processes.
  */
 public class ComponentSummary {
-    private Long id;
-    private String name;
-    private String description;
-    private Long projectId;
+    private final Long id;
+    private final String name;
+    private final String description;
+    private final Long projectId;
 
-    public ComponentSummary() {}
+    /**
+     * Default constructor.
+     */
+    public ComponentSummary() {
+        this.id = 0L;
+        this.name = "";
+        this.description = "";
+        this.projectId = 0L;
+    }
 
+    /**
+     * Constructs a ComponentSummary with specified values.
+     *
+     * @param id          the component ID
+     * @param name        the component's name
+     * @param description the component's description
+     * @param projectId   the project ID
+     */
     public ComponentSummary(Long id, String name, String description, Long projectId) {
         this.id = id;
         this.name = name;
@@ -21,6 +37,11 @@ public class ComponentSummary {
         this.projectId = projectId;
     }
 
+    /**
+     * Constructs a ComponentSummary from a Component entity.
+     *
+     * @param component the Component entity
+     */
     public ComponentSummary(Component component) {
         this.id = component.getId();
         this.name = component.getName();
@@ -28,37 +49,39 @@ public class ComponentSummary {
         this.projectId = component.getProject() != null ? component.getProject().getId() : null;
     }
 
-    // Getters
+    /**
+     * Gets the component ID.
+     *
+     * @return the component ID
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Gets the component's name.
+     *
+     * @return the component's name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets the component's description.
+     *
+     * @return the component's description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Gets the project ID.
+     *
+     * @return the project ID
+     */
     public Long getProjectId() {
         return projectId;
-    }
-
-    // Setters
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
     }
 }

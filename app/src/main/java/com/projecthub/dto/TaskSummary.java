@@ -1,121 +1,124 @@
 package com.projecthub.dto;
 
 import com.projecthub.model.Task;
-import javafx.beans.property.*;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+/**
+ * Data Transfer Object for the Task entity.
+ * Used for transferring task data between processes.
+ */
 public class TaskSummary {
-    private final LongProperty id;
-    private final StringProperty name;
-    private final StringProperty description;
-    private final StringProperty status;
-    private final StringProperty dueDate;
-    private final LongProperty assignedUserId;
-    private final LongProperty projectId;
+    private final Long id;
 
+    @NotBlank(message = "Task name is mandatory")
+    @Size(max = 100, message = "Task name cannot exceed 100 characters")
+    private final String name;
+
+    @Size(max = 500, message = "Task description cannot exceed 500 characters")
+    private final String description;
+
+    @NotBlank(message = "Status is mandatory")
+    private final String status;
+
+    private final String dueDate;
+
+    private final Long assignedUserId;
+
+    @NotNull(message = "Project ID is mandatory")
+    private final Long projectId;
+
+    /**
+     * Default constructor.
+     */
     public TaskSummary() {
-        this.id = new SimpleLongProperty();
-        this.name = new SimpleStringProperty();
-        this.description = new SimpleStringProperty();
-        this.status = new SimpleStringProperty();
-        this.dueDate = new SimpleStringProperty();
-        this.assignedUserId = new SimpleLongProperty();
-        this.projectId = new SimpleLongProperty();
+        this.id = null;
+        this.name = null;
+        this.description = null;
+        this.status = null;
+        this.dueDate = null;
+        this.assignedUserId = null;
+        this.projectId = null;
     }
 
+    /**
+     * Constructs a TaskSummary from a Task entity.
+     *
+     * @param task the Task entity
+     */
     public TaskSummary(Task task) {
-        this();
-        this.id.set(task.getId());
-        this.name.set(task.getName());
-        this.description.set(task.getDescription());
-        this.status.set(task.getStatus());
-        this.dueDate.set(task.getDueDate() != null ? task.getDueDate().toString() : null);
-        this.assignedUserId.set(task.getAssignedUser() != null ? task.getAssignedUser().getId() : null);
-        this.projectId.set(task.getProject() != null ? task.getProject().getId() : null);
+        this.id = task.getId();
+        this.name = task.getName();
+        this.description = task.getDescription();
+        this.status = task.getStatus();
+        this.dueDate = task.getDueDate() != null ? task.getDueDate().toString() : null;
+        this.assignedUserId = task.getAssignedUser() != null ? task.getAssignedUser().getId() : null;
+        this.projectId = task.getProject() != null ? task.getProject().getId() : null;
     }
 
-    // Getters and Setters for properties
-    public LongProperty idProperty() {
+    // Getters with JavaDoc comments
+    /**
+     * Gets the task ID.
+     *
+     * @return the task ID
+     */
+    public Long getId() {
         return id;
     }
 
-    public StringProperty nameProperty() {
+    /**
+     * Gets the task name.
+     *
+     * @return the task name
+     */
+    public String getName() {
         return name;
     }
 
-    public StringProperty descriptionProperty() {
+    /**
+     * Gets the task description.
+     *
+     * @return the task description
+     */
+    public String getDescription() {
         return description;
     }
 
-    public StringProperty statusProperty() {
+    /**
+     * Gets the task status.
+     *
+     * @return the task status
+     */
+    public String getStatus() {
         return status;
     }
 
-    public StringProperty dueDateProperty() {
+    /**
+     * Gets the task due date.
+     *
+     * @return the task due date
+     */
+    public String getDueDate() {
         return dueDate;
     }
 
-    public LongProperty assignedUserIdProperty() {
+    /**
+     * Gets the assigned user ID.
+     *
+     * @return the assigned user ID
+     */
+    public Long getAssignedUser() {
         return assignedUserId;
     }
 
-    public LongProperty projectIdProperty() {
+    /**
+     * Gets the project ID.
+     *
+     * @return the project ID
+     */
+    public Long getProject() {
         return projectId;
-    }
-
-    // Getters and Setters for values
-    public Long getId() {
-        return id.get();
-    }
-
-    public void setId(Long id) {
-        this.id.set(id);
-    }
-
-    public String getName() {
-        return name.get();
-    }
-
-    public void setName(String name) {
-        this.name.set(name);
-    }
-
-    public String getDescription() {
-        return description.get();
-    }
-
-    public void setDescription(String description) {
-        this.description.set(description);
-    }
-
-    public String getStatus() {
-        return status.get();
-    }
-
-    public void setStatus(String status) {
-        this.status.set(status);
-    }
-
-    public String getDueDate() {
-        return dueDate.get();
-    }
-
-    public void setDueDate(String dueDate) {
-        this.dueDate.set(dueDate);
-    }
-
-    public Long getAssignedUserId() {
-        return assignedUserId.get();
-    }
-
-    public void setAssignedUserId(Long assignedUserId) {
-        this.assignedUserId.set(assignedUserId);
-    }
-
-    public Long getProjectId() {
-        return projectId.get();
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId.set(projectId);
     }
 }

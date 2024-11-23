@@ -2,15 +2,33 @@ package com.projecthub.dto;
 
 import com.projecthub.model.Submission;
 
+/**
+ * Data Transfer Object for the Submission entity.
+ * Used for transferring submission data between processes.
+ */
 public class SubmissionSummary {
-    private Long id;
-    private Long projectId;
-    private Long studentId;
-    private String filePath;
-    private Integer grade;
+    private final Long id;
+    private final Long projectId;
+    private final Long studentId;
+    private final String filePath;
+    private final Integer grade;
 
-    public SubmissionSummary() {}
+    /**
+     * Default constructor.
+     */
+    public SubmissionSummary() {
+        this.id = 0L;
+        this.projectId = 0L;
+        this.studentId = 0L;
+        this.filePath = "";
+        this.grade = 0;
+    }
 
+    /**
+     * Constructs a SubmissionSummary from a Submission entity.
+     *
+     * @param submission the Submission entity
+     */
     public SubmissionSummary(Submission submission) {
         this.id = submission.getId();
         this.projectId = submission.getProject() != null ? submission.getProject().getId() : null;
@@ -19,44 +37,49 @@ public class SubmissionSummary {
         this.grade = submission.getGrade();
     }
 
-    // Getters and setters
+    // Getters with JavaDoc comments
+    /**
+     * Gets the submission ID.
+     *
+     * @return the submission ID
+     */
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    /**
+     * Gets the project ID.
+     *
+     * @return the project ID
+     */
     public Long getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
+    /**
+     * Gets the student ID.
+     *
+     * @return the student ID
+     */
     public Long getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
-    }
-
+    /**
+     * Gets the file path.
+     *
+     * @return the file path
+     */
     public String getFilePath() {
         return filePath;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
+    /**
+     * Gets the grade.
+     *
+     * @return the grade
+     */
     public Integer getGrade() {
         return grade;
-    }
-
-    public void setGrade(Integer grade) {
-        this.grade = grade;
     }
 }
