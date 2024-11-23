@@ -40,16 +40,13 @@ public class TaskViewModel {
     }
 
     public void loadTasks() {
-        List<TaskSummary> taskSummaries = taskService.getAllTasks().stream()
-                .map(TaskSummary::new)
-                .collect(Collectors.toList());
+        List<TaskSummary> taskSummaries = taskService.getAllTasks();
         tasks.setAll(taskSummaries);
     }
 
     public void searchTasks() {
         String query = searchQuery.get().toLowerCase();
         List<TaskSummary> filteredTasks = taskService.getAllTasks().stream()
-                .map(TaskSummary::new)
                 .filter(task -> task.getName().toLowerCase().contains(query) ||
                         task.getDescription().toLowerCase().contains(query))
                 .collect(Collectors.toList());
