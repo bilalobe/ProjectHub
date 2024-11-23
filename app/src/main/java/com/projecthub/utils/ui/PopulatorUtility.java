@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.CohortSummary;
+import com.projecthub.dto.ComponentSummary;
+import com.projecthub.dto.ProjectSummary;
 import com.projecthub.dto.SchoolSummary;
 import com.projecthub.dto.TeamSummary;
 import com.projecthub.service.CohortService;
@@ -42,13 +44,12 @@ public class PopulatorUtility {
      *
      * @param parentItem the root TreeItem to which Schools are added
      */
-    public void populateSchools(TreeItem<String> parentItem) {
+    public void populateSchools(TreeItem<TreeItemWrapper> parentItem) {
         List<SchoolSummary> schools = schoolService.getAllSchools();
         for (SchoolSummary school : schools) {
-            TreeItem<String> schoolItem = new TreeItem<>(school.getName());
-            schoolItem.setExpanded(false);
+            TreeItemWrapper schoolWrapper = new TreeItemWrapper(school.getName(), school);
+            TreeItem<TreeItemWrapper> schoolItem = new TreeItem<>(schoolWrapper);
             parentItem.getChildren().add(schoolItem);
-            populateCohorts(schoolItem, school.getId());
         }
     }
 
@@ -58,13 +59,12 @@ public class PopulatorUtility {
      * @param parentItem the TreeItem of the School
      * @param schoolId   the ID of the School
      */
-    public void populateCohorts(TreeItem<String> parentItem, Long schoolId) {
+    public void populateCohorts(TreeItem<TreeItemWrapper> parentItem, Long schoolId) {
         List<CohortSummary> cohorts = cohortService.getCohortsBySchoolId(schoolId);
         for (CohortSummary cohort : cohorts) {
-            TreeItem<String> cohortItem = new TreeItem<>(cohort.getName());
-            cohortItem.setExpanded(false);
+            TreeItemWrapper cohortWrapper = new TreeItemWrapper(cohort.getName(), cohort);
+            TreeItem<TreeItemWrapper> cohortItem = new TreeItem<>(cohortWrapper);
             parentItem.getChildren().add(cohortItem);
-            populateTeams(cohortItem, cohort.getId());
         }
     }
 
@@ -74,13 +74,12 @@ public class PopulatorUtility {
      * @param parentItem the TreeItem of the Cohort
      * @param cohortId   the ID of the Cohort
      */
-    public void populateTeams(TreeItem<String> parentItem, Long cohortId) {
+    public void populateTeams(TreeItem<TreeItemWrapper> parentItem, Long cohortId) {
         List<TeamSummary> teams = teamService.getTeamsByCohortId(cohortId);
         for (TeamSummary team : teams) {
-            TreeItem<String> teamItem = new TreeItem<>(team.getName());
-            teamItem.setExpanded(false);
+            TreeItemWrapper teamWrapper = new TreeItemWrapper(team.getName(), team);
+            TreeItem<TreeItemWrapper> teamItem = new TreeItem<>(teamWrapper);
             parentItem.getChildren().add(teamItem);
-            populateProjects(teamItem, team.getId());
         }
     }
 
@@ -90,8 +89,14 @@ public class PopulatorUtility {
      * @param parentItem the TreeItem of the Team
      * @param teamId     the ID of the Team
      */
-    public void populateProjects(TreeItem<String> parentItem, Long teamId) {
-        // Implement this method based on your Project model and service
+    public void populateProjects(TreeItem<TreeItemWrapper> parentItem, Long teamId) {
+        List<ProjectSummary> projects;
+        projects = projectService.getProjectsByTeamId(teamId);
+        for (ProjectSummary project : projects) {
+            TreeItemWrapper projectWrapper = new TreeItemWrapper(project.getName(), project);
+            TreeItem<TreeItemWrapper> projectItem = new TreeItem<>(projectWrapper);
+            parentItem.getChildren().add(projectItem);
+        }
     }
 
     /**
@@ -100,7 +105,12 @@ public class PopulatorUtility {
      * @param parentItem the TreeItem of the Project
      * @param projectId  the ID of the Project
      */
-    public void populateComponents(TreeItem<String> parentItem, Long projectId) {
-        // Implement this method based on your Component model and service
+    public void populateComponents(TreeItem<TreeItemWrapper> parentItem, Long projectId) {
+        List<ComponentSummary> components = componentService.getComponentsByProjectId(projectId);
+        for (ComponentSummary component : components) {
+            TreeItemWrapper componentWrapper = new TreeItemWrapper(component.getName(), component);
+            TreeItem<TreeItemWrapper> componentItem = new TreeItem<>(componentWrapper);
+            parentItem.getChildren().add(componentItem);
+        }
     }
 }
