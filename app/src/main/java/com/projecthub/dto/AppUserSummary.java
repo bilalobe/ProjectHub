@@ -23,7 +23,7 @@ public class AppUserSummary {
      * @param username the username
      * @param teamId   the team ID
      */
-    public AppUserSummary(Long id, String username, Long teamId) {
+    public AppUserSummary(Long id, String username, String password, Long teamId) {
         this.id = id;
         this.username = username;
         this.teamId = teamId;

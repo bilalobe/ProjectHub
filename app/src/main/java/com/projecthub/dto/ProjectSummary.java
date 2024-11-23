@@ -14,14 +14,20 @@ public class ProjectSummary {
     private final String deadline;
 
     /**
-     * Default constructor.
+     * Constructs a ProjectSummary with the specified details.
+     *
+     * @param id the project ID
+     * @param name the project name
+     * @param description the project description
+     * @param teamId the team ID associated with the project
+     * @param deadline the project deadline
      */
-    public ProjectSummary(ProjectSummary project) {
-        this.id = 0L;
-        this.name = "";
-        this.description = "";
-        this.teamId = 0L;
-        this.deadline = "";
+    public ProjectSummary(Long id, String name, String description, Long teamId, String deadline) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.teamId = teamId;
+        this.deadline = deadline;
     }
 
     /**
