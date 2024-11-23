@@ -1,24 +1,29 @@
 package com.projecthub.mapper;
 
 import com.projecthub.dto.SubmissionSummary;
-import com.projecthub.model.Submission;
 import com.projecthub.model.Project;
 import com.projecthub.model.Student;
+import com.projecthub.model.Submission;
 
 public class SubmissionMapper {
 
     public static Submission toSubmission(SubmissionSummary submissionSummary, Project project, Student student) {
-        Submission submission = new Submission();
-        submission.setId(submissionSummary.getId());
-        submission.setContent(submissionSummary.getContent());
-        submission.setTimestamp(submissionSummary.getTimestamp());
-        submission.setGrade(submissionSummary.getGrade());
-        submission.setProject(project);
-        submission.setStudent(student);
+        if (submissionSummary == null) {
+            return null;
+        }
+        Submission submission = new Submission(
+            student,
+            project,
+            submissionSummary.getContent(),
+            submissionSummary.getTimestamp()
+        );
         return submission;
     }
 
     public static SubmissionSummary toSubmissionSummary(Submission submission) {
+        if (submission == null) {
+            return null;
+        }
         return new SubmissionSummary(
             submission.getId(),
             submission.getContent(),

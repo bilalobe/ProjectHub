@@ -10,6 +10,8 @@ public class StudentMapper {
         Student student = new Student();
         student.setId(studentSummary.getId());
         student.setName(studentSummary.getName());
+        Team team = new Team();
+        team.setId(studentSummary.getTeamId());
         student.setTeam(team);
         return student;
     }
