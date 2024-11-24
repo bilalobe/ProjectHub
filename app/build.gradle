@@ -24,6 +24,9 @@ dependencies {
     implementation 'org.openjfx:javafx-media:23.0.1'
     implementation 'org.openjfx:javafx-web:23.0.1'
 
+    // Lombok for boilerplate code reduction
+    implementation 'org.modelmapper:modelmapper:2.4.4'
+
     // JPro dependencies
     implementation 'one.jpro:jpro-webapi:2024.4.1'
 
