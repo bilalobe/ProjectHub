@@ -3,7 +3,6 @@ package com.projecthub.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
@@ -47,7 +46,6 @@ public class TaskService {
     private final CustomUserRepository customUserRepository;
     private final CustomProjectRepository customProjectRepository;
 
-    @Autowired
     public TaskService(CustomTaskRepository customTaskRepository, CustomUserRepository customUserRepository, CustomProjectRepository customProjectRepository) {
         this.customTaskRepository = customTaskRepository;
         this.customUserRepository = customUserRepository;

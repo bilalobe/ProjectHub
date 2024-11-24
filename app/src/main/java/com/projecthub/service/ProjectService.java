@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.projecthub.dto.ProjectSummary;
@@ -24,11 +23,12 @@ public class ProjectService {
 
     private final CustomProjectRepository projectRepository;
     private final CustomTeamRepository teamRepository;
+    private final ProjectMapper projectMapper;
 
-    @Autowired
-    public ProjectService(CustomProjectRepository projectRepository, CustomTeamRepository teamRepository) {
+    public ProjectService(CustomProjectRepository projectRepository, CustomTeamRepository teamRepository, ProjectMapper projectMapper) {
         this.projectRepository = projectRepository;
         this.teamRepository = teamRepository;
+        this.projectMapper = projectMapper;
     }
 
     /**
@@ -42,9 +42,33 @@ public class ProjectService {
         Team team = teamRepository.findById(projectSummary.getTeam())
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + projectSummary.getTeam()));
 
-        Project project = ProjectMapper.toProject(projectSummary, team);
+        Project project = projectMapper.toProject(projectSummary, team);
         Project savedProject = projectRepository.save(project);
-        return ProjectMapper.toProjectSummary(savedProject);
+        return projectMapper.toProjectSummary(savedProject);
+    }
+
+    /**
+     * Updates an existing project based on the provided {@link ProjectSummary} DTO.
+     * 
+     * @param id the unique identifier of the project to be updated
+     * @param projectSummary the summary of the project to be updated
+     * @return the updated {@link ProjectSummary} entity
+     * @throws ResourceNotFoundException if the project or associated team is not found
+     */
+    public ProjectSummary updateProject(Long id, ProjectSummary projectSummary) throws ResourceNotFoundException {
+        Project existingProject = projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + id));
+
+        Team team = teamRepository.findById(projectSummary.getTeam())
+                .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + projectSummary.getTeam()));
+
+        existingProject.setName(projectSummary.getName());
+        existingProject.setDescription(projectSummary.getDescription());
+        existingProject.setDeadline(projectSummary.getDeadline());
+        existingProject.setTeam(team);
+
+        Project updatedProject = projectRepository.save(existingProject);
+        return projectMapper.toProjectSummary(updatedProject);
     }
 
     /**
@@ -54,7 +78,7 @@ public class ProjectService {
      */
     public List<ProjectSummary> getAllProjects() {
         return projectRepository.findAll().stream()
-                .map(ProjectMapper::toProjectSummary)
+                .map(projectMapper::toProjectSummary)
                 .collect(Collectors.toList());
     }
 
@@ -66,7 +90,7 @@ public class ProjectService {
      */
     public Optional<ProjectSummary> getProjectById(Long id) {
         return projectRepository.findById(id)
-                .map(ProjectMapper::toProjectSummary);
+                .map(projectMapper::toProjectSummary);
     }
 
     /**
@@ -78,7 +102,20 @@ public class ProjectService {
     public List<ProjectSummary> getProjectsByTeamId(Long teamId) {
         List<Project> projects = projectRepository.findAllByTeamId(teamId);
         return projects.stream()
-                .map(ProjectMapper::toProjectSummary)
+                .map(projectMapper::toProjectSummary)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves all projects associated with a user.
+     * 
+     * @param userId the unique identifier of the user
+     * @return a list of all {@link ProjectSummary} objects associated with the user
+     */
+    public List<ProjectSummary> getProjectsByUserId(Long userId) {
+        List<Project> projects = projectRepository.findAllByUserId(userId);
+        return projects.stream()
+                .map(projectMapper::toProjectSummary)
                 .collect(Collectors.toList());
     }
 

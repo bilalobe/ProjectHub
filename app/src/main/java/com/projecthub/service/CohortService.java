@@ -5,13 +5,16 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.projecthub.dto.CohortSummary;
 import com.projecthub.exception.ResourceNotFoundException;
+import com.projecthub.mapper.CohortMapper;
+import com.projecthub.model.Cohort;
+import com.projecthub.model.School;
 import com.projecthub.repository.jpa.CohortRepository;
+import com.projecthub.repository.jpa.SchoolRepository;
 
 /**
  * Service class for managing Cohorts.
@@ -22,15 +25,20 @@ public class CohortService {
     private static final Logger logger = LoggerFactory.getLogger(CohortService.class);
 
     private final CohortRepository cohortRepository;
+    private final SchoolRepository schoolRepository;
+    private final CohortMapper cohortMapper;
 
     /**
      * Constructs a new CohortService.
      *
      * @param cohortRepository the Cohort repository
+     * @param schoolRepository the School repository
+     * @param cohortMapper the Cohort mapper
      */
-    @Autowired
-    public CohortService(CohortRepository cohortRepository) {
+    public CohortService(CohortRepository cohortRepository, SchoolRepository schoolRepository, CohortMapper cohortMapper) {
         this.cohortRepository = cohortRepository;
+        this.schoolRepository = schoolRepository;
+        this.cohortMapper = cohortMapper;
     }
 
     /**
@@ -41,7 +49,7 @@ public class CohortService {
     public List<CohortSummary> getAllCohorts() {
         logger.info("Retrieving all cohorts");
         return cohortRepository.findAll().stream()
-                .map(CohortSummary::new)
+                .map(cohortMapper::toCohortSummary)
                 .collect(Collectors.toList());
     }
 
@@ -58,7 +66,7 @@ public class CohortService {
             throw new IllegalArgumentException("School ID cannot be null");
         }
         return cohortRepository.findBySchoolId(schoolId).stream()
-                .map(CohortSummary::new)
+                .map(cohortMapper::toCohortSummary)
                 .collect(Collectors.toList());
     }
 
@@ -76,7 +84,7 @@ public class CohortService {
             throw new IllegalArgumentException("Cohort ID cannot be null");
         }
         return cohortRepository.findById(id)
-                .map(CohortSummary::new)
+                .map(cohortMapper::toCohortSummary)
                 .orElseThrow(() -> new ResourceNotFoundException("Cohort not found with ID: " + id));
     }
 
@@ -93,9 +101,12 @@ public class CohortService {
         if (cohortSummary == null) {
             throw new IllegalArgumentException("CohortSummary cannot be null");
         }
-        CohortSummary savedCohort = new CohortSummary(cohortRepository.save(cohortSummary.toCohort()));
+        School school = schoolRepository.findById(cohortSummary.getSchool().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("School not found with ID: " + cohortSummary.getSchool().getId()));
+        Cohort cohort = cohortMapper.toCohort(cohortSummary, school);
+        Cohort savedCohort = cohortRepository.save(cohort);
         logger.info("Cohort saved with ID {}", savedCohort.getId());
-        return savedCohort;
+        return cohortMapper.toCohortSummary(savedCohort);
     }
 
     /**
@@ -116,5 +127,9 @@ public class CohortService {
         }
         cohortRepository.deleteById(id);
         logger.info("Cohort deleted");
+    }
+
+    public CohortSummary updateCohort(Long id, CohortSummary cohortSummary) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -13,7 +13,9 @@ import com.projecthub.dto.TeamSummary;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.TeamMapper;
 import com.projecthub.model.AppUser;
+import com.projecthub.model.Cohort;
 import com.projecthub.model.Team;
+import com.projecthub.repository.jpa.CohortRepository;
 import com.projecthub.repository.custom.CustomTeamRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +31,11 @@ public class TeamService {
     private final UserService userService;
 
     @Autowired
+    private CohortRepository cohortRepository;
+
+    @Autowired
+    private TeamMapper teamMapper;
+
     public TeamService(CustomTeamRepository teamRepository, UserService userService) {
         this.teamRepository = teamRepository;
         this.userService = userService;
@@ -64,7 +71,7 @@ public class TeamService {
         teamRepository.save(team);
     
         logger.info("User {} added to team {}", userId, teamId);
-        return TeamMapper.toTeamSummary(team);
+        return teamMapper.toTeamSummary(team);
     }
 
     /**
@@ -103,9 +110,9 @@ public class TeamService {
     @Operation(summary = "Create a new team")
     public TeamSummary createTeam(TeamSummary teamSummary) {
         // Map TeamSummary to Team entity
-        Team teamEntity = TeamMapper.toTeam(teamSummary, null, null); // Adjust as needed
+        Team teamEntity = teamMapper.toTeam(teamSummary, null, null); // Adjust as needed
         Team savedTeam = teamRepository.save(teamEntity);
-        return TeamMapper.toTeamSummary(savedTeam);
+        return teamMapper.toTeamSummary(savedTeam);
     }
 
     @Operation(summary = "Delete a team by ID")
@@ -125,5 +132,27 @@ public class TeamService {
     @Operation(summary = "Save a team")
     public Team saveTeam(Team team) {
         return teamRepository.save(team);
+    }
+
+    @Operation(summary = "Update a team")
+    public TeamSummary updateTeam(TeamSummary teamSummary) {
+        // Retrieve the existing team
+        var existingTeam = teamRepository.findById(teamSummary.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Team not found with id " + teamSummary.getId()));
+
+        // Update the team's properties
+        existingTeam.setName(teamSummary.getName());
+        existingTeam.setCohort(getCohortById(teamSummary.getCohort()));
+
+        // Save the updated team
+        Team updatedTeam = teamRepository.save(existingTeam);
+
+        // Convert the updated team entity back to a TeamSummary and return it
+        return teamMapper.toTeamSummary(updatedTeam);
+    }
+
+    private Cohort getCohortById(Long cohortId) {
+        return cohortRepository.findById(cohortId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cohort not found with id " + cohortId));
     }
 }

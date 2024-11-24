@@ -2,16 +2,18 @@ package com.projecthub.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.projecthub.dto.SchoolSummary;
 import com.projecthub.exception.ResourceNotFoundException;
+import com.projecthub.mapper.SchoolMapper;
+import com.projecthub.model.School;
 import com.projecthub.repository.custom.CustomSchoolRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,10 +26,11 @@ public class SchoolService {
     private static final Logger logger = LoggerFactory.getLogger(SchoolService.class);
 
     private final CustomSchoolRepository schoolRepository;
+    private final SchoolMapper schoolMapper;
 
-    @Autowired
-    public SchoolService(@Qualifier("csvSchoolRepository") CustomSchoolRepository schoolRepository) {
+    public SchoolService(@Qualifier("csvSchoolRepository") CustomSchoolRepository schoolRepository, SchoolMapper schoolMapper) {
         this.schoolRepository = schoolRepository;
+        this.schoolMapper = schoolMapper;
     }
 
     /**
@@ -40,8 +43,8 @@ public class SchoolService {
     })
     public List<SchoolSummary> getAllSchools() {
         logger.info("Retrieving all schools");
-        return schoolRepository.findAll().stream()
-                .map(SchoolSummary::new)
+        return StreamSupport.stream(schoolRepository.findAll().spliterator(), false)
+                .map(schoolMapper::toSchoolSummary)
                 .collect(Collectors.toList());
     }
 
@@ -62,9 +65,10 @@ public class SchoolService {
         if (schoolSummary == null) {
             throw new IllegalArgumentException("SchoolSummary cannot be null");
         }
-        schoolRepository.save(schoolSummary);
-        logger.info("School saved");
-        return schoolSummary;
+        School school = schoolMapper.toSchool(schoolSummary);
+        School savedSchool = schoolRepository.save(school);
+        logger.info("School saved with ID {}", savedSchool.getId());
+        return schoolMapper.toSchoolSummary(savedSchool);
     }
 
     /**
@@ -84,7 +88,7 @@ public class SchoolService {
         if (id == null) {
             throw new IllegalArgumentException("School ID cannot be null");
         }
-        if (!schoolRepository.findById(id).isPresent()) {
+        if (!schoolRepository.existsById(id)) {
             throw new ResourceNotFoundException("School not found with ID: " + id);
         }
         schoolRepository.deleteById(id);
@@ -105,7 +109,7 @@ public class SchoolService {
             throw new IllegalArgumentException("School ID cannot be null");
         }
         return schoolRepository.findById(id)
-                .map(SchoolSummary::new)
+                .map(schoolMapper::toSchoolSummary)
                 .orElseThrow(() -> new ResourceNotFoundException("School not found with ID: " + id));
     }
 }
