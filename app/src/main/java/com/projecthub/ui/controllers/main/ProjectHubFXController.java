@@ -1,10 +1,11 @@
-package com.projecthub.ui.controllers;
+package com.projecthub.ui.controllers.main;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.projecthub.dto.CohortSummary;
 import com.projecthub.model.School;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
 import com.projecthub.utils.ui.TreeItemWrapper;
@@ -68,8 +69,8 @@ public class ProjectHubFXController {
         Object data = parentWrapper.getData();
 
         if (data instanceof School school) {
-            List<com.projecthub.model.Cohort> classes = viewModel.getClassesBySchoolId(school.getId());
-            for (com.projecthub.model.Cohort cls : classes) {
+            List<CohortSummary> classes = viewModel.getClassesBySchoolId(school.getId());
+            for (CohortSummary cls : classes) {
                 var classWrapper = new TreeItemWrapper(cls.getName(), cls);
                 TreeItem<String> classItem = createTreeItem(classWrapper);
                 parentItem.getChildren().add(classItem);
