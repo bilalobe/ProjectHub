@@ -2,15 +2,30 @@ package com.projecthub.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.projecthub.dto.ComponentSummary;
 import com.projecthub.service.ComponentService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
+import org.aspectj.lang.annotation.Aspect;
+
+import org.springframework.stereotype.Component;
+
+import com.projecthub.dto.ComponentSummary;
+import com.projecthub.exception.ResourceNotFoundException;
+
+@Aspect
+@Component
 
 @RequestMapping("/api/components")
 @Tag(name = "Component API", description = "Operations pertaining to components in ProjectHub")
@@ -19,7 +34,6 @@ public class ComponentController {
 
     private final ComponentService componentService;
 
-    @Autowired
     public ComponentController(ComponentService componentService) {
         this.componentService = componentService;
     }
@@ -33,15 +47,23 @@ public class ComponentController {
 
     @PostMapping
     @Operation(summary = "Save a new component", description = "Creates a new component with the provided details.")
-    public ResponseEntity<ComponentSummary> saveComponent(@RequestBody ComponentSummary componentSummary) {
-        ComponentSummary savedComponentSummary = componentService.saveComponent(componentSummary);
-        return ResponseEntity.ok(savedComponentSummary);
+    public ResponseEntity<ComponentSummary> saveComponent(@Valid @RequestBody ComponentSummary componentSummary) {
+        try {
+            ComponentSummary savedComponentSummary = componentService.saveComponent(componentSummary);
+            return ResponseEntity.ok(savedComponentSummary);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(null);
+        }
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a component by ID", description = "Deletes the component with the specified ID.")
     public ResponseEntity<Void> deleteComponent(@PathVariable Long id) {
-        componentService.deleteComponent(id);
-        return ResponseEntity.noContent().build();
+        try {
+            componentService.deleteComponent(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(404).build();
+        }
     }
 }

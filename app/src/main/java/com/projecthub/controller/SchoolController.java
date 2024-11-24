@@ -2,26 +2,25 @@ package com.projecthub.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import com.projecthub.dto.SchoolSummary;
 import com.projecthub.service.SchoolService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
+import com.projecthub.dto.SchoolSummary;
+import com.projecthub.exception.ResourceNotFoundException;
+
+@Tag(name = "School API", description = "Operations pertaining to schools in ProjectHub")
 @RestController
 @RequestMapping("/schools")
 public class SchoolController {
 
     private final SchoolService schoolService;
 
-    @Autowired
     public SchoolController(SchoolService schoolService) {
         this.schoolService = schoolService;
     }
@@ -32,24 +31,49 @@ public class SchoolController {
     }
 
     @GetMapping("/{id}")
-    public SchoolSummary getSchoolById(@PathVariable Long id) {
-        return schoolService.getSchoolById(id)
-                .orElseThrow(() -> new RuntimeException("School not found"));
+    public ResponseEntity<SchoolSummary> getSchoolById(@PathVariable Long id) {
+        SchoolSummary school = schoolService.getSchoolById(id);
+        if (school != null) {
+            return ResponseEntity.ok(school);
+        } else {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 
+    @Operation(summary = "Create a new school")
     @PostMapping
-    public SchoolSummary createSchool(@RequestBody SchoolSummary schoolSummary) {
-        return schoolService.saveSchool(schoolSummary);
+    public ResponseEntity<SchoolSummary> createSchool(@Valid @RequestBody SchoolSummary schoolSummary) {
+        try {
+            SchoolSummary createdSchool = schoolService.saveSchool(schoolSummary);
+            return ResponseEntity.ok(createdSchool);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(null);
+        }
     }
 
+    @Operation(summary = "Update an existing school")
     @PutMapping("/{id}")
-    public SchoolSummary updateSchool(@PathVariable Long id, @RequestBody SchoolSummary schoolSummary) {
-        schoolSummary.setId(id);
-        return schoolService.saveSchool(schoolSummary);
+    public ResponseEntity<SchoolSummary> updateSchool(@PathVariable Long id, @Valid @RequestBody SchoolSummary schoolSummary) {
+        try {
+            SchoolSummary updatedSchool = schoolService.saveSchool(new SchoolSummary(
+                id,
+                schoolSummary.getName(),
+                schoolSummary.getAddress()
+            ));
+            return ResponseEntity.ok(updatedSchool);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(null);
+        }
     }
 
+    @Operation(summary = "Delete a school by ID")
     @DeleteMapping("/{id}")
-    public void deleteSchool(@PathVariable Long id) {
-        schoolService.deleteSchool(id);
+    public ResponseEntity<String> deleteSchool(@PathVariable Long id) {
+        try {
+            schoolService.deleteSchool(id);
+            return ResponseEntity.ok("School deleted successfully");
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(404).body("School not found");
+        }
     }
 }

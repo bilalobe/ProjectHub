@@ -2,20 +2,24 @@ package com.projecthub.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.projecthub.dto.TaskSummary;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.service.TaskService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
+@Tag(name = "Task API", description = "Operations pertaining to tasks in ProjectHub")
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
 
     private final TaskService taskService;
 
-    @Autowired
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
@@ -26,9 +30,13 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public TaskSummary getTaskById(@PathVariable Long id) {
-        return taskService.getTaskById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found with id " + id));
+    public ResponseEntity<TaskSummary> getTaskById(@PathVariable Long id) {
+        TaskSummary task = taskService.getTaskById(id);
+        if (task != null) {
+            return ResponseEntity.ok(task);
+        } else {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 
     @GetMapping("/project/{projectId}")
@@ -41,23 +49,36 @@ public class TaskController {
         return taskService.getTasksByAssignedUserId(userId);
     }
 
+    @Operation(summary = "Create a new task")
     @PostMapping
-    public TaskSummary createTask(@RequestBody TaskSummary taskSummary) throws ResourceNotFoundException {
-        return taskService.saveTask(taskSummary);
+    public ResponseEntity<TaskSummary> createTask(@Valid @RequestBody TaskSummary taskSummary) {
+        try {
+            TaskSummary createdTask = taskService.saveTask(taskSummary);
+            return ResponseEntity.ok(createdTask);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 
+    @Operation(summary = "Update a task")
     @PutMapping("/{id}")
-    public TaskSummary updateTask(@PathVariable Long id, @RequestBody TaskSummary taskSummary) throws ResourceNotFoundException {
-        taskSummary.setId(id);
-        return taskService.updateTask(id, taskSummary);
+    public ResponseEntity<TaskSummary> updateTask(@PathVariable Long id, @Valid @RequestBody TaskSummary taskSummary) {
+        try {
+            TaskSummary updatedTask = taskService.updateTask(id, taskSummary);
+            return ResponseEntity.ok(updatedTask);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 
+    @Operation(summary = "Delete a task by ID")
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable Long id) {
+    public ResponseEntity<String> deleteTask(@PathVariable Long id) {
         try {
             taskService.deleteTask(id);
+            return ResponseEntity.ok("Task deleted successfully");
         } catch (ResourceNotFoundException e) {
-            throw new RuntimeException("Task not found with id " + id);
+            return ResponseEntity.status(404).body("Task not found with id " + id);
         }
     }
 }
