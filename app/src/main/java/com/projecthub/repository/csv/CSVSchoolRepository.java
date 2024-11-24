@@ -12,6 +12,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import jakarta.validation.ConstraintViolation;
@@ -71,8 +72,9 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
      * @param school the School object to save
      * @return the saved School object
      */
-    @Override
-    public School save(School school) {
+    
+    @NonNull
+    public <S extends School> S save(@NonNull S school) {
         validateSchool(school);
         try {
             backupCSVFile(schoolsFilePath);
@@ -101,6 +103,7 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
     }
 
     @Override
+    @NonNull
     public List<School> findAll() {
         try (CSVReader reader = new CSVReader(new FileReader(schoolsFilePath))) {
             ColumnPositionMappingStrategy<School> strategy = new ColumnPositionMappingStrategy<>();
@@ -123,7 +126,7 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
      * @param schoolId the ID of the school to delete
      */
     @Override
-    public void deleteById(Long schoolId) {
+    public void deleteById(@NonNull Long schoolId) {
         try {
             backupCSVFile(schoolsFilePath);
             List<School> schools = findAll();

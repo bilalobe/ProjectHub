@@ -117,7 +117,7 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
      * @return the saved Project object
      */
     @Override
-    public @NonNull <S extends Project> S save(S project) {
+    public @NonNull <S extends Project> S save(@NonNull S project) {
         validateProject(project);
         try {
             backupCSVFile(projectsFilePath);
