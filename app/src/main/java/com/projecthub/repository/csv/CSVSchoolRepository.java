@@ -74,6 +74,7 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
      */
     
     @NonNull
+    @Override
     public <S extends School> S save(@NonNull S school) {
         validateSchool(school);
         try {
