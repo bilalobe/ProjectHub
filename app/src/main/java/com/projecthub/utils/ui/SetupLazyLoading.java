@@ -19,9 +19,9 @@ public class SetupLazyLoading {
      * @param parentId   the ID associated with the parent item
      * @param level      the level of the tree hierarchy (e.g., "School", "Class")
      */
-    public void setupLazyLoading(TreeItem<String> parentItem, Long parentId, String level) {
-        parentItem.addEventHandler(TreeItem.branchExpandedEvent(), (TreeModificationEvent<String> event) -> {
-            TreeItem<String> source = event.getSource();
+    public void setupLazyLoading(TreeItem<TreeItemWrapper> parentItem, Long parentId, String level) {
+        parentItem.addEventHandler(TreeItem.branchExpandedEvent(), (TreeModificationEvent<TreeItemWrapper> event) -> {
+            TreeItem<TreeItemWrapper> source = event.getSource();
             if (source.getChildren().isEmpty()) {
                 switch (level) {
                     case "School" -> populatorUtility.populateCohorts(source, parentId);
@@ -32,7 +32,7 @@ public class SetupLazyLoading {
                     }
                 }
                 // Optional: Handle unexpected levels
-                            }
+            }
         });
     }
 }
