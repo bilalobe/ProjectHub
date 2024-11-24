@@ -6,7 +6,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,7 +19,6 @@ public class TaskViewModel {
     private final ObservableList<TaskSummary> tasks = FXCollections.observableArrayList();
     private final StringProperty searchQuery = new SimpleStringProperty();
 
-    @Autowired
     public TaskViewModel(TaskService taskService) {
         this.taskService = taskService;
         initialize();
