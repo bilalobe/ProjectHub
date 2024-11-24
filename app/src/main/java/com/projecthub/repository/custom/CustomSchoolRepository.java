@@ -1,21 +1,14 @@
 package com.projecthub.repository.custom;
 
-import com.projecthub.model.School;
-
-import java.util.List;
-import java.util.Optional;
-
 import com.projecthub.dto.SchoolSummary;
+import com.projecthub.model.School;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.lang.NonNull;
 
-public interface CustomSchoolRepository {
+public interface CustomSchoolRepository extends CrudRepository<School, Long> {
 
-    School save(School school);
+    @Override
+    void deleteById(@NonNull Long id);
 
-    List<School> findAll();
-
-    Optional<School> findById(Long id);
-
-    void deleteById(Long id);
-
-    public void save(SchoolSummary schoolSummary);
+    void save(SchoolSummary schoolSummary);
 }
