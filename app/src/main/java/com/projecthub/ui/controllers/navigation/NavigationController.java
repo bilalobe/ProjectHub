@@ -1,6 +1,7 @@
 package com.projecthub.ui.controllers.navigation;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class NavigationController {
         TreeItem<String> teamsItem = new TreeItem<>("Teams");
         TreeItem<String> studentsItem = new TreeItem<>("Students");
 
-        rootItem.getChildren().addAll(cohortsItem, teamsItem, studentsItem);
+        Collections.addAll(rootItem.getChildren(), cohortsItem, teamsItem, studentsItem);
         navigationTreeView.setRoot(rootItem);
         navigationTreeView.setShowRoot(false);
 
