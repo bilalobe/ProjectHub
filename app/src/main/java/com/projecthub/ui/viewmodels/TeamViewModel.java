@@ -1,17 +1,11 @@
 package com.projecthub.ui.viewmodels;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.AppUserSummary;
 import com.projecthub.dto.ProjectSummary;
-import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.model.AppUser;
-import com.projecthub.model.Project;
-import com.projecthub.model.Team;
+import com.projecthub.dto.TeamSummary;
 import com.projecthub.service.ProjectService;
 import com.projecthub.service.UserService;
 
@@ -21,7 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * ViewModel for the TeamDetails view.
+ * ViewModel for managing team-related data and operations.
  */
 @Component
 public class TeamViewModel {
@@ -30,8 +24,8 @@ public class TeamViewModel {
     private final SimpleStringProperty teamName = new SimpleStringProperty();
     private final SimpleStringProperty cohortName = new SimpleStringProperty();
 
-    private final ObservableList<Project> projects = FXCollections.observableArrayList();
-    private final ObservableList<AppUser> members = FXCollections.observableArrayList();
+    private final ObservableList<ProjectSummary> projects = FXCollections.observableArrayList();
+    private final ObservableList<AppUserSummary> members = FXCollections.observableArrayList();
 
     @Autowired
     private ProjectService projectService;
@@ -39,88 +33,116 @@ public class TeamViewModel {
     @Autowired
     private UserService userService;
 
-    private Team team;
+    private TeamSummary team;
 
     /**
-     * Initializes the ViewModel with a Team.
+     * Sets the team and loads its projects and members.
      *
-     * @param team the Team to display
+     * @param team the TeamSummary object representing the team
      */
-    public void setTeam(Team team) throws ResourceNotFoundException {
+    public void setTeam(TeamSummary team) {
         this.team = team;
         if (team != null) {
             teamId.set(team.getId());
             teamName.set(team.getName());
-            cohortName.set(team.getCohort().getName());
+            cohortName.set(team.getCohortName());
             loadProjects();
             loadMembers();
         }
     }
 
     /**
-     * Loads projects associated with the team.
-     * @throws ResourceNotFoundException if the projects cannot be loaded 
+     * Loads the projects associated with the team.
      */
-    private void loadProjects() throws ResourceNotFoundException {
+    private void loadProjects() {
         projects.clear();
-        List<ProjectSummary> projectSummaries = projectService.getProjectsByTeamId(team.getId());
-        List<Project> projectList = projectSummaries.stream()
-                .map(summary -> new Project(summary.getId(), summary.getName(), null, team))
-                .collect(Collectors.toList());
-        projects.addAll(projectList);
+        projects.addAll(projectService.getProjectsByTeamId(team.getId()));
     }
 
     /**
-     * Loads members associated with the team.
+     * Loads the members associated with the team.
      */
     private void loadMembers() {
         members.clear();
         members.addAll(userService.getUsersByTeamId(team.getId()));
     }
 
-    // Getters for property bindings
-
+    /**
+     * Returns the team ID property.
+     *
+     * @return the team ID property
+     */
     public SimpleLongProperty teamIdProperty() {
         return teamId;
     }
 
+    /**
+     * Returns the team name property.
+     *
+     * @return the team name property
+     */
     public SimpleStringProperty teamNameProperty() {
         return teamName;
     }
 
+    /**
+     * Returns the cohort name property.
+     *
+     * @return the cohort name property
+     */
     public SimpleStringProperty cohortNameProperty() {
         return cohortName;
     }
 
-    public ObservableList<Project> getProjects() {
+    /**
+     * Returns the list of projects associated with the team.
+     *
+     * @return the list of projects
+     */
+    public ObservableList<ProjectSummary> getProjects() {
         return projects;
     }
 
-    public ObservableList<AppUser> getMembers() {
+    /**
+     * Returns the list of members associated with the team.
+     *
+     * @return the list of members
+     */
+    public ObservableList<AppUserSummary> getMembers() {
         return members;
     }
-
-    // Methods to add new projects and members
 
     /**
      * Adds a new project to the team.
      *
-     * @param project the Project to add
+     * @param projectSummary the ProjectSummary object representing the new project
      */
-    public void addProject(Project project) {
-        project.setTeam(team);
-        projectService.saveProject(project);
-        projects.add(project);
+    public void addProject(ProjectSummary projectSummary) {
+        ProjectSummary projectWithTeamId = new ProjectSummary(
+            projectSummary.getId(),
+            projectSummary.getName(),
+            projectSummary.getDescription(),
+            team.getId(),
+            projectSummary.getDeadline()
+        );
+        ProjectSummary savedProject = projectService.saveProject(projectWithTeamId);
+        projects.add(savedProject);
     }
 
     /**
      * Adds a new member to the team.
      *
-     * @param user the AppUser to add
+     * @param userSummary the AppUserSummary object representing the new member
+     * @param password the password for the new member
      */
-    public void addMember(AppUserSummary user) {
-        user.setTeam(team);
-        userService.saveUser(user);
-        members.add(user);
+    public void addMember(AppUserSummary userSummary, String password) {
+        AppUserSummary userWithTeamId = new AppUserSummary(
+            userSummary.getId(),
+            userSummary.getUsername(),
+            password,
+            team.getId()
+        );
+        AppUserSummary savedUser = userService.saveUser(userWithTeamId, password);
+        members.add(savedUser);
     }
 }
