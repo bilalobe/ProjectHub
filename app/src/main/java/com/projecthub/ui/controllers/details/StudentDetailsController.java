@@ -1,5 +1,6 @@
 package com.projecthub.ui.controllers;
 
+import com.projecthub.dto.SubmissionSummary;
 import com.projecthub.model.Student;
 import com.projecthub.model.Submission;
 import com.projecthub.service.SubmissionService;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller for displaying Student details.
@@ -83,7 +85,10 @@ public class StudentDetailsController {
      * Loads the submissions made by the Student.
      */
     private void loadSubmissions() {
-        List<Submission> submissions = submissionService.getSubmissionsByStudentId(student.getId());
+        List<SubmissionSummary> submissionSummaries = submissionService.getSubmissionsByStudentId(student.getId());
+        List<Submission> submissions = submissionSummaries.stream()
+                .map(summary -> new Submission(summary.getId(), student, summary.getProject(), summary.getGrade()))
+                .collect(Collectors.toList());
         ObservableList<Submission> submissionList = FXCollections.observableArrayList(submissions);
         submissionTableView.setItems(submissionList);
     }
