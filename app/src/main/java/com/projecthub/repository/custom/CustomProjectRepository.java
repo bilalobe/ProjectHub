@@ -12,6 +12,7 @@ import com.projecthub.model.Project;
 @Repository
 public interface CustomProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findAllByTeamId(Long teamId);
+    List<Project> findAllByUserId(Long userId);
     Optional<Project> findProjectWithComponentsById(Long projectId);
     public Project save(ProjectSummary projectSummary);
 }
