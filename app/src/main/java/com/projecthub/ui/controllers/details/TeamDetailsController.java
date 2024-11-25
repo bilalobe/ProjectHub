@@ -1,9 +1,12 @@
-package com.projecthub.ui.controllers;
+package com.projecthub.ui.controllers.details;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.AppUserSummary;
+import com.projecthub.dto.ProjectSummary;
+import com.projecthub.dto.TeamSummary;
 import com.projecthub.model.AppUser;
 import com.projecthub.model.Project;
 import com.projecthub.model.Team;
@@ -33,6 +36,9 @@ public class TeamDetailsController {
     @Autowired
     private TeamViewModel teamViewModel;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @FXML
     private Label teamNameLabel;
 
@@ -40,22 +46,22 @@ public class TeamDetailsController {
     private Label cohortNameLabel;
 
     @FXML
-    private TableView<Project> projectTableView;
+    private TableView<ProjectSummary> projectTableView;
 
     @FXML
-    private TableColumn<Project, Long> projectIdColumn;
+    private TableColumn<ProjectSummary, Long> projectIdColumn;
 
     @FXML
-    private TableColumn<Project, String> projectNameColumn;
+    private TableColumn<ProjectSummary, String> projectNameColumn;
 
     @FXML
-    private TableView<AppUser> memberTableView;
+    private TableView<AppUserSummary> memberTableView;
 
     @FXML
-    private TableColumn<AppUser, Long> memberIdColumn;
+    private TableColumn<AppUserSummary, Long> memberIdColumn;
 
     @FXML
-    private TableColumn<AppUser, String> memberNameColumn;
+    private TableColumn<AppUserSummary, String> memberNameColumn;
 
     @FXML
     private Button addProjectButton;
@@ -81,6 +87,10 @@ public class TeamDetailsController {
         memberIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         memberNameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         memberTableView.setItems(teamViewModel.getMembers());
+
+        // Add event handlers for buttons
+        addProjectButton.setOnAction(event -> handleAddProject());
+        addMemberButton.setOnAction(event -> handleAddMember());
     }
 
     /**
@@ -89,7 +99,8 @@ public class TeamDetailsController {
      * @param team the Team
      */
     public void setTeam(Team team) {
-        teamViewModel.setTeam(team);
+        TeamSummary teamSummary = modelMapper.map(team, TeamSummary.class);
+        teamViewModel.setTeam(teamSummary);
     }
 
     /**
@@ -129,7 +140,8 @@ public class TeamDetailsController {
         });
 
         dialog.showAndWait().ifPresent(project -> {
-            teamViewModel.addProject(project);
+            ProjectSummary projectSummary = modelMapper.map(project, ProjectSummary.class);
+            teamViewModel.addProject(projectSummary);
         });
     }
 
@@ -167,8 +179,8 @@ public class TeamDetailsController {
         });
 
         dialog.showAndWait().ifPresent(user -> {
-            AppUserSummary userSummary = new AppUserSummary(user.getId(), user.getUsername(), user.getPassword(), user.getTeam().getId());
-            teamViewModel.addMember(userSummary);
+            AppUserSummary userSummary = modelMapper.map(user, AppUserSummary.class);
+            teamViewModel.addMember(userSummary, user.getPassword());
         });
     }
 
