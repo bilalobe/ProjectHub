@@ -1,4 +1,4 @@
-package com.projecthub.ui.controllers;
+package com.projecthub.ui.controllers.details;
 
 import java.util.stream.Collectors;
 
