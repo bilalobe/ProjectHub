@@ -11,4 +11,5 @@ public interface CustomStudentRepository {
     void deleteById(Long studentId);
 
     public Optional<Student> findById(Long id);
+    void delete(Student student);
 }
