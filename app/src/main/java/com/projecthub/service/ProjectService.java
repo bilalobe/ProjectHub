@@ -65,6 +65,9 @@ public class ProjectService {
         existingProject.setName(projectSummary.getName());
         existingProject.setDescription(projectSummary.getDescription());
         existingProject.setDeadline(projectSummary.getDeadline());
+        existingProject.setStartDate(projectSummary.getStartDate());
+        existingProject.setEndDate(projectSummary.getEndDate());
+        existingProject.setStatus(projectSummary.getStatus());
         existingProject.setTeam(team);
 
         Project updatedProject = projectRepository.save(existingProject);
