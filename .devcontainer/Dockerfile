@@ -4,7 +4,7 @@ FROM gradle:8.11-jdk23 AS build
 WORKDIR /app
 
 # Copy gradle config files first to cache dependencies
-COPY build.gradle settings.gradle ./
+COPY app/build.gradle settings.gradle ./
 COPY gradlew ./
 COPY gradle/wrapper/ gradle/wrapper/
 
