@@ -18,6 +18,8 @@ import com.projecthub.repository.custom.CustomProjectRepository;
 import com.projecthub.repository.custom.CustomTaskRepository;
 import com.projecthub.repository.custom.CustomUserRepository;
 
+import javafx.beans.property.SimpleStringProperty;
+
 /**
  * Service class for managing tasks within the ProjectHub application.
  * It provides methods to create, retrieve, update, and delete tasks.
@@ -45,11 +47,15 @@ public class TaskService {
     private final CustomTaskRepository customTaskRepository;
     private final CustomUserRepository customUserRepository;
     private final CustomProjectRepository customProjectRepository;
+    private final TaskMapper taskMapper;
 
-    public TaskService(CustomTaskRepository customTaskRepository, CustomUserRepository customUserRepository, CustomProjectRepository customProjectRepository) {
+    private final SimpleStringProperty searchQuery = new SimpleStringProperty();
+
+    public TaskService(CustomTaskRepository customTaskRepository, CustomUserRepository customUserRepository, CustomProjectRepository customProjectRepository, TaskMapper taskMapper) {
         this.customTaskRepository = customTaskRepository;
         this.customUserRepository = customUserRepository;
         this.customProjectRepository = customProjectRepository;
+        this.taskMapper = taskMapper;
     }
 
     /**
@@ -77,13 +83,13 @@ public class TaskService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + taskSummary.getAssignedUser()));
 
         // Convert TaskSummary to Task using TaskMapper
-        Task task = TaskMapper.toTask(taskSummary, project, assignedUser);
+        Task task = taskMapper.toTask(taskSummary, project, assignedUser);
 
         // Save and return the TaskSummary entity
         Task savedTask = customTaskRepository.save(task);
 
         logger.info("Task saved with ID {}", savedTask.getId());
-        return TaskMapper.toTaskSummary(savedTask);
+        return taskMapper.toTaskSummary(savedTask);
     }
 
     /**
@@ -94,7 +100,7 @@ public class TaskService {
     public List<TaskSummary> getAllTasks() {
         logger.info("Retrieving all tasks");
         return customTaskRepository.findAll().stream()
-                .map(TaskMapper::toTaskSummary)
+                .map(taskMapper::toTaskSummary)
                 .collect(Collectors.toList());
     }
 
@@ -113,7 +119,7 @@ public class TaskService {
         }
 
         return customTaskRepository.findById(id)
-                .map(TaskMapper::toTaskSummary)
+                .map(taskMapper::toTaskSummary)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with ID: " + id));
     }
 
@@ -133,7 +139,7 @@ public class TaskService {
         }
 
         return customTaskRepository.findByProjectId(projectId).stream()
-                .map(TaskMapper::toTaskSummary)
+                .map(taskMapper::toTaskSummary)
                 .collect(Collectors.toList());
     }
 
@@ -153,7 +159,7 @@ public class TaskService {
         }
 
         return customTaskRepository.findByAssignedUserId(userId).stream()
-                .map(TaskMapper::toTaskSummary)
+                .map(taskMapper::toTaskSummary)
                 .collect(Collectors.toList());
     }
 
@@ -194,7 +200,7 @@ public class TaskService {
         existingTask.setName(taskSummary.getName());
         existingTask.setDescription(taskSummary.getDescription());
         existingTask.setStatus(taskSummary.getStatus());
-        existingTask.setDueDate(taskSummary.getDueDate() != null ? java.time.LocalDate.parse(taskSummary.getDueDate()) : null);
+        existingTask.setDueDate(taskSummary.getDueDate() != null ? taskSummary.getDueDate() : null);
 
         // Update project if provided
         if (taskSummary.getProject() != null) {
@@ -213,6 +219,28 @@ public class TaskService {
         // Save and return the updated task
         Task savedTask = customTaskRepository.save(existingTask);
         logger.info("Task updated with ID {}", savedTask.getId());
-        return TaskMapper.toTaskSummary(savedTask);
+        return taskMapper.toTaskSummary(savedTask);
+    }
+
+    public List<TaskSummary> getTasks() {
+        List<Task> tasks = customTaskRepository.findAll();
+        return tasks.stream()
+                .map(taskMapper::toTaskSummary)
+                .collect(Collectors.toList());
+    }
+
+    public void searchTasks() {
+        String query = searchQuery.get().toLowerCase();
+        List<Task> tasks = customTaskRepository.findAll();
+        tasks.stream()
+                .filter(task -> task.getName().toLowerCase().contains(query) ||
+                        task.getDescription().toLowerCase().contains(query) ||
+                        task.getStatus().toLowerCase().contains(query))
+                .map(taskMapper::toTaskSummary)
+                .collect(Collectors.toList());
+    }
+
+    public SimpleStringProperty searchQueryProperty() {
+        return searchQuery;
     }
 }
