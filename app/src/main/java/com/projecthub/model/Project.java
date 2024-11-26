@@ -1,5 +1,6 @@
 package com.projecthub.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -41,6 +42,21 @@ public class Project {
     private String deadline;
 
     /**
+     * The start date of the project.
+     */
+    private LocalDate startDate;
+
+    /**
+     * The end date of the project.
+     */
+    private LocalDate endDate;
+
+    /**
+     * The status of the project.
+     */
+    private String status;
+
+    /**
      * The team to which this project belongs.
      */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -54,16 +70,17 @@ public class Project {
     private List<Task> tasks;
 
     // Default constructor required by JPA
-    public Project(Long long1, String string, Object object, Team team2) {}
+    public Project() {}
 
-    public Project(String name, String description, String deadline, Team team) {
+    public Project(String name, String description, String deadline, LocalDate startDate, LocalDate endDate, String status, Team team) {
         this.name = name;
         this.description = description;
         this.deadline = deadline;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
         this.team = team;
     }
-
-    public Project() {}
 
     // Getters and Setters
     public Long getId() {
@@ -98,6 +115,30 @@ public class Project {
         this.deadline = deadline;
     }
 
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Team getTeam() {
         return team;
     }
@@ -121,6 +162,9 @@ public class Project {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", deadline='" + deadline + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", status='" + status + '\'' +
                 ", team=" + (team != null ? team.getName() : "null") +
                 '}';
     }
