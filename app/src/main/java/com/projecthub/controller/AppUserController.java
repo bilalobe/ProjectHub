@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.modelmapper.ModelMapper;
 
 import com.projecthub.dto.AppUserSummary;
 import com.projecthub.exception.ResourceNotFoundException;
@@ -28,8 +27,6 @@ public class AppUserController {
 
     @Autowired
     private UserService userService;
-
-    private final ModelMapper modelMapper = new ModelMapper();
 
     @GetMapping
     public List<AppUserSummary> getAllUsers() {
