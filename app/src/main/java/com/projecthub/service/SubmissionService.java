@@ -32,6 +32,8 @@ public class SubmissionService {
     private final CustomProjectRepository projectRepository;
     private final CustomStudentRepository studentRepository;
 
+    private final SubmissionMapper submissionMapper;
+
     public SubmissionService(@Qualifier("csvSubmissionRepository") CustomSubmissionRepository submissionRepository,
                              @Qualifier("csvProjectRepository") CustomProjectRepository projectRepository,
                              @Qualifier("csvStudentRepository") CustomStudentRepository studentRepository,
@@ -39,6 +41,7 @@ public class SubmissionService {
         this.submissionRepository = submissionRepository;
         this.projectRepository = projectRepository;
         this.studentRepository = studentRepository;
+        this.submissionMapper = submissionMapper;
     }
 
     /**
@@ -50,7 +53,7 @@ public class SubmissionService {
     public List<SubmissionSummary> getAllSubmissions() {
         logger.info("Retrieving all submissions");
         return submissionRepository.findAll().stream()
-                .map(SubmissionMapper::toSubmissionSummary)
+                .map(submissionMapper::toSubmissionSummary)
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +72,7 @@ public class SubmissionService {
         }
         Project project = findProjectById(submissionSummary.getProjectId());
         Student student = findStudentById(submissionSummary.getStudentId());
-        Submission submission = SubmissionMapper.toSubmission(submissionSummary, project, student);
+        Submission submission = submissionMapper.toSubmission(submissionSummary, project, student);
         submissionRepository.save(submission);
         logger.info("Submission saved");
     }
@@ -132,7 +135,7 @@ public class SubmissionService {
             throw new IllegalArgumentException("Student ID cannot be null");
         }
         return submissionRepository.findByStudentId(id).stream()
-                .map(SubmissionMapper::toSubmissionSummary)
+                .map(submissionMapper::toSubmissionSummary)
                 .collect(Collectors.toList());
     }
 }
