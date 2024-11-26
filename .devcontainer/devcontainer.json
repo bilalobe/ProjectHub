@@ -1,5 +1,5 @@
 {
-  "name": "Gradle",
+  "name": "Container with Gradle",
   "build": {
     "dockerfile": "Dockerfile",
     "context": "..",
@@ -12,7 +12,8 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "vscjava.vscode-java-pack",
+        "vscjava.vscode-java-pack", // Java Extension Pack
+        "pivotal.vscode-spring-boot", // Spring Boot Extension Pack
         "richardwillis.vscode-gradle"
       ],
       "settings": {

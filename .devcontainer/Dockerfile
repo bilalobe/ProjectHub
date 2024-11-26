@@ -1,3 +1,4 @@
+# Description: Dockerfile for the development container
 # Stage 1: Build the application
 FROM gradle:8.11-jdk23 AS build
 WORKDIR /app
@@ -11,7 +12,7 @@ COPY gradle/wrapper/ gradle/wrapper/
 RUN ./gradlew dependencies
 
 # Copy source code
-COPY . .
+COPY app/src/ ./src/
 
 # Build the application
 RUN ./gradlew build --no-daemon
@@ -19,18 +20,17 @@ RUN ./gradlew build --no-daemon
 # Stage 2: Final image with PostgreSQL and Java
 FROM postgres:17-alpine
 
-# Install OpenJDK and necessary packages
+# Install necessary packages
 RUN apk update && apk add --no-cache \
-    apt-utils \
-    openjdk23 \
+    sudo \
     git \
     curl \
-    sudo
+    shadow
 
-# Create a non-root user
+# Create the user and set permissions
 ARG USERNAME=projecthub_devel
 ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+ARG USER_GID=1000
 
 RUN addgroup -g $USER_GID $USERNAME \
     && adduser -D -u $USER_UID -G $USERNAME -h /home/$USERNAME -s /bin/sh $USERNAME \
