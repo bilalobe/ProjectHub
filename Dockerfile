@@ -1,10 +1,21 @@
+# Root Dockerfile for the projecthub application
 # Stage 1: Build the application
 FROM gradle:8.11-jdk23 AS build
 WORKDIR /app
-COPY gradlew gradlew
+
+# Copy gradle config files first to cache dependencies
+COPY build.gradle settings.gradle ./
+COPY gradlew ./
 COPY gradle/wrapper/ gradle/wrapper/
-COPY . .
-RUN ./gradlew build
+
+# Download dependencies
+RUN ./gradlew dependencies
+
+# Copy source code
+COPY app/src/ ./src/
+
+# Build the application
+RUN ./gradlew build --no-daemon
 
 # Stage 2: Run the application
 FROM openjdk:23-jdk
