@@ -35,7 +35,7 @@ import jakarta.validation.ValidatorFactory;
  * CSV implementation of the CustomStudentRepository interface.
  */
 @Repository("csvStudentRepository")
-public class CSVStudentRepository implements CustomStudentRepository {
+public abstract class CSVStudentRepository implements CustomStudentRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(CSVStudentRepository.class);
     private final Validator validator;
