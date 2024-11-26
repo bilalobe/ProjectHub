@@ -33,7 +33,7 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
 /**
- * CSV implementation of the CustomProjectRepository interface.
+ * CSV implementation of the {@link CustomProjectRepository} interface.
  */
 @Repository("csvProjectRepository")
 public abstract class CSVProjectRepository implements CustomProjectRepository {
@@ -44,11 +44,20 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
     @Value("${app.projects.filepath}")
     private String projectsFilePath;
 
+    /**
+     * Constructs a new {@code CSVProjectRepository}.
+     */
     public CSVProjectRepository() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
 
+    /**
+     * Creates a backup of the CSV file.
+     *
+     * @param filePath the path of the CSV file to back up
+     * @throws IOException if an I/O error occurs during backup
+     */
     private void backupCSVFile(String filePath) throws IOException {
         Path source = Path.of(filePath);
         Path backup = Path.of(filePath + ".backup");
@@ -56,6 +65,12 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
         logger.info("Backup created for file: {}", filePath);
     }
 
+    /**
+     * Validates a {@link Project} object.
+     *
+     * @param project the {@code Project} object to validate
+     * @throws IllegalArgumentException if validation fails
+     */
     private void validateProject(Project project) {
         Set<ConstraintViolation<Project>> violations = validator.validate(project);
         if (!violations.isEmpty()) {
@@ -67,8 +82,14 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
         }
     }
 
+    /**
+     * Retrieves all projects from the CSV file.
+     *
+     * @return a list of {@code Project} objects
+     */
     @Override
-    public @NonNull List<Project> findAll() {
+    @NonNull
+    public List<Project> findAll() {
         try (CSVReader reader = new CSVReader(new FileReader(projectsFilePath))) {
             ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Project.class);
@@ -88,7 +109,7 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
      * Finds all projects associated with a specific team ID.
      *
      * @param teamId the ID of the team
-     * @return a list of projects belonging to the team
+     * @return a list of projects belonging to the specified team
      */
     @Override
     public List<Project> findAllByTeamId(Long teamId) {
@@ -101,7 +122,7 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
      * Finds a project along with its components by project ID.
      *
      * @param projectId the ID of the project
-     * @return an Optional containing the Project if found
+     * @return an {@code Optional} containing the project if found, or empty if not found
      */
     @Override
     public Optional<Project> findProjectWithComponentsById(Long projectId) {
@@ -113,8 +134,9 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
     /**
      * Saves a project to the CSV file after validation and backup.
      *
-     * @param project the Project object to save
-     * @return the saved Project object
+     * @param project the {@code Project} object to save
+     * @return the saved {@code Project} object
+     * @throws RuntimeException if an error occurs during saving
      */
     @Override
     public @NonNull <S extends Project> S save(@NonNull S project) {
@@ -150,6 +172,7 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
      * Deletes a project by its ID.
      *
      * @param projectId the ID of the project to delete
+     * @throws RuntimeException if an error occurs during deletion
      */
     @Override
     public void deleteById(@NonNull Long projectId) {

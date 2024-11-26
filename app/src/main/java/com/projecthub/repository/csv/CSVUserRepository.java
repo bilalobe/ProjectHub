@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -65,12 +66,6 @@ public abstract class CSVUserRepository implements CustomUserRepository {
         }
     }
 
-    /**
-     * Saves a user to the CSV file after validation and backup.
-     *
-     * @param user the AppUser object to save
-     * @return the saved AppUser object
-     */
     @Override
     public AppUser save(AppUser user) {
         validateUser(user);
@@ -83,7 +78,7 @@ public abstract class CSVUserRepository implements CustomUserRepository {
             try (CSVWriter writer = new CSVWriter(new FileWriter(usersFilePath))) {
                 ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(AppUser.class);
-                String[] memberFieldsToBindTo = {"id", "username", "password"};
+                String[] memberFieldsToBindTo = {"id", "username", "password", "firstName", "lastName", "email", "team"};
                 strategy.setColumnMapping(memberFieldsToBindTo);
 
                 StatefulBeanToCsv<AppUser> beanToCsv = new StatefulBeanToCsvBuilder<AppUser>(writer)
@@ -105,7 +100,7 @@ public abstract class CSVUserRepository implements CustomUserRepository {
         try (CSVReader reader = new CSVReader(new FileReader(usersFilePath))) {
             ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(AppUser.class);
-            String[] memberFieldsToBindTo = {"id", "username", "password"};
+            String[] memberFieldsToBindTo = {"id", "username", "password", "firstName", "lastName", "email", "team"};
             strategy.setColumnMapping(memberFieldsToBindTo);
 
             return new CsvToBeanBuilder<AppUser>(reader)
@@ -117,28 +112,30 @@ public abstract class CSVUserRepository implements CustomUserRepository {
         }
     }
 
-    /**
-     * Deletes a user by their ID.
-     *
-     * @param userId the ID of the user to delete
-     */
+    @Override
+    public Optional<AppUser> findById(Long id) {
+        return findAll().stream()
+                .filter(u -> u.getId().equals(id))
+                .findFirst();
+    }
+
     @Override
     public void deleteById(Long userId) {
         try {
             backupCSVFile(usersFilePath);
             List<AppUser> users = findAll();
             users.removeIf(user -> user.getId().equals(userId));
-
+    
             try (CSVWriter writer = new CSVWriter(new FileWriter(usersFilePath))) {
                 ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(AppUser.class);
-                String[] memberFieldsToBindTo = {"id", "username", "password"};
+                String[] memberFieldsToBindTo = {"id", "username", "password", "firstName", "lastName", "email", "team"};
                 strategy.setColumnMapping(memberFieldsToBindTo);
-
+    
                 StatefulBeanToCsv<AppUser> beanToCsv = new StatefulBeanToCsvBuilder<AppUser>(writer)
                         .withMappingStrategy(strategy)
                         .build();
-
+    
                 beanToCsv.write(users);
             }
             logger.info("User deleted successfully: {}", userId);
@@ -146,5 +143,10 @@ public abstract class CSVUserRepository implements CustomUserRepository {
             logger.error("Error deleting user from CSV", e);
             throw new RuntimeException("Error deleting user from CSV", e);
         }
+    }
+    
+    @Override
+    public boolean existsById(Long id) {
+        return findById(id).isPresent();
     }
 }

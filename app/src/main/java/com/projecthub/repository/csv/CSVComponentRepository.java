@@ -31,7 +31,7 @@ import com.projecthub.model.Component;
 import com.projecthub.repository.custom.CustomComponentRepository;
 
 /**
- * CSV implementation of the CustomComponentRepository interface.
+ * CSV implementation of the {@link CustomComponentRepository} interface.
  */
 @Repository("csvComponentRepository")
 public abstract class CSVComponentRepository implements CustomComponentRepository {
@@ -42,11 +42,20 @@ public abstract class CSVComponentRepository implements CustomComponentRepositor
     @Value("${app.components.filepath}")
     private String componentsFilePath;
 
+    /**
+     * Constructs a new {@code CSVComponentRepository}.
+     */
     public CSVComponentRepository() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
 
+    /**
+     * Creates a backup of the CSV file.
+     *
+     * @param filePath the path of the CSV file to back up
+     * @throws IOException if an I/O error occurs during backup
+     */
     private void backupCSVFile(String filePath) throws IOException {
         Path source = Path.of(filePath);
         Path backup = Path.of(filePath + ".backup");
@@ -54,6 +63,12 @@ public abstract class CSVComponentRepository implements CustomComponentRepositor
         logger.info("Backup created for file: {}", filePath);
     }
 
+    /**
+     * Validates a {@link Component} object.
+     *
+     * @param component the {@code Component} object to validate
+     * @throws IllegalArgumentException if validation fails
+     */
     private void validateComponent(Component component) {
         Set<ConstraintViolation<Component>> violations = validator.validate(component);
         if (!violations.isEmpty()) {
@@ -68,8 +83,9 @@ public abstract class CSVComponentRepository implements CustomComponentRepositor
     /**
      * Saves a component to the CSV file after validation and backup.
      *
-     * @param component the Component object to save
-     * @return the saved Component object
+     * @param component the {@code Component} object to save
+     * @return the saved {@code Component} object
+     * @throws RuntimeException if an error occurs during saving
      */
     public Component save(Component component) {
         validateComponent(component);
@@ -99,6 +115,11 @@ public abstract class CSVComponentRepository implements CustomComponentRepositor
         }
     }
 
+    /**
+     * Retrieves all components from the CSV file.
+     *
+     * @return a list of {@code Component} objects
+     */
     @Override
     public List<Component> findAll() {
         try (CSVReader reader = new CSVReader(new FileReader(componentsFilePath))) {
@@ -120,6 +141,7 @@ public abstract class CSVComponentRepository implements CustomComponentRepositor
      * Deletes a component by its ID.
      *
      * @param componentId the ID of the component to delete
+     * @throws RuntimeException if an error occurs during deletion
      */
     @Override
     public void deleteById(Long componentId) {

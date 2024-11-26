@@ -27,9 +27,9 @@ import java.nio.file.*;
 import java.util.Set;
 
 /**
- * CSV implementation of the CustomTaskRepository interface.
+ * CSV implementation of the {@link CustomTaskRepository} interface.
  */
-@Repository
+@Repository("csvTaskRepository")
 public abstract class CSVTaskRepository implements CustomTaskRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(CSVTaskRepository.class);
@@ -38,11 +38,20 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
     @Value("${app.tasks.filepath}")
     private String tasksFilePath;
 
+    /**
+     * Constructs a new {@code CSVTaskRepository}.
+     */
     public CSVTaskRepository() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
 
+    /**
+     * Creates a backup of the CSV file.
+     *
+     * @param filePath the path of the CSV file to back up
+     * @throws IOException if an I/O error occurs during backup
+     */
     private void backupCSVFile(String filePath) throws IOException {
         java.nio.file.Path source = java.nio.file.Path.of(filePath);
         java.nio.file.Path backup = Paths.get(filePath + ".backup");
@@ -50,6 +59,12 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
         logger.info("Backup created for file: {}", filePath);
     }
 
+    /**
+     * Validates a {@link Task} object.
+     *
+     * @param task the {@code Task} object to validate
+     * @throws IllegalArgumentException if validation fails
+     */
     private void validateTask(Task task) {
         Set<ConstraintViolation<Task>> violations = validator.validate(task);
         if (!violations.isEmpty()) {
@@ -61,6 +76,11 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
         }
     }
 
+    /**
+     * Retrieves all tasks from the CSV file.
+     *
+     * @return a list of {@code Task} objects
+     */
     @Override
     public List<Task> findAll() {
         try (CSVReader reader = new CSVReader(new FileReader(tasksFilePath))) {
@@ -80,8 +100,9 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
     /**
      * Saves a task to the CSV file after validation and backup.
      *
-     * @param task the Task object to save
-     * @return the saved Task object
+     * @param task the {@code Task} object to save
+     * @return the saved {@code Task} object
+     * @throws RuntimeException if an error occurs during saving
      */
     @Override
     public Task save(Task task) {
@@ -114,6 +135,7 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
      * Deletes a task by its ID.
      *
      * @param id the ID of the task to delete
+     * @throws RuntimeException if an error occurs during deletion
      */
     @Override
     public void deleteById(Long id) {
@@ -143,7 +165,7 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
      * Finds all tasks associated with a specific project ID.
      *
      * @param projectId the ID of the project
-     * @return a list of tasks belonging to the project
+     * @return a list of tasks belonging to the specified project
      */
     @Override
     public List<Task> findByProjectId(Long projectId) {
@@ -156,7 +178,7 @@ public abstract class CSVTaskRepository implements CustomTaskRepository {
      * Finds all tasks assigned to a specific user ID.
      *
      * @param userId the ID of the user
-     * @return a list of tasks assigned to the user
+     * @return a list of tasks assigned to the specified user
      */
     @Override
     public List<Task> findByAssignedUserId(Long userId) {

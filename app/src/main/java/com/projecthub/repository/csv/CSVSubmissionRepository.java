@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
 /**
- * CSV implementation of the CustomSubmissionRepository interface.
+ * CSV implementation of the {@link CustomSubmissionRepository} interface.
  */
 @Repository("csvSubmissionRepository")
 public abstract class CSVSubmissionRepository implements CustomSubmissionRepository {
@@ -42,11 +43,20 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
     @Value("${app.submissions.filepath}")
     private String submissionsFilePath;
 
+    /**
+     * Constructs a new {@code CSVSubmissionRepository}.
+     */
     public CSVSubmissionRepository() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
 
+    /**
+     * Creates a backup of the CSV file.
+     *
+     * @param filePath the path of the CSV file to back up
+     * @throws IOException if an I/O error occurs during backup
+     */
     private void backupCSVFile(String filePath) throws IOException {
         Path source = Path.of(filePath);
         Path backup = Path.of(filePath + ".backup");
@@ -54,6 +64,12 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
         logger.info("Backup created for file: {}", filePath);
     }
 
+    /**
+     * Validates a {@link Submission} object.
+     *
+     * @param submission the {@code Submission} object to validate
+     * @throws IllegalArgumentException if validation fails
+     */
     private void validateSubmission(Submission submission) {
         Set<ConstraintViolation<Submission>> violations = validator.validate(submission);
         if (!violations.isEmpty()) {
@@ -76,8 +92,9 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
     /**
      * Saves a submission to the CSV file after validation and backup.
      *
-     * @param submission the Submission object to save
-     * @return the saved Submission object
+     * @param submission the {@code Submission} object to save
+     * @return the saved {@code Submission} object
+     * @throws RuntimeException if an error occurs during saving
      */
     @Override
     public Submission save(Submission submission) {
@@ -106,7 +123,7 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
     /**
      * Retrieves all submissions from the CSV file.
      *
-     * @return a list of Submission objects
+     * @return a list of {@code Submission} objects
      */
     @Override
     public List<Submission> findAll() {
@@ -121,9 +138,23 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
     }
 
     /**
+     * Finds a submission by its ID.
+     *
+     * @param id the ID of the submission
+     * @return an {@code Optional} containing the submission if found, or empty if not found
+     */
+    @Override
+    public Optional<Submission> findById(Long id) {
+        return findAll().stream()
+                .filter(s -> s.getId().equals(id))
+                .findFirst();
+    }
+
+    /**
      * Deletes a submission by its ID.
      *
      * @param submissionId the ID of the submission to delete
+     * @throws RuntimeException if an error occurs during deletion
      */
     public void deleteById(Long submissionId) {
         try {

@@ -8,7 +8,6 @@ import com.projecthub.model.Cohort;
 import com.projecthub.model.School;
 import com.projecthub.repository.custom.CustomCohortRepository;
 import com.projecthub.repository.custom.CustomSchoolRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.slf4j.Logger;
@@ -21,25 +20,35 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * CSV implementation of the CustomCohortRepository interface.
+ * CSV implementation of the {@link CustomCohortRepository} interface.
  */
 @Repository("csvCohortRepository")
 public class CSVCohortRepository implements CustomCohortRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(CSVCohortRepository.class);
     private final Validator validator;
+    private final CustomSchoolRepository schoolRepository;
 
     @Value("${app.cohorts.filepath}")
     private String cohortsFilePath;
 
-    @Autowired
-    private CustomSchoolRepository schoolRepository;
-
-    public CSVCohortRepository() {
+    /**
+     * Constructs a new {@code CSVCohortRepository}.
+     *
+     * @param schoolRepository the {@code CustomSchoolRepository} for retrieving associated schools
+     */
+    public CSVCohortRepository(CustomSchoolRepository schoolRepository) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
+        this.schoolRepository = schoolRepository;
     }
 
+    /**
+     * Creates a backup of the CSV file.
+     *
+     * @param filePath the path of the CSV file to back up
+     * @throws IOException if an I/O error occurs during backup
+     */
     private void backupCSVFile(String filePath) throws IOException {
         java.nio.file.Path source = java.nio.file.Path.of(filePath);
         java.nio.file.Path backup = java.nio.file.Path.of(filePath + ".backup");
@@ -47,6 +56,12 @@ public class CSVCohortRepository implements CustomCohortRepository {
         logger.info("Backup created for file: {}", filePath);
     }
 
+    /**
+     * Validates a {@link Cohort} object.
+     *
+     * @param cohort the {@code Cohort} object to validate
+     * @throws IllegalArgumentException if validation fails
+     */
     private void validateCohort(Cohort cohort) {
         Set<ConstraintViolation<Cohort>> violations = validator.validate(cohort);
         if (!violations.isEmpty()) {
@@ -61,8 +76,9 @@ public class CSVCohortRepository implements CustomCohortRepository {
     /**
      * Saves a cohort to the CSV file after validation and backup.
      *
-     * @param cohort the Cohort object to save
-     * @return the saved Cohort object
+     * @param cohort the {@code Cohort} object to save
+     * @return the saved {@code Cohort} object
+     * @throws RuntimeException if an error occurs during saving
      */
     @Override
     public Cohort save(Cohort cohort) {
@@ -109,6 +125,11 @@ public class CSVCohortRepository implements CustomCohortRepository {
         }
     }
 
+    /**
+     * Retrieves all cohorts from the CSV file.
+     *
+     * @return a list of {@code Cohort} objects
+     */
     @Override
     public List<Cohort> findAll() {
         File file = new File(cohortsFilePath);
@@ -136,6 +157,12 @@ public class CSVCohortRepository implements CustomCohortRepository {
         }
     }
 
+    /**
+     * Finds a cohort by its ID.
+     *
+     * @param id the ID of the cohort
+     * @return an {@code Optional} containing the cohort if found, or empty if not found
+     */
     @Override
     public Optional<Cohort> findById(Long id) {
         return findAll().stream()
@@ -147,6 +174,7 @@ public class CSVCohortRepository implements CustomCohortRepository {
      * Deletes a cohort by its ID.
      *
      * @param id the ID of the cohort to delete
+     * @throws RuntimeException if an error occurs during deletion
      */
     @Override
     public void deleteById(Long id) {
@@ -184,7 +212,7 @@ public class CSVCohortRepository implements CustomCohortRepository {
      * Finds all cohorts associated with a specific school ID.
      *
      * @param schoolId the ID of the school
-     * @return a list of cohorts belonging to the school
+     * @return a list of cohorts belonging to the specified school
      */
     @Override
     public List<Cohort> findBySchoolId(Long schoolId) {
@@ -193,6 +221,12 @@ public class CSVCohortRepository implements CustomCohortRepository {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Converts a {@code CohortCSV} object to a {@code Cohort} object.
+     *
+     * @param csvCohort the {@code CohortCSV} object to convert
+     * @return the converted {@code Cohort} object
+     */
     private Cohort toCohort(CohortCSV csvCohort) {
         Cohort cohort = new Cohort();
         cohort.setId(csvCohort.getId());

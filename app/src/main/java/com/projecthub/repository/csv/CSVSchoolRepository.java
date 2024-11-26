@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ import com.projecthub.model.School;
 import com.projecthub.repository.custom.CustomSchoolRepository;
 
 /**
- * CSV implementation of the CustomSchoolRepository interface.
+ * CSV implementation of the {@link CustomSchoolRepository} interface.
  */
 @Repository("csvSchoolRepository")
 public abstract class CSVSchoolRepository implements CustomSchoolRepository {
@@ -43,11 +44,20 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
     @Value("${app.schools.filepath}")
     private String schoolsFilePath;
 
+    /**
+     * Constructs a new {@code CSVSchoolRepository}.
+     */
     public CSVSchoolRepository() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
 
+    /**
+     * Creates a backup of the CSV file.
+     *
+     * @param filePath the path of the CSV file to back up
+     * @throws IOException if an I/O error occurs during backup
+     */
     private void backupCSVFile(String filePath) throws IOException {
         Path source = Path.of(filePath);
         Path backup = Path.of(filePath + ".backup");
@@ -55,6 +65,12 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
         logger.info("Backup created for file: {}", filePath);
     }
 
+    /**
+     * Validates a {@link School} object.
+     *
+     * @param school the {@code School} object to validate
+     * @throws IllegalArgumentException if validation fails
+     */
     private void validateSchool(School school) {
         Set<ConstraintViolation<School>> violations = validator.validate(school);
         if (!violations.isEmpty()) {
@@ -69,10 +85,10 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
     /**
      * Saves a school to the CSV file after validation and backup.
      *
-     * @param school the School object to save
-     * @return the saved School object
+     * @param school the {@code School} object to save
+     * @return the saved {@code School} object
+     * @throws RuntimeException if an error occurs during saving
      */
-    
     @NonNull
     @Override
     public <S extends School> S save(@NonNull S school) {
@@ -103,6 +119,11 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
         }
     }
 
+    /**
+     * Retrieves all schools from the CSV file.
+     *
+     * @return a list of {@code School} objects
+     */
     @Override
     @NonNull
     public List<School> findAll() {
@@ -122,9 +143,24 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
     }
 
     /**
+     * Finds a school by its ID.
+     *
+     * @param id the ID of the school
+     * @return an {@code Optional} containing the school if found, or empty if not found
+     */
+    @Override
+    @NonNull
+    public Optional<School> findById(@NonNull Long id) {
+        return findAll().stream()
+                .filter(s -> s.getId().equals(id))
+                .findFirst();
+    }
+
+    /**
      * Deletes a school by its ID.
      *
      * @param schoolId the ID of the school to delete
+     * @throws RuntimeException if an error occurs during deletion
      */
     @Override
     public void deleteById(@NonNull Long schoolId) {

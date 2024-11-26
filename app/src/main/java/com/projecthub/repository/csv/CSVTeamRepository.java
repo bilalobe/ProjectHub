@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -65,12 +66,6 @@ public abstract class CSVTeamRepository implements CustomTeamRepository {
         }
     }
 
-    /**
-     * Saves a team to the CSV file after validation and backup.
-     *
-     * @param team the Team object to save
-     * @return the saved Team object
-     */
     @Override
     public Team save(Team team) {
         validateTeam(team);
@@ -117,11 +112,13 @@ public abstract class CSVTeamRepository implements CustomTeamRepository {
         }
     }
 
-    /**
-     * Deletes a team by its ID.
-     *
-     * @param teamId the ID of the team to delete
-     */
+    @Override
+    public Optional<Team> findById(Long id) {
+        return findAll().stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst();
+    }
+
     @Override
     public void deleteById(Long teamId) {
         try {
