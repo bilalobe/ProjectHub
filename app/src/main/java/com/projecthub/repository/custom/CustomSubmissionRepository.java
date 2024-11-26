@@ -8,7 +8,8 @@ import com.projecthub.model.Submission;
 public interface CustomSubmissionRepository {
     List<Submission> findAll();
     Submission save(Submission submission);
-    void deleteById(Long submissionId);
+    void deleteById(Submission submission);
     List<Submission> findByStudentId(Long studentId);
     Optional<Submission> findById(Long id);
+    void delete(Submission submission);
 }
