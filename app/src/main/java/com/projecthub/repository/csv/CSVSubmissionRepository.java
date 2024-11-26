@@ -65,6 +65,14 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
         }
     }
 
+    private ColumnPositionMappingStrategy<Submission> getColumnMappingStrategy() {
+        ColumnPositionMappingStrategy<Submission> strategy = new ColumnPositionMappingStrategy<>();
+        strategy.setType(Submission.class);
+        String[] memberFieldsToBindTo = {"id", "content", "timestamp", "studentId", "projectId", "grade"};
+        strategy.setColumnMapping(memberFieldsToBindTo);
+        return strategy;
+    }
+
     /**
      * Saves a submission to the CSV file after validation and backup.
      *
@@ -81,15 +89,9 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
             submissions.add(submission);
 
             try (CSVWriter writer = new CSVWriter(new FileWriter(submissionsFilePath))) {
-                ColumnPositionMappingStrategy<Submission> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(Submission.class);
-                String[] memberFieldsToBindTo = {"id", "content", "timestamp", "studentId", "projectId", "grade"};
-                strategy.setColumnMapping(memberFieldsToBindTo);
-
                 StatefulBeanToCsv<Submission> beanToCsv = new StatefulBeanToCsvBuilder<Submission>(writer)
-                        .withMappingStrategy(strategy)
+                        .withMappingStrategy(getColumnMappingStrategy())
                         .build();
-
                 beanToCsv.write(submissions);
             }
 
@@ -101,16 +103,16 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
         }
     }
 
+    /**
+     * Retrieves all submissions from the CSV file.
+     *
+     * @return a list of Submission objects
+     */
     @Override
     public List<Submission> findAll() {
         try (CSVReader reader = new CSVReader(new FileReader(submissionsFilePath))) {
-            ColumnPositionMappingStrategy<Submission> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(Submission.class);
-            String[] memberFieldsToBindTo = {"id", "content", "timestamp", "studentId", "projectId", "grade"};
-            strategy.setColumnMapping(memberFieldsToBindTo);
-
             return new CsvToBeanBuilder<Submission>(reader)
-                    .withMappingStrategy(strategy)
+                    .withMappingStrategy(getColumnMappingStrategy())
                     .build()
                     .parse();
         } catch (IOException e) {
@@ -123,7 +125,6 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
      *
      * @param submissionId the ID of the submission to delete
      */
-    @Override
     public void deleteById(Long submissionId) {
         try {
             backupCSVFile(submissionsFilePath);
@@ -131,15 +132,9 @@ public abstract class CSVSubmissionRepository implements CustomSubmissionReposit
             submissions.removeIf(submission -> submission.getId().equals(submissionId));
 
             try (CSVWriter writer = new CSVWriter(new FileWriter(submissionsFilePath))) {
-                ColumnPositionMappingStrategy<Submission> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(Submission.class);
-                String[] memberFieldsToBindTo = {"id", "content", "timestamp", "studentId", "projectId", "grade"};
-                strategy.setColumnMapping(memberFieldsToBindTo);
-
                 StatefulBeanToCsv<Submission> beanToCsv = new StatefulBeanToCsvBuilder<Submission>(writer)
-                        .withMappingStrategy(strategy)
+                        .withMappingStrategy(getColumnMappingStrategy())
                         .build();
-
                 beanToCsv.write(submissions);
             }
 
