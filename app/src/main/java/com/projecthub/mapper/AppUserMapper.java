@@ -23,6 +23,7 @@ public class AppUserMapper {
         return new AppUserSummary(
             user.getId(),
             user.getUsername(), user.getPassword(),
+            user.getFirstName(), user.getLastName(),
             user.getTeam() != null ? user.getTeam().getId() : null
         );
     }

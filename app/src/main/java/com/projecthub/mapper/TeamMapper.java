@@ -1,9 +1,11 @@
 package com.projecthub.mapper;
 
-import com.projecthub.model.Team;
-import com.projecthub.model.School;
+import com.projecthub.dto.AppUserSummary;
 import com.projecthub.dto.TeamSummary;
+import com.projecthub.model.AppUser;
 import com.projecthub.model.Cohort;
+import com.projecthub.model.School;
+import com.projecthub.model.Team;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -51,5 +53,16 @@ public class TeamMapper {
             team.getCohort().setName(teamSummary.getCohortName());
         }
         return team;
+    }
+
+    public AppUserSummary toAppUserSummary(AppUser appUser) {
+        return new AppUserSummary(
+            appUser.getId(),
+            appUser.getUsername(),
+            appUser.getEmail(),
+            appUser.getFirstName(),
+            appUser.getLastName(),
+            appUser.getTeam() != null ? appUser.getTeam().getId() : null
+        );
     }
 }

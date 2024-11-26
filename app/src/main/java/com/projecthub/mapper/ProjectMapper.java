@@ -1,7 +1,6 @@
 package com.projecthub.mapper;
 
 import org.springframework.stereotype.Component;
-
 import com.projecthub.dto.ProjectSummary;
 import com.projecthub.model.Project;
 import com.projecthub.model.Team;
@@ -10,15 +9,18 @@ import com.projecthub.model.Team;
 public class ProjectMapper {
 
     public Project toProject(ProjectSummary projectSummary, Team team) {
-        if (projectSummary == null || team == null) {
+        if (projectSummary == null) {
             return null;
         }
         Project project = new Project();
         project.setId(projectSummary.getId());
         project.setName(projectSummary.getName());
         project.setDescription(projectSummary.getDescription());
-        project.setTeam(team);
         project.setDeadline(projectSummary.getDeadline());
+        project.setStartDate(projectSummary.getStartDate());
+        project.setEndDate(projectSummary.getEndDate());
+        project.setStatus(projectSummary.getStatus());
+        project.setTeam(team);
         return project;
     }
 
@@ -26,12 +28,16 @@ public class ProjectMapper {
         if (project == null) {
             return null;
         }
+        Long teamId = (project.getTeam() != null) ? project.getTeam().getId() : null;
         return new ProjectSummary(
             project.getId(),
             project.getName(),
             project.getDescription(),
-            project.getTeam() != null ? project.getTeam().getId() : null,
-            project.getDeadline()
+            teamId,
+            project.getDeadline(),
+            project.getStartDate(),
+            project.getEndDate(),
+            project.getStatus()
         );
     }
 }
