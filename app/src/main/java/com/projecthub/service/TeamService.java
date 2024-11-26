@@ -9,13 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.projecthub.dto.AppUserSummary;
+import com.projecthub.dto.ProjectSummary;
 import com.projecthub.dto.TeamSummary;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.TeamMapper;
 import com.projecthub.model.AppUser;
 import com.projecthub.model.Cohort;
+import com.projecthub.model.School;
 import com.projecthub.model.Team;
 import com.projecthub.repository.jpa.CohortRepository;
+import com.projecthub.repository.jpa.SchoolRepository;
 import com.projecthub.repository.custom.CustomTeamRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +36,9 @@ public class TeamService {
 
     @Autowired
     private CohortRepository cohortRepository;
+
+    @Autowired
+    private SchoolRepository schoolRepository;
 
     @Autowired
     private TeamMapper teamMapper;
@@ -83,7 +90,7 @@ public class TeamService {
     public List<TeamSummary> getAllTeams() {
         logger.info("Retrieving all teams");
         return teamRepository.findAll().stream()
-                .map(TeamSummary::new)
+                .map(teamMapper::toTeamSummary)
                 .collect(Collectors.toList());
     }
 
@@ -103,14 +110,16 @@ public class TeamService {
         }
 
         return teamRepository.findById(id)
-                .map(TeamSummary::new)
+                .map(teamMapper::toTeamSummary)
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + id));
     }
 
     @Operation(summary = "Create a new team")
     public TeamSummary createTeam(TeamSummary teamSummary) {
         // Map TeamSummary to Team entity
-        Team teamEntity = teamMapper.toTeam(teamSummary, null, null); // Adjust as needed
+        School school = getSchoolById(teamSummary.getSchoolId());
+        Cohort cohort = getCohortById(teamSummary.getCohortId());
+        Team teamEntity = teamMapper.toTeam(teamSummary, school, cohort);
         Team savedTeam = teamRepository.save(teamEntity);
         return teamMapper.toTeamSummary(savedTeam);
     }
@@ -125,7 +134,7 @@ public class TeamService {
 
     public List<TeamSummary> getTeamsByCohortId(Long cohortId) {
         return teamRepository.findByCohortId(cohortId).stream()
-                .map(TeamSummary::new)
+                .map(teamMapper::toTeamSummary)
                 .collect(Collectors.toList());
     }
 
@@ -142,7 +151,7 @@ public class TeamService {
 
         // Update the team's properties
         existingTeam.setName(teamSummary.getName());
-        existingTeam.setCohort(getCohortById(teamSummary.getCohort()));
+        existingTeam.setCohort(getCohortById(teamSummary.getCohortId()));
 
         // Save the updated team
         Team updatedTeam = teamRepository.save(existingTeam);
@@ -151,8 +160,29 @@ public class TeamService {
         return teamMapper.toTeamSummary(updatedTeam);
     }
 
-    private Cohort getCohortById(Long cohortId) {
+    public Cohort getCohortById(Long cohortId) {
         return cohortRepository.findById(cohortId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cohort not found with id " + cohortId));
+    }
+
+    public List<ProjectSummary> getProjectsByTeamId(Long teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + teamId));
+        return team.getProjects().stream()
+                .map(ProjectSummary::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<AppUserSummary> getMembersByTeamId(Long teamId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + teamId));
+        return team.getMembers().stream()
+                .map(teamMapper::toAppUserSummary)
+                .collect(Collectors.toList());
+    }
+
+    public School getSchoolById(Long schoolId) {
+        return schoolRepository.findById(schoolId)
+                .orElseThrow(() -> new ResourceNotFoundException("School not found with ID: " + schoolId));
     }
 }
