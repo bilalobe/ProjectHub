@@ -104,7 +104,7 @@ public class TeamSummary {
      *
      * @return the school's ID
      */
-    public Long getSchool() {
+    public Long getSchoolId() {
         return schoolId;
     }
 
@@ -113,7 +113,7 @@ public class TeamSummary {
      *
      * @return the cohort's ID
      */
-    public Long getCohort() {
+    public Long getCohortId() {
         return cohortId;
     }
 

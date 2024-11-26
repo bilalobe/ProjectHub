@@ -1,124 +1,120 @@
 package com.projecthub.dto;
 
 import com.projecthub.model.Task;
+import javafx.beans.property.*;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
+import java.util.Optional;
 
 /**
- * Data Transfer Object for the Task entity.
- * Used for transferring task data between processes.
+ * Represents a summary of a task with its essential details.
+ * 
+ * <p>This class encapsulates the properties of a task, including its ID, name, description, status,
+ * and due date. It provides JavaFX properties for easy binding and observation within the UI.
+ * 
+ * <p>There are two constructors available:
+ * <ul>
+ *   <li>{@link #TaskSummary(Long, String, String, String, LocalDate, Long, Long)}: Initializes a TaskSummary with specified values.</li>
+ *   <li>{@link #TaskSummary(Task)}: Initializes a TaskSummary from a Task object.</li>
+ * </ul>
+ * 
+ * <p>Property accessors are provided for each field:
+ * <ul>
+ *   <li>{@link #idProperty()}: Retrieves the ID property.</li>
+ *   <li>{@link #nameProperty()}: Retrieves the name property.</li>
+ *   <li>{@link #descriptionProperty()}: Retrieves the description property.</li>
+ *   <li>{@link #statusProperty()}: Retrieves the status property.</li>
+ *   <li>{@link #dueDateProperty()}: Retrieves the due date property.</li>
+ *   <li>{@link #projectProperty()}: Retrieves the project property.</li>
+ *   <li>{@link #assignedUserProperty()}: Retrieves the assigned user property.</li>
+ * </ul>
  */
 public class TaskSummary {
-    private final Long id;
 
-    @NotBlank(message = "Task name is mandatory")
-    @Size(max = 100, message = "Task name cannot exceed 100 characters")
-    private final String name;
+    private final LongProperty id;
+    private final StringProperty name;
+    private final StringProperty description;
+    private final StringProperty status;
+    private final ObjectProperty<LocalDate> dueDate;
+    private final LongProperty project;
+    private final LongProperty assignedUser;
 
-    @Size(max = 500, message = "Task description cannot exceed 500 characters")
-    private final String description;
-
-    @NotBlank(message = "Status is mandatory")
-    private final String status;
-
-    private final String dueDate;
-
-    private final Long assignedUserId;
-
-    @NotNull(message = "Project ID is mandatory")
-    private final Long projectId;
-
-    /**
-     * Default constructor.
-     */
-    public TaskSummary() {
-        this.id = null;
-        this.name = null;
-        this.description = null;
-        this.status = null;
-        this.dueDate = null;
-        this.assignedUserId = null;
-        this.projectId = null;
+    public TaskSummary(Long id, String name, String description, String status, LocalDate dueDate, Long project, Long assignedUser) {
+        if (id == null || name == null || description == null || status == null || dueDate == null || project == null || assignedUser == null) {
+            throw new IllegalArgumentException("None of the parameters can be null");
+        }
+        this.id = new SimpleLongProperty(id);
+        this.name = new SimpleStringProperty(name);
+        this.description = new SimpleStringProperty(description);
+        this.status = new SimpleStringProperty(status);
+        this.dueDate = new SimpleObjectProperty<>(dueDate);
+        this.project = new SimpleLongProperty(project);
+        this.assignedUser = new SimpleLongProperty(assignedUser);
     }
 
-    /**
-     * Constructs a TaskSummary from a Task entity.
-     *
-     * @param task the Task entity
-     */
     public TaskSummary(Task task) {
-        this.id = task.getId();
-        this.name = task.getName();
-        this.description = task.getDescription();
-        this.status = task.getStatus();
-        this.dueDate = task.getDueDate() != null ? task.getDueDate().toString() : null;
-        this.assignedUserId = task.getAssignedUser() != null ? task.getAssignedUser().getId() : null;
-        this.projectId = task.getProject() != null ? task.getProject().getId() : null;
+        this.id = new SimpleLongProperty(task.getId());
+        this.name = new SimpleStringProperty(task.getName());
+        this.description = new SimpleStringProperty(task.getDescription());
+        this.status = new SimpleStringProperty(task.getStatus());
+        this.dueDate = new SimpleObjectProperty<>(task.getDueDate());
+        this.project = new SimpleLongProperty(Optional.ofNullable(task.getProject()).map(p -> p.getId()).orElse(0L));
+        this.assignedUser = new SimpleLongProperty(Optional.ofNullable(task.getAssignedUser()).map(u -> u.getId()).orElse(0L));
     }
 
-    // Getters with JavaDoc comments
-    /**
-     * Gets the task ID.
-     *
-     * @return the task ID
-     */
-    public Long getId() {
+    public LongProperty idProperty() {
         return id;
     }
 
-    /**
-     * Gets the task name.
-     *
-     * @return the task name
-     */
-    public String getName() {
+    public StringProperty nameProperty() {
         return name;
     }
 
-    /**
-     * Gets the task description.
-     *
-     * @return the task description
-     */
-    public String getDescription() {
+    public StringProperty descriptionProperty() {
         return description;
     }
 
-    /**
-     * Gets the task status.
-     *
-     * @return the task status
-     */
-    public String getStatus() {
+    public StringProperty statusProperty() {
         return status;
     }
 
-    /**
-     * Gets the task due date.
-     *
-     * @return the task due date
-     */
-    public String getDueDate() {
+    public ObjectProperty<LocalDate> dueDateProperty() {
         return dueDate;
     }
 
-    /**
-     * Gets the assigned user ID.
-     *
-     * @return the assigned user ID
-     */
-    public Long getAssignedUser() {
-        return assignedUserId;
+    public LongProperty projectProperty() {
+        return project;
     }
 
-    /**
-     * Gets the project ID.
-     *
-     * @return the project ID
-     */
+    public LongProperty assignedUserProperty() {
+        return assignedUser;
+    }
+
+    public Long getId() {
+        return id.get();
+    }
+
+    public String getName() {
+        return name.get();
+    }
+
+    public String getDescription() {
+        return description.get();
+    }
+
+    public String getStatus() {
+        return status.get();
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate.get();
+    }
+
     public Long getProject() {
-        return projectId;
+        return project.get();
+    }
+
+    public Long getAssignedUser() {
+        return assignedUser.get();
     }
 }

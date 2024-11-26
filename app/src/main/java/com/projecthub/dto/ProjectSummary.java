@@ -2,6 +2,8 @@ package com.projecthub.dto;
 
 import com.projecthub.model.Project;
 
+import java.time.LocalDate;
+
 /**
  * Data Transfer Object for the Project entity.
  * Used for transferring project data between processes.
@@ -12,6 +14,9 @@ public class ProjectSummary {
     private final String description;
     private final Long teamId;
     private final String deadline;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
+    private final String status;
 
     /**
      * Constructs a ProjectSummary with the specified details.
@@ -21,13 +26,19 @@ public class ProjectSummary {
      * @param description the project description
      * @param teamId the team ID associated with the project
      * @param deadline the project deadline
+     * @param startDate the project start date
+     * @param endDate the project end date
+     * @param status the project status
      */
-    public ProjectSummary(Long id, String name, String description, Long teamId, String deadline) {
+    public ProjectSummary(Long id, String name, String description, Long teamId, String deadline, LocalDate startDate, LocalDate endDate, String status) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.teamId = teamId;
         this.deadline = deadline;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
     }
 
     /**
@@ -41,6 +52,9 @@ public class ProjectSummary {
         this.description = project.getDescription();
         this.teamId = project.getTeam() != null ? project.getTeam().getId() : null;
         this.deadline = project.getDeadline();
+        this.startDate = project.getStartDate();
+        this.endDate = project.getEndDate();
+        this.status = project.getStatus();
     }
 
     /**
@@ -86,5 +100,32 @@ public class ProjectSummary {
      */
     public Long getTeam() {
         return teamId;
+    }
+
+    /**
+     * Gets the project start date.
+     *
+     * @return the project start date
+     */
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    /**
+     * Gets the project end date.
+     *
+     * @return the project end date
+     */
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    /**
+     * Gets the project status.
+     *
+     * @return the project status
+     */
+    public String getStatus() {
+        return status;
     }
 }

@@ -13,6 +13,8 @@ public class SubmissionSummary {
     private final String content;
     private final String timestamp;
     private final Integer grade;
+    private final String projectName;
+    private final String studentName;
 
     /**
      * Default constructor.
@@ -24,6 +26,8 @@ public class SubmissionSummary {
         this.content = "";
         this.timestamp = "";
         this.grade = 0;
+        this.projectName = "";
+        this.studentName = "";
     }
 
     /**
@@ -38,6 +42,8 @@ public class SubmissionSummary {
         this.content = submission.getContent();
         this.timestamp = submission.getTimestamp();
         this.grade = submission.getGrade();
+        this.projectName = submission.getProject() != null ? submission.getProject().getName() : "";
+        this.studentName = submission.getStudent() != null ? submission.getStudent().getName() : "";
     }
 
     /**
@@ -49,14 +55,18 @@ public class SubmissionSummary {
      * @param grade the submission grade
      * @param projectId the project ID associated with the submission
      * @param studentId the student ID associated with the submission
+     * @param projectName the project name associated with the submission
+     * @param studentName the student name associated with the submission
      */
-    public SubmissionSummary(Long id, String content, String timestamp, Integer grade, Long projectId, Long studentId) {
+    public SubmissionSummary(Long id, String content, String timestamp, Integer grade, Long projectId, Long studentId, String projectName, String studentName) {
         this.id = id;
         this.content = content;
         this.timestamp = timestamp;
         this.grade = grade;
         this.projectId = projectId;
         this.studentId = studentId;
+        this.projectName = projectName;
+        this.studentName = studentName;
     }
 
     // Getters with JavaDoc comments
@@ -70,12 +80,30 @@ public class SubmissionSummary {
     }
 
     /**
+     * Gets the project name.
+     *
+     * @return the project name
+     */
+    public String getProjectName() {
+        return projectName;
+    }
+
+    /**
      * Gets the project ID.
      *
      * @return the project ID
      */
     public Long getProjectId() {
         return projectId;
+    }
+
+    /**
+     * Gets the student name.
+     *
+     * @return the student name
+     */
+    public String getStudentName() {
+        return studentName;
     }
 
     /**
