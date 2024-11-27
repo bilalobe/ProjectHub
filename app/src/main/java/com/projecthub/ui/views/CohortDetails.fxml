@@ -2,31 +2,35 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.projecthub.ui.controllers.CohortDetailsController"
+      fx:controller="com.projecthub.ui.controllers.details.CohortDetailsController"
       spacing="10" padding="10">
 
     <Label text="Cohort Details" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
     <GridPane hgap="10" vgap="10">
-        <Label text="Cohort Name:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-        <Label fx:id="cohortNameLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+        <Label text="Cohort ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <Label fx:id="cohortIdLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" />
 
-        <Label text="School:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-        <Label fx:id="schoolNameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+        <Label text="Cohort Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <Label fx:id="cohortNameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+        <Label text="School Name:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <Label fx:id="schoolNameLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" />
     </GridPane>
 
-    <Label text="Teams" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-
-    <TableView fx:id="teamTableView" prefHeight="200">
+    <TableView fx:id="teamsTableView" prefHeight="200">
         <columns>
-            <TableColumn fx:id="teamIdColumn" text="ID" prefWidth="50" />
-            <TableColumn fx:id="teamNameColumn" text="Team Name" prefWidth="200" />
+            <TableColumn fx:id="teamIdColumn" text="Team ID" />
+            <TableColumn fx:id="teamNameColumn" text="Team Name" />
         </columns>
     </TableView>
 
-    <Button fx:id="addTeamButton" text="Add Team" onAction="#handleAddTeam" />
-
+    <HBox spacing="10">
+        <Button fx:id="saveCohortButton" text="Save Cohort" />
+        <Button fx:id="deleteCohortButton" text="Delete Cohort" />
+    </HBox>
 </VBox>

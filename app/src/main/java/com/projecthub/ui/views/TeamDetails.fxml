@@ -6,40 +6,38 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.projecthub.ui.controllers.TeamDetailsController"
+      fx:controller="com.projecthub.ui.controllers.details.TeamDetailsController"
       spacing="10" padding="10">
 
     <Label text="Team Details" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
     <GridPane hgap="10" vgap="10">
-        <Label text="Team Name:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-        <Label fx:id="teamNameLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+        <Label text="Team ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <Label fx:id="teamIdLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" />
 
-        <Label text="Cohort:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-        <Label fx:id="cohortNameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+        <Label text="Team Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <Label fx:id="teamNameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+        <Label text="Cohort Name:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <Label fx:id="cohortNameLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" />
     </GridPane>
 
-    <HBox spacing="20" alignment="TOP_LEFT">
-        <VBox spacing="5">
-            <Label text="Projects" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-            <TableView fx:id="projectTableView" prefHeight="200" prefWidth="300">
-                <columns>
-                    <TableColumn fx:id="projectIdColumn" text="ID" prefWidth="50" />
-                    <TableColumn fx:id="projectNameColumn" text="Project Name" prefWidth="200" />
-                </columns>
-            </TableView>
-            <Button fx:id="addProjectButton" text="Add Project" onAction="#handleAddProject" />
-        </VBox>
+    <TableView fx:id="projectsTableView" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="projectIdColumn" text="Project ID" />
+            <TableColumn fx:id="projectNameColumn" text="Project Name" />
+        </columns>
+    </TableView>
 
-        <VBox spacing="5">
-            <Label text="Members" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-            <TableView fx:id="memberTableView" prefHeight="200" prefWidth="300">
-                <columns>
-                    <TableColumn fx:id="memberIdColumn" text="ID" prefWidth="50" />
-                    <TableColumn fx:id="memberNameColumn" text="Username" prefWidth="200" />
-                </columns>
-            </TableView>
-            <Button fx:id="addMemberButton" text="Add Member" onAction="#handleAddMember" />
-        </VBox>
+    <TableView fx:id="membersTableView" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="memberIdColumn" text="Member ID" />
+            <TableColumn fx:id="memberNameColumn" text="Member Name" />
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <Button fx:id="saveTeamButton" text="Save Team" />
+        <Button fx:id="deleteTeamButton" text="Delete Team" />
     </HBox>
 </VBox>

@@ -6,7 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.projecthub.ui.controllers.SubmissionDetailsController"
+      fx:controller="com.projecthub.ui.controllers.details.SubmissionDetailsController"
       spacing="10" padding="10">
 
     <Label text="Submission Details" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
@@ -26,10 +26,13 @@
 
         <Label text="Grade:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
         <TextField fx:id="gradeField" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+
+        <Label text="Content:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+        <TextArea fx:id="contentArea" GridPane.rowIndex="5" GridPane.columnIndex="1" />
     </GridPane>
 
-    <Label text="Content:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-    <TextArea fx:id="contentArea" prefRowCount="10" editable="false" />
-
-    <Button fx:id="saveGradeButton" text="Save Grade" onAction="#handleSaveGrade" />
+    <HBox spacing="10">
+        <Button fx:id="saveSubmissionButton" text="Save Submission" />
+        <Button fx:id="deleteSubmissionButton" text="Delete Submission" />
+    </HBox>
 </VBox>

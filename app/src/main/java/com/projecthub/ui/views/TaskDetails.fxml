@@ -6,49 +6,33 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.projecthub.ui.controllers.TaskDetailsController"
+      fx:controller="com.projecthub.ui.controllers.details.TaskDetailsController"
       spacing="10" padding="10">
 
     <Label text="Task Management" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
     <HBox spacing="5">
-        <Label text="Search:" />
-        <TextField fx:id="searchField" />
-    </HBox>
-
-    <TableView fx:id="taskTableView" prefHeight="200">
-        <columns>
-            <TableColumn fx:id="taskIdColumn" text="ID" prefWidth="50" />
-            <TableColumn fx:id="taskNameColumn" text="Name" prefWidth="150" />
-            <TableColumn fx:id="taskDescriptionColumn" text="Description" prefWidth="200" />
-            <TableColumn fx:id="taskStatusColumn" text="Status" prefWidth="100" />
-            <TableColumn fx:id="taskDueDateColumn" text="Due Date" prefWidth="100" />
-        </columns>
-    </TableView>
-
-    <HBox spacing="10">
+        <TextField fx:id="searchField" promptText="Search tasks..." />
         <Button text="Add Task" onAction="#handleAddTask" />
         <Button text="Edit Task" onAction="#handleEditTask" />
         <Button text="Delete Task" onAction="#handleDeleteTask" />
     </HBox>
 
-    <VBox fx:id="taskForm" spacing="10" padding="10" style="-fx-border-color: lightgray; -fx-border-width: 1; -fx-border-radius: 5;">
-        <HBox spacing="5">
-            <Label text="Name:" />
-            <TextField fx:id="taskNameField" />
-        </HBox>
-        <HBox spacing="5">
-            <Label text="Description:" />
-            <TextField fx:id="taskDescriptionField" />
-        </HBox>
-        <HBox spacing="5">
-            <Label text="Status:" />
-            <TextField fx:id="taskStatusField" />
-        </HBox>
-        <HBox spacing="5">
-            <Label text="Due Date:" />
-            <DatePicker fx:id="taskDueDatePicker" />
-        </HBox>
+    <TableView fx:id="taskTableView" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="taskIdColumn" text="ID" />
+            <TableColumn fx:id="taskNameColumn" text="Name" />
+            <TableColumn fx:id="taskDescriptionColumn" text="Description" />
+            <TableColumn fx:id="taskStatusColumn" text="Status" />
+            <TableColumn fx:id="taskDueDateColumn" text="Due Date" />
+        </columns>
+    </TableView>
+
+    <VBox fx:id="taskForm" spacing="5" visible="false">
+        <TextField fx:id="taskNameField" promptText="Task Name" />
+        <TextField fx:id="taskDescriptionField" promptText="Task Description" />
+        <TextField fx:id="taskStatusField" promptText="Task Status" />
+        <DatePicker fx:id="taskDueDatePicker" promptText="Due Date" />
         <Button fx:id="saveTaskButton" text="Save Task" />
     </VBox>
 </VBox>
