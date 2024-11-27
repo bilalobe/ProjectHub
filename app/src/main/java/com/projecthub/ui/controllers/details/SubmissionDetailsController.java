@@ -4,24 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.SubmissionSummary;
-import com.projecthub.model.Submission;
-import com.projecthub.service.SubmissionService;
+import com.projecthub.ui.viewmodels.SubmissionViewModel;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
-/**
- * Controller for displaying Submission details.
- */
 @Component
 public class SubmissionDetailsController {
 
     @Autowired
-    private SubmissionService submissionService;
+    private SubmissionViewModel submissionViewModel;
 
     @FXML
     private Label submissionIdLabel;
@@ -41,60 +37,49 @@ public class SubmissionDetailsController {
     @FXML
     private TextArea contentArea;
 
-    private Submission submission;
-
-    /**
-     * Sets the Submission to display.
-     *
-     * @param submission the Submission
-     */
-    public void setSubmission(Submission submission) {
-        this.submission = submission;
-        updateUI();
-    }
-
-    /**
-     * Updates the UI elements with Submission data.
-     */
-    private void updateUI() {
-        if (submission != null) {
-            submissionIdLabel.setText(submission.getId().toString());
-            studentNameLabel.setText(submission.getStudent().getName());
-            projectNameLabel.setText(submission.getProject().getName());
-            timestampLabel.setText(submission.getTimestamp());
-            gradeField.setText(submission.getGrade() != null ? submission.getGrade().toString() : "");
-            contentArea.setText(submission.getContent());
-        }
-    }
-
-    /**
-     * Handles the action of saving the grade.
-     */
     @FXML
-    private void handleSaveGrade() {
-        String gradeText = gradeField.getText();
-        try {
-            Integer grade = Integer.valueOf(gradeText);
-            submission.setGrade(grade);
-            // Save submission with new grade
-            SubmissionSummary submissionSummary = new SubmissionSummary(submission);
-            submissionService.saveSubmission(submissionSummary);
-            showAlert(AlertType.INFORMATION, "Grade Saved", "The grade has been successfully saved.");
-        } catch (NumberFormatException e) {
-            showAlert(AlertType.ERROR, "Invalid Grade", "Please enter a valid integer for the grade.");
-        } catch (Exception e) {
-            showAlert(AlertType.ERROR, "Error", "An error occurred while saving the grade. Please try again.");
-        }
+    private Button saveSubmissionButton;
+
+    @FXML
+    private Button deleteSubmissionButton;
+
+    @FXML
+    public void initialize() {
+        submissionIdLabel.textProperty().bind(submissionViewModel.submissionIdProperty().asString());
+        studentNameLabel.textProperty().bind(submissionViewModel.studentNameProperty());
+        projectNameLabel.textProperty().bind(submissionViewModel.projectNameProperty());
+        timestampLabel.textProperty().bind(submissionViewModel.timestampProperty());
+        gradeField.textProperty().bindBidirectional(submissionViewModel.gradeProperty());
+        contentArea.textProperty().bindBidirectional(submissionViewModel.contentProperty());
+
+        saveSubmissionButton.setOnAction(event -> saveSubmission());
+        deleteSubmissionButton.setOnAction(event -> deleteSubmission());
     }
 
-    /**
-     * Shows an alert with the specified type, title, and message.
-     *
-     * @param alertType the type of the alert
-     * @param title     the title of the alert
-     * @param message   the message of the alert
-     */
-    private void showAlert(AlertType alertType, String title, String message) {
+    public void setSubmission(SubmissionSummary submission) {
+        submissionViewModel.setSubmission(submission);
+    }
+
+    private void saveSubmission() {
+        SubmissionSummary submissionSummary = new SubmissionSummary(
+                submissionViewModel.submissionIdProperty().get(),
+                submissionViewModel.contentProperty().get(),
+                submissionViewModel.timestampProperty().get(),
+                Integer.valueOf(submissionViewModel.gradeProperty().get()),
+                null, // projectId
+                null, // studentId
+                null, // additionalField1
+                null  // additionalField2
+        );
+        submissionViewModel.saveSubmission(submissionSummary);
+    }
+
+    private void deleteSubmission() {
+        submissionViewModel.deleteSubmission(submissionViewModel.submissionIdProperty().get());
+    }
+
+    @SuppressWarnings("unused")
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
