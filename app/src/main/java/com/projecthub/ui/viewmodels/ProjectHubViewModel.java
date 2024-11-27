@@ -1,113 +1,102 @@
 package com.projecthub.ui.viewmodels;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.projecthub.dto.CohortSummary;
 import com.projecthub.dto.ComponentSummary;
-import com.projecthub.dto.SchoolSummary;
+import com.projecthub.dto.ProjectSummary;
 import com.projecthub.dto.TeamSummary;
 import com.projecthub.service.CohortService;
 import com.projecthub.service.ComponentService;
-import com.projecthub.service.SchoolService;
+import com.projecthub.service.ProjectService;
 import com.projecthub.service.TeamService;
 import com.projecthub.utils.ui.TreeItemWrapper;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.springframework.stereotype.Component;
 
-@org.springframework.stereotype.Component
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component
 public class ProjectHubViewModel {
 
-    @Autowired
-    private SchoolService schoolService;
+    private final ProjectService projectService;
+    private final CohortService cohortService;
+    private final TeamService teamService;
+    private final ComponentService componentService;
 
-    @Autowired
-    private CohortService classService;
-
-    @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private ComponentService componentService;
-
-    private final ObservableList<TreeItemWrapper> treeItems = FXCollections.observableArrayList();
+    private final ObservableList<ProjectSummary> projects = FXCollections.observableArrayList();
+    private final ObservableList<ComponentSummary> components = FXCollections.observableArrayList();
     private final StringProperty searchQuery = new SimpleStringProperty();
 
-    public ProjectHubViewModel() {
-        loadTreeItems();
-        setupSearchListener();
+    public ProjectHubViewModel(ProjectService projectService, CohortService cohortService, TeamService teamService, ComponentService componentService) {
+        this.projectService = projectService;
+        this.cohortService = cohortService;
+        this.teamService = teamService;
+        this.componentService = componentService;
+        initialize();
     }
 
-    public ObservableList<TreeItemWrapper> getTreeItems() {
-        return treeItems;
+    public ObservableList<ProjectSummary> getProjects() {
+        return projects;
+    }
+
+    public ObservableList<ComponentSummary> getComponents() {
+        return components;
     }
 
     public StringProperty searchQueryProperty() {
         return searchQuery;
     }
 
-    private void loadTreeItems() {
-        List<SchoolSummary> schools = schoolService.getAllSchools();
-        for (SchoolSummary school : schools) {
-            TreeItemWrapper schoolWrapper = new TreeItemWrapper(school.getName(), school);
-            treeItems.add(schoolWrapper);
-        }
+    private void initialize() {
+        loadProjects();
+        searchQuery.addListener((observable, oldValue, newValue) -> searchProjects());
     }
 
-    private void setupSearchListener() {
-        searchQuery.addListener((observable, oldValue, newValue) -> {
-            // Implement filtering logic here, e.g., filter treeItems based on searchQuery
-            // Example:
-            // filterTreeItems(newValue);
-        });
+    public void loadProjects() {
+        List<ProjectSummary> projectSummaries = projectService.getAllProjects();
+        projects.setAll(projectSummaries);
     }
 
-    /**
-     * Retrieves the list of classes associated with a specific school ID.
-     *
-     * @param id the ID of the school
-     * @return a list of Class objects associated with the school
-     */
-    public List<CohortSummary> getClassesBySchoolId(Long id) {
-        return classService.getCohortsBySchoolId(id);
-    }
-
-    /**
-     * Provides access to the ComponentService.
-     *
-     * @return the ComponentService instance
-     */
-    public ComponentService getComponentService() {
-        return componentService;
-    }
-
-    /**
-     * Retrieves the list of component summaries associated with a specific
-     * project ID.
-     *
-     * @param projectId the ID of the project
-     * @return a list of ComponentSummary objects
-     */
-    public List<ComponentSummary> getComponentsByProjectId(Long projectId) {
-        List<ComponentSummary> components = componentService.getComponentsByProjectId(projectId);
-        return components.stream()
-                .map(c -> new ComponentSummary(projectId, c.getName(), c.getDescription(), projectId))
+    public void searchProjects() {
+        String query = searchQuery.get().toLowerCase();
+        List<ProjectSummary> filteredProjects = projectService.getAllProjects().stream()
+                .filter(project -> project.getName().toLowerCase().contains(query) ||
+                        project.getDescription().toLowerCase().contains(query))
                 .collect(Collectors.toList());
+        projects.setAll(filteredProjects);
     }
 
-    /**
-     * Retrieves the name of the team associated with a specific team ID.
-     *
-     * @param teamId the ID of the team
-     * @return the name of the team, or "N/A" if not found
-     */
+    public void saveProject(ProjectSummary projectSummary) {
+        projectService.saveProject(projectSummary);
+        loadProjects();
+    }
+
+    public void deleteProject(Long projectId) {
+        projectService.deleteProject(projectId);
+        loadProjects();
+    }
+
+    public TreeItemWrapper[] getTreeItems() {
+        List<ProjectSummary> projectSummaries = projectService.getAllProjects();
+        return projectSummaries.stream()
+                .map(project -> new TreeItemWrapper(String.valueOf(project.getId()), project.getName()))
+                .toArray(TreeItemWrapper[]::new);
+    }
+
+    public List<CohortSummary> getClassesBySchoolId(Long id) {
+        return cohortService.getCohortsBySchoolId(id);
+    }
+
     public String getTeamNameById(Long teamId) {
         TeamSummary team = teamService.getTeamById(teamId);
-        return team != null ? team.getName() : "N/A";
+        return team != null ? team.getName() : "Unknown Team";
+    }
+
+    public void loadComponents(Long projectId) {
+        List<ComponentSummary> componentSummaries = componentService.getComponentsByProjectId(projectId);
+        components.setAll(componentSummaries);
     }
 }
