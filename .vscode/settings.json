@@ -1,4 +1,11 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
+    "java.errors.incompleteClasspath.severity": "info",
+    "terminal.integrated.suggest.builtinCompletions": {
+
+        "pwshCode": true,
+        "pwshGit": true
+    },
     "java.configuration.updateBuildConfiguration": "interactive"
+    
 }
