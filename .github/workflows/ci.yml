@@ -42,8 +42,8 @@ jobs:
     - name: List build/libs directory contents
       run: ls -la app/build/libs/
 
-    - name: Run Tests
-      run: ./gradlew test
+    - name: Run Tests with H2
+      run: ./gradlew test -Dspring.profiles.active=dev
 
     - name: Cache build output
       uses: actions/cache@v4
@@ -68,15 +68,5 @@ jobs:
         docker build -t $IMAGE_NAME .
         docker push $IMAGE_NAME
 
-    - name: Set up PostgreSQL
-      run: |
-        docker-compose -f compose-dev.yaml up -d postgres
-        sleep 10 # Wait for PostgreSQL to initialize
-        docker-compose exec postgres psql -U ${{ secrets.POSTGRES_USER }} -c "CREATE DATABASE ${{ secrets.POSTGRES_DB }};"
-
     - name: Run Application
       run: docker-compose -f compose-dev.yaml up -d app
-      env:
-        POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-        POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
