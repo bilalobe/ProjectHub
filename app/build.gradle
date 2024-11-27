@@ -24,7 +24,7 @@ dependencies {
     implementation 'org.openjfx:javafx-media:23.0.1'
     implementation 'org.openjfx:javafx-web:23.0.1'
 
-    // Lombok for boilerplate code reduction
+    // ModelMapper for object mapping
     implementation 'org.modelmapper:modelmapper:2.4.4'
 
     // JPro dependencies
@@ -44,8 +44,8 @@ dependencies {
     // Spring Data Commons for JacksonRepositoryPopulatorFactoryBean
     implementation 'org.springframework.data:spring-data-commons'
 
-    // PostgreSQL driver
-    runtimeOnly 'org.postgresql:postgresql:42.7.4'
+    // H2 driver
+    runtimeOnly 'com.h2database:h2'
 
     // Springdoc OpenAPI for Swagger v3
     implementation 'org.springdoc:springdoc-openapi-ui:1.8.0'
@@ -74,6 +74,10 @@ jpro {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 jar {
