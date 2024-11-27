@@ -1,19 +1,23 @@
-package com.projecthub.ui.controllers;
+package com.projecthub.ui.controllers.details;
 
-import com.projecthub.dto.TaskSummary;
-import com.projecthub.service.TaskService;
-import com.projecthub.ui.viewmodels.TaskViewModel;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.projecthub.dto.TaskSummary;
+import com.projecthub.ui.viewmodels.TaskViewModel;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+
 @Component
 public class TaskDetailsController {
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private TaskViewModel taskViewModel;
@@ -34,7 +38,7 @@ public class TaskDetailsController {
     private TableColumn<TaskSummary, String> taskStatusColumn;
 
     @FXML
-    private TableColumn<TaskSummary, String> taskDueDateColumn;
+    private TableColumn<TaskSummary, LocalDate> taskDueDateColumn;
 
     @FXML
     private TextField searchField;
@@ -59,7 +63,7 @@ public class TaskDetailsController {
 
     @FXML
     public void initialize() {
-        taskIdColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
+        taskIdColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty());
         taskNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         taskDescriptionColumn.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
         taskStatusColumn.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
@@ -68,11 +72,11 @@ public class TaskDetailsController {
         taskTableView.setItems(taskViewModel.getTasks());
 
         searchField.textProperty().bindBidirectional(taskViewModel.searchQueryProperty());
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> taskViewModel.searchTasks());
 
         taskForm.setVisible(false);
     }
 
+    @SuppressWarnings("unused")
     @FXML
     private void handleAddTask() {
         clearForm();
@@ -80,39 +84,16 @@ public class TaskDetailsController {
         saveTaskButton.setOnAction(event -> saveTask(null));
     }
 
-    @FXML
-    private void handleEditTask() {
-        TaskSummary selectedTask = taskTableView.getSelectionModel().getSelectedItem();
-        if (selectedTask != null) {
-            populateForm(selectedTask);
-            taskForm.setVisible(true);
-            saveTaskButton.setOnAction(event -> saveTask(selectedTask.getId()));
-        }
-    }
-
-    @FXML
-    private void handleDeleteTask() {
-        TaskSummary selectedTask = taskTableView.getSelectionModel().getSelectedItem();
-        if (selectedTask != null) {
-            taskService.deleteTask(selectedTask.getId());
-            taskViewModel.loadTasks();
-        }
-    }
-
     private void saveTask(Long taskId) {
         String name = taskNameField.getText();
         String description = taskDescriptionField.getText();
         String status = taskStatusField.getText();
-        String dueDate = taskDueDatePicker.getValue() != null ? taskDueDatePicker.getValue().toString() : null;
+        LocalDate dueDate = taskDueDatePicker.getValue();
 
-        TaskSummary taskSummary = new TaskSummary(taskId, name, description, status, dueDate);
-        if (taskId == null) {
-            taskService.saveTask(taskSummary);
-        } else {
-            taskService.updateTask(taskId, taskSummary);
-        }
-        taskViewModel.loadTasks();
+        TaskSummary taskSummary = new TaskSummary(taskId, name, description, status, dueDate, null, null);
+        taskViewModel.saveTask(taskSummary);
         taskForm.setVisible(false);
+        taskViewModel.loadTasks();
     }
 
     private void clearForm() {
@@ -122,10 +103,27 @@ public class TaskDetailsController {
         taskDueDatePicker.setValue(null);
     }
 
-    private void populateForm(TaskSummary taskSummary) {
-        taskNameField.setText(taskSummary.getName());
-        taskDescriptionField.setText(taskSummary.getDescription());
-        taskStatusField.setText(taskSummary.getStatus());
-        taskDueDatePicker.setValue(taskSummary.getDueDate() != null ? java.time.LocalDate.parse(taskSummary.getDueDate()) : null);
+    @SuppressWarnings("unused")
+    @FXML
+    private void handleEditTask() {
+        TaskSummary selectedTask = taskTableView.getSelectionModel().getSelectedItem();
+        if (selectedTask != null) {
+            taskNameField.setText(selectedTask.getName());
+            taskDescriptionField.setText(selectedTask.getDescription());
+            taskStatusField.setText(selectedTask.getStatus());
+            taskDueDatePicker.setValue(selectedTask.getDueDate());
+            taskForm.setVisible(true);
+            saveTaskButton.setOnAction(event -> saveTask(selectedTask.getId()));
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @FXML
+    private void handleDeleteTask() {
+        TaskSummary selectedTask = taskTableView.getSelectionModel().getSelectedItem();
+        if (selectedTask != null) {
+            taskViewModel.deleteTask(selectedTask.getId());
+            taskViewModel.loadTasks();
+        }
     }
 }
