@@ -93,7 +93,7 @@ public class UserDetailsController {
         }
 
         try {
-            AppUserSummary userSummary = new AppUserSummary(null, username, password, null); // Assuming no teamId for now
+            AppUserSummary userSummary = new AppUserSummary(null, username, password, null, null, null); // Assuming no teamId for now
             userService.saveUser(userSummary, password);
             loadUsers();
             clearFields();
@@ -146,8 +146,8 @@ public class UserDetailsController {
         }
 
         try {
-            AppUserSummary userSummary; // Assuming no teamId for now
-            userSummary = new AppUserSummary(userId, username, password, null); // Assuming no teamId for now
+            AppUserSummary userSummary;
+            userSummary = new AppUserSummary(userId, username, password, null, null, null); // Assuming no teamId for now
             userService.saveUser(userSummary, password);
             loadUsers();
             clearFields();
