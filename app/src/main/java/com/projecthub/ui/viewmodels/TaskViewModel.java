@@ -50,4 +50,14 @@ public class TaskViewModel {
                 .collect(Collectors.toList());
         tasks.setAll(filteredTasks);
     }
+
+    public void saveTask(TaskSummary taskSummary) {
+        taskService.saveTask(taskSummary);
+        loadTasks();
+    }
+
+    public void deleteTask(Long taskId) {
+        taskService.deleteTask(taskId);
+        loadTasks();
+    }
 }
