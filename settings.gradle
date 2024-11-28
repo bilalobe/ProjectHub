@@ -2,21 +2,9 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        maven { url "https://sandec.jfrog.io/artifactory/repo" } // JPro repository
     }
     plugins {
         id 'org.openjfx.javafxplugin' version '0.1.0' // JavaFX plugin
-        id 'com.jpro.gradle' version '2024.4.1' // JPro plugin
-    }
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url "https://sandec.jfrog.io/artifactory/repo" } // JPro repository
-    }
-    dependencies {
-        classpath "one.jpro:jpro-gradle-plugin:2024.4.1"
     }
 }
 

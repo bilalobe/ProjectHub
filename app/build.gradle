@@ -4,7 +4,6 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.1.0'
     id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.6'
-    id 'jpro-gradle-plugin'
 }
 
 group 'com.projecthub'
@@ -67,14 +66,6 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.web' ]
 }
 
-jpro {
-    // jpro server port
-    port = 8080
-}
-
-test {
-    useJUnitPlatform()
-}
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
