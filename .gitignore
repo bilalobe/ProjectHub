@@ -10,3 +10,6 @@ build/
 
 # Ignore Maven project-specific cache directory
 .fake
+
+# Ignore Gradle files
+gradle.properties
