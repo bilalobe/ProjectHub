@@ -16,6 +16,7 @@ public class CSVProperties {
     private String teachersFilepath;
     private String teamsFilepath;
     private String cohortsFilepath;
+    private String usersFilepath;
 
     // Getters and setters...
 
@@ -89,5 +90,13 @@ public class CSVProperties {
 
     public void setCohortsFilepath(String cohortsFilepath) {
         this.cohortsFilepath = cohortsFilepath;
+    }
+
+    public String getUsersFilepath() {
+        return usersFilepath;
+    }
+
+    public void setUsersFilepath(String usersFilepath) {
+        this.usersFilepath = usersFilepath;
     }
 }
