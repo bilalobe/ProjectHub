@@ -16,10 +16,6 @@ repositories {
 
 dependencies {
     // JavaFX dependencies
-    implementation 'org.openjfx:javafx-controls:23.0.1'
-    implementation 'org.openjfx:javafx-fxml:23.0.1'
-    implementation 'org.openjfx:javafx-graphics:23.0.1'
-    implementation 'org.openjfx:javafx-media:23.0.1'
 
     // ModelMapper for object mapping
     implementation 'org.modelmapper:modelmapper:2.4.4'
@@ -63,7 +59,7 @@ application {
     mainClass = 'com.projecthub.MainApp'
     applicationDefaultJvmArgs = [
         '--module-path', "${javafx.sdk}/lib",
-        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media'
+        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.web'
     ]
 }
 
@@ -71,13 +67,13 @@ bootRun {
     mainClass = 'com.projecthub.MainApp'
     jvmArgs = [
         '--module-path', "${javafx.sdk}/lib",
-        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media'
+        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.web'
     ]
 }
 
 javafx {
     version = '23.0.1'
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media' ] 
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.web' ] 
     sdk = 'C:/JDKs/javafx-sdk-23.0.1'
 }
 
@@ -85,9 +81,8 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
     options.compilerArgs += [
         '--module-path', "${javafx.sdk}/lib",
-        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media'
+        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media, javafx.web'
     ]
-    options.release = 23 // Adjust to your Java version
 }
 
 jar {
