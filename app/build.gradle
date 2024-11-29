@@ -26,9 +26,6 @@ dependencies {
     // ModelMapper for object mapping
     implementation 'org.modelmapper:modelmapper:2.4.4'
 
-    // JPro dependencies
-    implementation 'one.jpro:jpro-webapi:2024.4.1'
-
     // OpenCSV for CSV handling
     implementation 'com.opencsv:opencsv:5.5.2'
 
