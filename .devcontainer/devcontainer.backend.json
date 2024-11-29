@@ -12,8 +12,8 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "vscjava.vscode-java-pack", // Java Extension Pack
-        "pivotal.vscode-spring-boot", // Spring Boot Extension Pack
+        "vscjava.vscode-java-pack",
+        "pivotal.vscode-spring-boot",
         "richardwillis.vscode-gradle"
       ],
       "settings": {
