@@ -12,7 +12,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
@@ -29,6 +28,7 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.projecthub.config.CSVProperties;
 import com.projecthub.model.School;
 import com.projecthub.repository.custom.CustomSchoolRepository;
 
@@ -40,16 +40,13 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(CSVSchoolRepository.class);
     private final Validator validator;
+    private final CSVProperties csvProperties;
 
-    @Value("${app.schools.filepath}")
-    private String schoolsFilePath;
 
-    /**
-     * Constructs a new {@code CSVSchoolRepository}.
-     */
-    public CSVSchoolRepository() {
+    public CSVSchoolRepository(CSVProperties csvProperties) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
+        this.csvProperties = csvProperties;
     }
 
     /**
@@ -94,12 +91,12 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
     public <S extends School> S save(@NonNull S school) {
         validateSchool(school);
         try {
-            backupCSVFile(schoolsFilePath);
+            backupCSVFile(csvProperties.getSchoolsFilepath());
             List<School> schools = findAll();
             schools.removeIf(s -> s.getId().equals(school.getId()));
             schools.add(school);
 
-            try (CSVWriter writer = new CSVWriter(new FileWriter(schoolsFilePath))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getSchoolsFilepath()))) {
                 ColumnPositionMappingStrategy<School> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(School.class);
                 String[] memberFieldsToBindTo = {"id", "name"};
@@ -127,7 +124,7 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
     @Override
     @NonNull
     public List<School> findAll() {
-        try (CSVReader reader = new CSVReader(new FileReader(schoolsFilePath))) {
+        try (CSVReader reader = new CSVReader(new FileReader(csvProperties.getSchoolsFilepath()))) {
             ColumnPositionMappingStrategy<School> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(School.class);
             String[] memberFieldsToBindTo = {"id", "name"};
@@ -165,11 +162,11 @@ public abstract class CSVSchoolRepository implements CustomSchoolRepository {
     @Override
     public void deleteById(@NonNull Long schoolId) {
         try {
-            backupCSVFile(schoolsFilePath);
+            backupCSVFile(csvProperties.getSchoolsFilepath());
             List<School> schools = findAll();
             schools.removeIf(school -> school.getId().equals(schoolId));
 
-            try (CSVWriter writer = new CSVWriter(new FileWriter(schoolsFilePath))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getSchoolsFilepath()))) {
                 ColumnPositionMappingStrategy<School> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(School.class);
                 String[] memberFieldsToBindTo = {"id", "name"};

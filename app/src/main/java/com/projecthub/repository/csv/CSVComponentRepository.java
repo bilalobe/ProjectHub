@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import jakarta.validation.ConstraintViolation;
@@ -27,6 +26,7 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.projecthub.config.CSVProperties;
 import com.projecthub.model.Component;
 import com.projecthub.repository.custom.CustomComponentRepository;
 
@@ -38,16 +38,17 @@ public abstract class CSVComponentRepository implements CustomComponentRepositor
 
     private static final Logger logger = LoggerFactory.getLogger(CSVComponentRepository.class);
     private final Validator validator;
-
-    @Value("${app.components.filepath}")
-    private String componentsFilePath;
+    private final CSVProperties csvProperties;
 
     /**
      * Constructs a new {@code CSVComponentRepository}.
+     *
+     * @param csvProperties the {@code CSVProperties} object
      */
-    public CSVComponentRepository() {
+    public CSVComponentRepository(CSVProperties csvProperties) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
+        this.csvProperties = csvProperties;
     }
 
     /**
@@ -90,12 +91,12 @@ public abstract class CSVComponentRepository implements CustomComponentRepositor
     public Component save(Component component) {
         validateComponent(component);
         try {
-            backupCSVFile(componentsFilePath);
+            backupCSVFile(csvProperties.getComponentsFilepath());
             List<Component> components = findAll();
             components.removeIf(c -> c.getId().equals(component.getId()));
             components.add(component);
 
-            try (CSVWriter writer = new CSVWriter(new FileWriter(componentsFilePath))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getComponentsFilepath()))) {
                 ColumnPositionMappingStrategy<Component> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(Component.class);
                 String[] memberFieldsToBindTo = {"id", "name", "description", "projectId"};
@@ -122,7 +123,7 @@ public abstract class CSVComponentRepository implements CustomComponentRepositor
      */
     @Override
     public List<Component> findAll() {
-        try (CSVReader reader = new CSVReader(new FileReader(componentsFilePath))) {
+        try (CSVReader reader = new CSVReader(new FileReader(csvProperties.getComponentsFilepath()))) {
             ColumnPositionMappingStrategy<Component> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Component.class);
             String[] memberFieldsToBindTo = {"id", "name", "description", "projectId"};
@@ -146,11 +147,11 @@ public abstract class CSVComponentRepository implements CustomComponentRepositor
     @Override
     public void deleteById(Long componentId) {
         try {
-            backupCSVFile(componentsFilePath);
+            backupCSVFile(csvProperties.getComponentsFilepath());
             List<Component> components = findAll();
             components.removeIf(component -> component.getId().equals(componentId));
 
-            try (CSVWriter writer = new CSVWriter(new FileWriter(componentsFilePath))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getComponentsFilepath()))) {
                 ColumnPositionMappingStrategy<Component> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(Component.class);
                 String[] memberFieldsToBindTo = {"id", "name", "description", "projectId"};

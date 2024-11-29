@@ -12,7 +12,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import jakarta.validation.ConstraintViolation;
@@ -28,6 +27,7 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.projecthub.config.CSVProperties;
 import com.projecthub.model.AppUser;
 import com.projecthub.repository.custom.CustomUserRepository;
 
@@ -39,13 +39,13 @@ public abstract class CSVUserRepository implements CustomUserRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(CSVUserRepository.class);
     private final Validator validator;
+    private final CSVProperties csvProperties;
 
-    @Value("${app.users.filepath}")
-    private String usersFilePath;
 
-    public CSVUserRepository() {
+    public CSVUserRepository(CSVProperties csvProperties) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
+        this.csvProperties = csvProperties;
     }
 
     private void backupCSVFile(String filePath) throws IOException {
@@ -70,12 +70,12 @@ public abstract class CSVUserRepository implements CustomUserRepository {
     public AppUser save(AppUser user) {
         validateUser(user);
         try {
-            backupCSVFile(usersFilePath);
+            backupCSVFile(csvProperties.getUsersFilepath());
             List<AppUser> users = findAll();
             users.removeIf(u -> u.getId().equals(user.getId()));
             users.add(user);
 
-            try (CSVWriter writer = new CSVWriter(new FileWriter(usersFilePath))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getUsersFilepath()))) {
                 ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(AppUser.class);
                 String[] memberFieldsToBindTo = {"id", "username", "password", "firstName", "lastName", "email", "team"};
@@ -97,7 +97,7 @@ public abstract class CSVUserRepository implements CustomUserRepository {
 
     @Override
     public List<AppUser> findAll() {
-        try (CSVReader reader = new CSVReader(new FileReader(usersFilePath))) {
+        try (CSVReader reader = new CSVReader(new FileReader(csvProperties.getUsersFilepath()))) {
             ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(AppUser.class);
             String[] memberFieldsToBindTo = {"id", "username", "password", "firstName", "lastName", "email", "team"};
@@ -122,20 +122,20 @@ public abstract class CSVUserRepository implements CustomUserRepository {
     @Override
     public void deleteById(Long userId) {
         try {
-            backupCSVFile(usersFilePath);
+            backupCSVFile(csvProperties.getUsersFilepath());
             List<AppUser> users = findAll();
             users.removeIf(user -> user.getId().equals(userId));
-    
-            try (CSVWriter writer = new CSVWriter(new FileWriter(usersFilePath))) {
+
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getUsersFilepath()))) {
                 ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(AppUser.class);
                 String[] memberFieldsToBindTo = {"id", "username", "password", "firstName", "lastName", "email", "team"};
                 strategy.setColumnMapping(memberFieldsToBindTo);
-    
+
                 StatefulBeanToCsv<AppUser> beanToCsv = new StatefulBeanToCsvBuilder<AppUser>(writer)
                         .withMappingStrategy(strategy)
                         .build();
-    
+
                 beanToCsv.write(users);
             }
             logger.info("User deleted successfully: {}", userId);
@@ -144,7 +144,7 @@ public abstract class CSVUserRepository implements CustomUserRepository {
             throw new RuntimeException("Error deleting user from CSV", e);
         }
     }
-    
+
     @Override
     public boolean existsById(Long id) {
         return findById(id).isPresent();

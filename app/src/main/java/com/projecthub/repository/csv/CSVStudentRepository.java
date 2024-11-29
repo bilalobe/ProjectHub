@@ -8,7 +8,6 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.CSVWriter;
 import com.opencsv.CSVReader;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.FileReader;
@@ -23,6 +22,8 @@ import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.projecthub.config.CSVProperties;
+
 /**
  * CSV implementation of the {@link CustomStudentRepository} interface.
  */
@@ -31,17 +32,12 @@ public abstract class CSVStudentRepository implements CustomStudentRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(CSVStudentRepository.class);
 
-    @Value("${app.students.filepath}")
-    private String studentsFilePath;
-
+    private final CSVProperties csvProperties;
     private final Validator validator;
 
-    /**
-     * Constructs a new {@code CSVStudentRepository}.
-     *
-     * @param validator the {@code Validator} instance for validating student entities
-     */
-    public CSVStudentRepository(Validator validator) {
+
+    public CSVStudentRepository(CSVProperties csvProperties, Validator validator) {
+        this.csvProperties = csvProperties;
         this.validator = validator;
     }
 
@@ -86,11 +82,11 @@ public abstract class CSVStudentRepository implements CustomStudentRepository {
     public Student save(Student student) {
         validateStudent(student);
         try {
-            backupCSVFile(studentsFilePath);
+            backupCSVFile(csvProperties.getStudentsFilepath());
             List<Student> students = findAll();
             students.removeIf(s -> s.getId().equals(student.getId()));
             students.add(student);
-            try (CSVWriter writer = new CSVWriter(new FileWriter(studentsFilePath))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getStudentsFilepath()))) {
                 ColumnPositionMappingStrategy<Student> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(Student.class);
                 String[] memberFieldsToBindTo = {"id", "name"};
@@ -115,7 +111,7 @@ public abstract class CSVStudentRepository implements CustomStudentRepository {
      */
     @Override
     public List<Student> findAll() {
-        try (CSVReader reader = new CSVReader(new FileReader(studentsFilePath))) {
+        try (CSVReader reader = new CSVReader(new FileReader(csvProperties.getStudentsFilepath()))) {
             ColumnPositionMappingStrategy<Student> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Student.class);
             String[] memberFieldsToBindTo = {"id", "name"};
@@ -152,10 +148,10 @@ public abstract class CSVStudentRepository implements CustomStudentRepository {
     @Override
     public void deleteById(Long id) {
         try {
-            backupCSVFile(studentsFilePath);
+            backupCSVFile(csvProperties.getStudentsFilepath());
             List<Student> students = findAll();
             students.removeIf(s -> s.getId().equals(id));
-            try (CSVWriter writer = new CSVWriter(new FileWriter(studentsFilePath))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getStudentsFilepath()))) {
                 ColumnPositionMappingStrategy<Student> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(Student.class);
                 String[] memberFieldsToBindTo = {"id", "name"};

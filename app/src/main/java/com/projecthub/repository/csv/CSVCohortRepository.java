@@ -1,11 +1,10 @@
 package com.projecthub.repository.csv;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,17 +34,20 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import java.io.FileWriter;
+import java.io.FileReader;
 
 /**
  * CSV implementation of the {@link CustomCohortRepository} interface.
  */
 @Repository("csvCohortRepository")
-public class CSVCohortRepository implements CustomCohortRepository {
+public abstract class CSVCohortRepository implements CustomCohortRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(CSVCohortRepository.class);
     private final Validator validator;
     private final CustomSchoolRepository schoolRepository;
     private final CSVProperties csvProperties;
+
 
     public CSVCohortRepository(CustomSchoolRepository schoolRepository, CSVProperties csvProperties) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -55,8 +57,8 @@ public class CSVCohortRepository implements CustomCohortRepository {
     }
 
     private void backupCSVFile(String filePath) throws IOException {
-        java.nio.file.Path source = java.nio.file.Path.of(filePath);
-        java.nio.file.Path backup = java.nio.file.Path.of(filePath + ".backup");
+        Path source = Path.of(filePath);
+        Path backup = Path.of(filePath + ".backup");
         Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
         logger.info("Backup created for file: {}", filePath);
     }
@@ -118,8 +120,8 @@ public class CSVCohortRepository implements CustomCohortRepository {
 
     @Override
     public List<Cohort> findAll() {
-        File file = new File(csvProperties.getCohortsFilepath());
-        if (!file.exists()) {
+        Path filePath = Path.of(csvProperties.getCohortsFilepath());
+        if (!Files.exists(filePath)) {
             return new ArrayList<>();
         }
 

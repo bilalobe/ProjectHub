@@ -12,7 +12,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
@@ -24,6 +23,7 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.projecthub.config.CSVProperties;
 import com.projecthub.model.Project;
 import com.projecthub.repository.custom.CustomProjectRepository;
 
@@ -40,16 +40,17 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(CSVProjectRepository.class);
     private final Validator validator;
-
-    @Value("${app.projects.filepath}")
-    private String projectsFilePath;
+    private final CSVProperties csvProperties;
 
     /**
      * Constructs a new {@code CSVProjectRepository}.
+     *
+     * @param csvProperties the {@code CSVProperties} object
      */
-    public CSVProjectRepository() {
+    public CSVProjectRepository(CSVProperties csvProperties) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
+        this.csvProperties = csvProperties;
     }
 
     /**
@@ -90,7 +91,7 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
     @Override
     @NonNull
     public List<Project> findAll() {
-        try (CSVReader reader = new CSVReader(new FileReader(projectsFilePath))) {
+        try (CSVReader reader = new CSVReader(new FileReader(csvProperties.getProjectsFilepath()))) {
             ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(Project.class);
             String[] memberFieldsToBindTo = {"id", "name", "description", "team"};
@@ -142,12 +143,12 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
     public @NonNull <S extends Project> S save(@NonNull S project) {
         validateProject(project);
         try {
-            backupCSVFile(projectsFilePath);
+            backupCSVFile(csvProperties.getProjectsFilepath());
             List<Project> projects = findAll();
             projects.removeIf(p -> p.getId().equals(project.getId()));
             projects.add(project);
 
-            try (CSVWriter writer = new CSVWriter(new FileWriter(projectsFilePath))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getProjectsFilepath()))) {
                 ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(Project.class);
                 String[] memberFieldsToBindTo = {"id", "name", "description", "team"};
@@ -177,11 +178,11 @@ public abstract class CSVProjectRepository implements CustomProjectRepository {
     @Override
     public void deleteById(@NonNull Long projectId) {
         try {
-            backupCSVFile(projectsFilePath);
+            backupCSVFile(csvProperties.getProjectsFilepath());
             List<Project> projects = findAll();
             projects.removeIf(p -> p.getId().equals(projectId));
 
-            try (CSVWriter writer = new CSVWriter(new FileWriter(projectsFilePath))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getProjectsFilepath()))) {
                 ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(Project.class);
                 String[] memberFieldsToBindTo = {"id", "name", "description", "team"};
