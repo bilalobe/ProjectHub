@@ -1,23 +1,40 @@
 package com.projecthub.repository.csv;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.*;
-import com.opencsv.exceptions.*;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.projecthub.config.CSVProperties;
 import com.projecthub.model.Cohort;
 import com.projecthub.model.School;
 import com.projecthub.repository.custom.CustomCohortRepository;
 import com.projecthub.repository.custom.CustomSchoolRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import jakarta.validation.*;
-import java.nio.file.*;
 
-import java.io.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 /**
  * CSV implementation of the {@link CustomCohortRepository} interface.
@@ -28,27 +45,15 @@ public class CSVCohortRepository implements CustomCohortRepository {
     private static final Logger logger = LoggerFactory.getLogger(CSVCohortRepository.class);
     private final Validator validator;
     private final CustomSchoolRepository schoolRepository;
+    private final CSVProperties csvProperties;
 
-    @Value("${app.cohorts.filepath}")
-    private String cohortsFilePath;
-
-    /**
-     * Constructs a new {@code CSVCohortRepository}.
-     *
-     * @param schoolRepository the {@code CustomSchoolRepository} for retrieving associated schools
-     */
-    public CSVCohortRepository(CustomSchoolRepository schoolRepository) {
+    public CSVCohortRepository(CustomSchoolRepository schoolRepository, CSVProperties csvProperties) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
         this.schoolRepository = schoolRepository;
+        this.csvProperties = csvProperties;
     }
 
-    /**
-     * Creates a backup of the CSV file.
-     *
-     * @param filePath the path of the CSV file to back up
-     * @throws IOException if an I/O error occurs during backup
-     */
     private void backupCSVFile(String filePath) throws IOException {
         java.nio.file.Path source = java.nio.file.Path.of(filePath);
         java.nio.file.Path backup = java.nio.file.Path.of(filePath + ".backup");
@@ -56,12 +61,6 @@ public class CSVCohortRepository implements CustomCohortRepository {
         logger.info("Backup created for file: {}", filePath);
     }
 
-    /**
-     * Validates a {@link Cohort} object.
-     *
-     * @param cohort the {@code Cohort} object to validate
-     * @throws IllegalArgumentException if validation fails
-     */
     private void validateCohort(Cohort cohort) {
         Set<ConstraintViolation<Cohort>> violations = validator.validate(cohort);
         if (!violations.isEmpty()) {
@@ -73,22 +72,14 @@ public class CSVCohortRepository implements CustomCohortRepository {
         }
     }
 
-    /**
-     * Saves a cohort to the CSV file after validation and backup.
-     *
-     * @param cohort the {@code Cohort} object to save
-     * @return the saved {@code Cohort} object
-     * @throws RuntimeException if an error occurs during saving
-     */
     @Override
     public Cohort save(Cohort cohort) {
         validateCohort(cohort);
         try {
-            backupCSVFile(cohortsFilePath);
+            backupCSVFile(csvProperties.getCohortsFilepath());
             List<Cohort> cohorts = findAll();
             cohorts.removeIf(c -> c.getId().equals(cohort.getId()));
 
-            // Assign an ID if it's null
             if (cohort.getId() == null) {
                 Long maxId = cohorts.stream()
                         .map(Cohort::getId)
@@ -99,7 +90,7 @@ public class CSVCohortRepository implements CustomCohortRepository {
 
             cohorts.add(cohort);
 
-            try (CSVWriter writer = new CSVWriter(new FileWriter(cohortsFilePath))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getCohortsFilepath()))) {
                 ColumnPositionMappingStrategy<CohortCSV> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(CohortCSV.class);
 
@@ -125,19 +116,14 @@ public class CSVCohortRepository implements CustomCohortRepository {
         }
     }
 
-    /**
-     * Retrieves all cohorts from the CSV file.
-     *
-     * @return a list of {@code Cohort} objects
-     */
     @Override
     public List<Cohort> findAll() {
-        File file = new File(cohortsFilePath);
+        File file = new File(csvProperties.getCohortsFilepath());
         if (!file.exists()) {
             return new ArrayList<>();
         }
 
-        try (CSVReader reader = new CSVReader(new FileReader(cohortsFilePath))) {
+        try (CSVReader reader = new CSVReader(new FileReader(csvProperties.getCohortsFilepath()))) {
             ColumnPositionMappingStrategy<CohortCSV> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(CohortCSV.class);
 
@@ -157,12 +143,6 @@ public class CSVCohortRepository implements CustomCohortRepository {
         }
     }
 
-    /**
-     * Finds a cohort by its ID.
-     *
-     * @param id the ID of the cohort
-     * @return an {@code Optional} containing the cohort if found, or empty if not found
-     */
     @Override
     public Optional<Cohort> findById(Long id) {
         return findAll().stream()
@@ -170,20 +150,14 @@ public class CSVCohortRepository implements CustomCohortRepository {
                 .findFirst();
     }
 
-    /**
-     * Deletes a cohort by its ID.
-     *
-     * @param id the ID of the cohort to delete
-     * @throws RuntimeException if an error occurs during deletion
-     */
     @Override
     public void deleteById(Long id) {
         try {
-            backupCSVFile(cohortsFilePath);
+            backupCSVFile(csvProperties.getCohortsFilepath());
             List<Cohort> cohorts = findAll();
             cohorts.removeIf(c -> c.getId().equals(id));
 
-            try (CSVWriter writer = new CSVWriter(new FileWriter(cohortsFilePath))) {
+            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getCohortsFilepath()))) {
                 ColumnPositionMappingStrategy<CohortCSV> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(CohortCSV.class);
 
@@ -208,12 +182,6 @@ public class CSVCohortRepository implements CustomCohortRepository {
         }
     }
 
-    /**
-     * Finds all cohorts associated with a specific school ID.
-     *
-     * @param schoolId the ID of the school
-     * @return a list of cohorts belonging to the specified school
-     */
     @Override
     public List<Cohort> findBySchoolId(Long schoolId) {
         return findAll().stream()
@@ -221,12 +189,6 @@ public class CSVCohortRepository implements CustomCohortRepository {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Converts a {@code CohortCSV} object to a {@code Cohort} object.
-     *
-     * @param csvCohort the {@code CohortCSV} object to convert
-     * @return the converted {@code Cohort} object
-     */
     private Cohort toCohort(CohortCSV csvCohort) {
         Cohort cohort = new Cohort();
         cohort.setId(csvCohort.getId());
@@ -240,9 +202,6 @@ public class CSVCohortRepository implements CustomCohortRepository {
         return cohort;
     }
 
-    /**
-     * Inner class for CSV mapping.
-     */
     public static class CohortCSV {
 
         @CsvBindByName(column = "id")
@@ -254,8 +213,6 @@ public class CSVCohortRepository implements CustomCohortRepository {
         @CsvBindByName(column = "schoolId")
         private Long schoolId;
 
-        // Getters and Setters
-
         public static CohortCSV fromCohort(Cohort cohort) {
             CohortCSV csv = new CohortCSV();
             csv.setId(cohort.getId());
@@ -264,7 +221,6 @@ public class CSVCohortRepository implements CustomCohortRepository {
             return csv;
         }
 
-        // Getters and setters...
         public Long getId() {
             return id;
         }
