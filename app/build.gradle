@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'application' // For creating executable JARs
+    id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
     id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.6'
@@ -12,7 +12,6 @@ version '0.1.0-SNAPSHOT'
 repositories {
     mavenCentral()
     maven { url 'https://repo.spring.io/release' }
-    maven { url "https://sandec.jfrog.io/artifactory/repo" }
 }
 
 dependencies {
@@ -21,7 +20,6 @@ dependencies {
     implementation 'org.openjfx:javafx-fxml:23.0.1'
     implementation 'org.openjfx:javafx-graphics:23.0.1'
     implementation 'org.openjfx:javafx-media:23.0.1'
-    implementation 'org.openjfx:javafx-web:23.0.1'
 
     // ModelMapper for object mapping
     implementation 'org.modelmapper:modelmapper:2.4.4'
@@ -31,11 +29,15 @@ dependencies {
 
     // Spring Boot dependencies
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // Spring Boot DevTools for hot reloading
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     // Spring Data Commons for JacksonRepositoryPopulatorFactoryBean
     implementation 'org.springframework.data:spring-data-commons'
@@ -48,6 +50,9 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-data-rest:1.8.0'
     implementation 'org.springdoc:springdoc-openapi-security:1.8.0'
 
+    // Logging dependencies
+    implementation 'org.slf4j:slf4j-api:2.0.0'
+
     // Testing dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
@@ -56,16 +61,33 @@ dependencies {
 
 application {
     mainClass = 'com.projecthub.MainApp'
+    applicationDefaultJvmArgs = [
+        '--module-path', "${javafx.sdk}/lib",
+        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media'
+    ]
+}
+
+bootRun {
+    mainClass = 'com.projecthub.MainApp'
+    jvmArgs = [
+        '--module-path', "${javafx.sdk}/lib",
+        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media'
+    ]
 }
 
 javafx {
     version = '23.0.1'
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.web' ]
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media' ] 
+    sdk = 'C:/JDKs/javafx-sdk-23.0.1'
 }
-
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+    options.compilerArgs += [
+        '--module-path', "${javafx.sdk}/lib",
+        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media'
+    ]
+    options.release = 23 // Adjust to your Java version
 }
 
 jar {
