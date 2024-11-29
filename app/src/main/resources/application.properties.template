@@ -25,3 +25,4 @@ app.projects.filepath=projects.csv
 
 # Other configurations
 spring.application.name=ProjectHubApplication
+
