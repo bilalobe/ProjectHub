@@ -1,10 +1,12 @@
 package com.projecthub.mapper;
 
-import com.projecthub.dto.ProjectSummary;
 import com.projecthub.dto.SubmissionSummary;
+import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.model.Project;
 import com.projecthub.model.Student;
 import com.projecthub.model.Submission;
+import com.projecthub.repository.ProjectRepository;
+import com.projecthub.repository.StudentRepository;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,32 +15,36 @@ import org.springframework.stereotype.Component;
 @Component
 public class SubmissionMapper {
 
+    private final ProjectRepository projectRepository;
+    private final StudentRepository studentRepository;
+
+    public SubmissionMapper(ProjectRepository projectRepository, StudentRepository studentRepository) {
+        this.projectRepository = projectRepository;
+        this.studentRepository = studentRepository;
+    }
+
     /**
      * Converts a SubmissionSummary DTO to a Submission entity.
      *
      * @param submissionSummary the SubmissionSummary DTO
-     * @param project the associated Project entity
-     * @param student the associated Student entity
      * @return the converted Submission entity
      */
-    public Submission toSubmission(SubmissionSummary submissionSummary, Project project, Student student) {
+    public Submission toSubmission(SubmissionSummary submissionSummary) {
         if (submissionSummary == null) {
             return null;
         }
-        Submission submission = new Submission(
-            submissionSummary.getId(),
-            student,
-            project,
-            submissionSummary.getContent(),
-            submissionSummary.getTimestamp(),
-            submissionSummary.getGrade()
-        );
-        submission.setId(submissionSummary.getId());
+
+        Project project = projectRepository.findById(submissionSummary.getProjectId())
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + submissionSummary.getProjectId()));
+        Student student = studentRepository.findById(submissionSummary.getStudentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + submissionSummary.getStudentId()));
+
+        Submission submission = new Submission(null, student, project, null, null, null);
+        submission.setProject(project);
+        submission.setStudent(student);
         submission.setContent(submissionSummary.getContent());
         submission.setTimestamp(submissionSummary.getTimestamp());
         submission.setGrade(submissionSummary.getGrade());
-        submission.setProject(project);
-        submission.setStudent(student);
         return submission;
     }
 
@@ -60,29 +66,35 @@ public class SubmissionMapper {
             submission.getProject() != null ? submission.getProject().getId() : null,
             submission.getStudent() != null ? submission.getStudent().getId() : null,
             submission.getProject() != null ? submission.getProject().getName() : null,
-            submission.getStudent() != null ? submission.getStudent().getName() : null
+            submission.getStudent() != null ? submission.getStudent().getUsername() : null
         );
     }
 
     /**
-     * Converts a Project entity to a ProjectSummary DTO.
+     * Updates a Submission entity from a SubmissionSummary DTO.
      *
-     * @param project the Project entity
-     * @return the converted ProjectSummary DTO
+     * @param submissionSummary the SubmissionSummary DTO
+     * @param submission the Submission entity
      */
-    public ProjectSummary toProjectSummary(Project project) {
-        if (project == null) {
-            return null;
+    public void updateSubmissionFromSummary(SubmissionSummary submissionSummary, Submission submission) {
+        if (submissionSummary == null || submission == null) {
+            return;
         }
-        return new ProjectSummary(
-            project.getId(),
-            project.getName(),
-            project.getDescription(),
-            project.getTeam() != null ? project.getTeam().getId() : null,
-            project.getDeadline(),
-            project.getStartDate(),
-            project.getEndDate(),
-            project.getStatus()
-        );
+
+        if (submissionSummary.getProjectId() != null) {
+            Project project = projectRepository.findById(submissionSummary.getProjectId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + submissionSummary.getProjectId()));
+            submission.setProject(project);
+        }
+
+        if (submissionSummary.getStudentId() != null) {
+            Student student = studentRepository.findById(submissionSummary.getStudentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + submissionSummary.getStudentId()));
+            submission.setStudent(student);
+        }
+
+        submission.setContent(submissionSummary.getContent());
+        submission.setTimestamp(submissionSummary.getTimestamp());
+        submission.setGrade(submissionSummary.getGrade());
     }
 }
