@@ -1,8 +1,5 @@
 package com.projecthub.model;
 
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 
 /**
  * Represents a student in the system.
@@ -27,15 +23,24 @@ public class Student {
     private Long id;
 
     /**
-     * The student's name.
+     * The student's username.
      */
-    private String name;
+    private String username;
 
     /**
-     * The list of submissions made by the student.
+     * The student's email.
      */
-    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Submission> submissions;
+    private String email;
+
+    /**
+     * The student's first name.
+     */
+    private String firstName;
+
+    /**
+     * The student's last name.
+     */
+    private String lastName;
 
     /**
      * The team that the student belongs to.
@@ -51,35 +56,21 @@ public class Student {
     }
 
     /**
-     * Constructs a new student with the specified ID, name, and submissions.
+     * Constructs a new student with the specified ID, username, email, first name, last name, and team.
      *
-     * @param id          the student's ID
-     * @param name        the student's name
-     * @param submissions the list of submissions
+     * @param id        the student's ID
+     * @param username  the student's username
+     * @param email     the student's email
+     * @param firstName the student's first name
+     * @param lastName  the student's last name
+     * @param team      the team the student belongs to
      */
-    public Student(Long id, String name, List<Submission> submissions) {
+    public Student(Long id, String username, String email, String firstName, String lastName, Team team) {
         this.id = id;
-        this.name = name;
-        this.submissions = submissions;
-    }
-
-    /**
-     * Constructs a new student with the specified name.
-     *
-     * @param name the student's name
-     */
-    public Student(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Constructs a new student with the specified name and team.
-     *
-     * @param name the student's name
-     * @param team the team the student belongs to
-     */
-    public Student(String name, Team team) {
-        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.team = team;
     }
 
@@ -104,39 +95,75 @@ public class Student {
     }
 
     /**
-     * Returns the student's name.
+     * Returns the student's username.
      *
-     * @return the student's name
+     * @return the student's username
      */
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * Sets the student's name.
+     * Sets the student's username.
      *
-     * @param name the student's name
+     * @param username the student's username
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
-     * Returns the list of submissions made by the student.
+     * Returns the student's email.
      *
-     * @return the list of submissions
+     * @return the student's email
      */
-    public List<Submission> getSubmissions() {
-        return submissions;
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * Sets the list of submissions made by the student.
+     * Sets the student's email.
      *
-     * @param submissions the list of submissions
+     * @param email the student's email
      */
-    public void setSubmissions(List<Submission> submissions) {
-        this.submissions = submissions;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * Returns the student's first name.
+     *
+     * @return the student's first name
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Sets the student's first name.
+     *
+     * @param firstName the student's first name
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Returns the student's last name.
+     *
+     * @return the student's last name
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Sets the student's last name.
+     *
+     * @param lastName the student's last name
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     /**
@@ -160,10 +187,10 @@ public class Student {
     /**
      * Returns a string representation of the student.
      *
-     * @return a string containing the student's ID and name
+     * @return a string containing the student's ID and username
      */
     @Override
     public String toString() {
-        return "Student{id=" + id + ", name='" + name + "'}";
+        return "Student{id=" + id + ", username='" + username + "', email='" + email + "', firstName='" + firstName + "', lastName='" + lastName + "', team=" + team + "}";
     }
 }
