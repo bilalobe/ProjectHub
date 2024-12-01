@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.projecthub.ui.controllers.MainViewController">
+    <top>
+        <!-- Include your menu bar here -->
+    </top>
+    <left>
+        <!-- Contextual sidebar placeholder -->
+        <VBox fx:id="contextualSidebar" />
+    </left>
+    <center>
+        <!-- Main content area -->
+        <StackPane fx:id="mainContent" />
+    </center>
+</BorderPane>
