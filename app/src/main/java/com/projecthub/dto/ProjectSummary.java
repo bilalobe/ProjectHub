@@ -128,4 +128,9 @@ public class ProjectSummary {
     public String getStatus() {
         return status;
     }
+
+    public Long getTeamId() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTeamId'");
+    }
 }
