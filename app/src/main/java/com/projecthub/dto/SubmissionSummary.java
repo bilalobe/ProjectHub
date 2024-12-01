@@ -43,7 +43,7 @@ public class SubmissionSummary {
         this.timestamp = submission.getTimestamp();
         this.grade = submission.getGrade();
         this.projectName = submission.getProject() != null ? submission.getProject().getName() : "";
-        this.studentName = submission.getStudent() != null ? submission.getStudent().getName() : "";
+        this.studentName = submission.getStudent() != null ? submission.getStudent().getUsername() : "";
     }
 
     /**
