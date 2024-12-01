@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "app")
-public class CSVProperties {
+public class CsvProperties {
 
     private String componentsFilepath;
     private String projectsFilepath;
@@ -16,7 +16,7 @@ public class CSVProperties {
     private String teachersFilepath;
     private String teamsFilepath;
     private String cohortsFilepath;
-    private String usersFilepath;
+    private String submissionsTempdir;
 
     // Getters and setters...
 
@@ -92,11 +92,16 @@ public class CSVProperties {
         this.cohortsFilepath = cohortsFilepath;
     }
 
-    public String getUsersFilepath() {
-        return usersFilepath;
+    public String getSubmissionsTempdir() {
+        return submissionsTempdir;
     }
 
-    public void setUsersFilepath(String usersFilepath) {
-        this.usersFilepath = usersFilepath;
+    public void setSubmissionsTempdir(String submissionsTempdir) {
+        this.submissionsTempdir = submissionsTempdir;
+    }
+
+    public String getUsersFilepath() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getUsersFilepath'");
     }
 }
