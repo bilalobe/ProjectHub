@@ -1,8 +1,5 @@
 package com.projecthub.dto;
 
-import com.projecthub.model.Cohort;
-import com.projecthub.model.School;
-
 /**
  * Data Transfer Object for the Cohort entity.
  * Used for transferring cohort data between processes.
@@ -10,7 +7,7 @@ import com.projecthub.model.School;
 public class CohortSummary {
     private final Long id;
     private final String name;
-    private final School school;
+    private final Long schoolId;
 
     /**
      * Default constructor.
@@ -18,7 +15,7 @@ public class CohortSummary {
     public CohortSummary() {
         this.id = null;
         this.name = null;
-        this.school = null;
+        this.schoolId = null;
     }
 
     /**
@@ -26,23 +23,12 @@ public class CohortSummary {
      *
      * @param id     the cohort ID
      * @param name   the cohort's name
-     * @param school the associated School
+     * @param schoolId the associated School ID
      */
-    public CohortSummary(Long id, String name, School school) {
+    public CohortSummary(Long id, String name, Long schoolId) {
         this.id = id;
         this.name = name;
-        this.school = school;
-    }
-
-    /**
-     * Constructs a CohortSummary from a Cohort entity.
-     *
-     * @param cohort the Cohort entity
-     */
-    public CohortSummary(Cohort cohort) {
-        this.id = cohort.getId();
-        this.name = cohort.getName();
-        this.school = cohort.getSchool();
+        this.schoolId = schoolId;
     }
 
     /**
@@ -64,11 +50,11 @@ public class CohortSummary {
     }
 
     /**
-     * Gets the associated School.
+     * Gets the associated School ID.
      *
-     * @return the associated School
+     * @return the associated School ID
      */
-    public School getSchool() {
-        return school;
+    public Long getSchoolId() {
+        return schoolId;
     }
 }
