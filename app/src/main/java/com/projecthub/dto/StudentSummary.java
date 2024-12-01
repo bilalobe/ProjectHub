@@ -5,34 +5,25 @@ import java.util.Optional;
 import com.projecthub.model.Student;
 
 /**
- * Data Transfer Object for the Student entity.
- * Used for transferring student data between processes.
+ * Data Transfer Object for Student summary information.
  */
 public class StudentSummary {
+
     private final Long id;
-    private final String name;
-    private final Long teamId;
+    private final String username;
+    private final String email;
+    private final String firstName;
+    private final String lastName;
+    private final String teamName;
 
-    /**
-     * Default constructor.
-     */
-    public StudentSummary() {
-        this.id = null;
-        this.name = null;
-        this.teamId = null;
-    }
-
-    /**
-     * Constructs a StudentSummary with specified values.
-     *
-     * @param id     the student ID
-     * @param name   the student's name
-     * @param teamId the team ID
-     */
-    public StudentSummary(Long id, String name, Long teamId) {
+    // Constructor
+    public StudentSummary(Long id, String username, String email, String firstName, String lastName, String teamName) {
         this.id = id;
-        this.name = name;
-        this.teamId = teamId;
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.teamName = teamName;
     }
 
     /**
@@ -42,8 +33,11 @@ public class StudentSummary {
      */
     public StudentSummary(Student student) {
         this.id = student.getId();
-        this.name = student.getName();
-        this.teamId = student.getTeam() != null ? student.getTeam().getId() : null;
+        this.username = student.getUsername();
+        this.email = student.getEmail();
+        this.firstName = student.getFirstName();
+        this.lastName = student.getLastName();
+        this.teamName = student.getTeam() != null ? student.getTeam().getName() : null;
     }
 
     /**
@@ -55,39 +49,44 @@ public class StudentSummary {
         if (studentOptional.isPresent()) {
             Student student = studentOptional.get();
             this.id = student.getId();
-            this.name = student.getName();
-            this.teamId = student.getTeam() != null ? student.getTeam().getId() : null;
+            this.username = student.getUsername();
+            this.email = student.getEmail();
+            this.firstName = student.getFirstName();
+            this.lastName = student.getLastName();
+            this.teamName = student.getTeam() != null ? student.getTeam().getName() : null;
         } else {
             this.id = null;
-            this.name = null;
-            this.teamId = null;
+            this.username = null;
+            this.email = null;
+            this.firstName = null;
+            this.lastName = null;
+            this.teamName = null;
         }
     }
 
-    /**
-     * Gets the student ID.
-     *
-     * @return the student ID
-     */
+    // Getters and Setters
+    // ...
     public Long getId() {
         return id;
     }
 
-    /**
-     * Gets the student's name.
-     *
-     * @return the student's name
-     */
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    /**
-     * Gets the team ID.
-     *
-     * @return the team ID
-     */
-    public Long getTeamId() {
-        return teamId;
+    public String getEmail() {
+        return email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getTeamName() {
+        return teamName;
     }
 }
