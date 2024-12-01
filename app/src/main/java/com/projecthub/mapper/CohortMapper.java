@@ -1,22 +1,33 @@
 package com.projecthub.mapper;
 
-import org.springframework.stereotype.Component;
-
 import com.projecthub.dto.CohortSummary;
+import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.model.Cohort;
 import com.projecthub.model.School;
+import com.projecthub.repository.SchoolRepository;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CohortMapper {
 
-    public Cohort toCohort(CohortSummary cohortSummary, School school) {
-        if (cohortSummary == null || school == null) {
+    private final SchoolRepository schoolRepository;
+
+    public CohortMapper(SchoolRepository schoolRepository) {
+        this.schoolRepository = schoolRepository;
+    }
+
+    public Cohort toCohort(CohortSummary cohortSummary) {
+        if (cohortSummary == null) {
             return null;
         }
+
+        School school = schoolRepository.findById(cohortSummary.getSchoolId())
+                .orElseThrow(() -> new ResourceNotFoundException("School not found with ID: " + cohortSummary.getSchoolId()));
+
         Cohort cohort = new Cohort();
-        cohort.setId(cohortSummary.getId());
         cohort.setName(cohortSummary.getName());
         cohort.setSchool(school);
+
         return cohort;
     }
 
@@ -24,10 +35,27 @@ public class CohortMapper {
         if (cohort == null) {
             return null;
         }
+
+        Long schoolId = (cohort.getSchool() != null) ? cohort.getSchool().getId() : null;
+
         return new CohortSummary(
-            cohort.getId(),
-            cohort.getName(),
-            cohort.getSchool()
+                cohort.getId(),
+                cohort.getName(),
+                schoolId
         );
+    }
+
+    public void updateCohortFromSummary(CohortSummary cohortSummary, Cohort cohort) {
+        if (cohortSummary == null || cohort == null) {
+            return;
+        }
+
+        if (cohortSummary.getSchoolId() != null) {
+            School school = schoolRepository.findById(cohortSummary.getSchoolId())
+                    .orElseThrow(() -> new ResourceNotFoundException("School not found with ID: " + cohortSummary.getSchoolId()));
+            cohort.setSchool(school);
+        }
+
+        cohort.setName(cohortSummary.getName());
     }
 }
