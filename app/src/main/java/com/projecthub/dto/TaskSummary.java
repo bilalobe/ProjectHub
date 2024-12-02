@@ -110,11 +110,11 @@ public class TaskSummary {
         return dueDate.get();
     }
 
-    public Long getProject() {
+    public Long getProjectId() {
         return project.get();
     }
 
-    public Long getAssignedUser() {
+    public Long getAssignedUserId() {
         return assignedUser.get();
     }
 }
