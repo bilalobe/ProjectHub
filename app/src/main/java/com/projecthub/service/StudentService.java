@@ -13,8 +13,7 @@ import com.projecthub.dto.StudentSummary;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.StudentMapper;
 import com.projecthub.model.Student;
-import com.projecthub.repository.custom.CustomStudentRepository;
-import com.projecthub.repository.custom.CustomTeamRepository;
+import com.projecthub.repository.StudentRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,81 +24,130 @@ public class StudentService {
 
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
-    private final CustomStudentRepository studentRepository;
+    private final StudentRepository studentRepository;
+    private final StudentMapper studentMapper;
 
-    public StudentService(@Qualifier("csvStudentRepository") CustomStudentRepository studentRepository,
-                          @Qualifier("csvTeamRepository") CustomTeamRepository teamRepository,
-                          StudentMapper studentMapper) {
+
+    public StudentService(
+            @Qualifier("studentRepository") StudentRepository studentRepository,
+            StudentMapper studentMapper) {
         this.studentRepository = studentRepository;
+        this.studentMapper = studentMapper;
     }
 
     /**
-     * Retrieves a list of all student summaries.
+     * Retrieves all students.
      *
-     * @return a list of StudentSummary
+     * @return a list of StudentSummary objects
      */
-    @Operation(summary = "View a list of all student summaries")
-    public List<StudentSummary> getAllStudentSummaries() {
-        logger.info("Retrieving all student summaries");
+    @Operation(summary = "View a list of all students")
+    public List<StudentSummary> getAllStudents() {
+        logger.info("Retrieving all students");
         return studentRepository.findAll().stream()
-                .map(StudentMapper::toStudentSummary)
+                .map(studentMapper::toStudentSummary)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Saves a student.
+     * Registers a new student.
      *
-     * @param studentSummary the student summary to save
+     * @param studentSummary the student summary to register
+     * @return the registered StudentSummary
      * @throws IllegalArgumentException if studentSummary is null
      */
-    @Operation(summary = "Save a student")
+    @Operation(summary = "Register a new student")
     @Transactional
-    public void saveStudent(StudentSummary studentSummary) {
-        logger.info("Saving student");
+    public StudentSummary registerStudent(StudentSummary studentSummary) {
+        logger.info("Registering new student: {}", studentSummary.getUsername());
+
+        Student student = studentMapper.toStudent(studentSummary);
+        Student savedStudent = studentRepository.save(student);
+        logger.info("Student registered with ID {}", savedStudent.getId());
+        return studentMapper.toStudentSummary(savedStudent);
+    }
+
+    /**
+     * Removes a student by ID.
+     *
+     * @param studentId the ID of the student to remove
+     * @throws IllegalArgumentException    if studentId is null
+     * @throws ResourceNotFoundException if the student is not found
+     */
+    @Operation(summary = "Remove a student by ID")
+    @Transactional
+    public void removeStudentById(Long studentId) {
+        logger.info("Removing student with ID: {}", studentId);
+        if (studentId == null) {
+            throw new IllegalArgumentException("Student ID cannot be null");
+        }
+        studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + studentId));
+        studentRepository.deleteById(studentId);
+        logger.info("Student removed with ID: {}", studentId);
+    }
+
+    /**
+     * Retrieves a student by ID.
+     *
+     * @param studentId the ID of the student to retrieve
+     * @return the StudentSummary
+     * @throws IllegalArgumentException    if studentId is null
+     * @throws ResourceNotFoundException if the student is not found
+     */
+    @Operation(summary = "Retrieve a student by ID")
+    public StudentSummary getStudentById(Long studentId) {
+        logger.info("Retrieving student with ID {}", studentId);
+        if (studentId == null) {
+            throw new IllegalArgumentException("Student ID cannot be null");
+        }
+        return studentRepository.findById(studentId)
+                .map(studentMapper::toStudentSummary)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + studentId));
+    }
+
+    /**
+     * Retrieves a student by username.
+     *
+     * @param username the username of the student to retrieve
+     * @return the StudentSummary
+     * @throws IllegalArgumentException    if username is null or empty
+     * @throws ResourceNotFoundException if the student is not found
+     */
+    @Operation(summary = "Retrieve a student by username")
+    public StudentSummary getStudentByUsername(String username) {
+        logger.info("Retrieving student with username {}", username);
+        if (username == null || username.isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        return studentRepository.findByUsername(username)
+                .map(studentMapper::toStudentSummary)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with username: " + username));
+    }
+
+    /**
+     * Updates a student's information.
+     *
+     * @param studentId the ID of the student to update
+     * @param studentSummary the updated student summary
+     * @return the updated StudentSummary
+     * @throws IllegalArgumentException if studentId or studentSummary is null
+     * @throws ResourceNotFoundException if the student is not found
+     */
+    @Operation(summary = "Update a student's information")
+    @Transactional
+    public StudentSummary updateStudent(Long studentId, StudentSummary studentSummary) {
+        logger.info("Updating student with ID: {}", studentId);
+        if (studentId == null) {
+            throw new IllegalArgumentException("Student ID cannot be null");
+        }
         if (studentSummary == null) {
             throw new IllegalArgumentException("StudentSummary cannot be null");
         }
-        Student student = StudentMapper.toStudent(studentSummary);
-        studentRepository.save(student);
-        logger.info("Student saved");
-    }
-
-    /**
-     * Deletes a student by ID.
-     *
-     * @param id the ID of the student to delete
-     * @throws IllegalArgumentException if id is null
-     * @throws ResourceNotFoundException if the student is not found
-     */
-    @Operation(summary = "Delete a student by ID")
-    @Transactional
-    public void deleteStudent(Long id) {
-        logger.info("Deleting student with ID: {}", id);
-        if (id == null) {
-            throw new IllegalArgumentException("Student ID cannot be null");
-        }
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + id));
-        studentRepository.delete(student);
-        logger.info("Student deleted");
-    }
-
-    /**
-     * Retrieves a student summary by ID.
-     *
-     * @param id the ID of the student to retrieve
-     * @return StudentSummary
-     * @throws IllegalArgumentException if id is null
-     * @throws ResourceNotFoundException if the student is not found
-     */
-    @Operation(summary = "Retrieve a student summary by ID")
-    public StudentSummary getStudentSummaryById(Long id) throws ResourceNotFoundException {
-        logger.info("Retrieving student summary with ID {}", id);
-        if (id == null) {
-            throw new IllegalArgumentException("Student ID cannot be null");
-        }
-        return studentRepository.findById(id)
-                .map(StudentMapper::toStudentSummary)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id " + id));
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + studentId));
+        studentMapper.updateStudentFromSummary(studentSummary, student);
+        Student updatedStudent = studentRepository.save(student);
+        logger.info("Student updated with ID: {}", updatedStudent.getId());
+        return studentMapper.toStudentSummary(updatedStudent);
     }
 }
