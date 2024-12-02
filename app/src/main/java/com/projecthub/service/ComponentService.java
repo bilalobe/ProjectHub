@@ -1,104 +1,93 @@
 package com.projecthub.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import com.projecthub.dto.ComponentSummary;
+import com.projecthub.exception.ResourceNotFoundException;
+import com.projecthub.mapper.ComponentMapper;
+import com.projecthub.model.Component;
+import com.projecthub.repository.ComponentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.projecthub.dto.ComponentSummary;
-import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.repository.custom.CustomComponentRepository;
-import com.projecthub.repository.jpa.ComponentRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * Service class for managing components.
- */
 @Service
 public class ComponentService {
 
     private static final Logger logger = LoggerFactory.getLogger(ComponentService.class);
 
-    private final CustomComponentRepository customComponentRepository;
-    private final ComponentRepository jpaComponentRepository;
+    private final ComponentRepository componentRepository;
+    private final ComponentMapper componentMapper;
 
-    public ComponentService(
-            @Qualifier("csvComponentRepository") CustomComponentRepository customComponentRepository,
-            ComponentRepository jpaComponentRepository) {
-        this.customComponentRepository = customComponentRepository;
-        this.jpaComponentRepository = jpaComponentRepository;
+    public ComponentService(ComponentRepository componentRepository, ComponentMapper componentMapper) {
+        this.componentRepository = componentRepository;
+        this.componentMapper = componentMapper;
     }
 
-    /**
-     * Retrieves all components.
-     *
-     * @return a list of ComponentSummary objects
-     */
     public List<ComponentSummary> getAllComponents() {
         logger.info("Retrieving all components");
-        return customComponentRepository.findAll().stream()
-                .map(ComponentSummary::new)
+        return componentRepository.findAll().stream()
+                .map(componentMapper::toComponentSummary)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Saves a component.
-     *
-     * @param componentSummary the ComponentSummary to save
-     * @return the saved ComponentSummary
-     * @throws IllegalArgumentException if componentSummary is null
-     */
+    public ComponentSummary getComponentById(Long id) {
+        logger.info("Retrieving component with ID {}", id);
+        if (id == null) {
+            throw new IllegalArgumentException("Component ID cannot be null");
+        }
+        Component component = componentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Component not found with ID: " + id));
+        return componentMapper.toComponentSummary(component);
+    }
+
     @Transactional
     public ComponentSummary saveComponent(ComponentSummary componentSummary) {
         logger.info("Saving component");
         if (componentSummary == null) {
             throw new IllegalArgumentException("ComponentSummary cannot be null");
         }
-        ComponentSummary savedComponent = customComponentRepository.save(componentSummary);
+        Component component = componentMapper.toComponent(componentSummary);
+        Component savedComponent = componentRepository.save(component);
         logger.info("Component saved with ID {}", savedComponent.getId());
-        return savedComponent;
+        return componentMapper.toComponentSummary(savedComponent);
     }
 
-    /**
-     * Deletes a component by ID.
-     *
-     * @param id the ID of the Component to delete
-     * @throws IllegalArgumentException if id is null
-     * @throws ResourceNotFoundException if the component is not found
-     */
     @Transactional
-    public void deleteComponent(Long id) throws ResourceNotFoundException {
+    public ComponentSummary updateComponent(Long id, ComponentSummary componentSummary) {
+        logger.info("Updating component with ID {}", id);
+        if (id == null || componentSummary == null) {
+            throw new IllegalArgumentException("Component ID and ComponentSummary cannot be null");
+        }
+        Component existingComponent = componentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Component not found with ID: " + id));
+        componentMapper.updateComponentFromSummary(componentSummary, existingComponent);
+        Component updatedComponent = componentRepository.save(existingComponent);
+        logger.info("Component updated with ID {}", updatedComponent.getId());
+        return componentMapper.toComponentSummary(updatedComponent);
+    }
+
+    @Transactional
+    public void deleteComponent(Long id) {
         logger.info("Deleting component with ID {}", id);
         if (id == null) {
             throw new IllegalArgumentException("Component ID cannot be null");
         }
-        if (((Optional<?>) customComponentRepository.findById(id)).isPresent()) {
-            logger.info("Component found");
-        } else {
-            throw new ResourceNotFoundException("Component not found with ID: " + id);
-        }
-        customComponentRepository.deleteById(id);
+        Component component = componentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Component not found with ID: " + id));
+        componentRepository.delete(component);
         logger.info("Component deleted");
     }
 
-    /**
-     * Retrieves the list of components associated with a specific project ID.
-     *
-     * @param projectId the ID of the project
-     * @return a list of ComponentSummary objects
-     * @throws IllegalArgumentException if projectId is null
-     */
     public List<ComponentSummary> getComponentsByProjectId(Long projectId) {
         logger.info("Retrieving components for project ID {}", projectId);
         if (projectId == null) {
             throw new IllegalArgumentException("Project ID cannot be null");
         }
-        return jpaComponentRepository.findByProjectId(projectId).stream()
-                .map(ComponentSummary::new)
+        return componentRepository.findByProjectId(projectId).stream()
+                .map(componentMapper::toComponentSummary)
                 .collect(Collectors.toList());
     }
 }
