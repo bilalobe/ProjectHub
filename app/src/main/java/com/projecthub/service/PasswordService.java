@@ -7,6 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for password-related operations.
+ */
 @Service
 public class PasswordService {
 
