@@ -24,4 +24,8 @@ public class TaskMapper {
     public TaskSummary toTaskSummary(Task task) {
         return new TaskSummary(task);
     }
+
+    public void updateTaskFromSummary(TaskSummary taskSummary, Task existingTask, Project project, AppUser assignedUser) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
