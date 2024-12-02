@@ -96,7 +96,7 @@ public class AppUserSummary {
      *
      * @return the team ID
      */
-    public Long getTeam() {
+    public Long getTeamId() {
         return teamId;
     }
 }
