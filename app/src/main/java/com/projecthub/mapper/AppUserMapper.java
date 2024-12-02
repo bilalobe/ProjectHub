@@ -3,27 +3,29 @@ package com.projecthub.mapper;
 import com.projecthub.dto.AppUserSummary;
 import com.projecthub.model.AppUser;
 import com.projecthub.model.Team;
-import com.projecthub.service.PasswordService;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AppUserMapper {
 
-    public static AppUser toAppUser(AppUserSummary userSummary, Team team, PasswordService passwordService, String password) {
+    public AppUser toAppUser(AppUserSummary userSummary, Team team, String encodedPassword) {
         AppUser user = new AppUser();
         user.setId(userSummary.getId());
         user.setUsername(userSummary.getUsername());
-        if (password != null && !password.isEmpty()) {
-            String encodedPassword = passwordService.encodePassword(password);
-            user.setPassword(encodedPassword);
-        }
+        user.setPassword(encodedPassword);
         user.setTeam(team);
+        user.setFirstName(userSummary.getFirstName());
+        user.setLastName(userSummary.getLastName());
         return user;
     }
 
-    public static AppUserSummary toAppUserSummary(AppUser user) {
+    public AppUserSummary toAppUserSummary(AppUser user) {
         return new AppUserSummary(
             user.getId(),
-            user.getUsername(), user.getPassword(),
-            user.getFirstName(), user.getLastName(),
+            user.getUsername(),
+            user.getPassword(),
+            user.getFirstName(),
+            user.getLastName(),
             user.getTeam() != null ? user.getTeam().getId() : null
         );
     }
