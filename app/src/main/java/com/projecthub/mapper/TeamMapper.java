@@ -65,4 +65,8 @@ public class TeamMapper {
             appUser.getTeam() != null ? appUser.getTeam().getId() : null
         );
     }
+
+    public void updateTeamFromSummary(TeamSummary teamSummary, Team team) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
