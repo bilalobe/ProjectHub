@@ -10,8 +10,9 @@ public class AppUserMapper {
 
     public AppUser toAppUser(AppUserSummary userSummary, Team team, String encodedPassword) {
         AppUser user = new AppUser();
-        user.setId(userSummary.getId());
+        // auto ID setting
         user.setUsername(userSummary.getUsername());
+        user.setEmail(userSummary.getEmail());
         user.setPassword(encodedPassword);
         user.setTeam(team);
         user.setFirstName(userSummary.getFirstName());
@@ -23,7 +24,7 @@ public class AppUserMapper {
         return new AppUserSummary(
             user.getId(),
             user.getUsername(),
-            user.getPassword(),
+            user.getEmail(),
             user.getFirstName(),
             user.getLastName(),
             user.getTeam() != null ? user.getTeam().getId() : null

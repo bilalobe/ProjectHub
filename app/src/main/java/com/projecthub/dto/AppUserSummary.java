@@ -4,12 +4,13 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.UUID;
+
 /**
- * Data Transfer Object for the AppUser entity.
  * Used for transferring user data between processes.
  */
 public class AppUserSummary {
-    private final Long id;
+    private final UUID id;
 
     @NotBlank(message = "Username is mandatory")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
@@ -27,17 +28,7 @@ public class AppUserSummary {
 
     private final Long teamId;
 
-    /**
-     * Constructs an AppUserSummary with specified values.
-     *
-     * @param id        the user ID
-     * @param username  the username
-     * @param email     the email
-     * @param firstName the first name
-     * @param lastName  the last name
-     * @param teamId    the team ID
-     */
-    public AppUserSummary(Long id, String username, String email, String firstName, String lastName, Long teamId) {
+    public AppUserSummary(UUID id, String username, String email, String firstName, String lastName, Long teamId) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -46,56 +37,27 @@ public class AppUserSummary {
         this.teamId = teamId;
     }
 
-    /**
-     * Gets the user ID.
-     *
-     * @return the user ID
-     */
-    public Long getId() {
+    // Getters only, no setters to ensure immutability
+    public UUID getId() {
         return id;
     }
 
-    /**
-     * Gets the username.
-     *
-     * @return the username
-     */
     public String getUsername() {
         return username;
     }
 
-    /**
-     * Gets the email.
-     *
-     * @return the email
-     */
     public String getEmail() {
         return email;
     }
 
-    /**
-     * Gets the first name.
-     *
-     * @return the first name
-     */
     public String getFirstName() {
         return firstName;
     }
 
-    /**
-     * Gets the last name.
-     *
-     * @return the last name
-     */
     public String getLastName() {
         return lastName;
     }
 
-    /**
-     * Gets the team ID.
-     *
-     * @return the team ID
-     */
     public Long getTeamId() {
         return teamId;
     }
