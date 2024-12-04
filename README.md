@@ -181,4 +181,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-For any inquiries or support, please contact us at [support@projecthub.com](mailto:support@projecthub.com).
+For any inquiries or support, please contact us at [support@projecthub.com](mailto:elkhatabibilal@gmail.com).
