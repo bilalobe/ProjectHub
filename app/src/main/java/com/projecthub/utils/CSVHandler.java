@@ -128,9 +128,9 @@
 //      * Inner class to represent a Submission record in CSV.
 //      */
 //     private static class SubmissionCSV {
-//         private Long id;
-//         private Long projectId;
-//         private Long studentId;
+//         private UUID id;
+//         private UUID projectId;
+//         private UUID studentId;
 //         private String content;
 //         private Integer grade;
 
@@ -138,7 +138,7 @@
 
 //         public SubmissionCSV() {}
 
-//         public SubmissionCSV(Long id, Long projectId, Long studentId, String content, Integer grade) {
+//         public SubmissionCSV(UUID id, UUID projectId, UUID studentId, String content, Integer grade) {
 //             this.id = id;
 //             this.projectId = projectId;
 //             this.studentId = studentId;
@@ -148,12 +148,12 @@
 
 //         // Getters and setters...
 
-//         public Long getId() { return id; }
-//         public void setId(Long id) { this.id = id; }
-//         public Long getProjectId() { return projectId; }
-//         public void setProjectId(Long projectId) { this.projectId = projectId; }
-//         public Long getStudentId() { return studentId; }
-//         public void setStudentId(Long studentId) { this.studentId = studentId; }
+//         public UUID getId() { return id; }
+//         public void setId(UUID id) { this.id = id; }
+//         public UUID getProjectId() { return projectId; }
+//         public void setProjectId(UUID projectId) { this.projectId = projectId; }
+//         public UUID getStudentId() { return studentId; }
+//         public void setStudentId(UUID studentId) { this.studentId = studentId; }
 //         public String getContent() { return content; }
 //         public void setContent(String content) { this.content = content; }
 //         public Integer getGrade() { return grade; }
@@ -168,16 +168,16 @@
 //      * Inner class to represent a Project record in CSV.
 //      */
 //     private static class ProjectCSV {
-//         private Long id;
+//         private UUID id;
 //         private String name;
 //         private String description;
-//         private Long teamId;
+//         private UUID teamId;
 
 //         // Constructors, getters, and setters
 
 //         public ProjectCSV() {}
 
-//         public ProjectCSV(Long id, String name, String description, Long teamId) {
+//         public ProjectCSV(UUID id, String name, String description, UUID teamId) {
 //             this.id = id;
 //             this.name = name;
 //             this.description = description;
@@ -186,14 +186,14 @@
 
 //         // Getters and setters...
 
-//         public Long getId() { return id; }
-//         public void setId(Long id) { this.id = id; }
+//         public UUID getId() { return id; }
+//         public void setId(UUID id) { this.id = id; }
 //         public String getName() { return name; }
 //         public void setName(String name) { this.name = name; }
 //         public String getDescription() { return description; }
 //         public void setDescription(String description) { this.description = description; }
-//         public Long getTeamId() { return teamId; }
-//         public void setTeamId(Long teamId) { this.teamId = teamId; }
+//         public UUID getTeamId() { return teamId; }
+//         public void setTeamId(UUID teamId) { this.teamId = teamId; }
 //     }
 
 //     // And similar for StudentCSV, TeamCSV, AppUserCSV
