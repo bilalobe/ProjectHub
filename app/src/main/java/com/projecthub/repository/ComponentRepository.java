@@ -1,9 +1,9 @@
 package com.projecthub.repository;
 
 import com.projecthub.model.Component;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /*
  * Repository interface for the Component entity.
@@ -11,12 +11,8 @@ import java.util.Optional;
 public interface ComponentRepository {
 
     Component save(Component component);
-
-    Optional<Component> findById(Long id);
-
+    Optional<Component> findById(UUID id);
     List<Component> findAll();
-
     void delete(Component component);
-
-    List<Component> findByProjectId(Long projectId);
+    List<Component> findByProjectId(UUID projectId);
 }

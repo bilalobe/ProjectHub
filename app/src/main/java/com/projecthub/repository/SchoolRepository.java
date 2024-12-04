@@ -2,16 +2,16 @@ package com.projecthub.repository;
 
 import com.projecthub.model.School;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Repository interface for {@link School} entities.
  */
 public interface SchoolRepository {
     School save(School school);
-    void deleteById(Long id);
-    Optional<School> findById(Long id);
+    void deleteById(UUID id);
+    Optional<School> findById(UUID id);
     Iterable<School> findAll();
-    boolean existsById(Long id);
-
-    public School getReferenceById(Long schoolId);
+    boolean existsById(UUID id);
+    School getReferenceById(UUID schoolId);
 }

@@ -4,6 +4,7 @@ import com.projecthub.model.Team;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Repository interface for {@link Team} entities.
@@ -11,8 +12,9 @@ import java.util.Optional;
 public interface TeamRepository {
     Team save(Team team);
     List<Team> findAll();
-    Optional<Team> findById(Long id);
+    Optional<Team> findById(UUID id);
     void delete(Team team);
-    public Team getReferenceById(Long teamId);
-    public void deleteById(Long teamId);
+    Team getReferenceById(UUID teamId);
+    void deleteById(UUID teamId);
+    List<Team> findByCohortId(UUID cohortId);
 }

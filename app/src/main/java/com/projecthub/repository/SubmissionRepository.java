@@ -3,6 +3,7 @@ package com.projecthub.repository;
 import com.projecthub.model.Submission;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Repository interface for {@link Submission} entities.
@@ -10,8 +11,8 @@ import java.util.Optional;
 public interface SubmissionRepository {
     Submission save(Submission submission);
     List<Submission> findAll();
-    Optional<Submission> findById(Long id);
+    Optional<Submission> findById(UUID id);
     void delete(Submission submission);
-    List<Submission> findByStudentId(Long studentId);
-    List<Submission> findByProjectId(Long projectId);
+    List<Submission> findByStudentId(UUID studentId);
+    List<Submission> findByProjectId(UUID projectId);
 }
