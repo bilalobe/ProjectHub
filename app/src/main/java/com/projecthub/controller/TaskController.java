@@ -41,77 +41,53 @@ public class TaskController {
     @GetMapping("/{id}")
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable UUID id) {
         logger.info("Retrieving task with ID {}", id);
-        try {
-            TaskDTO task = taskService.getTaskById(id);
-            return ResponseEntity.ok(task);
-        } catch (ResourceNotFoundException e) {
-            logger.error("Task not found with ID {}", id, e);
-            return ResponseEntity.status(404).body(null);
-        }
+        TaskDTO task = taskService.getTaskById(id);
+        return ResponseEntity.ok(task);
     }
 
     @Operation(summary = "Get tasks by project ID")
     @GetMapping("/project/{projectId}")
     public ResponseEntity<List<TaskDTO>> getTasksByProjectId(@PathVariable UUID projectId) {
         logger.info("Retrieving tasks for project ID {}", projectId);
-        try {
-            List<TaskDTO> tasks = taskService.getTasksByProjectId(projectId);
-            return ResponseEntity.ok(tasks);
-        } catch (ResourceNotFoundException e) {
-            logger.error("Project not found with ID {}", projectId, e);
-            return ResponseEntity.status(404).body(null);
-        }
+        List<TaskDTO> tasks = taskService.getTasksByProjectId(projectId);
+        return ResponseEntity.ok(tasks);
     }
 
     @Operation(summary = "Get tasks by assigned user ID")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<TaskDTO>> getTasksByAssignedUserId(@PathVariable UUID userId) {
         logger.info("Retrieving tasks for user ID {}", userId);
-        try {
-            List<TaskDTO> tasks = taskService.getTasksByAssignedUserId(userId);
-            return ResponseEntity.ok(tasks);
-        } catch (ResourceNotFoundException e) {
-            logger.error("User not found with ID {}", userId, e);
-            return ResponseEntity.status(404).body(null);
-        }
+        List<TaskDTO> tasks = taskService.getTasksByAssignedUserId(userId);
+        return ResponseEntity.ok(tasks);
     }
 
     @Operation(summary = "Create a new task")
     @PostMapping
     public ResponseEntity<TaskDTO> createTask(@Valid @RequestBody TaskDTO taskSummary) {
         logger.info("Creating a new task");
-        try {
-            TaskDTO createdTask = taskService.createTask(taskSummary);
-            return ResponseEntity.ok(createdTask);
-        } catch (ResourceNotFoundException e) {
-            logger.error("Error creating task", e);
-            return ResponseEntity.status(404).body(null);
-        }
+        TaskDTO createdTask = taskService.createTask(taskSummary);
+        return ResponseEntity.ok(createdTask);
     }
 
     @Operation(summary = "Update a task")
     @PutMapping("/{id}")
     public ResponseEntity<TaskDTO> updateTask(@PathVariable UUID id, @Valid @RequestBody TaskDTO taskSummary) {
         logger.info("Updating task with ID {}", id);
-        try {
-            TaskDTO updatedTask = taskService.updateTask(id, taskSummary);
-            return ResponseEntity.ok(updatedTask);
-        } catch (ResourceNotFoundException e) {
-            logger.error("Task not found with ID {}", id, e);
-            return ResponseEntity.status(404).body(null);
-        }
+        TaskDTO updatedTask = taskService.updateTask(id, taskSummary);
+        return ResponseEntity.ok(updatedTask);
     }
 
     @Operation(summary = "Delete a task by ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTask(@PathVariable UUID id) {
         logger.info("Deleting task with ID {}", id);
-        try {
-            taskService.deleteTask(id);
-            return ResponseEntity.ok("Task deleted successfully");
-        } catch (ResourceNotFoundException e) {
-            logger.error("Task not found with ID {}", id, e);
-            return ResponseEntity.status(404).body("Task not found with ID " + id);
-        }
+        taskService.deleteTask(id);
+        return ResponseEntity.ok("Task deleted successfully");
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        logger.error("Resource not found", ex);
+        return ResponseEntity.status(404).body(ex.getMessage());
     }
 }

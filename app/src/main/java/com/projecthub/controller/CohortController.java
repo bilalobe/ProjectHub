@@ -15,6 +15,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * REST Controller for managing Cohorts.
  */
@@ -22,6 +25,8 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/cohorts")
 public class CohortController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CohortController.class);
 
     private final CohortService cohortService;
 
@@ -66,12 +71,9 @@ public class CohortController {
     @Operation(summary = "Get Cohort by ID")
     @GetMapping("/{id}")
     public ResponseEntity<CohortDTO> getCohortById(@PathVariable UUID id) {
+        logger.info("Retrieving cohort with ID {}", id);
         CohortDTO cohort = cohortService.getCohortById(id);
-        if (cohort != null) {
-            return ResponseEntity.ok(cohort);
-        } else {
-            return ResponseEntity.status(404).body(null);
-        }
+        return ResponseEntity.ok(cohort);
     }
 
     /**
@@ -125,5 +127,11 @@ public class CohortController {
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(404).body("Cohort not found");
         }
+    }
+
+    @ExceptionHandler({ResourceNotFoundException.class, Exception.class})
+    public ResponseEntity<String> handleExceptions(Exception ex) {
+        logger.error("An error occurred", ex);
+        return ResponseEntity.status(400).body(ex.getMessage());
     }
 }

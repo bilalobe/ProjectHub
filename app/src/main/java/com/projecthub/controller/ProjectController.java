@@ -41,13 +41,8 @@ public class ProjectController {
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable UUID id) {
         logger.info("Retrieving project with ID {}", id);
-        try {
-            ProjectDTO project = projectService.getProjectById(id);
-            return ResponseEntity.ok(project);
-        } catch (ResourceNotFoundException e) {
-            logger.error("Project not found with ID {}", id, e);
-            return ResponseEntity.status(404).body(null);
-        }
+        ProjectDTO project = projectService.getProjectById(id);
+        return ResponseEntity.ok(project);
     }
 
     @Operation(summary = "Create a new project")
@@ -90,5 +85,11 @@ public class ProjectController {
             logger.error("Project not found with ID {}", id, e);
             return ResponseEntity.status(404).body("Project not found with ID " + id);
         }
+    }
+
+    @ExceptionHandler({ResourceNotFoundException.class, Exception.class})
+    public ResponseEntity<String> handleExceptions(Exception ex) {
+        logger.error("An error occurred", ex);
+        return ResponseEntity.status(404).body(ex.getMessage());
     }
 }

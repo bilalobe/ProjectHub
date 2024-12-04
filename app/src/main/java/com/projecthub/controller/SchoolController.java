@@ -41,54 +41,37 @@ public class SchoolController {
     @GetMapping("/{id}")
     public ResponseEntity<SchoolDTO> getSchoolById(@PathVariable UUID id) {
         logger.info("Retrieving school with ID {}", id);
-        try {
-            SchoolDTO school = schoolService.getSchoolById(id);
-            return ResponseEntity.ok(school);
-        } catch (ResourceNotFoundException e) {
-            logger.error("School not found with ID {}", id, e);
-            return ResponseEntity.status(404).body(null);
-        }
+        SchoolDTO school = schoolService.getSchoolById(id);
+        return ResponseEntity.ok(school);
     }
 
     @Operation(summary = "Create a new school")
     @PostMapping
     public ResponseEntity<SchoolDTO> createSchool(@Valid @RequestBody SchoolDTO schoolSummary) {
         logger.info("Creating a new school");
-        try {
-            SchoolDTO createdSchool = schoolService.saveSchool(schoolSummary);
-            return ResponseEntity.ok(createdSchool);
-        } catch (Exception e) {
-            logger.error("Error creating school", e);
-            return ResponseEntity.status(400).body(null);
-        }
+        SchoolDTO createdSchool = schoolService.saveSchool(schoolSummary);
+        return ResponseEntity.ok(createdSchool);
     }
 
     @Operation(summary = "Update an existing school")
     @PutMapping("/{id}")
     public ResponseEntity<SchoolDTO> updateSchool(@PathVariable UUID id, @Valid @RequestBody SchoolDTO schoolSummary) {
         logger.info("Updating school with ID {}", id);
-        try {
-            SchoolDTO updatedSchool = schoolService.updateSchool(id, schoolSummary);
-            return ResponseEntity.ok(updatedSchool);
-        } catch (ResourceNotFoundException e) {
-            logger.error("School not found with ID {}", id, e);
-            return ResponseEntity.status(404).body(null);
-        } catch (Exception e) {
-            logger.error("Error updating school", e);
-            return ResponseEntity.status(400).body(null);
-        }
+        SchoolDTO updatedSchool = schoolService.updateSchool(id, schoolSummary);
+        return ResponseEntity.ok(updatedSchool);
     }
 
     @Operation(summary = "Delete a school by ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteSchool(@PathVariable UUID id) {
         logger.info("Deleting school with ID {}", id);
-        try {
-            schoolService.deleteSchool(id);
-            return ResponseEntity.ok("School deleted successfully");
-        } catch (ResourceNotFoundException e) {
-            logger.error("School not found with ID {}", id, e);
-            return ResponseEntity.status(404).body("School not found with ID " + id);
-        }
+        schoolService.deleteSchool(id);
+        return ResponseEntity.ok("School deleted successfully");
+    }
+
+    @ExceptionHandler({ResourceNotFoundException.class, Exception.class})
+    public ResponseEntity<String> handleExceptions(Exception ex) {
+        logger.error("An error occurred", ex);
+        return ResponseEntity.status(400).body(ex.getMessage());
     }
 }

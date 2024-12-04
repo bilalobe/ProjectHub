@@ -25,7 +25,6 @@ public class StudentController {
 
     private final StudentService studentService;
 
-
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
@@ -53,13 +52,8 @@ public class StudentController {
     @GetMapping("/{id}")
     public ResponseEntity<StudentDTO> getStudentById(@PathVariable UUID id) {
         logger.info("Retrieving student with ID {}", id);
-        try {
-            StudentDTO student = studentService.getStudentById(id);
-            return ResponseEntity.ok(student);
-        } catch (ResourceNotFoundException e) {
-            logger.error("Student not found with ID {}", id, e);
-            return ResponseEntity.status(404).body(null);
-        }
+        StudentDTO student = studentService.getStudentById(id);
+        return ResponseEntity.ok(student);
     }
 
     /**
@@ -72,13 +66,8 @@ public class StudentController {
     @PostMapping
     public ResponseEntity<String> createStudent(@Valid @RequestBody StudentDTO studentDTO) {
         logger.info("Creating a new student");
-        try {
-            studentService.saveStudent(studentDTO);
-            return ResponseEntity.ok("Student created successfully");
-        } catch (Exception e) {
-            logger.error("Error creating student", e);
-            return ResponseEntity.status(400).body("Error creating student");
-        }
+        studentService.saveStudent(studentDTO);
+        return ResponseEntity.ok("Student created successfully");
     }
 
     /**
@@ -91,12 +80,13 @@ public class StudentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable UUID id) {
         logger.info("Deleting student with ID {}", id);
-        try {
-            studentService.deleteStudent(id);
-            return ResponseEntity.ok("Student deleted successfully");
-        } catch (ResourceNotFoundException e) {
-            logger.error(   "Error deleting student with ID {}", id, e);
-            return ResponseEntity.status(404).body("Error: " + e.getMessage());
-        }
+        studentService.deleteStudent(id);
+        return ResponseEntity.ok("Student deleted successfully");
+    }
+
+    @ExceptionHandler({ResourceNotFoundException.class, Exception.class})
+    public ResponseEntity<String> handleExceptions(Exception ex) {
+        logger.error("An error occurred", ex);
+        return ResponseEntity.status(404).body(ex.getMessage());
     }
 }

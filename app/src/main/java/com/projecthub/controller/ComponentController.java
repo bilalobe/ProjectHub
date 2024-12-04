@@ -5,12 +5,15 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.projecthub.service.ComponentService;
 
@@ -18,20 +21,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-import org.aspectj.lang.annotation.Aspect;
-
-import org.springframework.stereotype.Component;
-
 import com.projecthub.dto.ComponentDTO;
 import com.projecthub.exception.ResourceNotFoundException;
-
-@Aspect
-@Component
 
 @RequestMapping("/api/components")
 @Tag(name = "Component API", description = "Operations pertaining to components in ProjectHub")
 @RestController
 public class ComponentController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ComponentController.class);
 
     private final ComponentService componentService;
 
@@ -60,11 +58,18 @@ public class ComponentController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a component by ID", description = "Deletes the component with the specified ID.")
     public ResponseEntity<Void> deleteComponent(@PathVariable UUID id) {
+        logger.info("Deleting component with ID {}", id);
         try {
             componentService.deleteComponent(id);
             return ResponseEntity.noContent().build();
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(404).build();
         }
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Void> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        logger.error("Resource not found", ex);
+        return ResponseEntity.status(404).build();
     }
 }
