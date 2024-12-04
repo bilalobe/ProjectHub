@@ -3,7 +3,7 @@ package com.projecthub.ui.controllers.main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.projecthub.dto.ProjectSummary;
+import com.projecthub.dto.ProjectDTO;
 import com.projecthub.ui.controllers.details.ProjectDetailsController;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
 import com.projecthub.utils.ui.LoaderFactory;
@@ -51,7 +51,7 @@ public class TreeViewController {
         }
 
         // Customize TreeCell to display names
-        schoolTreeView.setCellFactory(tv -> new TreeCell<TreeItemWrapper>() {
+        schoolTreeView.setCellFactory(_ -> new TreeCell<TreeItemWrapper>() {
             @Override
             protected void updateItem(TreeItemWrapper item, boolean empty) {
                 super.updateItem(item, empty);
@@ -64,7 +64,7 @@ public class TreeViewController {
         });
 
         // Handle selection changes
-        schoolTreeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        schoolTreeView.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
             onItemSelected(newValue);
         });
     }
@@ -104,7 +104,7 @@ public class TreeViewController {
 
         Object associatedObject = selectedItem.getValue().getData();
 
-        if (associatedObject instanceof ProjectSummary projectSummary) {
+        if (associatedObject instanceof ProjectDTO projectSummary) {
             projectDetailsController.displayProjectDetails(projectSummary);
         } else {
             projectDetailsController.clearProjectDetails();
