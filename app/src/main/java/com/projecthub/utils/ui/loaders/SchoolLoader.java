@@ -3,7 +3,7 @@ package com.projecthub.utils.ui.loaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.projecthub.dto.SchoolSummary;
+import com.projecthub.dto.SchoolDTO;
 import com.projecthub.utils.ui.PopulatorUtility;
 import com.projecthub.utils.ui.TreeItemLoader;
 import com.projecthub.utils.ui.TreeItemWrapper;
@@ -18,7 +18,7 @@ public class SchoolLoader implements TreeItemLoader {
 
     @Override
     public void loadChildren(TreeItem<TreeItemWrapper> parentItem) {
-        SchoolSummary school = (SchoolSummary) parentItem.getValue().getData();
+        SchoolDTO school = (SchoolDTO) parentItem.getValue().getData();
         populatorUtility.populateCohorts(parentItem, school.getId());
     }
 }

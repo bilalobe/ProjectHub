@@ -3,7 +3,7 @@ package com.projecthub.utils.ui.loaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.projecthub.dto.TeamSummary;
+import com.projecthub.dto.TeamDTO;
 import com.projecthub.utils.ui.PopulatorUtility;
 import com.projecthub.utils.ui.TreeItemLoader;
 import com.projecthub.utils.ui.TreeItemWrapper;
@@ -18,7 +18,7 @@ public class TeamLoader implements TreeItemLoader {
 
     @Override
     public void loadChildren(TreeItem<TreeItemWrapper> parentItem) {
-        TeamSummary team = (TeamSummary) parentItem.getValue().getData();
+        TeamDTO team = (TeamDTO) parentItem.getValue().getData();
         populatorUtility.populateProjects(parentItem, team.getId());
     }
 }

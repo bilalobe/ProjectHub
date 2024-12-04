@@ -3,7 +3,7 @@ package com.projecthub.utils.ui.loaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.projecthub.dto.CohortSummary;
+import com.projecthub.dto.CohortDTO;
 import com.projecthub.utils.ui.PopulatorUtility;
 import com.projecthub.utils.ui.TreeItemLoader;
 import com.projecthub.utils.ui.TreeItemWrapper;
@@ -18,7 +18,7 @@ public class CohortLoader implements TreeItemLoader {
 
     @Override
     public void loadChildren(TreeItem<TreeItemWrapper> parentItem) {
-        CohortSummary cohort = (CohortSummary) parentItem.getValue().getData();
+        CohortDTO cohort = (CohortDTO) parentItem.getValue().getData();
         populatorUtility.populateTeams(parentItem, cohort.getId());
     }
 }
