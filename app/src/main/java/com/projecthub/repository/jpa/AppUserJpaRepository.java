@@ -6,13 +6,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.context.annotation.Profile;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Repository interface for {@link AppUser} entities.
  */
 @Repository("jpaUserRepository")
 @Profile("jpa")
-public interface AppUserJpaRepository extends JpaRepository<AppUser, Long> {
+public interface AppUserJpaRepository extends JpaRepository<AppUser, UUID> {
 
     /**
      * Finds a user by username.

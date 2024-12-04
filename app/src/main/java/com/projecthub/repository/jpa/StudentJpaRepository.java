@@ -7,13 +7,14 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Repository interface for {@link Student} entities.
  */
 @Repository("jpaStudentRepository")
 @Profile("jpa")
-public interface StudentJpaRepository extends JpaRepository<Student, Long> {
+public interface StudentJpaRepository extends JpaRepository<Student, UUID> {
 
     /**
      * Finds a student by username.
@@ -26,8 +27,8 @@ public interface StudentJpaRepository extends JpaRepository<Student, Long> {
     /**
      * Finds students by team ID.
      *
-     * @param teamId the ID of the team
+     * @param teamId the UUID of the team
      * @return a list of {@code Student} objects belonging to the team
      */
-    List<Student> findByTeamId(Long teamId);
+    List<Student> findByTeamId(UUID teamId);
 }

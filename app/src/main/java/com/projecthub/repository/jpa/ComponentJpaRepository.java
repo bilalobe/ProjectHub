@@ -7,19 +7,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Repository interface for {@link Component} entities.
  */
 @Repository("jpaComponentRepository")
 @Profile("jpa")
-public interface ComponentJpaRepository extends JpaRepository<Component, Long> {
+public interface ComponentJpaRepository extends JpaRepository<Component, UUID> {
 
     /**
      * Finds components by project ID.
      *
-     * @param projectId the ID of the project
+     * @param projectId the UUID of the project
      * @return a list of {@code Component} objects belonging to the project
      */
-    List<Component> findByProjectId(Long projectId);
+    List<Component> findByProjectId(UUID projectId);
 }
