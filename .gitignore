@@ -13,3 +13,22 @@ build/
 
 # Ignore Gradle files
 gradle.properties
+
+# Ignore bin directory
+app/bin/
+
+# Other common ignores
+*.class
+*.log
+*.tmp
+*.swp
+*.DS_Store
+target/
+build/
+out/
+.gradle/
+.idea/
+.vscode/
+node_modules/
+dist/
+coverage/
