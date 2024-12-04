@@ -1,6 +1,6 @@
 package com.projecthub.controller;
 
-import com.projecthub.dto.AppUserSummary;
+import com.projecthub.dto.AppUserDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,15 +22,15 @@ public class AppUserController {
 
     @Operation(summary = "Get all users")
     @GetMapping
-    public List<AppUserSummary> getAllUsers() {
+    public List<AppUserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @Operation(summary = "Get user by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<AppUserSummary> getUserById(@PathVariable Long id) {
+    public ResponseEntity<AppUserDTO> getUserById(@PathVariable Long id) {
         try {
-            AppUserSummary user = userService.getUserById(id);
+            AppUserDTO user = userService.getUserById(id);
             return ResponseEntity.ok(user);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(404).body(null);
@@ -39,16 +39,16 @@ public class AppUserController {
 
     @Operation(summary = "Create a new user")
     @PostMapping
-    public ResponseEntity<String> createUser(@Valid @RequestBody AppUserSummary userSummary, @RequestParam String password) {
+    public ResponseEntity<String> createUser(@Valid @RequestBody AppUserDTO userSummary, @RequestParam String password) {
         userService.createUser(userSummary, password);
         return ResponseEntity.ok("User created successfully");
     }
 
     @Operation(summary = "Update a user")
     @PutMapping("/{id}")
-    public ResponseEntity<AppUserSummary> updateUser(@PathVariable Long id, @Valid @RequestBody AppUserSummary userSummary, @RequestParam(required = false) String password) {
+    public ResponseEntity<AppUserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody AppUserDTO userSummary, @RequestParam(required = false) String password) {
         try {
-            AppUserSummary updatedUser = userService.updateUser(id, userSummary, password);
+            AppUserDTO updatedUser = userService.updateUser(id, userSummary, password);
             return ResponseEntity.ok(updatedUser);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(404).body(null);

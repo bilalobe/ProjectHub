@@ -1,6 +1,7 @@
 package com.projecthub.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +22,7 @@ import org.aspectj.lang.annotation.Aspect;
 
 import org.springframework.stereotype.Component;
 
-import com.projecthub.dto.ComponentSummary;
+import com.projecthub.dto.ComponentDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 
 @Aspect
@@ -40,16 +41,16 @@ public class ComponentController {
 
     @GetMapping
     @Operation(summary = "View a list of all components", description = "Returns a list of all components.")
-    public ResponseEntity<List<ComponentSummary>> getAllComponents() {
-        List<ComponentSummary> components = componentService.getAllComponents();
+    public ResponseEntity<List<ComponentDTO>> getAllComponents() {
+        List<ComponentDTO> components = componentService.getAllComponents();
         return ResponseEntity.ok(components);
     }
 
     @PostMapping
     @Operation(summary = "Save a new component", description = "Creates a new component with the provided details.")
-    public ResponseEntity<ComponentSummary> saveComponent(@Valid @RequestBody ComponentSummary componentSummary) {
+    public ResponseEntity<ComponentDTO> saveComponent(@Valid @RequestBody ComponentDTO componentSummary) {
         try {
-            ComponentSummary savedComponentSummary = componentService.saveComponent(componentSummary);
+            ComponentDTO savedComponentSummary = componentService.saveComponent(componentSummary);
             return ResponseEntity.ok(savedComponentSummary);
         } catch (Exception e) {
             return ResponseEntity.status(400).body(null);
@@ -58,7 +59,7 @@ public class ComponentController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a component by ID", description = "Deletes the component with the specified ID.")
-    public ResponseEntity<Void> deleteComponent(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteComponent(@PathVariable UUID id) {
         try {
             componentService.deleteComponent(id);
             return ResponseEntity.noContent().build();
