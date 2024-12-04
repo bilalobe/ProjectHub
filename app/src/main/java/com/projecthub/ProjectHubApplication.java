@@ -2,9 +2,9 @@ package com.projecthub;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import com.projecthub.config.CSVProperties;
+import com.projecthub.config.CsvProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties(CSVProperties.class)
+@EnableConfigurationProperties(CsvProperties.class)
 public class ProjectHubApplication {
 }
