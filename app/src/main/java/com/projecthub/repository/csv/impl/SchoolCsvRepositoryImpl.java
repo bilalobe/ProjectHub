@@ -19,6 +19,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Repository("csvSchoolRepository")
 public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
@@ -125,7 +126,7 @@ public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
      * @return an {@code Optional} containing the school if found, or empty if not found
      */
     @Override
-    public Optional<School> findById(Long id) {
+    public Optional<School> findById(UUID id) {
         return findAll().stream()
                 .filter(s -> s.getId().equals(id))
                 .findFirst();
@@ -138,7 +139,7 @@ public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
      * @throws RuntimeException if an error occurs during deletion
      */
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         try {
             backupCSVFile(csvProperties.getSchoolsFilepath());
             List<School> schools = findAll();

@@ -19,6 +19,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Repository("csvStudentRepository")
 public class StudentCsvRepositoryImpl implements StudentCsvRepository {
@@ -125,7 +126,7 @@ public class StudentCsvRepositoryImpl implements StudentCsvRepository {
      * @return an {@code Optional} containing the student if found, or empty if not found
      */
     @Override
-    public Optional<Student> findById(Long id) {
+    public Optional<Student> findById(UUID id) {
         return findAll().stream()
                 .filter(s -> s.getId().equals(id))
                 .findFirst();
@@ -138,7 +139,7 @@ public class StudentCsvRepositoryImpl implements StudentCsvRepository {
      * @throws RuntimeException if an error occurs during deletion
      */
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         try {
             backupCSVFile(csvProperties.getStudentsFilepath());
             List<Student> students = findAll();
@@ -167,7 +168,7 @@ public class StudentCsvRepositoryImpl implements StudentCsvRepository {
      * @return a list of {@code Student} objects belonging to the team
      */
     @Override
-    public List<Student> findByTeamId(Long teamId) {
+    public List<Student> findByTeamId(UUID teamId) {
         return findAll().stream()
                 .filter(s -> s.getTeam().getId().equals(teamId))
                 .toList();

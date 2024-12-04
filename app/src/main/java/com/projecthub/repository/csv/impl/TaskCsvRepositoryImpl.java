@@ -16,6 +16,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.opencsv.CSVReader;
@@ -111,15 +112,13 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
         }
     }
 
-    @Override
-    public Optional<Task> findById(Long id) {
+    public Optional<Task> findById(UUID id) {
         return findAll().stream()
                 .filter(t -> t.getId().equals(id))
                 .findFirst();
     }
 
-    @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         try {
             backupCSVFile(csvProperties.getTasksFilepath());
             List<Task> tasks = findAll();
@@ -145,14 +144,13 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
         }
     }
 
-    @Override
-    public List<Task> findByProjectId(Long projectId) {
+    public List<Task> findByProjectId(UUID projectId) {
         return findAll().stream()
                 .filter(t -> t.getProject().getId().equals(projectId))
                 .collect(Collectors.toList());
     }
 
-    public List<Task> findByAssignedUserId(Long userId) {
+    public List<Task> findByAssignedUserId(UUID userId) {
         return findAll().stream()
                 .filter(t -> t.getAssignedUser().getId().equals(userId))
                 .collect(Collectors.toList());

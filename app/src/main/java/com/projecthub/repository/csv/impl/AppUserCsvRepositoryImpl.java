@@ -20,6 +20,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import com.projecthub.repository.csv.AppUserCsvRepository;
 
@@ -128,7 +129,7 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
      * @return an {@code Optional} containing the user if found, or empty if not found
      */
     @Override
-    public Optional<AppUser> findById(Long id) {
+    public Optional<AppUser> findById(UUID id) {
         return findAll().stream()
                 .filter(u -> u.getId().equals(id))
                 .findFirst();
@@ -141,7 +142,7 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
      * @throws RuntimeException if an error occurs during deletion
      */
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         try {
             backupCSVFile(csvProperties.getUsersFilepath());
             List<AppUser> users = findAll();

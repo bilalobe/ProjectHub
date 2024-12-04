@@ -19,6 +19,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Repository("csvComponentRepository")
 public class ComponentCsvRepositoryImpl implements ComponentCsvRepository {
@@ -127,7 +128,7 @@ public class ComponentCsvRepositoryImpl implements ComponentCsvRepository {
      *         not found
      */
     @Override
-    public Optional<Component> findById(Long id) {
+    public Optional<Component> findById(UUID id) {
         return findAll().stream()
                 .filter(c -> c.getId().equals(id))
                 .findFirst();
@@ -140,7 +141,7 @@ public class ComponentCsvRepositoryImpl implements ComponentCsvRepository {
      * @throws RuntimeException if an error occurs during deletion
      */
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         try {
             backupCSVFile(csvProperties.getComponentsFilepath());
             List<Component> components = findAll();
@@ -170,7 +171,7 @@ public class ComponentCsvRepositoryImpl implements ComponentCsvRepository {
      * @return a list of {@code Component} objects belonging to the project
      */
     @Override
-    public List<Component> findByProjectId(Long projectId) {
+    public List<Component> findByProjectId(UUID projectId) {
         return findAll().stream()
                 .filter(c -> c.getProject().getId().equals(projectId))
                 .toList();

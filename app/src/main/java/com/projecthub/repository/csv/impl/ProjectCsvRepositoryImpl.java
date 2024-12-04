@@ -19,6 +19,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Repository("csvProjectRepository")
 public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
@@ -125,7 +126,7 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
      * @return an {@code Optional} containing the project if found, or empty if not found
      */
     @Override
-    public Optional<Project> findById(Long id) {
+    public Optional<Project> findById(UUID id) {
         return findAll().stream()
                 .filter(p -> p.getId().equals(id))
                 .findFirst();
@@ -138,7 +139,7 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
      * @throws RuntimeException if an error occurs during deletion
      */
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         try {
             backupCSVFile(csvProperties.getProjectsFilepath());
             List<Project> projects = findAll();
@@ -167,7 +168,7 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
      * @return a list of {@code Project} objects belonging to the team
      */
     @Override
-    public List<Project> findAllByTeamId(Long teamId) {
+    public List<Project> findAllByTeamId(UUID teamId) {
         return findAll().stream()
                 .filter(p -> p.getTeam().getId().equals(teamId))
                 .toList();

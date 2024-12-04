@@ -20,6 +20,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Repository("csvSubmissionRepository")
 public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
@@ -126,7 +127,7 @@ public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
      * @return an {@code Optional} containing the submission if found, or empty if not found
      */
     @Override
-    public Optional<Submission> findById(Long id) {
+    public Optional<Submission> findById(UUID id) {
         return findAll().stream()
                 .filter(s -> s.getId().equals(id))
                 .findFirst();
@@ -139,7 +140,7 @@ public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
      * @throws RuntimeException if an error occurs during deletion
      */
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         try {
             backupCSVFile(csvProperties.getSubmissionsFilepath());
             List<Submission> submissions = findAll();
@@ -168,7 +169,7 @@ public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
      * @return a list of {@code Submission} objects belonging to the student
      */
     @Override
-    public List<Submission> findByStudentId(Long studentId) {
+    public List<Submission> findByStudentId(UUID studentId) {
         return findAll().stream()
                 .filter(s -> s.getStudent().getId().equals(studentId))
                 .toList();
@@ -181,7 +182,7 @@ public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
      * @return a list of {@code Submission} objects belonging to the project
      */
     @Override
-    public List<Submission> findByProjectId(Long projectId) {
+    public List<Submission> findByProjectId(UUID projectId) {
         return findAll().stream()
                 .filter(s -> s.getProject().getId().equals(projectId))
                 .toList();

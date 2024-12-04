@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.List;
+import java.util.UUID;
 import java.util.Optional;
 import java.util.Set;
 
@@ -123,7 +124,7 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
      * @return an {@code Optional} containing the team if found, or empty if not found
      */
     @Override
-    public Optional<Team> findById(Long id) {
+    public Optional<Team> findById(UUID id) {
         return findAll().stream()
                 .filter(t -> t.getId().equals(id))
                 .findFirst();
@@ -136,7 +137,7 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
      * @throws RuntimeException if an error occurs during deletion
      */
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         try {
             backupCSVFile(csvProperties.getTeamsFilepath());
             List<Team> teams = findAll();
@@ -165,7 +166,7 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
      * @return a list of {@code Team} objects belonging to the cohort
      */
     @Override
-    public List<Team> findByCohortId(Long cohortId) {
+    public List<Team> findByCohortId(UUID cohortId) {
         return findAll().stream()
                 .filter(t -> t.getCohort().getId().equals(cohortId))
                 .toList();
