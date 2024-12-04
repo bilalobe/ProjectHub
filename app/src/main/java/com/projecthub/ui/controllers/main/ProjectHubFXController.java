@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.projecthub.dto.CohortSummary;
+import com.projecthub.dto.CohortDTO;
 import com.projecthub.model.School;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
 import com.projecthub.utils.ui.TreeItemWrapper;
@@ -48,7 +48,7 @@ public class ProjectHubFXController {
             rootItem.getChildren().add(treeItem);
         }
 
-        schoolTreeView.setCellFactory((TreeView<String> param) -> new TextFieldTreeCellImpl());
+        schoolTreeView.setCellFactory((TreeView<String> _) -> new TextFieldTreeCellImpl());
     }
 
     private TreeItem<String> createTreeItem(TreeItemWrapper wrapper) {
@@ -56,7 +56,7 @@ public class ProjectHubFXController {
         treeItem.setExpanded(false);
 
         // Lazy loading mechanism
-        treeItem.addEventHandler(TreeItem.branchExpandedEvent(), event -> {
+        treeItem.addEventHandler(TreeItem.branchExpandedEvent(), _ -> {
             if (treeItem.getChildren().isEmpty()) {
                 loadChildren(treeItem, wrapper);
             }
@@ -69,8 +69,8 @@ public class ProjectHubFXController {
         Object data = parentWrapper.getData();
 
         if (data instanceof School school) {
-            List<CohortSummary> classes = viewModel.getClassesBySchoolId(school.getId());
-            for (CohortSummary cls : classes) {
+            List<CohortDTO> classes = viewModel.getClassesBySchoolId(school.getId().getMostSignificantBits() & Long.MAX_VALUE);
+            for (CohortDTO cls : classes) {
                 var classWrapper = new TreeItemWrapper(cls.getName(), cls);
                 TreeItem<String> classItem = createTreeItem(classWrapper);
                 parentItem.getChildren().add(classItem);
