@@ -1,31 +1,41 @@
 package com.projecthub.mapper;
 
-import com.projecthub.dto.TaskSummary;
-import com.projecthub.model.AppUser;
+import com.projecthub.dto.TaskDTO;
 import com.projecthub.model.Project;
+import com.projecthub.model.AppUser;
 import com.projecthub.model.Task;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.factory.Mappers;
 
-@Component
-public class TaskMapper {
+@Mapper(componentModel = "spring", uses = {ProjectMapper.class, AppUserMapper.class})
+public interface TaskMapper {
 
-    public Task toTask(TaskSummary taskSummary, Project project, AppUser assignedUser) {
-        Task task = new Task();
-        task.setId(taskSummary.getId());
-        task.setName(taskSummary.getName());
-        task.setDescription(taskSummary.getDescription());
-        task.setStatus(taskSummary.getStatus());
-        task.setDueDate(taskSummary.getDueDate());
+    TaskMapper INSTANCE = Mappers.getMapper(TaskMapper.class);
+
+    @Mapping(source = "projectId", target = "project.id")
+    @Mapping(source = "assignedUserId", target = "assignedUser.id")
+    Task toTask(TaskDTO taskDTO);
+
+    @Mapping(source = "project.id", target = "projectId")
+    @Mapping(source = "assignedUser.id", target = "assignedUserId")
+    TaskDTO toTaskDTO(Task task);
+
+    @Mapping(source = "projectId", target = "project.id")
+    @Mapping(source = "assignedUserId", target = "assignedUser.id")
+    void updateTaskFromDTO(TaskDTO taskDTO, @MappingTarget Task task);
+
+    default Task toTask(TaskDTO taskDTO, Project project, AppUser assignedUser) {
+        Task task = toTask(taskDTO);
         task.setProject(project);
         task.setAssignedUser(assignedUser);
         return task;
     }
 
-    public TaskSummary toTaskSummary(Task task) {
-        return new TaskSummary(task);
-    }
-
-    public void updateTaskFromSummary(TaskSummary taskSummary, Task existingTask, Project project, AppUser assignedUser) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    default void updateTaskFromDTO(TaskDTO taskDTO, Task task, Project project, AppUser assignedUser) {
+        updateTaskFromDTO(taskDTO, task);
+        task.setProject(project);
+        task.setAssignedUser(assignedUser);
     }
 }

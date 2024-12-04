@@ -1,72 +1,63 @@
 package com.projecthub.mapper;
 
-import com.projecthub.dto.AppUserSummary;
-import com.projecthub.dto.TeamSummary;
-import com.projecthub.model.AppUser;
-import com.projecthub.model.Cohort;
-import com.projecthub.model.School;
+import com.projecthub.dto.TeamDTO;
 import com.projecthub.model.Team;
-import org.springframework.stereotype.Component;
+import com.projecthub.model.School;
+import com.projecthub.model.Cohort;
+import com.projecthub.repository.SchoolRepository;
+import com.projecthub.repository.CohortRepository;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Component
-public class TeamMapper {
+import java.util.UUID;
 
-    public Team toTeam(TeamSummary teamSummary, School school, Cohort cohort) {
-        Team team = new Team();
-        team.setId(teamSummary.getId());
-        team.setName(teamSummary.getName());
-        team.setSchool(school);
-        team.setCohort(cohort);
-        return team;
+@Mapper(componentModel = "spring")
+public abstract class TeamMapper {
+
+    @Autowired
+    private SchoolRepository schoolRepository;
+
+    @Autowired
+    private CohortRepository cohortRepository;
+
+    @Mapping(source = "schoolId", target = "school", qualifiedByName = "mapSchoolIdToSchool")
+    @Mapping(source = "cohortId", target = "cohort", qualifiedByName = "mapCohortIdToCohort")
+    @Mapping(target = "students", ignore = true)
+    @Mapping(target = "members", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    public abstract Team toTeam(TeamDTO teamDTO);
+
+    @Mapping(source = "school.id", target = "schoolId")
+    @Mapping(source = "cohort.id", target = "cohortId")
+    public abstract TeamDTO toTeamDTO(Team team);
+
+    @Mapping(source = "schoolId", target = "school", qualifiedByName = "mapSchoolIdToSchool")
+    @Mapping(source = "cohortId", target = "cohort", qualifiedByName = "mapCohortIdToCohort")
+    @Mapping(target = "students", ignore = true)
+    @Mapping(target = "members", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    public abstract void updateTeamFromDTO(TeamDTO teamDTO, @MappingTarget Team team);
+
+    @Named("mapSchoolIdToSchool")
+    protected School mapSchoolIdToSchool(UUID schoolId) {
+        return schoolRepository.findById(schoolId).orElseThrow(() -> new IllegalArgumentException("Invalid school ID: " + schoolId));
     }
 
-    public TeamSummary toTeamSummary(Team team) {
-        return new TeamSummary(
-            team.getId(),
-            team.getName(),
-            team.getSchool() != null ? team.getSchool().getId() : null,
-            team.getCohort() != null ? team.getCohort().getId() : null
-        );
+    @Named("mapSchoolToSchoolId")
+    protected UUID mapSchoolToSchoolId(School school) {
+        return school != null ? school.getId() : null;
     }
 
-    public TeamSummary toDetailedTeamSummary(Team team) {
-        return new TeamSummary(
-            team.getId(),
-            team.getName(),
-            team.getSchool() != null ? team.getSchool().getId() : null,
-            team.getCohort() != null ? team.getCohort().getId() : null,
-            team.getSchool() != null ? team.getSchool().getName() : null,
-            team.getCohort() != null ? team.getCohort().getName() : null
-        );
+    @Named("mapCohortIdToCohort")
+    protected Cohort mapCohortIdToCohort(UUID cohortId) {
+        return cohortRepository.findById(cohortId).orElseThrow(() -> new IllegalArgumentException("Invalid cohort ID: " + cohortId));
     }
 
-    public Team toTeamWithDetails(TeamSummary teamSummary, School school, Cohort cohort) {
-        Team team = new Team();
-        team.setId(teamSummary.getId());
-        team.setName(teamSummary.getName());
-        team.setSchool(school);
-        team.setCohort(cohort);
-        if (teamSummary.getSchoolName() != null) {
-            team.getSchool().setName(teamSummary.getSchoolName());
-        }
-        if (teamSummary.getCohortName() != null) {
-            team.getCohort().setName(teamSummary.getCohortName());
-        }
-        return team;
-    }
-
-    public AppUserSummary toAppUserSummary(AppUser appUser) {
-        return new AppUserSummary(
-            appUser.getId(),
-            appUser.getUsername(),
-            appUser.getEmail(),
-            appUser.getFirstName(),
-            appUser.getLastName(),
-            appUser.getTeam() != null ? appUser.getTeam().getId() : null
-        );
-    }
-
-    public void updateTeamFromSummary(TeamSummary teamSummary, Team team) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @Named("mapCohortToCohortId")
+    protected UUID mapCohortToCohortId(Cohort cohort) {
+        return cohort != null ? cohort.getId() : null;
     }
 }

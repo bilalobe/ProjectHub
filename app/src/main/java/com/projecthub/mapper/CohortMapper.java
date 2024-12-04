@@ -1,61 +1,27 @@
 package com.projecthub.mapper;
 
-import com.projecthub.dto.CohortSummary;
-import com.projecthub.exception.ResourceNotFoundException;
+import com.projecthub.dto.CohortDTO;
 import com.projecthub.model.Cohort;
-import com.projecthub.model.School;
-import com.projecthub.repository.SchoolRepository;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.factory.Mappers;
 
-@Component
-public class CohortMapper {
+@Mapper(componentModel = "spring", uses = {SchoolMapper.class})
+public interface CohortMapper {
 
-    private final SchoolRepository schoolRepository;
+    CohortMapper INSTANCE = Mappers.getMapper(CohortMapper.class);
 
-    public CohortMapper(SchoolRepository schoolRepository) {
-        this.schoolRepository = schoolRepository;
-    }
+    @Mapping(source = "schoolId", target = "school.id")
+    @Mapping(target = "teams", ignore = true) // Assuming teams are managed separately
+    @Mapping(target = "deleted", ignore = true) // Assuming deleted is managed separately
+    Cohort toCohort(CohortDTO cohortDTO);
 
-    public Cohort toCohort(CohortSummary cohortSummary) {
-        if (cohortSummary == null) {
-            return null;
-        }
+    @Mapping(source = "school.id", target = "schoolId")
+    CohortDTO toCohortDTO(Cohort cohort);
 
-        School school = schoolRepository.findById(cohortSummary.getSchoolId())
-                .orElseThrow(() -> new ResourceNotFoundException("School not found with ID: " + cohortSummary.getSchoolId()));
-
-        Cohort cohort = new Cohort();
-        cohort.setName(cohortSummary.getName());
-        cohort.setSchool(school);
-
-        return cohort;
-    }
-
-    public CohortSummary toCohortSummary(Cohort cohort) {
-        if (cohort == null) {
-            return null;
-        }
-
-        Long schoolId = (cohort.getSchool() != null) ? cohort.getSchool().getId() : null;
-
-        return new CohortSummary(
-                cohort.getId(),
-                cohort.getName(),
-                schoolId
-        );
-    }
-
-    public void updateCohortFromSummary(CohortSummary cohortSummary, Cohort cohort) {
-        if (cohortSummary == null || cohort == null) {
-            return;
-        }
-
-        if (cohortSummary.getSchoolId() != null) {
-            School school = schoolRepository.findById(cohortSummary.getSchoolId())
-                    .orElseThrow(() -> new ResourceNotFoundException("School not found with ID: " + cohortSummary.getSchoolId()));
-            cohort.setSchool(school);
-        }
-
-        cohort.setName(cohortSummary.getName());
-    }
+    @Mapping(source = "schoolId", target = "school.id")
+    @Mapping(target = "teams", ignore = true) // Assuming teams are managed separately
+    @Mapping(target = "deleted", ignore = true) // Assuming deleted is managed separately
+    void updateCohortFromDTO(CohortDTO cohortDTO, @MappingTarget Cohort cohort);
 }

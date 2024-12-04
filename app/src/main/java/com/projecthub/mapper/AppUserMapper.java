@@ -1,33 +1,44 @@
 package com.projecthub.mapper;
 
-import com.projecthub.dto.AppUserSummary;
+import com.projecthub.dto.AppUserDTO;
 import com.projecthub.model.AppUser;
 import com.projecthub.model.Team;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.factory.Mappers;
 
-@Component
-public class AppUserMapper {
+@Mapper(componentModel = "spring")
+public interface AppUserMapper {
 
-    public AppUser toAppUser(AppUserSummary userSummary, Team team, String encodedPassword) {
+    AppUserMapper INSTANCE = Mappers.getMapper(AppUserMapper.class);
+
+    @Mapping(source = "team.id", target = "teamId")
+    AppUserDTO toAppUserDTO(AppUser user);
+
+    default AppUser toAppUser(AppUserDTO userDTO, Team team, String encodedPassword) {
+        if (userDTO == null) {
+            return null;
+        }
         AppUser user = new AppUser();
-        // auto ID setting
-        user.setUsername(userSummary.getUsername());
-        user.setEmail(userSummary.getEmail());
+        user.setUsername(userDTO.getUsername());
         user.setPassword(encodedPassword);
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
         user.setTeam(team);
-        user.setFirstName(userSummary.getFirstName());
-        user.setLastName(userSummary.getLastName());
         return user;
     }
 
-    public AppUserSummary toAppUserSummary(AppUser user) {
-        return new AppUserSummary(
-            user.getId(),
-            user.getUsername(),
-            user.getEmail(),
-            user.getFirstName(),
-            user.getLastName(),
-            user.getTeam() != null ? user.getTeam().getId() : null
-        );
+    default void updateAppUserFromDTO(AppUserDTO userDTO, @MappingTarget AppUser user, Team team, String encodedPassword) {
+        if (userDTO == null || user == null) {
+            return;
+        }
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(encodedPassword);
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setTeam(team);
     }
 }

@@ -1,49 +1,41 @@
 package com.projecthub.mapper;
 
-import org.springframework.stereotype.Component;
-
-import com.projecthub.dto.StudentSummary;
+import com.projecthub.dto.StudentDTO;
 import com.projecthub.model.Student;
+import com.projecthub.model.Team;
+import com.projecthub.repository.TeamRepository;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Component
-public class StudentMapper {
+import java.util.UUID;
 
-    public StudentSummary toStudentSummary(Student student) {
-        if (student == null) {
-            return null;
-        }
-        return new StudentSummary(
-            student.getId(),
-            student.getUsername(),
-            student.getEmail(),
-            student.getFirstName(),
-            student.getLastName(),
-            student.getTeam() != null ? student.getTeam().getName() : null
-        );
+@Mapper(componentModel = "spring")
+public abstract class StudentMapper {
+
+    @Autowired
+    private TeamRepository teamRepository;
+
+    @Mapping(source = "teamId", target = "team", qualifiedByName = "mapTeamIdToTeam")
+    @Mapping(target = "deleted", ignore = true) // Assuming deleted is managed separately
+    public abstract Student toStudent(StudentDTO studentDTO);
+
+    @Mapping(source = "team.id", target = "teamId")
+    public abstract StudentDTO toStudentDTO(Student student);
+
+    @Mapping(source = "teamId", target = "team", qualifiedByName = "mapTeamIdToTeam")
+    @Mapping(target = "deleted", ignore = true) // Assuming deleted is managed separately
+    public abstract void updateStudentFromDTO(StudentDTO studentDTO, @MappingTarget Student student);
+
+    @Named("mapTeamIdToTeam")
+    protected Team mapTeamIdToTeam(UUID teamId) {
+        return teamRepository.findById(teamId).orElseThrow(() -> new IllegalArgumentException("Invalid team ID: " + teamId));
     }
 
-    public Student toStudent(StudentSummary studentSummary) {
-        if (studentSummary == null) {
-            return null;
-        }
-        Student student = new Student();
-        student.setId(studentSummary.getId());
-        student.setUsername(studentSummary.getUsername());
-        student.setEmail(studentSummary.getEmail());
-        student.setFirstName(studentSummary.getFirstName());
-        student.setLastName(studentSummary.getLastName());
-        // Additional mappings can be added here
-        return student;
-    }
-
-    public void updateStudentFromSummary(StudentSummary studentSummary, Student student) {
-        if (studentSummary == null || student == null) {
-            return;
-        }
-        student.setUsername(studentSummary.getUsername());
-        student.setEmail(studentSummary.getEmail());
-        student.setFirstName(studentSummary.getFirstName());
-        student.setLastName(studentSummary.getLastName());
-        // Additional mappings can be added here
+    @Named("mapTeamToTeamId")
+    protected UUID mapTeamToTeamId(Team team) {
+        return team != null ? team.getId() : null;
     }
 }
