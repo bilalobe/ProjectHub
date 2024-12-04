@@ -12,10 +12,16 @@ version '0.1.0-SNAPSHOT'
 repositories {
     mavenCentral()
     maven { url 'https://repo.spring.io/release' }
+    maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
     // JavaFX dependencies
+    implementation 'org.openjfx:javafx-controls:23.0.1'
+    implementation 'org.openjfx:javafx-fxml:23.0.1'
+    implementation 'org.openjfx:javafx-graphics:23.0.1'
+    implementation 'org.openjfx:javafx-media:23.0.1'
+    implementation 'org.openjfx:javafx-web:23.0.1'
 
     // ModelMapper for object mapping
     implementation 'org.modelmapper:modelmapper:2.4.4'
@@ -49,41 +55,44 @@ dependencies {
     // Logging dependencies
     implementation 'org.slf4j:slf4j-api:2.0.0'
 
+    // MapStruct for object mapping
+    implementation 'org.mapstruct:mapstruct:1.5.2.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+
     // Testing dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
-application {
-    mainClass = 'com.projecthub.MainApp'
-    applicationDefaultJvmArgs = [
-        '--module-path', "${javafx.sdk}/lib",
-        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.web'
-    ]
-}
+// application {
+//     mainClass = 'com.projecthub.MainApp'
+//     applicationDefaultJvmArgs = [
+//         '--module-path', "${javafx.sdk}/lib",
+//         '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.web'
+//     ]
+// }
 
 bootRun {
     mainClass = 'com.projecthub.MainApp'
     jvmArgs = [
         '--module-path', "${javafx.sdk}/lib",
-        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.web'
+        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media'
     ]
 }
 
-javafx {
-    version = '23.0.1'
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.web' ] 
-    sdk = 'C:/JDKs/javafx-sdk-23.0.1'
-}
+// javafx {
+//     version = '23.0.1'
+//     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.web' ] 
+// }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-    options.compilerArgs += [
-        '--module-path', "${javafx.sdk}/lib",
-        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media, javafx.web'
-    ]
-}
+// tasks.withType(JavaCompile) {
+//     options.encoding = 'UTF-8'
+//     options.compilerArgs += [
+//         '--module-path', "${javafx.sdk}/lib",
+//         '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media'
+//     ]
+// } // FAULTY!!!
 
 jar {
     manifest {
