@@ -1,0 +1,36 @@
+<!-- XML -->
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.projecthub.ui.controllers.DashboardController"
+      spacing="15" padding="20">
+
+    <Label text="Dashboard" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+    <HBox spacing="15">
+        <VBox fx:id="statisticsPane" spacing="10">
+            <Label text="Statistics" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+            <Label text="Total Users: " />
+            <Label text="Total Projects: " />
+            <Label text="Total Teams: " />
+        </VBox>
+
+        <PieChart fx:id="statusPieChart" title="Project Status Distribution"/>
+
+    </HBox>
+
+    <TableView fx:id="recentActivitiesTable" prefHeight="200">
+        <columns>
+            <TableColumn text="Timestamp" />
+            <TableColumn text="Activity" />
+            <TableColumn text="User" />
+        </columns>
+    </TableView>
+
+</VBox>
