@@ -1,4 +1,4 @@
-package com.projecthub.service;
+package com.projecthub.utils;
 
 import java.util.regex.Pattern;
 
