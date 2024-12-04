@@ -2,11 +2,12 @@ package com.projecthub.repository.csv;
 
 import com.projecthub.model.Student;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Repository interface for {@link Student} entities.
  */
-public interface StudentCsvRepository extends BaseCsvRepository<Student, Long> {
+public interface StudentCsvRepository extends BaseCsvRepository<Student> {
 
     /**
      * Finds students by team ID.
@@ -14,5 +15,5 @@ public interface StudentCsvRepository extends BaseCsvRepository<Student, Long> {
      * @param teamId the ID of the team
      * @return a list of {@code Student} objects belonging to the team
      */
-    List<Student> findByTeamId(Long teamId);
+    List<Student> findByTeamId(UUID teamId);
 }

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Profile;
 @Profile("csv")
 @Primary
 
-public interface AppUserCsvRepository extends BaseCsvRepository<AppUser, Long> {
+public interface AppUserCsvRepository extends BaseCsvRepository<AppUser> {
 
     /**
      * Finds a user by their username.

@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository("csvSchoolRepository")
 @Profile("csv")
-public interface SchoolCsvRepository extends BaseCsvRepository<School, Long> {
+public interface SchoolCsvRepository extends BaseCsvRepository<School> {
 }
