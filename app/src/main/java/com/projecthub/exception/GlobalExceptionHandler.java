@@ -3,6 +3,8 @@ package com.projecthub.exception;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -142,6 +144,16 @@ public class GlobalExceptionHandler {
                                             .title("Internal Server Error")
                                             .build(messageSource, Locale.getDefault());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult()
+          .getFieldErrors()
+          .forEach((error) -> errors.put(error.getField(), error.getDefaultMessage()));
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     // Other exception handlers...
