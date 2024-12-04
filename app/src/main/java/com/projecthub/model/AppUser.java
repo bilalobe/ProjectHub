@@ -1,20 +1,43 @@
 package com.projecthub.model;
 
-import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 /**
- * Represents a user in the system.
+ * Represents an application user in the system.
+ * <p>
+ * An AppUser has authentication credentials and personal details.
+ * They are associated with a {@link Team}.
+ * </p>
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(
+    indexes = {
+        @Index(name = "idx_appuser_username", columnList = "username"),
+        @Index(name = "idx_appuser_email", columnList = "email")
+    }
+)
 public class AppUser {
 
     /**
@@ -23,6 +46,8 @@ public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
+    // Confirm no setter for 'id'
 
     /**
      * The timestamp when the user was created.
@@ -48,31 +73,41 @@ public class AppUser {
      * The user's username.
      */
     @NotBlank(message = "Username is mandatory")
+    @Size(max = 50, message = "Username must be less than 50 characters")
+    @Column(unique = true, nullable = false)
     private String username;
 
     /**
      * The user's password.
      */
     @NotBlank(message = "Password is mandatory")
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    @Column(nullable = false)
     private String password;
 
     /**
      * The user's first name.
      */
     @NotBlank(message = "First name is mandatory")
+    @Size(max = 50, message = "First name must be less than 50 characters")
+    @Column(nullable = false)
     private String firstName;
 
     /**
      * The user's last name.
      */
     @NotBlank(message = "Last name is mandatory")
+    @Size(max = 50, message = "Last name must be less than 50 characters")
+    @Column(nullable = false)
     private String lastName;
 
     /**
-     * The user's email.
+     * The user's email address.
      */
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Email should be valid")
+    @Size(max = 100, message = "Email must be less than 100 characters")
+    @Column(unique = true, nullable = false)
     private String email;
 
     /**
@@ -120,7 +155,14 @@ public class AppUser {
         return id;
     }
 
-    // No setter for ID to prevent manual setting
+    /**
+     * Sets the user's ID.
+     *
+     * @param id the user's ID
+     */
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     /**
      * Returns the user's username.

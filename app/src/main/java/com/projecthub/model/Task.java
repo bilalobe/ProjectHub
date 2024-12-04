@@ -1,32 +1,57 @@
 package com.projecthub.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
- * Represents a Task within a Project.
+ * Represents a task within a {@link Project}.
+ * <p>
+ * Tasks are units of work assigned to users.
+ * </p>
  */
 @Entity
+@EntityListeners(AuditingEntityListener.class)
+@Table(
+    indexes = {
+        @Index(name = "idx_task_name", columnList = "name")
+    }
+)
 public class Task {
 
     /**
      * The unique identifier for the task.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     /**
      * The name of the task.
      */
+    @NotBlank(message = "Task name is mandatory")
+    @Size(max = 100, message = "Task name must be less than 100 characters")
+    @Column(nullable = false)
     private String name;
 
     /**
@@ -37,6 +62,9 @@ public class Task {
     /**
      * The status of the task.
      */
+    @NotBlank(message = "Status is mandatory")
+    @Size(max = 50, message = "Status must be less than 50 characters")
+    @Column(nullable = false)
     private String status;
 
     /**
@@ -58,6 +86,19 @@ public class Task {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    private String createdBy;
+
+    private boolean deleted = false;
+
     // Default constructor required by JPA
     public Task() {}
 
@@ -71,11 +112,11 @@ public class Task {
     }
 
     // Getters and Setters
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -127,6 +168,38 @@ public class Task {
         this.project = project;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -150,6 +223,10 @@ public class Task {
                 ", dueDate=" + dueDate +
                 ", assignedUser=" + (assignedUser != null ? assignedUser.getUsername() : "null") +
                 ", project=" + (project != null ? project.getName() : "null") +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy='" + createdBy + '\'' +
+                ", deleted=" + deleted +
                 '}';
     }
 }

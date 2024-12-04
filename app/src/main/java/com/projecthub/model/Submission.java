@@ -1,38 +1,82 @@
 package com.projecthub.model;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
  * Represents a submission made by a student for a project.
+ * <p>
  * This entity is mapped to the "Submission" table in the database.
+ * </p>
  */
 @Entity
+@EntityListeners(AuditingEntityListener.class)
+@Table(
+    indexes = {
+        @Index(name = "idx_submission_timestamp", columnList = "timestamp")
+    }
+)
 public class Submission {
 
+    /**
+     * The unique identifier for the submission.
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
+    /**
+     * The content of the submission.
+     */
     @NotBlank(message = "Content is mandatory")
     @Size(max = 5000, message = "Content must be less than 5000 characters")
+    @Column(nullable = false)
     private String content;
 
-    @NotBlank(message = "Timestamp is mandatory")
-    private String timestamp;
+    /**
+     * The timestamp when the submission was made.
+     */
+    @NotNull(message = "Timestamp is mandatory")
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 
     private Integer grade;
 
     @Size(max = 255, message = "File path must be less than 255 characters")
     private String filePath;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @CreatedBy
+    private String createdBy;
+
+    private boolean deleted = false;
 
     /**
      * The student who made the submission.
@@ -51,11 +95,11 @@ public class Submission {
     private Project project;
 
     // Default constructor required by JPA
-    public Submission(Long long1, Student student2, Long long2, Integer integer) {
+    public Submission() {
     }
 
     // Constructor with all fields (excluding redundant IDs)
-    public Submission(Long id, Student student, Project project, String content, String timestamp, Integer grade) {
+    public Submission(UUID id, Student student, Project project, String content, LocalDateTime timestamp, Integer grade) {
         this.id = id;
         this.student = student;
         this.project = project;
@@ -65,14 +109,14 @@ public class Submission {
     }
 
     // Constructor without id (for new Submissions)
-    public Submission(Student student, Project project, String content, String timestamp) {
+    public Submission(Student student, Project project, String content, LocalDateTime timestamp) {
         this.student = student;
         this.project = project;
         this.content = content;
         this.timestamp = timestamp;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -80,7 +124,7 @@ public class Submission {
         return content;
     }
 
-    public String getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
@@ -100,7 +144,23 @@ public class Submission {
         return filePath;
     }
 
-    public void setId(Long id) {
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -108,7 +168,7 @@ public class Submission {
         this.content = content;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -128,6 +188,22 @@ public class Submission {
         this.filePath = filePath;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public String toString() {
         return "Submission{" +
@@ -136,6 +212,10 @@ public class Submission {
                 ", timestamp='" + timestamp + '\'' +
                 ", grade=" + grade +
                 ", filePath='" + filePath + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy='" + createdBy + '\'' +
+                ", deleted=" + deleted +
                 ", studentId=" + (student != null ? student.getId() : null) +
                 ", projectId=" + (project != null ? project.getId() : null) +
                 '}';

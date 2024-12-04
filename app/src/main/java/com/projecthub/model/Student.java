@@ -1,45 +1,94 @@
 package com.projecthub.model;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * Represents a student in the system.
- * A student can have multiple submissions and belongs to a team.
+ * <p>
+ * A student can have multiple submissions and belongs to a {@link Team}.
+ * </p>
  */
 @Entity
+@EntityListeners(AuditingEntityListener.class)
+@Table(
+    indexes = {
+        @Index(name = "idx_student_email", columnList = "email")
+    }
+)
 public class Student {
 
     /**
      * The unique identifier for the student.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     /**
-     * The student's username.
+     * The timestamp when the student was created.
      */
-    private String username;
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     /**
-     * The student's email.
+     * The timestamp when the student was last updated.
      */
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    /**
+     * The user who created the student.
+     */
+    @CreatedBy
+    private String createdBy;
+
+    /**
+     * The student's email address.
+     */
+    @NotBlank(message = "Email is mandatory")
+    @Email(message = "Email should be valid")
+    @Size(max = 100, message = "Email must be less than 100 characters")
+    @Column(unique = true, nullable = false)
     private String email;
 
     /**
      * The student's first name.
      */
+    @NotBlank(message = "First name is mandatory")
+    @Size(max = 50, message = "First name must be less than 50 characters")
+    @Column(nullable = false)
     private String firstName;
 
     /**
      * The student's last name.
      */
+    @NotBlank(message = "Last name is mandatory")
+    @Size(max = 50, message = "Last name must be less than 50 characters")
+    @Column(nullable = false)
     private String lastName;
 
     /**
@@ -47,27 +96,18 @@ public class Student {
      */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "team_id", nullable = false)
+    @NotNull(message = "Team is mandatory")
     private Team team;
 
-    /**
-     * Default constructor required by JPA.
-     */
+    private boolean deleted = false;
+
+    // Default constructor required by JPA
     public Student() {
     }
 
-    /**
-     * Constructs a new student with the specified ID, username, email, first name, last name, and team.
-     *
-     * @param id        the student's ID
-     * @param username  the student's username
-     * @param email     the student's email
-     * @param firstName the student's first name
-     * @param lastName  the student's last name
-     * @param team      the team the student belongs to
-     */
-    public Student(Long id, String username, String email, String firstName, String lastName, Team team) {
+    // Constructor with all fields
+    public Student(UUID id, String email, String firstName, String lastName, Team team) {
         this.id = id;
-        this.username = username;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -76,121 +116,68 @@ public class Student {
 
     // Getters and Setters
 
-    /**
-     * Returns the student's ID.
-     *
-     * @return the student's ID
-     */
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    /**
-     * Sets the student's ID.
-     *
-     * @param id the student's ID
-     */
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    /**
-     * Returns the student's username.
-     *
-     * @return the student's username
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Sets the student's username.
-     *
-     * @param username the student's username
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * Returns the student's email.
-     *
-     * @return the student's email
-     */
     public String getEmail() {
         return email;
     }
 
-    /**
-     * Sets the student's email.
-     *
-     * @param email the student's email
-     */
     public void setEmail(String email) {
         this.email = email;
     }
 
-    /**
-     * Returns the student's first name.
-     *
-     * @return the student's first name
-     */
     public String getFirstName() {
         return firstName;
     }
 
-    /**
-     * Sets the student's first name.
-     *
-     * @param firstName the student's first name
-     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    /**
-     * Returns the student's last name.
-     *
-     * @return the student's last name
-     */
     public String getLastName() {
         return lastName;
     }
 
-    /**
-     * Sets the student's last name.
-     *
-     * @param lastName the student's last name
-     */
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    /**
-     * Returns the team that the student belongs to.
-     *
-     * @return the team
-     */
     public Team getTeam() {
         return team;
     }
 
-    /**
-     * Sets the team that the student belongs to.
-     *
-     * @param team the team
-     */
     public void setTeam(Team team) {
         this.team = team;
     }
 
-    /**
-     * Returns a string representation of the student.
-     *
-     * @return a string containing the student's ID and username
-     */
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public String toString() {
-        return "Student{id=" + id + ", username='" + username + "', email='" + email + "', firstName='" + firstName + "', lastName='" + lastName + "', team=" + team + "}";
+        return "Student{id=" + id + ", email='" + email + "', firstName='" + firstName + "', lastName='" + lastName + "', team=" + team + "}";
     }
 }
