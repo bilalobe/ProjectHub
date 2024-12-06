@@ -1,23 +1,24 @@
-# Use the official Java image as a parent image
-FROM mcr.microsoft.com/devcontainers/java:1-21-bookworm
+# Dockerfile
 
-# Install Node.js
+# Use the official Java Dev Container image as a base
+FROM mcr.microsoft.com/devcontainers/java:0-21-bookworm
+
+# Install Node.js (LTS version) and Angular CLI
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
-    && apt-get install -y nodejs
+    && apt-get update \
+    && apt-get install -y nodejs \
+    && npm install -g @angular/cli
 
 # Install PostgreSQL
-RUN apt-get update && apt-get install -y postgresql-14 postgresql-client-14
-
-# Install Angular CLI
-RUN npm install -g @angular/cli
+RUN apt-get update && apt-get install -y postgresql postgresql-contrib
 
 # Set environment variables for PostgreSQL
 ENV POSTGRES_DB=projecthub
 ENV POSTGRES_USER=projecthub
 ENV POSTGRES_PASSWORD=projecthub
 
-# Expose ports
-EXPOSE 8080 5432 4200
+# Expose necessary ports
+EXPOSE 8080 4200 5432
 
-# Set the default command to run when starting the container
-CMD ["bash"]
+# Set the default command
+CMD ["sleep", "infinity"]
