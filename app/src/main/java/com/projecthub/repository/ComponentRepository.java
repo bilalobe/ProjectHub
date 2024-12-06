@@ -15,4 +15,6 @@ public interface ComponentRepository {
     List<Component> findAll();
     void delete(Component component);
     List<Component> findByProjectId(UUID projectId);
+    void deleteById(UUID id);
+    boolean existsById(UUID id);
 }
