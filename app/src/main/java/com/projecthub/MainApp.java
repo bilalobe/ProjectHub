@@ -1,29 +1,22 @@
 package com.projecthub;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
+import javafx.fxml.FXMLLoader;
 
 public class MainApp extends Application {
 
-    private ConfigurableApplicationContext context;
-
-    @Override
-    public void init() throws Exception {
-        context = new SpringApplicationBuilder(ProjectHubApplication.class).run();
-    }
-
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Initialize your JavaFX scene here
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/projecthub/ui/views/MainView.fxml"));
+        BorderPane root = loader.load();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/com/projecthub/ui/css/styles.css").toExternalForm());
+        primaryStage.setScene(scene);
         primaryStage.setTitle("ProjectHub");
         primaryStage.show();
-    }
-
-    @Override
-    public void stop() throws Exception {
-        context.close();
     }
 
     public static void main(String[] args) {
