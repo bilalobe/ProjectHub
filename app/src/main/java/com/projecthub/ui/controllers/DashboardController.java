@@ -10,13 +10,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DashboardController extends BaseController {
 
-    @Autowired
+
     private DashboardViewModel dashboardViewModel;
 
     @FXML
