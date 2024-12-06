@@ -1,6 +1,5 @@
 package com.projecthub.ui.controllers.main;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.utils.ui.LoaderFactory;
@@ -20,7 +19,7 @@ public class ProjectHubFXController {
     
     private ProjectHubViewModel viewModel;
 
-    @Autowired
+
     private LoaderFactory loaderFactory;
 
     @FXML
