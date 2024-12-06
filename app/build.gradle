@@ -37,6 +37,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
+    implementation 'org.springframework.boot:spring-boot-starter-integration'
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.integration:spring-integration-jdbc'
+    implementation 'org.springframework.integration:spring-integration-jpa'
+    implementation 'org.springframework.integration:spring-integration-security'
+    implementation 'org.springframework.integration:spring-integration-http'
+    implementation 'org.springframework.integration:spring-integration-ws'
+    implementation 'org.springframework.session:spring-session-jdbc'
+    testImplementation 'org.springframework.batch:spring-batch-test'
+    testImplementation 'org.springframework.integration:spring-integration-test'
 
     // Spring Boot DevTools for hot reloading
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -62,16 +75,9 @@ dependencies {
     // Testing dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    runtimeOnly 'org.springframework.boot:spring-boot-docker-compose'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
-
-// application {
-//     mainClass = 'com.projecthub.MainApp'
-//     applicationDefaultJvmArgs = [
-//         '--module-path', "${javafx.sdk}/lib",
-//         '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.web'
-//     ]
-// }
 
 bootRun {
     mainClass = 'com.projecthub.MainApp'
@@ -80,19 +86,6 @@ bootRun {
         '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media'
     ]
 }
-
-// javafx {
-//     version = '23.0.1'
-//     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.web' ] 
-// }
-
-// tasks.withType(JavaCompile) {
-//     options.encoding = 'UTF-8'
-//     options.compilerArgs += [
-//         '--module-path', "${javafx.sdk}/lib",
-//         '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media'
-//     ]
-// } // FAULTY!!!
 
 jar {
     manifest {
