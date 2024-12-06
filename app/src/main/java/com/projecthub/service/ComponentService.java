@@ -1,6 +1,6 @@
 package com.projecthub.service;
 
-import com.projecthub.dto.ComponentSummary;
+import com.projecthub.dto.ComponentDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.ComponentMapper;
 import com.projecthub.model.Component;
@@ -11,8 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing project components.
+ */
 @Service
 public class ComponentService {
 
@@ -26,68 +30,99 @@ public class ComponentService {
         this.componentMapper = componentMapper;
     }
 
-    public List<ComponentSummary> getAllComponents() {
-        logger.info("Retrieving all components");
-        return componentRepository.findAll().stream()
-                .map(componentMapper::toComponentSummary)
-                .collect(Collectors.toList());
-    }
-
-    public ComponentSummary getComponentById(Long id) {
-        logger.info("Retrieving component with ID {}", id);
-        if (id == null) {
-            throw new IllegalArgumentException("Component ID cannot be null");
-        }
-        Component component = componentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Component not found with ID: " + id));
-        return componentMapper.toComponentSummary(component);
-    }
-
+    /**
+     * Creates a new component.
+     *
+     * @param componentDTO the component data transfer object
+     * @return the saved component DTO
+     * @throws IllegalArgumentException if componentDTO is null
+     */
     @Transactional
-    public ComponentSummary saveComponent(ComponentSummary componentSummary) {
-        logger.info("Saving component");
-        if (componentSummary == null) {
-            throw new IllegalArgumentException("ComponentSummary cannot be null");
+    public ComponentDTO saveComponent(ComponentDTO componentDTO) {
+        logger.info("Creating a new component");
+        if (componentDTO == null) {
+            throw new IllegalArgumentException("ComponentDTO cannot be null");
         }
-        Component component = componentMapper.toComponent(componentSummary);
+        Component component = componentMapper.toComponent(componentDTO);
         Component savedComponent = componentRepository.save(component);
-        logger.info("Component saved with ID {}", savedComponent.getId());
-        return componentMapper.toComponentSummary(savedComponent);
+        logger.info("Component created with ID {}", savedComponent.getId());
+        return componentMapper.toComponentDTO(savedComponent);
     }
 
+    /**
+     * Updates an existing component.
+     *
+     * @param id           the ID of the component to update
+     * @param componentDTO the component data transfer object
+     * @return the updated component DTO
+     * @throws ResourceNotFoundException if the component is not found
+     */
     @Transactional
-    public ComponentSummary updateComponent(Long id, ComponentSummary componentSummary) {
+    public ComponentDTO updateComponent(UUID id, ComponentDTO componentDTO) {
         logger.info("Updating component with ID {}", id);
-        if (id == null || componentSummary == null) {
-            throw new IllegalArgumentException("Component ID and ComponentSummary cannot be null");
+        if (componentDTO == null) {
+            throw new IllegalArgumentException("ComponentDTO cannot be null");
         }
         Component existingComponent = componentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Component not found with ID: " + id));
-        componentMapper.updateComponentFromSummary(componentSummary, existingComponent);
+        componentMapper.updateComponentFromDTO(componentDTO, existingComponent);
         Component updatedComponent = componentRepository.save(existingComponent);
         logger.info("Component updated with ID {}", updatedComponent.getId());
-        return componentMapper.toComponentSummary(updatedComponent);
+        return componentMapper.toComponentDTO(updatedComponent);
     }
 
+    /**
+     * Deletes a component by ID.
+     *
+     * @param id the ID of the component to delete
+     * @throws ResourceNotFoundException if the component is not found
+     */
     @Transactional
-    public void deleteComponent(Long id) {
+    public void deleteComponent(UUID id) {
         logger.info("Deleting component with ID {}", id);
-        if (id == null) {
-            throw new IllegalArgumentException("Component ID cannot be null");
+        if (!componentRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Component not found with ID: " + id);
         }
+        componentRepository.deleteById(id);
+        logger.info("Component deleted with ID {}", id);
+    }
+
+    /**
+     * Retrieves a component by ID.
+     *
+     * @param id the ID of the component to retrieve
+     * @return the component DTO
+     * @throws ResourceNotFoundException if the component is not found
+     */
+    public ComponentDTO getComponentById(UUID id) {
+        logger.info("Retrieving component with ID {}", id);
         Component component = componentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Component not found with ID: " + id));
-        componentRepository.delete(component);
-        logger.info("Component deleted");
+        return componentMapper.toComponentDTO(component);
     }
 
-    public List<ComponentSummary> getComponentsByProjectId(Long projectId) {
+    /**
+     * Retrieves all components.
+     *
+     * @return a list of component DTOs
+     */
+    public List<ComponentDTO> getAllComponents() {
+        logger.info("Retrieving all components");
+        return componentRepository.findAll().stream()
+                .map(componentMapper::toComponentDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves components by project ID.
+     *
+     * @param projectId the ID of the project
+     * @return a list of component DTOs
+     */
+    public List<ComponentDTO> getComponentsByProjectId(UUID projectId) {
         logger.info("Retrieving components for project ID {}", projectId);
-        if (projectId == null) {
-            throw new IllegalArgumentException("Project ID cannot be null");
-        }
         return componentRepository.findByProjectId(projectId).stream()
-                .map(componentMapper::toComponentSummary)
+                .map(componentMapper::toComponentDTO)
                 .collect(Collectors.toList());
     }
 }
