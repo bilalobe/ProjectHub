@@ -74,17 +74,17 @@ public class TreeViewController {
      *
      * @param parentItem the parent TreeItem
      */
-    @SuppressWarnings("unchecked")
     private void setupLazyLoading(TreeItem<TreeItemWrapper> parentItem) {
         parentItem.addEventHandler(TreeItem.branchExpandedEvent(), event -> {
             TreeItem<?> source = event.getSource();
             if (source instanceof TreeItem<?> treeItem && treeItem.getValue() instanceof TreeItemWrapper) {
-                TreeItem<TreeItemWrapper> safeTreeItem = (TreeItem<TreeItemWrapper>) treeItem;
+                TreeItemWrapper wrapper = (TreeItemWrapper) treeItem.getValue();
+                TreeItem<TreeItemWrapper> safeTreeItem = new TreeItem<>(wrapper);
                 if (safeTreeItem.isExpanded() && safeTreeItem.getChildren().isEmpty()) {
                     Object data = safeTreeItem.getValue().getData();
                     TreeItemLoader loader = loaderFactory.getLoader(data);
                     if (loader != null) {
-                        loader.loadChildren(safeTreeItem);
+                        loader.load(safeTreeItem, wrapper);
                     }
                 }
             }
