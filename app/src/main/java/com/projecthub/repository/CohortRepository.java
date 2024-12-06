@@ -21,7 +21,7 @@ public interface CohortRepository {
 
     List<Cohort> findBySchoolId(UUID schoolId);
 
-    public Cohort getReferenceById(UUID cohortId);
+    Cohort getReferenceById(UUID cohortId);
 
     void deleteById(UUID id);
 }
