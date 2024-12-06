@@ -27,7 +27,7 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:2.4.4'
 
     // OpenCSV for CSV handling
-    implementation 'com.opencsv:opencsv:5.5.2'
+    implementation 'com.opencsv:opencsv:5.9'
 
     // Spring Boot dependencies
     implementation 'org.springframework.boot:spring-boot-starter'
