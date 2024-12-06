@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.beans.value.ObservableValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -68,7 +69,7 @@ public class ProjectHubViewModel {
 
     private void initialize() {
         loadProjects();
-        searchQuery.addListener((_, _, newValue) -> searchProjects(newValue));
+        searchQuery.addListener((observable, oldValue, newValue) -> onSearchQueryChanged(observable, oldValue, newValue));
     }
 
     /**
@@ -85,6 +86,8 @@ public class ProjectHubViewModel {
 
     /**
      * Searches projects based on the search query.
+     *
+     * @param query the search query
      */
     public void searchProjects(String query) {
         if (query == null || query.isEmpty()) {
@@ -171,5 +174,16 @@ public class ProjectHubViewModel {
         } catch (Exception e) {
             logger.error("Failed to load components for project ID: {}", projectId, e);
         }
+    }
+
+    /**
+     * Handles changes to the search query.
+     *
+     * @param observable the observable value
+     * @param oldValue   the old search query
+     * @param newValue   the new search query
+     */
+    private void onSearchQueryChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        searchProjects(newValue);
     }
 }
