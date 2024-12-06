@@ -16,8 +16,8 @@ public class SchoolLoader implements TreeItemLoader {
     private PopulatorUtility populatorUtility;
 
     @Override
-    public void loadChildren(TreeItem<TreeItemWrapper> parentItem) {
-        SchoolDTO school = (SchoolDTO) parentItem.getValue().getData();
+    public void load(TreeItem<TreeItemWrapper> parentItem, TreeItemWrapper parentWrapper) {
+        SchoolDTO school = (SchoolDTO) parentWrapper.getData();
         populatorUtility.populateCohorts(parentItem, school.getId());
     }
 }
