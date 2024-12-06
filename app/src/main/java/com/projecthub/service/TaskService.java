@@ -1,13 +1,9 @@
 package com.projecthub.service;
 
-import com.projecthub.dto.TaskSummary;
+import com.projecthub.dto.TaskDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.TaskMapper;
-import com.projecthub.model.AppUser;
-import com.projecthub.model.Project;
 import com.projecthub.model.Task;
-import com.projecthub.repository.AppUserRepository;
-import com.projecthub.repository.ProjectRepository;
 import com.projecthub.repository.TaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,108 +11,156 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing tasks.
+ */
 @Service
 public class TaskService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
     private final TaskRepository taskRepository;
-    private final ProjectRepository projectRepository;
-    private final AppUserRepository appUserRepository;
     private final TaskMapper taskMapper;
 
-    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository, AppUserRepository appUserRepository, TaskMapper taskMapper) {
+    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper) {
         this.taskRepository = taskRepository;
-        this.projectRepository = projectRepository;
-        this.appUserRepository = appUserRepository;
         this.taskMapper = taskMapper;
     }
 
+    /**
+     * Creates a new task.
+     *
+     * @param taskDTO the task data transfer object
+     * @return the saved task DTO
+     * @throws IllegalArgumentException if taskDTO is null
+     */
     @Transactional
-    public TaskSummary createTask(TaskSummary taskSummary) {
+    public TaskDTO createTask(TaskDTO taskDTO) {
         logger.info("Creating a new task");
-        validateTaskSummary(taskSummary);
-
-        Project project = projectRepository.findById(taskSummary.getProjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + taskSummary.getProjectId()));
-        AppUser assignedUser = appUserRepository.findById(taskSummary.getAssignedUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + taskSummary.getAssignedUserId()));
-
-        Task task = taskMapper.toTask(taskSummary, project, assignedUser);
+        validateTaskDTO(taskDTO);
+        Task task = taskMapper.toTask(taskDTO);
         Task savedTask = taskRepository.save(task);
-
-        logger.info("Task created with ID {}", savedTask.getId());
-        return taskMapper.toTaskSummary(savedTask);
+        logger.info("Task created with ID: {}", savedTask.getId());
+        return taskMapper.toTaskDTO(savedTask);
     }
 
+    /**
+     * Updates an existing task.
+     *
+     * @param id      the ID of the task to update
+     * @param taskDTO the task data transfer object
+     * @return the updated task DTO
+     * @throws ResourceNotFoundException if the task is not found
+     * @throws IllegalArgumentException  if taskDTO is null
+     */
     @Transactional
-    public TaskSummary updateTask(Long id, TaskSummary taskSummary) {
-        logger.info("Updating task with ID {}", id);
-        validateTaskSummary(taskSummary);
-
-        Task existingTask = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found with ID: " + id));
-        Project project = projectRepository.findById(taskSummary.getProjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + taskSummary.getProjectId()));
-        AppUser assignedUser = appUserRepository.findById(taskSummary.getAssignedUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + taskSummary.getAssignedUserId()));
-
-        taskMapper.updateTaskFromSummary(taskSummary, existingTask, project, assignedUser);
+    public TaskDTO updateTask(UUID id, TaskDTO taskDTO) {
+        logger.info("Updating task with ID: {}", id);
+        validateTaskDTO(taskDTO);
+        Task existingTask = findTaskById(id);
+        taskMapper.updateTaskFromDTO(taskDTO, existingTask);
         Task updatedTask = taskRepository.save(existingTask);
-
-        logger.info("Task updated with ID {}", updatedTask.getId());
-        return taskMapper.toTaskSummary(updatedTask);
+        logger.info("Task updated with ID: {}", updatedTask.getId());
+        return taskMapper.toTaskDTO(updatedTask);
     }
 
+    /**
+     * Deletes a task by ID.
+     *
+     * @param id the ID of the task to delete
+     * @throws ResourceNotFoundException if the task is not found
+     */
     @Transactional
-    public void deleteTask(Long id) {
-        logger.info("Deleting task with ID {}", id);
+    public void deleteTask(UUID id) {
+        logger.info("Deleting task with ID: {}", id);
+        if (!taskRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Task not found with ID: " + id);
+        }
         taskRepository.deleteById(id);
-        logger.info("Task deleted with ID {}", id);
+        logger.info("Task deleted with ID: {}", id);
     }
 
-    public TaskSummary getTaskById(Long id) {
-        logger.info("Retrieving task with ID {}", id);
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found with ID: " + id));
-        return taskMapper.toTaskSummary(task);
+    /**
+     * Retrieves a task by ID.
+     *
+     * @param id the ID of the task to retrieve
+     * @return the task DTO
+     * @throws ResourceNotFoundException if the task is not found
+     */
+    public TaskDTO getTaskById(UUID id) {
+        logger.info("Retrieving task with ID: {}", id);
+        Task task = findTaskById(id);
+        return taskMapper.toTaskDTO(task);
     }
 
-    public List<TaskSummary> getAllTasks() {
+    /**
+     * Retrieves all tasks.
+     *
+     * @return a list of task DTOs
+     */
+    public List<TaskDTO> getAllTasks() {
         logger.info("Retrieving all tasks");
         return taskRepository.findAll().stream()
-                .map(taskMapper::toTaskSummary)
+                .map(taskMapper::toTaskDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<TaskSummary> getTasksByProjectId(Long projectId) {
-        logger.info("Retrieving tasks for project ID {}", projectId);
+    private void validateTaskDTO(TaskDTO taskDTO) {
+        if (taskDTO == null) {
+            throw new IllegalArgumentException("TaskDTO cannot be null");
+        }
+        // Additional validation logic can be added here
+    }
+
+    private Task findTaskById(UUID id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with ID: " + id));
+    }
+
+    /**
+     * Retrieves tasks by project ID.
+     *
+     * @param projectId the ID of the project
+     * @return a list of task DTOs
+     */
+    public List<TaskDTO> getTasksByProjectId(UUID projectId) {
+        logger.info("Retrieving tasks for project ID: {}", projectId);
         return taskRepository.findByProjectId(projectId).stream()
-                .map(taskMapper::toTaskSummary)
+                .map(taskMapper::toTaskDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<TaskSummary> getTasksByAssignedUserId(Long userId) {
-        logger.info("Retrieving tasks for user ID {}", userId);
+    /**
+     * Retrieves tasks by assigned user ID.
+     *
+     * @param userId the ID of the user
+     * @return a list of task DTOs
+     */
+    public List<TaskDTO> getTasksByAssignedUserId(UUID userId) {
+        logger.info("Retrieving tasks for user ID: {}", userId);
         return taskRepository.findByAssignedUserId(userId).stream()
-                .map(taskMapper::toTaskSummary)
+                .map(taskMapper::toTaskDTO)
                 .collect(Collectors.toList());
     }
 
-    private void validateTaskSummary(TaskSummary taskSummary) {
-        if (taskSummary == null) {
-            throw new IllegalArgumentException("TaskSummary cannot be null");
-        }
-        if (taskSummary.getName() == null || taskSummary.getName().isEmpty()) {
-            throw new IllegalArgumentException("Task name cannot be null or empty");
-        }
-        if (taskSummary.getProjectId() == null) {
-            throw new IllegalArgumentException("Project ID cannot be null");
-        }
-        if (taskSummary.getAssignedUserId() == null) {
-            throw new IllegalArgumentException("Assigned user ID cannot be null");
+    /**
+     * Saves a task (creates or updates).
+     *
+     * @param taskDTO the task data transfer object
+     * @return the saved task DTO
+     * @throws IllegalArgumentException if taskDTO is null
+     */
+    @Transactional
+    public TaskDTO saveTask(TaskDTO taskDTO) {
+        logger.info("Saving task");
+        validateTaskDTO(taskDTO);
+        if (taskDTO.getId() != null) {
+            return updateTask(taskDTO.getId(), taskDTO);
+        } else {
+            return createTask(taskDTO);
         }
     }
 }
