@@ -1,6 +1,5 @@
 package com.projecthub.utils.ui.loaders;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.SchoolDTO;
@@ -13,7 +12,7 @@ import javafx.scene.control.TreeItem;
 @Component
 public class SchoolLoader implements TreeItemLoader {
 
-    @Autowired
+    
     private PopulatorUtility populatorUtility;
 
     @Override
