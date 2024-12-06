@@ -25,7 +25,7 @@ import java.util.UUID;
 @Repository("csvSubmissionRepository")
 public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(SubmissionCsvRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(SubmissionCsvRepositoryImpl.class);
 
     private final Validator validator;
     private final CsvProperties csvProperties;
@@ -61,7 +61,7 @@ public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
             for (ConstraintViolation<Submission> violation : violations) {
                 sb.append(violation.getMessage()).append("\n");
             }
-            throw new IllegalArgumentException("Submission validation failed: " + sb.toString());
+            throw new IllegalArgumentException("Submission validation failed: " + sb);
         }
     }
 

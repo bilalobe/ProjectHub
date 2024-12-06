@@ -24,7 +24,7 @@ import java.util.UUID;
 @Repository("csvStudentRepository")
 public class StudentCsvRepositoryImpl implements StudentCsvRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(StudentCsvRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(StudentCsvRepositoryImpl.class);
 
     private final Validator validator;
     private final CsvProperties csvProperties;
@@ -60,7 +60,7 @@ public class StudentCsvRepositoryImpl implements StudentCsvRepository {
             for (ConstraintViolation<Student> violation : violations) {
                 sb.append(violation.getMessage()).append("\n");
             }
-            throw new IllegalArgumentException("Student validation failed: " + sb.toString());
+            throw new IllegalArgumentException("Student validation failed: " + sb);
         }
     }
 

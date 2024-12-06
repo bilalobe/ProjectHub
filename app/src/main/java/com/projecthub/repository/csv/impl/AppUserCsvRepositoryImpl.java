@@ -27,7 +27,7 @@ import com.projecthub.repository.csv.AppUserCsvRepository;
 @Repository("csvUserRepository")
 public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(AppUserCsvRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(AppUserCsvRepositoryImpl.class);
 
     private final Validator validator;
     private final CsvProperties csvProperties;
@@ -63,7 +63,7 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
             for (ConstraintViolation<AppUser> violation : violations) {
                 sb.append(violation.getMessage()).append("\n");
             }
-            throw new IllegalArgumentException("User validation failed: " + sb.toString());
+            throw new IllegalArgumentException("User validation failed: " + sb);
         }
     }
 

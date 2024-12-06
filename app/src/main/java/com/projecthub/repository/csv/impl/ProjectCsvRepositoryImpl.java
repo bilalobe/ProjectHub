@@ -24,7 +24,7 @@ import java.util.UUID;
 @Repository("csvProjectRepository")
 public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProjectCsvRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProjectCsvRepositoryImpl.class);
 
     private final Validator validator;
     private final CsvProperties csvProperties;
@@ -60,7 +60,7 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
             for (ConstraintViolation<Project> violation : violations) {
                 sb.append(violation.getMessage()).append("\n");
             }
-            throw new IllegalArgumentException("Project validation failed: " + sb.toString());
+            throw new IllegalArgumentException("Project validation failed: " + sb);
         }
     }
 

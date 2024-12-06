@@ -22,7 +22,7 @@ import java.util.Set;
 @Repository("csvTeamRepository")
 public class TeamCsvRepositoryImpl implements TeamCsvRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(TeamCsvRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(TeamCsvRepositoryImpl.class);
 
     private final CsvProperties csvProperties;
     private final Validator validator;
@@ -58,7 +58,7 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
             for (ConstraintViolation<Team> violation : violations) {
                 sb.append(violation.getMessage()).append("\n");
             }
-            throw new IllegalArgumentException("Team validation failed: " + sb.toString());
+            throw new IllegalArgumentException("Team validation failed: " + sb);
         }
     }
 

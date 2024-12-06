@@ -48,7 +48,7 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
 
     private void backupCSVFile(String filePath) throws IOException {
         Path source = Path.of(filePath);
-        Path backup = Path.of(filePath + ".backup");
+        Path backup = Path.of(String.format("%s.backup", filePath));
         Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
         logger.info("Backup created for file: {}", filePath);
     }
@@ -60,7 +60,7 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
             for (ConstraintViolation<Task> violation : violations) {
                 sb.append(violation.getMessage()).append("\n");
             }
-            throw new IllegalArgumentException("Task validation failed: " + sb.toString());
+            throw new IllegalArgumentException("Task validation failed: " + sb);
         }
     }
 
@@ -153,9 +153,4 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
                 .collect(Collectors.toList());
     }
 
-    public List<Task> findByAssignedUserId(UUID userId) {
-        return findAll().stream()
-                .filter(t -> t.getAssignedUser().getId().equals(userId))
-                .collect(Collectors.toList());
-    }
 }

@@ -60,7 +60,7 @@ public class CohortCsvRepositoryImpl implements CohortCsvRepository {
             for (ConstraintViolation<Cohort> violation : violations) {
                 sb.append(violation.getMessage()).append("\n");
             }
-            throw new IllegalArgumentException("Cohort validation failed: " + sb.toString());
+            throw new IllegalArgumentException("Cohort validation failed: " + sb);
         }
     }
 
