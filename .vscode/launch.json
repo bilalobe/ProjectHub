@@ -7,7 +7,7 @@
       "request": "launch",
       "mainClass": "com.projecthub.MainApp",
       "projectName": "app",
-      "vmArgs": "--module-path \"C:/JDKs/javafx-sdk-23.0.1/lib\" --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.media"
+      "vmArgs": "--add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.media"
     }
   ]
 }
