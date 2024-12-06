@@ -1,12 +1,14 @@
-# Ignore Gradle project-specific cache directory
-.gradle
 
 # Ignore Gradle build output directory
 build/
 
+# Ignore Gradle project-specific cache directory
+.gradle
+
+
 # Except for build/libs
-!build/libs/
-!app/build/libs/
+build/libs/
+
 
 # Ignore Maven project-specific cache directory
 .fake
@@ -24,7 +26,7 @@ app/bin/
 *.swp
 *.DS_Store
 target/
-build/
+./build/
 out/
 .gradle/
 .idea/
