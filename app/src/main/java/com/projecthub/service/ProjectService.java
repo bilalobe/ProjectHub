@@ -1,65 +1,132 @@
 package com.projecthub.service;
 
-import com.projecthub.dto.ProjectSummary;
+import com.projecthub.dto.ProjectDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.ProjectMapper;
 import com.projecthub.model.Project;
 import com.projecthub.repository.ProjectRepository;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing projects.
+ */
 @Service
-@Tag(name = "Project Service", description = "Operations pertaining to projects in ProjectHub")
 public class ProjectService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProjectService.class);
 
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
 
-    public ProjectService(
-            ProjectRepository projectRepository,
-            ProjectMapper projectMapper) {
+    public ProjectService(ProjectRepository projectRepository, ProjectMapper projectMapper) {
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
     }
 
-    @Operation(summary = "Create a new project")
-    public ProjectSummary createProject(ProjectSummary projectSummary) {
-        Project project = projectMapper.toProject(projectSummary);
+    /**
+     * Creates a new project.
+     *
+     * @param projectDTO the project data transfer object
+     * @return the created project DTO
+     * @throws IllegalArgumentException if projectDTO is null
+     */
+    @Transactional
+    public ProjectDTO createProject(ProjectDTO projectDTO) {
+        logger.info("Creating a new project");
+        if (projectDTO == null) {
+            throw new IllegalArgumentException("ProjectDTO cannot be null");
+        }
+        Project project = projectMapper.toProject(projectDTO);
         Project savedProject = projectRepository.save(project);
-        return projectMapper.toProjectSummary(savedProject);
+        logger.info("Project created with ID {}", savedProject.getId());
+        return projectMapper.toProjectDTO(savedProject);
     }
 
-    @Operation(summary = "Update an existing project")
-    public ProjectSummary updateProject(Long id, ProjectSummary projectSummary) {
+    /**
+     * Updates an existing project.
+     *
+     * @param id          the ID of the project to update
+     * @param projectDTO  the project data transfer object
+     * @return the updated project DTO
+     * @throws ResourceNotFoundException if the project is not found
+     */
+    @Transactional
+    public ProjectDTO updateProject(UUID id, ProjectDTO projectDTO) {
+        logger.info("Updating project with ID {}", id);
         Project existingProject = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + id));
-        projectMapper.updateProjectFromSummary(projectSummary, existingProject);
+        projectMapper.updateProjectFromDTO(projectDTO, existingProject);
         Project updatedProject = projectRepository.save(existingProject);
-        return projectMapper.toProjectSummary(updatedProject);
+        logger.info("Project updated with ID {}", updatedProject.getId());
+        return projectMapper.toProjectDTO(updatedProject);
     }
 
-    @Operation(summary = "Retrieve a project by ID")
-    public Optional<ProjectSummary> getProjectById(Long id) {
-        return projectRepository.findById(id)
-                .map(projectMapper::toProjectSummary);
+    /**
+     * Deletes a project by ID.
+     *
+     * @param id the ID of the project to delete
+     * @throws ResourceNotFoundException if the project is not found
+     */
+    @Transactional
+    public void deleteProject(UUID id) {
+        logger.info("Deleting project with ID {}", id);
+        if (!projectRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Project not found with ID: " + id);
+        }
+        projectRepository.deleteById(id);
+        logger.info("Project deleted with ID {}", id);
     }
 
-    @Operation(summary = "Retrieve all projects")
-    public List<ProjectSummary> getAllProjects() {
+    /**
+     * Retrieves a project by ID.
+     *
+     * @param id the ID of the project to retrieve
+     * @return the project DTO
+     * @throws ResourceNotFoundException if the project is not found
+     */
+    public ProjectDTO getProjectById(UUID id) {
+        logger.info("Retrieving project with ID {}", id);
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + id));
+        return projectMapper.toProjectDTO(project);
+    }
+
+    /**
+     * Retrieves all projects.
+     *
+     * @return a list of project DTOs
+     */
+    public List<ProjectDTO> getAllProjects() {
+        logger.info("Retrieving all projects");
         return projectRepository.findAll().stream()
-                .map(projectMapper::toProjectSummary)
+                .map(projectMapper::toProjectDTO)
                 .collect(Collectors.toList());
     }
 
-    @Operation(summary = "Delete a project by ID")
-    public void deleteProject(Long id) {
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + id));
-        projectRepository.delete(project);
+    /**
+     * Saves a project (creates or updates).
+     *
+     * @param projectDTO the project data transfer object
+     * @return the saved project DTO
+     * @throws IllegalArgumentException if projectDTO is null
+     */
+    @Transactional
+    public ProjectDTO saveProject(ProjectDTO projectDTO) {
+        logger.info("Saving project");
+        if (projectDTO == null) {
+            throw new IllegalArgumentException("ProjectDTO cannot be null");
+        }
+        if (projectDTO.getId() != null) {
+            return updateProject(projectDTO.getId(), projectDTO);
+        } else {
+            return createProject(projectDTO);
+        }
     }
 }
