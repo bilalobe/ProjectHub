@@ -1,6 +1,5 @@
 package com.projecthub.utils.ui;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -15,7 +14,7 @@ public class SetupLazyLoading {
 
     private static final Logger logger = LoggerFactory.getLogger(SetupLazyLoading.class);
 
-    @Autowired
+    
     private PopulatorUtility populatorUtility;
 
     /**
