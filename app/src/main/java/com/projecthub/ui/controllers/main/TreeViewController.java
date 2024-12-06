@@ -1,6 +1,5 @@
 package com.projecthub.ui.controllers.main;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.ProjectDTO;
@@ -18,13 +17,13 @@ import javafx.scene.control.TreeView;
 @Component
 public class TreeViewController {
 
-    @Autowired
+    
     private ProjectHubViewModel viewModel;
 
-    @Autowired
+    
     private ProjectDetailsController projectDetailsController;
 
-    @Autowired
+    
     private LoaderFactory loaderFactory;
 
     @FXML

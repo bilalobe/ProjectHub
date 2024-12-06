@@ -2,7 +2,6 @@ package com.projecthub.ui.controllers.main;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.CohortDTO;
@@ -19,7 +18,7 @@ import javafx.scene.control.TreeView;
 @Component
 public class ProjectHubFXController {
 
-    @Autowired
+    
     private ProjectHubViewModel viewModel;
 
     @FXML
