@@ -15,9 +15,8 @@ public class CohortLoader implements TreeItemLoader {
     
     private PopulatorUtility populatorUtility;
 
-    @Override
-    public void loadChildren(TreeItem<TreeItemWrapper> parentItem) {
-        CohortDTO cohort = (CohortDTO) parentItem.getValue().getData();
+    public void load(TreeItem<TreeItemWrapper> parentItem, TreeItemWrapper parentWrapper) {
+        CohortDTO cohort = (CohortDTO) parentWrapper.getData();
         populatorUtility.populateTeams(parentItem, cohort.getId());
     }
 }
