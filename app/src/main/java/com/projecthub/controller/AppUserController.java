@@ -47,7 +47,7 @@ public class AppUserController {
     @PostMapping
     public ResponseEntity<String> createUser(@Valid @RequestBody AppUserDTO userDTO, @RequestParam String password) {
         logger.info("Creating a new user");
-        userService.createUser(userDTO, password.toCharArray());
+        userService.createUser(userDTO, password);
         return ResponseEntity.ok("User created successfully");
     }
 
@@ -55,7 +55,7 @@ public class AppUserController {
     @PutMapping("/{id}")
     public ResponseEntity<AppUserDTO> updateUser(@PathVariable UUID id, @Valid @RequestBody AppUserDTO userDTO, @RequestParam(required = false) String password) {
         logger.info("Updating user with ID {}", id);
-        AppUserDTO updatedUser = userService.updateUser(id, userDTO, password != null ? password.toCharArray() : null);
+        AppUserDTO updatedUser = userService.updateUser(id, userDTO, password);
         return ResponseEntity.ok(updatedUser);
     }
 
