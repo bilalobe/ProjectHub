@@ -1,6 +1,21 @@
 version: 2
 updates:
-  - package-ecosystem: "maven"
-    directory: "/" # Update this if your pom.xml is in a subdirectory
+  # Gradle dependencies for the backend
+  - package-ecosystem: "gradle"
+    directory: "/app"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  # npm dependencies for the Angular frontend
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+      include: "scope"
