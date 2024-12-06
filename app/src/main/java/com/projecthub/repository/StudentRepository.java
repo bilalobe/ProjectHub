@@ -16,4 +16,5 @@ public interface StudentRepository {
     Optional<Student> findByUsername(String username);
     List<Student> findByTeamId(UUID teamId);
     List<Student> findByCohortId(UUID cohortId);
+    boolean existsById(UUID id);
 }
