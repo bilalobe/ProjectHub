@@ -18,6 +18,11 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing application users.
+ * Provides functionalities to create, update, delete, and retrieve users,
+ * as well as managing user passwords.
+ */
 @Service
 public class AppUserService {
 
@@ -33,6 +38,14 @@ public class AppUserService {
             "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$"
     );
 
+    /**
+     * Constructs an AppUserService with the required dependencies.
+     *
+     * @param appUserRepository the repository for AppUser entities
+     * @param teamRepository    the repository for Team entities
+     * @param appUserMapper     the mapper for converting between AppUser and AppUserDTO
+     * @param passwordEncoder   the encoder for hashing passwords
+     */
     public AppUserService(AppUserRepository appUserRepository,
                           TeamRepository teamRepository,
                           AppUserMapper appUserMapper,
@@ -43,6 +56,14 @@ public class AppUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Creates a new user with the provided details and raw password.
+     *
+     * @param userDTO     the data transfer object containing user details
+     * @param rawPassword the raw password for the user
+     * @return the created AppUserDTO
+     * @throws IllegalArgumentException if userDTO or rawPassword is invalid
+     */
     @Transactional
     public AppUserDTO createUser(AppUserDTO userDTO, String rawPassword) {
         logger.info("Creating a new user");
@@ -58,6 +79,16 @@ public class AppUserService {
         return appUserMapper.toAppUserDTO(savedUser);
     }
 
+    /**
+     * Updates an existing user with the provided details and raw password.
+     *
+     * @param id          the UUID of the user to update
+     * @param userDTO     the data transfer object containing updated user details
+     * @param rawPassword the new raw password for the user (optional)
+     * @return the updated AppUserDTO
+     * @throws ResourceNotFoundException if the user with the specified ID does not exist
+     * @throws IllegalArgumentException  if userDTO is invalid
+     */
     @Transactional
     public AppUserDTO updateUser(UUID id, AppUserDTO userDTO, String rawPassword) {
         logger.info("Updating user with ID: {}", id);
@@ -82,6 +113,12 @@ public class AppUserService {
         return appUserMapper.toAppUserDTO(updatedUser);
     }
 
+    /**
+     * Deletes a user by their UUID.
+     *
+     * @param id the UUID of the user to delete
+     * @throws ResourceNotFoundException if the user with the specified ID does not exist
+     */
     @Transactional
     public void deleteUser(UUID id) {
         logger.info("Deleting user with ID: {}", id);
@@ -92,6 +129,14 @@ public class AppUserService {
         logger.info("User deleted with ID: {}", id);
     }
 
+    /**
+     * Resets the password for a user with the given UUID.
+     *
+     * @param id         the UUID of the user whose password is to be reset
+     * @param rawPassword the new raw password
+     * @throws ResourceNotFoundException if the user with the specified ID does not exist
+     * @throws IllegalArgumentException  if rawPassword is invalid
+     */
     @Transactional
     public void resetPassword(UUID id, String rawPassword) {
         logger.info("Resetting password for user with ID: {}", id);
@@ -104,12 +149,44 @@ public class AppUserService {
         logger.info("Password reset for user with ID: {}", user.getId());
     }
 
+    /**
+     * Updates the password for a user with the given UUID.
+     *
+     * @param id          the UUID of the user whose password is to be updated
+     * @param newPassword the new raw password
+     * @throws ResourceNotFoundException if the user with the specified ID does not exist
+     * @throws IllegalArgumentException  if newPassword is invalid
+     */
+    @Transactional
+    public void updateUserPassword(UUID id, String newPassword) {
+        logger.info("Updating password for user with ID: {}", id);
+        validatePasswordStrength(newPassword);
+
+        AppUser user = findUserById(id);
+        user.setPassword(encodePassword(newPassword));
+        appUserRepository.save(user);
+
+        logger.info("Password updated for user with ID: {}", user.getId());
+    }
+
+    /**
+     * Retrieves a user by their UUID.
+     *
+     * @param id the UUID of the user to retrieve
+     * @return the AppUserDTO of the retrieved user
+     * @throws ResourceNotFoundException if the user with the specified ID does not exist
+     */
     public AppUserDTO getUserById(UUID id) {
         logger.info("Retrieving user with ID: {}", id);
         AppUser user = findUserById(id);
         return appUserMapper.toAppUserDTO(user);
     }
 
+    /**
+     * Retrieves all users in the system.
+     *
+     * @return a list of AppUserDTOs representing all users
+     */
     public List<AppUserDTO> getAllUsers() {
         logger.info("Retrieving all users");
         return appUserRepository.findAll().stream()
@@ -117,6 +194,13 @@ public class AppUserService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Encodes a raw password using the configured PasswordEncoder.
+     *
+     * @param rawPassword the raw password to encode
+     * @return the encoded password
+     * @throws IllegalArgumentException if rawPassword is null or empty
+     */
     private String encodePassword(String rawPassword) {
         logger.info("Encoding password");
         if (rawPassword == null || rawPassword.isEmpty()) {
@@ -125,6 +209,12 @@ public class AppUserService {
         return passwordEncoder.encode(rawPassword);
     }
 
+    /**
+     * Validates the strength of a raw password against the defined pattern.
+     *
+     * @param rawPassword the raw password to validate
+     * @throws IllegalArgumentException if rawPassword does not meet strength requirements
+     */
     private void validatePasswordStrength(String rawPassword) {
         logger.info("Validating password strength");
         if (rawPassword == null || rawPassword.isEmpty()) {
@@ -135,16 +225,36 @@ public class AppUserService {
         }
     }
 
+    /**
+     * Finds a user by their UUID.
+     *
+     * @param id the UUID of the user to find
+     * @return the AppUser entity
+     * @throws ResourceNotFoundException if the user with the specified ID does not exist
+     */
     private AppUser findUserById(UUID id) {
         return appUserRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
     }
 
+    /**
+     * Finds a team by its UUID.
+     *
+     * @param teamId the UUID of the team to find
+     * @return the Team entity
+     * @throws ResourceNotFoundException if the team with the specified ID does not exist
+     */
     private Team findTeamById(UUID teamId) {
         return teamRepository.findById(teamId)
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + teamId));
     }
 
+    /**
+     * Validates the provided AppUserDTO for required fields.
+     *
+     * @param userDTO the AppUserDTO to validate
+     * @throws IllegalArgumentException if userDTO or required fields are invalid
+     */
     private void validateUserDTO(AppUserDTO userDTO) {
         if (userDTO == null) {
             throw new IllegalArgumentException("UserDTO cannot be null");
