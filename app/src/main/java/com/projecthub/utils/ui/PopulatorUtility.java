@@ -2,9 +2,7 @@ package com.projecthub.utils.ui;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.CohortDTO;
@@ -21,7 +19,6 @@ import com.projecthub.mapper.SchoolMapper;
 import com.projecthub.mapper.StudentMapper;
 import com.projecthub.mapper.TaskMapper;
 import com.projecthub.mapper.TeamMapper;
-import com.projecthub.model.School;
 import com.projecthub.repository.CohortRepository;
 import com.projecthub.repository.ComponentRepository;
 import com.projecthub.repository.ProjectRepository;
@@ -38,46 +35,46 @@ import javafx.scene.control.TreeItem;
 @Component
 public class PopulatorUtility {
 
-    @Autowired
+    
     private SchoolRepository schoolRepository;
 
-    @Autowired
+    
     private CohortRepository cohortRepository;
 
-    @Autowired
+    
     private TeamRepository teamRepository;
 
-    @Autowired
+    
     private ProjectRepository projectRepository;
 
-    @Autowired
+    
     private ComponentRepository componentRepository;
 
-    @Autowired
+    
     private StudentRepository studentRepository;
 
-    @Autowired
+    
     private TaskRepository taskRepository;
 
-    @Autowired
+    
     private SchoolMapper schoolMapper;
 
-    @Autowired
+    
     private CohortMapper cohortMapper;
 
-    @Autowired
+    
     private TeamMapper teamMapper;
 
-    @Autowired
+    
     private ProjectMapper projectMapper;
 
-    @Autowired
+    
     private ComponentMapper componentMapper;
 
-    @Autowired
+    
     private StudentMapper studentMapper;
 
-    @Autowired
+    
     private TaskMapper taskMapper;
 
     /**
@@ -86,9 +83,9 @@ public class PopulatorUtility {
      * @param parentItem the root TreeItem to which Schools are added
      */
     public void populateSchools(TreeItem<TreeItemWrapper> parentItem) {
-        List<SchoolDTO> schools = ((List<School>) schoolRepository.findAll()).stream()
+        List<SchoolDTO> schools =  schoolRepository.findAll().stream()
                 .map(schoolMapper::toSchoolDTO)
-                .collect(Collectors.toList());
+                .toList();
         for (SchoolDTO school : schools) {
             TreeItemWrapper schoolWrapper = new TreeItemWrapper(school.getName(), school);
             TreeItem<TreeItemWrapper> schoolItem = new TreeItem<>(schoolWrapper);
@@ -105,7 +102,7 @@ public class PopulatorUtility {
     public void populateCohorts(TreeItem<TreeItemWrapper> parentItem, UUID schoolId) {
         List<CohortDTO> cohorts = cohortRepository.findBySchoolId(schoolId).stream()
                 .map(cohortMapper::toCohortDTO)
-                .collect(Collectors.toList());
+                .toList();
         for (CohortDTO cohort : cohorts) {
             TreeItemWrapper cohortWrapper = new TreeItemWrapper(cohort.getName(), cohort);
             TreeItem<TreeItemWrapper> cohortItem = new TreeItem<>(cohortWrapper);
@@ -122,7 +119,7 @@ public class PopulatorUtility {
     public void populateTeams(TreeItem<TreeItemWrapper> parentItem, UUID cohortId) {
         List<TeamDTO> teams = teamRepository.findByCohortId(cohortId).stream()
                 .map(teamMapper::toTeamDTO)
-                .collect(Collectors.toList());
+                .toList();
         for (TeamDTO team : teams) {
             TreeItemWrapper teamWrapper = new TreeItemWrapper(team.getName(), team);
             TreeItem<TreeItemWrapper> teamItem = new TreeItem<>(teamWrapper);
@@ -139,7 +136,7 @@ public class PopulatorUtility {
     public void populateProjects(TreeItem<TreeItemWrapper> parentItem, UUID teamId) {
         List<ProjectDTO> projects = projectRepository.findByTeamId(teamId).stream()
                 .map(projectMapper::toProjectDTO)
-                .collect(Collectors.toList());
+                .toList();
         for (ProjectDTO project : projects) {
             TreeItemWrapper projectWrapper = new TreeItemWrapper(project.getName(), project);
             TreeItem<TreeItemWrapper> projectItem = new TreeItem<>(projectWrapper);
@@ -156,7 +153,7 @@ public class PopulatorUtility {
     public void populateComponents(TreeItem<TreeItemWrapper> parentItem, UUID projectId) {
         List<ComponentDTO> components = componentRepository.findByProjectId(projectId).stream()
                 .map(componentMapper::toComponentDTO)
-                .collect(Collectors.toList());
+                .toList();
         for (ComponentDTO component : components) {
             TreeItemWrapper componentWrapper = new TreeItemWrapper(component.getName(), component);
             TreeItem<TreeItemWrapper> componentItem = new TreeItem<>(componentWrapper);
@@ -173,7 +170,7 @@ public class PopulatorUtility {
     public void populateStudents(TreeItem<TreeItemWrapper> parentItem, UUID cohortId) {
         List<StudentDTO> students = studentRepository.findByCohortId(cohortId).stream()
                 .map(studentMapper::toStudentDTO)
-                .collect(Collectors.toList());
+                .toList();
         for (StudentDTO student : students) {
             TreeItemWrapper studentWrapper = new TreeItemWrapper(student.getFirstName(), student);
             TreeItem<TreeItemWrapper> studentItem = new TreeItem<>(studentWrapper);
@@ -190,7 +187,7 @@ public class PopulatorUtility {
     public void populateTasks(TreeItem<TreeItemWrapper> parentItem, UUID projectId) {
         List<TaskDTO> tasks = taskRepository.findByProjectId(projectId).stream()
                 .map(taskMapper::toTaskDTO)
-                .collect(Collectors.toList());
+                .toList();
         for (TaskDTO task : tasks) {
             TreeItemWrapper taskWrapper = new TreeItemWrapper(task.getName(), task);
             TreeItem<TreeItemWrapper> taskItem = new TreeItem<>(taskWrapper);
