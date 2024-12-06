@@ -76,8 +76,7 @@ public class TreeViewController {
     private void setupLazyLoading(TreeItem<TreeItemWrapper> parentItem) {
         parentItem.addEventHandler(TreeItem.branchExpandedEvent(), event -> {
             TreeItem<?> source = event.getSource();
-            if (source instanceof TreeItem<?> treeItem && treeItem.getValue() instanceof TreeItemWrapper) {
-                TreeItemWrapper wrapper = (TreeItemWrapper) treeItem.getValue();
+            if (source instanceof TreeItem<?> treeItem && treeItem.getValue() instanceof TreeItemWrapper wrapper) {
                 TreeItem<TreeItemWrapper> safeTreeItem = new TreeItem<>(wrapper);
                 if (safeTreeItem.isExpanded() && safeTreeItem.getChildren().isEmpty()) {
                     Object data = safeTreeItem.getValue().getData();
