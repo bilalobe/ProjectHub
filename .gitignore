@@ -28,7 +28,7 @@ build/
 out/
 .gradle/
 .idea/
-.vscode/
+.vscode/*
 node_modules/
 dist/
 coverage/
