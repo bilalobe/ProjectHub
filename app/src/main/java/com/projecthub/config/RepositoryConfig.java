@@ -15,7 +15,6 @@ public class RepositoryConfig {
     @Profile("jpa")
     @EnableJpaRepositories(basePackages = "com.projecthub.repository.jpa")
     @EnableTransactionManagement
-    @SuppressWarnings("unused")
     static class JpaRepositoryConfig {
         // Additional JPA configurations if needed
 
@@ -30,7 +29,6 @@ public class RepositoryConfig {
     @Configuration
     @Profile("csv")
     @EnableTransactionManagement
-    @SuppressWarnings("unused")
     static class CsvRepositoryConfig {
         // Configuration for CSV repositories if needed
 
