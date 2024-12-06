@@ -1,15 +1,14 @@
 package com.projecthub.ui.controllers.main;
 
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.projecthub.dto.CohortDTO;
-import com.projecthub.model.School;
-import com.projecthub.ui.viewmodels.ProjectHubViewModel;
+import com.projecthub.utils.ui.LoaderFactory;
 import com.projecthub.utils.ui.TreeItemWrapper;
+import com.projecthub.ui.viewmodels.ProjectHubViewModel;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
@@ -21,8 +20,11 @@ public class ProjectHubFXController {
     
     private ProjectHubViewModel viewModel;
 
+    @Autowired
+    private LoaderFactory loaderFactory;
+
     @FXML
-    private TreeView<String> schoolTreeView;
+    private TreeView<TreeItemWrapper> schoolTreeView;
 
     @FXML
     private TextField searchField;
@@ -38,20 +40,30 @@ public class ProjectHubFXController {
     }
 
     private void setupTreeView() {
-        TreeItem<String> rootItem = new TreeItem<>("Schools");
+        TreeItem<TreeItemWrapper> rootItem = new TreeItem<>(new TreeItemWrapper("Schools", null));
         schoolTreeView.setRoot(rootItem);
         schoolTreeView.setShowRoot(true);
 
         for (TreeItemWrapper wrapper : viewModel.getTreeItems()) {
-            TreeItem<String> treeItem = createTreeItem(wrapper);
+            TreeItem<TreeItemWrapper> treeItem = createTreeItem(wrapper);
             rootItem.getChildren().add(treeItem);
         }
 
-        schoolTreeView.setCellFactory((TreeView<String> _) -> new TextFieldTreeCellImpl());
+        schoolTreeView.setCellFactory(_ -> new TreeCell<TreeItemWrapper>() {
+            @Override
+            protected void updateItem(TreeItemWrapper item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getName() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
     }
 
-    private TreeItem<String> createTreeItem(TreeItemWrapper wrapper) {
-        TreeItem<String> treeItem = new TreeItem<>(wrapper.getName());
+    private TreeItem<TreeItemWrapper> createTreeItem(TreeItemWrapper wrapper) {
+        TreeItem<TreeItemWrapper> treeItem = new TreeItem<>(wrapper);
         treeItem.setExpanded(false);
 
         // Lazy loading mechanism
@@ -64,25 +76,25 @@ public class ProjectHubFXController {
         return treeItem;
     }
 
-    private void loadChildren(TreeItem<String> parentItem, TreeItemWrapper parentWrapper) {
-        Object data = parentWrapper.getData();
-
-        if (data instanceof School school) {
-            List<CohortDTO> classes = viewModel.getClassesBySchoolId(school.getId().getMostSignificantBits() & Long.MAX_VALUE);
-            for (CohortDTO cls : classes) {
-                var classWrapper = new TreeItemWrapper(cls.getName(), cls);
-                TreeItem<String> classItem = createTreeItem(classWrapper);
-                parentItem.getChildren().add(classItem);
-            }
+    private void loadChildren(TreeItem<TreeItemWrapper> treeItem, TreeItemWrapper parentWrapper) {
+        try {
+            loaderFactory.getLoader(parentWrapper.getData()).load(treeItem, parentWrapper);
+        } catch (Exception e) {
+            showAlert("Error", "Failed to load children: " + e.getMessage());
         }
     }
 
-    // Custom TreeCell to handle editing or custom display
-    private static class TextFieldTreeCellImpl extends TreeCell<String> {
-        @Override
-        public void updateItem(String item, boolean empty) {
-            super.updateItem(item, empty);
-            setText(empty ? null : item);
-        }
+    /**
+     * Shows an alert with the specified title and message.
+     *
+     * @param title   the title of the alert
+     * @param message the message of the alert
+     */
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
