@@ -10,6 +10,7 @@ import com.projecthub.ui.viewmodels.details.TaskDetailsViewModel;
 import com.projecthub.utils.UUIDStringConverter;
 
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -137,20 +138,24 @@ public class TaskDetailsController extends BaseController {
                 }
             };
 
-            saveTask.setOnSucceeded(_ -> {
-                showAlert("Success", "Task saved successfully.");
-                taskForm.setVisible(false);
-                taskViewModel.loadTasks();
-            });
-
-            saveTask.setOnFailed(_ -> {
-                showAlert("Error", "Failed to save task.");
-            });
+            saveTask.setOnSucceeded(this::handleSaveTaskSuccess);
+            saveTask.setOnFailed(this::handleSaveTaskFailure);
 
             new Thread(saveTask).start();
         } catch (Exception e) {
             showAlert("Error", "Failed to save task: " + e.getMessage());
         }
+    }
+
+    private void handleSaveTaskSuccess(WorkerStateEvent event) {
+        showAlert("Success", "Task saved successfully.");
+        taskForm.setVisible(false);
+        taskViewModel.loadTasks();
+    }
+
+    private void handleSaveTaskFailure(WorkerStateEvent event) {
+        Throwable exception = event.getSource().getException();
+        showAlert("Error", "Failed to save task: " + exception.getMessage());
     }
 
     @FXML
@@ -193,15 +198,8 @@ public class TaskDetailsController extends BaseController {
                 }
             };
 
-            saveTask.setOnSucceeded(_ -> {
-                showAlert("Success", "Task saved successfully.");
-                taskForm.setVisible(false);
-                taskViewModel.loadTasks();
-            });
-
-            saveTask.setOnFailed(_ -> {
-                showAlert("Error", "Failed to save task.");
-            });
+            saveTask.setOnSucceeded(this::handleSaveTaskSuccess);
+            saveTask.setOnFailed(this::handleSaveTaskFailure);
 
             new Thread(saveTask).start();
         } catch (Exception e) {
