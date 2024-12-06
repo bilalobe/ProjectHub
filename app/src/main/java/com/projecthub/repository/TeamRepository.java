@@ -17,4 +17,5 @@ public interface TeamRepository {
     Team getReferenceById(UUID teamId);
     void deleteById(UUID teamId);
     List<Team> findByCohortId(UUID cohortId);
+    boolean existsById(UUID id);
 }
