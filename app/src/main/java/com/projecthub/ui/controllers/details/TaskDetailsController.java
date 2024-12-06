@@ -4,40 +4,50 @@ import java.time.LocalDate;
 
 import org.springframework.stereotype.Component;
 
-import com.projecthub.dto.TaskSummary;
-import com.projecthub.ui.viewmodels.TaskViewModel;
+import com.projecthub.dto.TaskDTO;
+import com.projecthub.ui.controllers.BaseController;
+import com.projecthub.ui.viewmodels.details.TaskDetailsViewModel;
+import com.projecthub.utils.UUIDStringConverter;
 
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 
+import java.util.UUID;
+
+/**
+ * Controller for managing task details.
+ */
 @Component
-public class TaskDetailsController {
+public class TaskDetailsController extends BaseController {
 
-    
-    private TaskViewModel taskViewModel;
-
-    @FXML
-    private TableView<TaskSummary> taskTableView;
+    private final TaskDetailsViewModel taskViewModel;
 
     @FXML
-    private TableColumn<TaskSummary, Number> taskIdColumn;
+    private TableView<TaskDTO> taskTableView;
 
     @FXML
-    private TableColumn<TaskSummary, String> taskNameColumn;
+    private TableColumn<TaskDTO, String> taskIdColumn;
 
     @FXML
-    private TableColumn<TaskSummary, String> taskDescriptionColumn;
+    private TableColumn<TaskDTO, String> taskNameColumn;
 
     @FXML
-    private TableColumn<TaskSummary, String> taskStatusColumn;
+    private TableColumn<TaskDTO, String> taskDescriptionColumn;
 
     @FXML
-    private TableColumn<TaskSummary, LocalDate> taskDueDateColumn;
+    private TableColumn<TaskDTO, String> taskStatusColumn;
+
+    @FXML
+    private TableColumn<TaskDTO, LocalDate> taskDueDateColumn;
 
     @FXML
     private TextField searchField;
@@ -61,38 +71,152 @@ public class TaskDetailsController {
     private Button saveTaskButton;
 
     @FXML
+    private Button deleteTaskButton;
+
+    /**
+     * Constructor with dependencies injected.
+     *
+     * @param taskViewModel the TaskDetailsViewModel instance
+     */
+    public TaskDetailsController(TaskDetailsViewModel taskViewModel) {
+        this.taskViewModel = taskViewModel;
+    }
+
+    @FXML
     public void initialize() {
-        taskIdColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty());
-        taskNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-        taskDescriptionColumn.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
-        taskStatusColumn.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
-        taskDueDateColumn.setCellValueFactory(cellData -> cellData.getValue().dueDateProperty());
+        new UUIDStringConverter();
+
+        taskIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        taskNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        taskDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        taskStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        taskDueDateColumn.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
 
         taskTableView.setItems(taskViewModel.getTasks());
 
         searchField.textProperty().bindBidirectional(taskViewModel.searchQueryProperty());
 
         taskForm.setVisible(false);
+
+        saveTaskButton.setOnAction(this::handleSaveTask);
+        deleteTaskButton.setOnAction(this::handleDeleteTask);
     }
 
-    @SuppressWarnings("unused")
     @FXML
-    private void handleAddTask() {
+    private void handleAddTask(ActionEvent event) {
         clearForm();
         taskForm.setVisible(true);
-        saveTaskButton.setOnAction(event -> saveTask(null));
+        saveTaskButton.setOnAction(this::handleSaveTask);
     }
 
-    private void saveTask(Long taskId) {
-        String name = taskNameField.getText();
-        String description = taskDescriptionField.getText();
-        String status = taskStatusField.getText();
-        LocalDate dueDate = taskDueDatePicker.getValue();
+    @FXML
+    private void handleSaveTask(ActionEvent event) {
+        UUID taskId = UUID.randomUUID();
+        try {
+            String name = taskNameField.getText();
+            String description = taskDescriptionField.getText();
+            String status = taskStatusField.getText();
+            LocalDate dueDate = taskDueDatePicker.getValue();
 
-        TaskSummary taskSummary = new TaskSummary(taskId, name, description, status, dueDate, null, null);
-        taskViewModel.saveTask(taskSummary);
-        taskForm.setVisible(false);
-        taskViewModel.loadTasks();
+            if (!isValidTaskInput(name, description)) {
+                showAlert(Alert.AlertType.ERROR, "Validation Error", "Please provide valid task details.");
+                return;
+            }
+
+            Task<Void> saveTask = new Task<>() {
+                @Override
+                protected Void call() throws Exception {
+                    try {
+                        TaskDTO taskSummary = new TaskDTO(taskId, name, description, status, dueDate, null, null, null, null, false, null);
+                        taskViewModel.saveTask(taskSummary);
+                    } catch (Exception e) {
+                        logger.error("Error saving task", e);
+                        throw e;
+                    }
+                    return null;
+                }
+            };
+
+            saveTask.setOnSucceeded(_ -> {
+                showAlert("Success", "Task saved successfully.");
+                taskForm.setVisible(false);
+                taskViewModel.loadTasks();
+            });
+
+            saveTask.setOnFailed(_ -> {
+                showAlert("Error", "Failed to save task.");
+            });
+
+            new Thread(saveTask).start();
+        } catch (Exception e) {
+            showAlert("Error", "Failed to save task: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleEditTask(ActionEvent event) {
+        TaskDTO selectedTask = taskTableView.getSelectionModel().getSelectedItem();
+        if (selectedTask != null) {
+            taskNameField.setText(selectedTask.getName());
+            taskDescriptionField.setText(selectedTask.getDescription());
+            taskStatusField.setText(selectedTask.getStatus());
+            taskDueDatePicker.setValue(selectedTask.getDueDate());
+            taskForm.setVisible(true);
+            saveTaskButton.setOnAction(e -> handleSaveTask(e, selectedTask.getId()));
+        }
+    }
+
+    @FXML
+    private void handleSaveTask(ActionEvent event, UUID taskId) {
+        try {
+            String name = taskNameField.getText();
+            String description = taskDescriptionField.getText();
+            String status = taskStatusField.getText();
+            LocalDate dueDate = taskDueDatePicker.getValue();
+
+            if (!isValidTaskInput(name, description)) {
+                showAlert(Alert.AlertType.ERROR, "Validation Error", "Please provide valid task details.");
+                return;
+            }
+
+            Task<Void> saveTask = new Task<>() {
+                @Override
+                protected Void call() throws Exception {
+                    try {
+                        TaskDTO taskSummary = new TaskDTO(taskId, name, description, status, dueDate, null, null, null, null, false, null);
+                        taskViewModel.saveTask(taskSummary);
+                    } catch (Exception e) {
+                        logger.error("Error saving task", e);
+                        throw e;
+                    }
+                    return null;
+                }
+            };
+
+            saveTask.setOnSucceeded(_ -> {
+                showAlert("Success", "Task saved successfully.");
+                taskForm.setVisible(false);
+                taskViewModel.loadTasks();
+            });
+
+            saveTask.setOnFailed(_ -> {
+                showAlert("Error", "Failed to save task.");
+            });
+
+            new Thread(saveTask).start();
+        } catch (Exception e) {
+            showAlert("Error", "Failed to save task: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleDeleteTask(ActionEvent event) {
+        TaskDTO selectedTask = taskTableView.getSelectionModel().getSelectedItem();
+        if (selectedTask != null) {
+            taskViewModel.deleteTask(selectedTask.getId());
+            taskViewModel.loadTasks();
+            showAlert("Success", "Task deleted successfully.");
+        }
     }
 
     private void clearForm() {
@@ -102,27 +226,15 @@ public class TaskDetailsController {
         taskDueDatePicker.setValue(null);
     }
 
-    @SuppressWarnings("unused")
-    @FXML
-    private void handleEditTask() {
-        TaskSummary selectedTask = taskTableView.getSelectionModel().getSelectedItem();
-        if (selectedTask != null) {
-            taskNameField.setText(selectedTask.getName());
-            taskDescriptionField.setText(selectedTask.getDescription());
-            taskStatusField.setText(selectedTask.getStatus());
-            taskDueDatePicker.setValue(selectedTask.getDueDate());
-            taskForm.setVisible(true);
-            saveTaskButton.setOnAction(event -> saveTask(selectedTask.getId()));
-        }
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
-    @SuppressWarnings("unused")
-    @FXML
-    private void handleDeleteTask() {
-        TaskSummary selectedTask = taskTableView.getSelectionModel().getSelectedItem();
-        if (selectedTask != null) {
-            taskViewModel.deleteTask(selectedTask.getId());
-            taskViewModel.loadTasks();
-        }
+    private boolean isValidTaskInput(String name, String description) {
+        return name != null && !name.trim().isEmpty();
     }
 }

@@ -1,20 +1,16 @@
 package com.projecthub.ui.controllers.details;
 
-import com.projecthub.dto.SubmissionSummary;
-import com.projecthub.dto.ProjectSummary;
-import com.projecthub.mapper.SubmissionMapper;
-import com.projecthub.mapper.ProjectMapper;
-import com.projecthub.model.Project;
+import com.projecthub.dto.SubmissionDTO;
 import com.projecthub.model.Student;
 import com.projecthub.model.Submission;
-import com.projecthub.service.ProjectService;
-import com.projecthub.service.SubmissionService;
-import com.projecthub.repository.jpa.TeamRepository;
+import com.projecthub.ui.controllers.BaseController;
+import com.projecthub.ui.viewmodels.details.StudentDetailsViewModel;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -25,29 +21,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.model.Team;
-
 /**
- * Controller for displaying Student details.
+ * Controller for displaying student details.
  */
 @Controller
-public class StudentDetailsController {
+public class StudentDetailsController extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(StudentDetailsController.class);
 
-    private SubmissionService submissionService;
-
-    private ProjectService projectService;
-
-    private SubmissionMapper submissionMapper;
-
-    private TeamRepository teamRepository;
-
-    private ProjectMapper projectMapper;
+    private final StudentDetailsViewModel studentDetailsViewModel;
 
     @FXML
     private Label studentNameLabel;
@@ -56,7 +41,7 @@ public class StudentDetailsController {
     private TableView<Submission> submissionTableView;
 
     @FXML
-    private TableColumn<Submission, Long> submissionIdColumn;
+    private TableColumn<Submission, UUID> submissionIdColumn;
 
     @FXML
     private TableColumn<Submission, String> submissionProjectColumn;
@@ -67,12 +52,22 @@ public class StudentDetailsController {
     private Student student;
 
     /**
+     * Constructor with dependencies injected.
+     *
+     * @param studentDetailsViewModel the StudentDetailsViewModel instance
+     */
+    public StudentDetailsController(StudentDetailsViewModel studentDetailsViewModel) {
+        this.studentDetailsViewModel = studentDetailsViewModel;
+    }
+
+    /**
      * Sets the Student to display.
      *
      * @param student the Student
      */
     public void setStudent(Student student) {
         this.student = student;
+        studentDetailsViewModel.setStudent(student);
         updateUI();
     }
 
@@ -81,6 +76,10 @@ public class StudentDetailsController {
      */
     @FXML
     public void initialize() {
+        initializeTableColumns();
+    }
+
+    private void initializeTableColumns() {
         submissionIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         submissionProjectColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getProject().getName()));
@@ -96,7 +95,7 @@ public class StudentDetailsController {
      */
     private void updateUI() {
         if (student != null) {
-            studentNameLabel.setText(student.getName());
+            studentNameLabel.setText(student.getFirstName());
             loadSubmissions();
         }
     }
@@ -105,31 +104,30 @@ public class StudentDetailsController {
      * Loads the submissions made by the Student.
      */
     private void loadSubmissions() {
-        List<SubmissionSummary> submissionSummaries = submissionService.getSubmissionsByStudentId(student.getId());
-        List<Submission> submissions = submissionSummaries.stream()
-                .map(this::mapToSubmission)
-                .filter(submission -> submission != null) // Filter out null submissions
-                .collect(Collectors.toList());
-        ObservableList<Submission> submissionList = FXCollections.observableArrayList(submissions);
-        submissionTableView.setItems(submissionList);
+        try {
+            List<SubmissionDTO> submissionSummaries = studentDetailsViewModel.getSubmissionsByStudentId(student.getId());
+            List<Submission> submissions = submissionSummaries.stream()
+                    .map(studentDetailsViewModel::mapToSubmission)
+                    .collect(Collectors.toList());
+            ObservableList<Submission> submissionList = FXCollections.observableArrayList(submissions);
+            submissionTableView.setItems(submissionList);
+        } catch (Exception e) {
+            logger.error("Failed to load submissions", e);
+            showAlert("Error", "Failed to load submissions.");
+        }
     }
 
     /**
-     * @param summary the SubmissionSummary
-     * @return the Submission entity or null if the project is not found
+     * Shows an alert with the specified title and message.
+     *
+     * @param title   the title of the alert
+     * @param message the message of the alert
      */
-    private Submission mapToSubmission(SubmissionSummary summary) {
-        Optional<ProjectSummary> projectSummaryOptional = projectService.getProjectById(summary.getProjectId());
-        if (projectSummaryOptional.isPresent()) {
-            ProjectSummary projectSummary = projectSummaryOptional.get();
-            Team team = teamRepository.findById(projectSummary.getTeam())
-                    .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + projectSummary.getTeam()));
-            Project project = projectMapper.toProject(projectSummary, team);
-            return submissionMapper.toSubmission(summary, project, student);
-        } else {
-            // Log a warning if the project is not found
-            logger.warn("Project not found with ID: {}", summary.getProjectId());
-            return null;
-        }
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

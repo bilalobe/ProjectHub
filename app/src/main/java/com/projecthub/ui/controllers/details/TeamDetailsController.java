@@ -1,46 +1,66 @@
 package com.projecthub.ui.controllers.details;
 
-import com.projecthub.dto.TeamSummary;
-import com.projecthub.dto.ProjectSummary;
-import com.projecthub.dto.AppUserSummary;
-import com.projecthub.ui.viewmodels.TeamViewModel;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import java.util.UUID;
+
 import org.springframework.stereotype.Component;
 
-@Component
-public class TeamDetailsController {
+import com.projecthub.dto.AppUserDTO;
+import com.projecthub.dto.ProjectDTO;
+import com.projecthub.dto.TeamDTO;
+import com.projecthub.ui.controllers.BaseController;
+import com.projecthub.ui.viewmodels.details.TeamDetailsViewModel;
+import com.projecthub.utils.UUIDStringConverter;
 
-    
-    private TeamViewModel teamViewModel;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+
+/**
+ * Controller for handling team details UI interactions.
+ */
+@Component
+public class TeamDetailsController extends BaseController {
+
+    private final TeamDetailsViewModel teamViewModel;
 
     @FXML
     private Label teamIdLabel;
 
     @FXML
-    private Label teamNameLabel;
+    private TextField teamNameField;
 
     @FXML
-    private Label cohortNameLabel;
+    private TextField cohortNameField;
 
     @FXML
-    private TableView<ProjectSummary> projectsTableView;
+    private TextField schoolIdField;
 
     @FXML
-    private TableColumn<ProjectSummary, Long> projectIdColumn;
+    private TextField cohortIdField;
 
     @FXML
-    private TableColumn<ProjectSummary, String> projectNameColumn;
+    private TableView<ProjectDTO> projectsTableView;
 
     @FXML
-    private TableView<AppUserSummary> membersTableView;
+    private TableColumn<ProjectDTO, UUID> projectIdColumn;
 
     @FXML
-    private TableColumn<AppUserSummary, Long> memberIdColumn;
+    private TableColumn<ProjectDTO, String> projectNameColumn;
 
     @FXML
-    private TableColumn<AppUserSummary, String> memberNameColumn;
+    private TableView<AppUserDTO> membersTableView;
+
+    @FXML
+    private TableColumn<AppUserDTO, UUID> memberIdColumn;
+
+    @FXML
+    private TableColumn<AppUserDTO, String> memberNameColumn;
 
     @FXML
     private Button saveTeamButton;
@@ -48,11 +68,24 @@ public class TeamDetailsController {
     @FXML
     private Button deleteTeamButton;
 
+    /**
+     * Constructor with dependencies injected.
+     *
+     * @param teamViewModel the TeamDetailsViewModel instance
+     */
+    public TeamDetailsController(TeamDetailsViewModel teamViewModel) {
+        this.teamViewModel = teamViewModel;
+    }
+
     @FXML
     public void initialize() {
         teamIdLabel.textProperty().bind(teamViewModel.teamIdProperty().asString());
-        teamNameLabel.textProperty().bind(teamViewModel.teamNameProperty());
-        cohortNameLabel.textProperty().bind(teamViewModel.cohortNameProperty());
+        teamNameField.textProperty().bindBidirectional(teamViewModel.teamNameProperty());
+        cohortNameField.textProperty().bindBidirectional(teamViewModel.cohortNameProperty());
+
+        UUIDStringConverter uuidStringConverter = new UUIDStringConverter();
+        schoolIdField.textProperty().bindBidirectional(teamViewModel.schoolIdProperty(), uuidStringConverter);
+        cohortIdField.textProperty().bindBidirectional(teamViewModel.cohortIdProperty(), uuidStringConverter);
 
         projectIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         projectNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -63,27 +96,84 @@ public class TeamDetailsController {
         projectsTableView.setItems(teamViewModel.getProjects());
         membersTableView.setItems(teamViewModel.getMembers());
 
-        saveTeamButton.setOnAction(event -> saveTeam());
-        deleteTeamButton.setOnAction(event -> deleteTeam());
+        saveTeamButton.setOnAction(this::saveTeam);
+        deleteTeamButton.setOnAction(this::deleteTeam);
     }
 
-    public void setTeam(TeamSummary team) {
+    /**
+     * Sets the team to be displayed and edited.
+     *
+     * @param team the TeamDTO instance
+     */
+    public void setTeam(TeamDTO team) {
         teamViewModel.setTeam(team);
     }
 
-    private void saveTeam() {
-        TeamSummary teamSummary = new TeamSummary(
-                teamViewModel.teamIdProperty().get(),
-                teamViewModel.teamNameProperty().get(),
-                null, // schoolId
-                null, // cohortId
-                null, // schoolName
-                teamViewModel.cohortNameProperty().get()
-        );
-        teamViewModel.saveTeam(teamSummary);
+    @FXML
+    private void saveTeam(ActionEvent event) {
+        try {
+            UUID teamId = teamViewModel.teamIdProperty().get();
+            String teamName = teamViewModel.teamNameProperty().get();
+            UUID schoolId = teamViewModel.schoolIdProperty().get();
+            UUID cohortId = teamViewModel.cohortIdProperty().get();
+            teamViewModel.cohortNameProperty().get();
+
+            if (!isValidTeamName(teamName)) {
+                showAlert(Alert.AlertType.ERROR, "Validation Error", "Invalid team name provided.");
+                return;
+            }
+
+            if (schoolId == null) {
+                showAlert("Error", "School ID cannot be null.");
+                return;
+            }
+
+            if (cohortId == null) {
+                showAlert("Error", "Cohort ID cannot be null.");
+                return;
+            }
+
+            TeamDTO teamSummary = new TeamDTO(
+                    teamId,
+                    teamName,
+                    schoolId,
+                    cohortId
+            );
+
+            teamViewModel.saveTeam(teamSummary);
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Team saved successfully.");
+            logger.info("Team saved successfully: {}", teamSummary.getId());
+        } catch (Exception e) {
+            logger.error("Failed to save team", e);
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to save team.");
+        }
     }
 
-    private void deleteTeam() {
-        teamViewModel.deleteTeam(teamViewModel.teamIdProperty().get());
+    @FXML
+    private void deleteTeam(ActionEvent event) {
+        try {
+            UUID teamId = teamViewModel.teamIdProperty().get();
+            if (teamId == null) {
+                showAlert("Error", "No team selected.");
+                return;
+            }
+            teamViewModel.deleteTeam(teamId);
+            showAlert("Success", "Team deleted successfully.");
+        } catch (Exception e) {
+            logger.error("Failed to delete team", e);
+            showAlert("Error", "Failed to delete team: " + e.getMessage());
+        }
+    }
+
+    private boolean isValidTeamName(String teamName) {
+        return teamName != null && !teamName.trim().isEmpty();
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

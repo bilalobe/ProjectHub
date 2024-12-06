@@ -1,36 +1,43 @@
 package com.projecthub.ui.controllers.details;
 
-import com.projecthub.dto.CohortSummary;
-import com.projecthub.dto.TeamSummary;
-import com.projecthub.ui.viewmodels.CohortViewModel;
+import com.projecthub.dto.CohortDTO;
+import com.projecthub.dto.TeamDTO;
+import com.projecthub.ui.controllers.BaseController;
+import com.projecthub.ui.viewmodels.details.CohortDetailsViewModel;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.springframework.stereotype.Component;
 
-@Component
-public class CohortDetailsController {
+import java.util.UUID;
 
-    
-    private CohortViewModel cohortViewModel;
+/**
+ * Controller for managing cohort details.
+ */
+@Component
+public class CohortDetailsController extends BaseController {
+
+    private final CohortDetailsViewModel cohortViewModel;
 
     @FXML
     private Label cohortIdLabel;
 
     @FXML
-    private Label cohortNameLabel;
+    private TextField cohortNameField;
 
     @FXML
-    private Label schoolNameLabel;
+    private TextField schoolIdField;
 
     @FXML
-    private TableView<TeamSummary> teamsTableView;
+    private TableView<TeamDTO> teamsTableView;
 
     @FXML
-    private TableColumn<TeamSummary, Long> teamIdColumn;
+    private TableColumn<TeamDTO, UUID> teamIdColumn;
 
     @FXML
-    private TableColumn<TeamSummary, String> teamNameColumn;
+    private TableColumn<TeamDTO, String> teamNameColumn;
 
     @FXML
     private Button saveCohortButton;
@@ -38,35 +45,44 @@ public class CohortDetailsController {
     @FXML
     private Button deleteCohortButton;
 
+    /**
+     * Constructor with dependencies injected.
+     *
+     * @param cohortViewModel the CohortDetailsViewModel instance
+     */
+    public CohortDetailsController(CohortDetailsViewModel cohortViewModel) {
+        this.cohortViewModel = cohortViewModel;
+    }
+
     @FXML
     public void initialize() {
         cohortIdLabel.textProperty().bind(cohortViewModel.cohortIdProperty().asString());
-        cohortNameLabel.textProperty().bind(cohortViewModel.cohortNameProperty());
-        schoolNameLabel.textProperty().bind(cohortViewModel.schoolProperty().asString());
+        cohortNameField.textProperty().bindBidirectional(cohortViewModel.cohortNameProperty());
+        schoolIdField.textProperty().bind(cohortViewModel.schoolIdProperty().asString());
 
         teamIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         teamsTableView.setItems(cohortViewModel.getTeams());
 
-        saveCohortButton.setOnAction(event -> saveCohort());
-        deleteCohortButton.setOnAction(event -> deleteCohort());
+        saveCohortButton.setOnAction(this::saveCohort);
+        deleteCohortButton.setOnAction(this::deleteCohort);
     }
 
-    public void setCohort(CohortSummary cohort) {
-        cohortViewModel.setCohort(cohort);
+    private void saveCohort(ActionEvent event) {
+        try {
+            CohortDTO cohortSummary = new CohortDTO(
+                    cohortViewModel.cohortIdProperty().get(),
+                    cohortViewModel.cohortNameProperty().get(),
+                    cohortViewModel.schoolIdProperty().get());
+            cohortViewModel.saveCohort(cohortSummary);
+        } catch (Exception e) {
+            logger.error("Failed to save cohort", e);
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to save cohort.");
+        }
     }
 
-    private void saveCohort() {
-        CohortSummary cohortSummary = new CohortSummary(
-                cohortViewModel.cohortIdProperty().get(),
-                cohortViewModel.cohortNameProperty().get(),
-                cohortViewModel.schoolProperty().get()
-        );
-        cohortViewModel.saveCohort(cohortSummary);
-    }
-
-    private void deleteCohort() {
+    private void deleteCohort(ActionEvent event) {
         cohortViewModel.deleteCohort(cohortViewModel.cohortIdProperty().get());
     }
 }

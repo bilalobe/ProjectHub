@@ -1,8 +1,10 @@
 package com.projecthub.ui.controllers.details;
 
-import com.projecthub.dto.ComponentSummary;
-import com.projecthub.dto.ProjectSummary;
-import com.projecthub.ui.viewmodels.ProjectHubViewModel;
+import com.projecthub.dto.ComponentDTO;
+import com.projecthub.dto.ProjectDTO;
+import com.projecthub.ui.controllers.BaseController;
+import com.projecthub.ui.viewmodels.details.ProjectDetailsViewModel;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -11,34 +13,55 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.GridPane;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.UUID;
 
+/**
+ * Controller for managing project details.
+ */
 @Component
-public class ProjectDetailsController {
+public class ProjectDetailsController extends BaseController {
 
-    
-    private ProjectHubViewModel viewModel;
+    private static final Logger logger = LoggerFactory.getLogger(ProjectDetailsController.class);
+
+    private final ProjectDetailsViewModel viewModel;
 
     @FXML
     private GridPane projectDetails;
 
     @FXML
     private TextField projectNameField;
+
     @FXML
     private TextArea descriptionArea;
+
     @FXML
     private TextField teamField;
+
     @FXML
     private TextField deadlineField;
 
     @FXML
-    private TableView<ComponentSummary> componentsTable;
-    @FXML
-    private TableColumn<ComponentSummary, String> componentNameColumn;
-    @FXML
-    private TableColumn<ComponentSummary, String> componentDescriptionColumn;
+    private TableView<ComponentDTO> componentsTable;
 
-    private ObservableList<ComponentSummary> componentList;
+    @FXML
+    private TableColumn<ComponentDTO, String> componentNameColumn;
+
+    @FXML
+    private TableColumn<ComponentDTO, String> componentDescriptionColumn;
+
+    private ObservableList<ComponentDTO> componentList;
+
+    /**
+     * Constructor with dependencies injected.
+     *
+     * @param viewModel the ProjectDetailsViewModel instance
+     */
+    public ProjectDetailsController(ProjectDetailsViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
 
     @FXML
     public void initialize() {
@@ -51,18 +74,23 @@ public class ProjectDetailsController {
      *
      * @param project the project to display
      */
-    public void displayProjectDetails(ProjectSummary project) {
-        projectNameField.setText(project.getName());
-        descriptionArea.setText(project.getDescription());
+    public void displayProjectDetails(ProjectDTO project) {
+        try {
+            projectNameField.setText(project.getName());
+            descriptionArea.setText(project.getDescription());
 
-        String teamName = project.getTeam() != null ? viewModel.getTeamNameById(project.getTeam()) : "N/A";
-        teamField.setText(teamName);
+            String teamName = project.getTeamId() != null ? viewModel.getTeamNameById(project.getTeamId()) : "N/A";
+            teamField.setText(teamName);
 
-        deadlineField.setText(project.getDeadline());
+            deadlineField.setText(project.getDeadline() != null ? project.getDeadline().toString() : "N/A");
 
-        loadComponents(project.getId());
+            loadComponents(project.getId());
 
-        projectDetails.setVisible(true);
+            projectDetails.setVisible(true);
+        } catch (Exception e) {
+            logger.error("Failed to display project details", e);
+            showAlert("Error", "Failed to display project details.");
+        }
     }
 
     /**
@@ -70,9 +98,13 @@ public class ProjectDetailsController {
      *
      * @param projectId the ID of the project
      */
-    private void loadComponents(Long projectId) {
-        viewModel.loadComponents(projectId);
-        componentsTable.setItems(viewModel.getComponents());
+    private void loadComponents(UUID projectId) {
+        try {
+            viewModel.loadComponents(projectId);
+            componentsTable.setItems(viewModel.getComponents());
+        } catch (Exception e) {
+            showAlert("Error", "Failed to load components: " + e.getMessage());
+        }
     }
 
     /**
@@ -89,10 +121,8 @@ public class ProjectDetailsController {
      * Binds the visibility of the project details pane.
      */
     private void bindDetailVisibility() {
-        projectDetails.visibleProperty().bind(Bindings.createBooleanBinding(
-                () -> projectDetails.isVisible(),
-                projectDetails.visibleProperty()
-        ));
+        projectDetails.visibleProperty().bind(
+                Bindings.createBooleanBinding(() -> projectDetails.isVisible(), projectDetails.visibleProperty()));
     }
 
     /**
@@ -104,5 +134,19 @@ public class ProjectDetailsController {
         teamField.clear();
         deadlineField.clear();
         componentList.clear();
+    }
+
+    /**
+     * Shows an alert with the specified title and message.
+     *
+     * @param title   the title of the alert
+     * @param message the message of the alert
+     */
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
