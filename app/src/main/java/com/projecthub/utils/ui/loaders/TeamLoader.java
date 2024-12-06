@@ -16,8 +16,8 @@ public class TeamLoader implements TreeItemLoader {
     private PopulatorUtility populatorUtility;
 
     @Override
-    public void loadChildren(TreeItem<TreeItemWrapper> parentItem) {
-        TeamDTO team = (TeamDTO) parentItem.getValue().getData();
+    public void load(TreeItem<TreeItemWrapper> parentItem, TreeItemWrapper parentWrapper) {
+        TeamDTO team = (TeamDTO) parentWrapper.getData();
         populatorUtility.populateProjects(parentItem, team.getId());
     }
 }
