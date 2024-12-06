@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collections;
 
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +17,6 @@ import javafx.scene.layout.BorderPane;
 @Component
 public class NavigationController {
 
-    @Autowired
     private ApplicationContext applicationContext;
 
     @FXML
@@ -44,7 +42,7 @@ public class NavigationController {
         navigationTreeView.setShowRoot(false);
 
         navigationTreeView.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> handleNavigationSelection(newValue));
+                (_, _, newValue) -> handleNavigationSelection(newValue));
     }
 
     private void handleNavigationSelection(TreeItem<String> selectedItem) {
@@ -69,7 +67,7 @@ public class NavigationController {
             mainBorderPane.setCenter(viewPane);
         } catch (IOException e) {
             // Log the error
-            LoggerFactory.getLogger(NavigationController.class).error("Failed to load view: " + fxmlPath, e);
+            LoggerFactory.getLogger(NavigationController.class).error("Failed to load view: {}", fxmlPath, e);
             // Show error dialog to the user
             showErrorDialog("Error", "Failed to load the requested view.");
         }
