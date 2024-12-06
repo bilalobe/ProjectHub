@@ -17,4 +17,5 @@ public interface ProjectRepository {
     boolean existsById(UUID projectId);
     Project getReferenceById(UUID projectId);
     List<Project> findByTeamId(UUID teamId);
+    void deleteById(UUID id);
 }
