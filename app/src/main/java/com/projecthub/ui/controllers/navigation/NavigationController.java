@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -41,13 +42,14 @@ public class NavigationController {
         navigationTreeView.setRoot(rootItem);
         navigationTreeView.setShowRoot(false);
 
-        navigationTreeView.getSelectionModel().selectedItemProperty().addListener(
-                (_, _, newValue) -> handleNavigationSelection(newValue));
+        navigationTreeView.getSelectionModel().selectedItemProperty().addListener(this::handleNavigationSelection);
     }
 
-    private void handleNavigationSelection(TreeItem<String> selectedItem) {
-        if (selectedItem != null) {
-            String selectedText = selectedItem.getValue();
+    private void handleNavigationSelection(ObservableValue<? extends TreeItem<String>> observable,
+                                           TreeItem<String> oldValue,
+                                           TreeItem<String> newValue) {
+        if (newValue != null) {
+            String selectedText = newValue.getValue();
             switch (selectedText) {
                 case "Cohorts" -> loadView("/fxml/CohortDetails.fxml");
                 case "Teams" -> loadView("/fxml/TeamDetails.fxml");
