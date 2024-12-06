@@ -2,7 +2,6 @@ package com.projecthub.ui.viewmodels;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.AppUserSummary;
@@ -17,7 +16,7 @@ public class UserViewModel {
 
     private final ObservableList<AppUserSummary> users = FXCollections.observableArrayList();
 
-    @Autowired
+    
     private UserService userService;
 
     public UserViewModel() {
