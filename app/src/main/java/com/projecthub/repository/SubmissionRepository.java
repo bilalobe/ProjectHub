@@ -15,4 +15,6 @@ public interface SubmissionRepository {
     void delete(Submission submission);
     List<Submission> findByStudentId(UUID studentId);
     List<Submission> findByProjectId(UUID projectId);
+    void deleteById(UUID id);
+    boolean existsById(UUID id);
 }
