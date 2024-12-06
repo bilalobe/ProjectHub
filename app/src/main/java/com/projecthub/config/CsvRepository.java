@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "app")
+
 public class CsvProperties {
 
     private String componentsFilepath;
@@ -17,9 +18,6 @@ public class CsvProperties {
     private String teamsFilepath;
     private String cohortsFilepath;
     private String usersFilepath;
-    private String submissionsTempdir;
-
-    // Getters and setters...
 
     public String getComponentsFilepath() {
         return componentsFilepath;
@@ -96,14 +94,4 @@ public class CsvProperties {
     public String getUsersFilepath() {
         return usersFilepath;
     }
-
-    public String getSubmissionsTempdir() {
-        return submissionsTempdir;
-    }
-
-    public void setSubmissionsTempdir(String submissionsTempdir) {
-        this.submissionsTempdir = submissionsTempdir;
-    }
-
-
 }
