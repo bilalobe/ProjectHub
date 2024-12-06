@@ -7,6 +7,9 @@ import java.util.Optional;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Repository interface for {@link AppUser} entities.
+ */
 @Repository
 public interface AppUserRepository {
     Optional<AppUser> findByUsername(String username);

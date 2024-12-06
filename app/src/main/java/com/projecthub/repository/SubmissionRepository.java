@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.stereotype.Repository;
+
 /**
  * Repository interface for {@link Submission} entities.
  */
+@Repository
 public interface SubmissionRepository {
     Submission save(Submission submission);
     List<Submission> findAll();
