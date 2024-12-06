@@ -4,6 +4,7 @@ import com.projecthub.dto.TaskDTO;
 import com.projecthub.service.TaskService;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
@@ -56,7 +57,7 @@ public class TaskDetailsViewModel {
 
     private void initialize() {
         loadTasks();
-        searchQuery.addListener((_, _, _) -> searchTasks());
+        searchQuery.addListener((observable, oldValue, newValue) -> onSearchQueryChanged(observable, oldValue, newValue));
     }
 
     /**
@@ -135,5 +136,16 @@ public class TaskDetailsViewModel {
      */
     public void selectTask(TaskDTO task) {
         selectedTask.set(task);
+    }
+
+    /**
+     * Handles changes to the search query.
+     *
+     * @param observable the observable value
+     * @param oldValue   the old search query
+     * @param newValue   the new search query
+     */
+    private void onSearchQueryChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        searchTasks();
     }
 }
