@@ -3,7 +3,6 @@ package com.projecthub.service;
 import com.projecthub.repository.DashboardRepository;
 import com.projecthub.dto.ProjectStatusDTO;
 import com.projecthub.dto.RecentActivityDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class DashboardService {
 
     private final DashboardRepository dashboardRepository;
 
-    @Autowired
+
     public DashboardService(DashboardRepository dashboardRepository) {
         this.dashboardRepository = dashboardRepository;
     }

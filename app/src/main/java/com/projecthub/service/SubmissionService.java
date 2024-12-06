@@ -39,7 +39,7 @@ public class SubmissionService {
      */
     @Transactional
     public SubmissionDTO saveSubmission(SubmissionDTO submissionDTO) {
-        logger.info("Creating a new submission");
+        logger.info("Saving... submission");
         validateSubmissionDTO(submissionDTO);
         Submission submission = submissionMapper.toSubmission(submissionDTO);
         Submission savedSubmission = submissionRepository.save(submission);
