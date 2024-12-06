@@ -10,17 +10,16 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public abstract class TeamMapper {
 
-    @Autowired
+    
     private SchoolRepository schoolRepository;
 
-    @Autowired
+    
     private CohortRepository cohortRepository;
 
     @Mapping(source = "schoolId", target = "school", qualifiedByName = "mapSchoolIdToSchool")

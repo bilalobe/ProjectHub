@@ -8,14 +8,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public abstract class StudentMapper {
 
-    @Autowired
     private TeamRepository teamRepository;
 
     @Mapping(source = "teamId", target = "team", qualifiedByName = "mapTeamIdToTeam")
