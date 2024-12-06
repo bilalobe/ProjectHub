@@ -12,11 +12,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.event.EventHandler;
+import javafx.scene.control.TreeItem.TreeModificationEvent;
 
 @Component
 public class ProjectHubFXController {
 
-    
+
     private ProjectHubViewModel viewModel;
 
 
@@ -48,7 +50,11 @@ public class ProjectHubFXController {
             rootItem.getChildren().add(treeItem);
         }
 
-        schoolTreeView.setCellFactory(_ -> new TreeCell<TreeItemWrapper>() {
+        schoolTreeView.setCellFactory(this::createTreeCell);
+    }
+
+    private TreeCell<TreeItemWrapper> createTreeCell(TreeView<TreeItemWrapper> treeView) {
+        return new TreeCell<TreeItemWrapper>() {
             @Override
             protected void updateItem(TreeItemWrapper item, boolean empty) {
                 super.updateItem(item, empty);
@@ -58,7 +64,7 @@ public class ProjectHubFXController {
                     setText(item.getName());
                 }
             }
-        });
+        };
     }
 
     private TreeItem<TreeItemWrapper> createTreeItem(TreeItemWrapper wrapper) {
@@ -66,9 +72,12 @@ public class ProjectHubFXController {
         treeItem.setExpanded(false);
 
         // Lazy loading mechanism
-        treeItem.addEventHandler(TreeItem.branchExpandedEvent(), _ -> {
-            if (treeItem.getChildren().isEmpty()) {
-                loadChildren(treeItem, wrapper);
+        treeItem.addEventHandler(TreeItem.branchExpandedEvent(), new EventHandler<TreeModificationEvent<TreeItemWrapper>>() {
+            @Override
+            public void handle(TreeModificationEvent<TreeItemWrapper> event) {
+                if (treeItem.getChildren().isEmpty()) {
+                    loadChildren(treeItem, wrapper);
+                }
             }
         });
 
