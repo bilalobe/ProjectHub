@@ -2,13 +2,11 @@ package com.projecthub.ui.controllers.details;
 
 import com.projecthub.dto.ComponentDTO;
 import com.projecthub.dto.ProjectDTO;
-import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.ProjectDetailsViewModel;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.GridPane;
@@ -22,7 +20,7 @@ import java.util.UUID;
  * Controller for managing project details.
  */
 @Component
-public class ProjectDetailsController extends BaseController {
+public class ProjectDetailsController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectDetailsController.class);
 
@@ -121,8 +119,7 @@ public class ProjectDetailsController extends BaseController {
      * Binds the visibility of the project details pane.
      */
     private void bindDetailVisibility() {
-        projectDetails.visibleProperty().bind(
-                Bindings.createBooleanBinding(() -> projectDetails.isVisible(), projectDetails.visibleProperty()));
+        projectDetails.visibleProperty().bind(viewModel.projectIdProperty().isNotNull());
     }
 
     /**
