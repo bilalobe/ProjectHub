@@ -1,40 +1,68 @@
 package com.projecthub.service;
 
-import com.projecthub.dto.CohortSummary;
+import com.projecthub.dto.CohortDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.CohortMapper;
 import com.projecthub.model.Cohort;
+import com.projecthub.model.School;
 import com.projecthub.repository.CohortRepository;
+import com.projecthub.repository.SchoolRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing cohorts.
+ */
 @Service
 public class CohortService {
 
     private static final Logger logger = LoggerFactory.getLogger(CohortService.class);
 
     private final CohortRepository cohortRepository;
+    private final SchoolRepository schoolRepository;
     private final CohortMapper cohortMapper;
 
-    public CohortService(CohortRepository cohortRepository, CohortMapper cohortMapper) {
+    public CohortService(CohortRepository cohortRepository, SchoolRepository schoolRepository, CohortMapper cohortMapper) {
         this.cohortRepository = cohortRepository;
+        this.schoolRepository = schoolRepository;
         this.cohortMapper = cohortMapper;
+    }
+
+    /**
+     * Creates a new cohort.
+     *
+     * @param cohortDTO the cohort data transfer object
+     * @return the saved cohort DTO
+     * @throws IllegalArgumentException if cohortDTO is null
+     */
+    @Transactional
+    public CohortDTO saveCohort(CohortDTO cohortDTO) {
+        logger.info("Saving cohort");
+        if (cohortDTO == null) {
+            throw new IllegalArgumentException("CohortDTO cannot be null");
+        }
+        // Additional validation logic can be added here
+        Cohort cohort = cohortMapper.toCohort(cohortDTO);
+        Cohort savedCohort = cohortRepository.save(cohort);
+        logger.info("Cohort saved with ID {}", savedCohort.getId());
+        return cohortMapper.toCohortDTO(savedCohort);
     }
 
     /**
      * Retrieves all cohorts.
      *
-     * @return a list of CohortSummary objects
+     * @return a list of cohort DTOs
      */
-    public List<CohortSummary> getAllCohorts() {
+    public List<CohortDTO> getAllCohorts() {
         logger.info("Retrieving all cohorts");
         return cohortRepository.findAll().stream()
-                .map(cohortMapper::toCohortSummary)
+                .map(cohortMapper::toCohortDTO)
                 .collect(Collectors.toList());
     }
 
@@ -42,95 +70,70 @@ public class CohortService {
      * Retrieves cohorts by school ID.
      *
      * @param schoolId the ID of the school
-     * @return a list of CohortSummary objects
-     * @throws IllegalArgumentException if schoolId is null
+     * @return a list of cohort DTOs
      */
-    public List<CohortSummary> getCohortsBySchoolId(Long schoolId) {
+    public List<CohortDTO> getCohortsBySchoolId(UUID schoolId) {
         logger.info("Retrieving cohorts for school ID {}", schoolId);
-        if (schoolId == null) {
-            throw new IllegalArgumentException("School ID cannot be null");
-        }
         return cohortRepository.findBySchoolId(schoolId).stream()
-                .map(cohortMapper::toCohortSummary)
+                .map(cohortMapper::toCohortDTO)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Retrieves a cohort by its ID.
+     * Retrieves a cohort by ID.
      *
-     * @param id the ID of the cohort
-     * @return the cohort summary
-     * @throws IllegalArgumentException if the cohort ID is null
+     * @param id the ID of the cohort to retrieve
+     * @return the cohort DTO
      * @throws ResourceNotFoundException if the cohort is not found
      */
-    public CohortSummary getCohortById(Long id) {
+    public CohortDTO getCohortById(UUID id) {
         logger.info("Retrieving cohort with ID {}", id);
-        if (id == null) {
-            throw new IllegalArgumentException("Cohort ID cannot be null");
-        }
         Cohort cohort = cohortRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cohort not found with ID: " + id));
-        return cohortMapper.toCohortSummary(cohort);
-    }
-
-    /**
-     * Saves a new cohort.
-     *
-     * @param cohortSummary the cohort summary to save
-     * @return the saved CohortSummary
-     * @throws IllegalArgumentException if cohortSummary is null
-     */
-    @Transactional
-    public CohortSummary saveCohort(CohortSummary cohortSummary) {
-        logger.info("Saving cohort");
-        if (cohortSummary == null) {
-            throw new IllegalArgumentException("CohortSummary cannot be null");
-        }
-        Cohort cohort = cohortMapper.toCohort(cohortSummary);
-        Cohort savedCohort = cohortRepository.save(cohort);
-        logger.info("Cohort saved with ID {}", savedCohort.getId());
-        return cohortMapper.toCohortSummary(savedCohort);
+        return cohortMapper.toCohortDTO(cohort);
     }
 
     /**
      * Updates an existing cohort.
      *
-     * @param id the ID of the cohort to update
-     * @param cohortSummary the cohort summary with updated data
-     * @return the updated CohortSummary
-     * @throws IllegalArgumentException if id or cohortSummary is null
+     * @param id        the ID of the cohort to update
+     * @param cohortDTO the cohort data transfer object
+     * @return the updated cohort DTO
      * @throws ResourceNotFoundException if the cohort is not found
      */
     @Transactional
-    public CohortSummary updateCohort(Long id, CohortSummary cohortSummary) {
+    public CohortDTO updateCohort(UUID id, CohortDTO cohortDTO) {
         logger.info("Updating cohort with ID {}", id);
-        if (id == null || cohortSummary == null) {
-            throw new IllegalArgumentException("Cohort ID and CohortSummary cannot be null");
-        }
         Cohort existingCohort = cohortRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cohort not found with ID: " + id));
-        cohortMapper.updateCohortFromSummary(cohortSummary, existingCohort);
+        cohortMapper.updateCohortFromDTO(cohortDTO, existingCohort);
         Cohort updatedCohort = cohortRepository.save(existingCohort);
         logger.info("Cohort updated with ID {}", updatedCohort.getId());
-        return cohortMapper.toCohortSummary(updatedCohort);
+        return cohortMapper.toCohortDTO(updatedCohort);
     }
 
     /**
-     * Deletes a cohort by its ID.
+     * Deletes a cohort by ID.
      *
      * @param id the ID of the cohort to delete
-     * @throws IllegalArgumentException if id is null
-     * @throws ResourceNotFoundException if the cohort is not found
      */
     @Transactional
-    public void deleteCohort(Long id) {
+    public void deleteCohort(UUID id) {
         logger.info("Deleting cohort with ID {}", id);
-        if (id == null) {
-            throw new IllegalArgumentException("Cohort ID cannot be null");
-        }
-        Cohort cohort = cohortRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cohort not found with ID: " + id));
-        cohortRepository.delete(cohort);
-        logger.info("Cohort deleted");
+        cohortRepository.deleteById(id);
+        logger.info("Cohort deleted with ID {}", id);
+    }
+
+    /**
+     * Retrieves a school by ID.
+     *
+     * @param schoolId the ID of the school to retrieve
+     * @return the school entity
+     * @throws ResourceNotFoundException if the school is not found
+     */
+    public School getSchoolById(UUID schoolId) {
+        logger.info("Retrieving school with ID {}", schoolId);
+        return schoolRepository.findById(schoolId)
+                .orElseThrow(() -> new ResourceNotFoundException("School not found with ID: " + schoolId));
     }
 }
