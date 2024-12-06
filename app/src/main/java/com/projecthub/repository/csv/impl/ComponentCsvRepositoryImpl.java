@@ -60,7 +60,7 @@ public class ComponentCsvRepositoryImpl implements ComponentCsvRepository {
             for (ConstraintViolation<Component> violation : violations) {
                 sb.append(violation.getMessage()).append("\n");
             }
-            throw new IllegalArgumentException(String.format("Component validation failed: %s", sb));
+            throw new IllegalArgumentException("Component validation failed: " + sb);
         }
     }
 
