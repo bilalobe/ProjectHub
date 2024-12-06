@@ -1,6 +1,5 @@
 package com.projecthub.utils.ui;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.CohortDTO;
@@ -13,13 +12,13 @@ import com.projecthub.utils.ui.loaders.TeamLoader;
 @Component
 public class LoaderFactory {
 
-    @Autowired
+    
     private SchoolLoader schoolLoader;
 
-    @Autowired
+    
     private CohortLoader cohortLoader;
 
-    @Autowired
+    
     private TeamLoader teamLoader;
 
     public TreeItemLoader getLoader(Object data) {
