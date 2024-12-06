@@ -68,7 +68,7 @@ dependencies {
     implementation 'org.owasp.encoder:encoder:1.2.3'
 
     // MapStruct for object mapping
-    implementation 'org.mapstruct:mapstruct:1.5.2.Final'
+    implementation 'org.mapstruct:mapstruct:1.6.3'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
     // Testing dependencies
