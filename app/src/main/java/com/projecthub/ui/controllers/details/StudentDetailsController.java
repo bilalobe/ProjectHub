@@ -20,7 +20,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,19 +39,14 @@ public class StudentDetailsController {
 
     private static final Logger logger = LoggerFactory.getLogger(StudentDetailsController.class);
 
-    @Autowired
     private SubmissionService submissionService;
 
-    @Autowired
     private ProjectService projectService;
 
-    @Autowired
     private SubmissionMapper submissionMapper;
 
-    @Autowired
     private TeamRepository teamRepository;
 
-    @Autowired
     private ProjectMapper projectMapper;
 
     @FXML

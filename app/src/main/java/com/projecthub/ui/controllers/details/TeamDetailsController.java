@@ -7,13 +7,12 @@ import com.projecthub.ui.viewmodels.TeamViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TeamDetailsController {
 
-    @Autowired
+    
     private TeamViewModel teamViewModel;
 
     @FXML

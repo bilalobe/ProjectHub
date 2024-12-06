@@ -2,7 +2,6 @@ package com.projecthub.ui.controllers.details;
 
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.TaskSummary;
@@ -19,7 +18,7 @@ import javafx.scene.layout.VBox;
 @Component
 public class TaskDetailsController {
 
-    @Autowired
+    
     private TaskViewModel taskViewModel;
 
     @FXML

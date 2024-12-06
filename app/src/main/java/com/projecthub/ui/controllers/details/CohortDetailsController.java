@@ -6,13 +6,12 @@ import com.projecthub.ui.viewmodels.CohortViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CohortDetailsController {
 
-    @Autowired
+    
     private CohortViewModel cohortViewModel;
 
     @FXML

@@ -2,7 +2,6 @@ package com.projecthub.ui.controllers.details;
 
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.AppUserSummary;
@@ -23,10 +22,10 @@ import javafx.scene.control.TextField;
 @Component
 public class UserDetailsController {
 
-    @Autowired
+    
     private UserService userService;
 
-    @Autowired
+    
     private UserViewModel userViewModel;
 
     @FXML

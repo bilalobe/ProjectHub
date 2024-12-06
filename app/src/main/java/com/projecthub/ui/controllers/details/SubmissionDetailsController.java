@@ -1,6 +1,5 @@
 package com.projecthub.ui.controllers.details;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.SubmissionSummary;
@@ -16,7 +15,7 @@ import javafx.scene.control.TextField;
 @Component
 public class SubmissionDetailsController {
 
-    @Autowired
+    
     private SubmissionViewModel submissionViewModel;
 
     @FXML

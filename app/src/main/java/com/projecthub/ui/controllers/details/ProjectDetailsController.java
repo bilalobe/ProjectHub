@@ -10,14 +10,13 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.GridPane;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class ProjectDetailsController {
 
-    @Autowired
+    
     private ProjectHubViewModel viewModel;
 
     @FXML
