@@ -19,7 +19,6 @@ RUN ./gradlew build --no-daemon
 
 # Stage 2: Run the application
 FROM openjdk:23-jdk
-WORKDIR /workspace
 
 # Create the sudoers.d directory if it does not exist
 RUN mkdir -p /etc/sudoers.d
@@ -40,8 +39,8 @@ USER $USERNAME
 # Copy jar from build stage
 COPY --from=build /app/build/libs/app-0.1.0-SNAPSHOT.jar /app.jar
 
-# Verify the contents of the directory
-RUN ls -la /app.jar
+# Verify the contents of the libs directory
+RUN cd /app/build/libs && ls -la
 
 # Expose the application port and set the entry point
 EXPOSE 8080
