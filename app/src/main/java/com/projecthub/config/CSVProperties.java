@@ -16,6 +16,7 @@ public class CsvProperties {
     private String teachersFilepath;
     private String teamsFilepath;
     private String cohortsFilepath;
+    private String usersFilepath;
     private String submissionsTempdir;
 
     // Getters and setters...
@@ -92,6 +93,10 @@ public class CsvProperties {
         this.cohortsFilepath = cohortsFilepath;
     }
 
+    public String getUsersFilepath() {
+        return usersFilepath;
+    }
+
     public String getSubmissionsTempdir() {
         return submissionsTempdir;
     }
@@ -100,8 +105,5 @@ public class CsvProperties {
         this.submissionsTempdir = submissionsTempdir;
     }
 
-    public String getUsersFilepath() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUsersFilepath'");
-    }
+
 }
