@@ -49,6 +49,21 @@ public class ComponentDTO {
     }
 
     /**
+     * Custom constructor for creating a ComponentDTO with specific values.
+     *
+     * @param id          the component ID
+     * @param name        the component name
+     * @param description the component description
+     * @param projectId   the project ID
+     */
+    public ComponentDTO(UUID id, String name, String description, UUID projectId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.projectId = projectId;
+    }
+
+    /**
      * Gets the unique identifier for the component.
      *
      * @return the component ID
