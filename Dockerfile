@@ -19,7 +19,7 @@ RUN ./gradlew build --no-daemon
 
 # Stage 2: Run the application
 FROM openjdk:23-jdk
-WORKDIR /app
+WORKDIR /workspace
 
 # Create the sudoers.d directory if it does not exist
 RUN mkdir -p /etc/sudoers.d
@@ -36,11 +36,16 @@ RUN groupadd --gid $USER_GID $USERNAME || echo "Group exists" \
 
 # Set the non-root user and working directory
 USER $USERNAME
-WORKDIR /app 
 
 # Copy jar from build stage
 COPY --from=build /app/build/libs/app-0.1.0-SNAPSHOT.jar /app.jar
 
+# Verify the contents of the directory
+RUN ls -la /app.jar
+
 # Expose the application port and set the entry point
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app.jar"]
+
+# Run the application
+CMD ["--spring.profiles.active=dev"]
