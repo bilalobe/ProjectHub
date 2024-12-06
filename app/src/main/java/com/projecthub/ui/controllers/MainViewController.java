@@ -9,11 +9,9 @@ import org.springframework.stereotype.Component;
 public class MainViewController {
 
     @FXML
-    @SuppressWarnings("unused")
     private StackPane mainContent;
 
     @FXML
-    @SuppressWarnings("unused")
     private VBox contextualSidebar;
 
     public void initialize() {
