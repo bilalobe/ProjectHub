@@ -1,18 +1,94 @@
+<!-- XML -->
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.projecthub.ui.controllers.MainViewController">
+
     <top>
-        <!-- Include your menu bar here -->
+        <MenuBar>
+            <Menu text="File">
+                <MenuItem text="Exit" onAction="#handleExit">
+                    <tooltip>
+                        <Tooltip text="Exit the application"/>
+                    </tooltip>
+                </MenuItem>
+            </Menu>
+            <Menu text="Edit">
+                <MenuItem text="Preferences" onAction="#handlePreferences">
+                    <tooltip>
+                        <Tooltip text="Open preferences"/>
+                    </tooltip>
+                </MenuItem>
+            </Menu>
+            <Menu text="View">
+                <MenuItem text="Dashboard" onAction="#showDashboard">
+                    <tooltip>
+                        <Tooltip text="View dashboard"/>
+                    </tooltip>
+                </MenuItem>
+                <MenuItem text="Projects" onAction="#showProjects">
+                    <tooltip>
+                        <Tooltip text="View projects"/>
+                    </tooltip>
+                </MenuItem>
+                <MenuItem text="Teams" onAction="#showTeams">
+                    <tooltip>
+                        <Tooltip text="View teams"/>
+                    </tooltip>
+                </MenuItem>
+                <MenuItem text="Users" onAction="#showUsers">
+                    <tooltip>
+                        <Tooltip text="View users"/>
+                    </tooltip>
+                </MenuItem>
+            </Menu>
+            <Menu text="Help">
+                <MenuItem text="About" onAction="#handleAbout">
+                    <tooltip>
+                        <Tooltip text="About the application"/>
+                    </tooltip>
+                </MenuItem>
+            </Menu>
+        </MenuBar>
     </top>
     <left>
-        <!-- Contextual sidebar placeholder -->
-        <VBox fx:id="contextualSidebar" />
+        <VBox fx:id="navigationPane" spacing="10" padding="10">
+            <Button text="Dashboard" onAction="#showDashboard">
+                <tooltip>
+                    <Tooltip text="View dashboard"/>
+                </tooltip>
+            </Button>
+            <Button text="Projects" onAction="#showProjects">
+                <tooltip>
+                    <Tooltip text="View projects"/>
+                </tooltip>
+            </Button>
+            <Button text="Teams" onAction="#showTeams">
+                <tooltip>
+                    <Tooltip text="View teams"/>
+                </tooltip>
+            </Button>
+            <Button text="Users" onAction="#showUsers">
+                <tooltip>
+                    <Tooltip text="View users"/>
+                </tooltip>
+            </Button>
+        </VBox>
     </left>
     <center>
-        <!-- Main content area -->
-        <StackPane fx:id="mainContent" />
+        <StackPane fx:id="mainContent">
+            <!-- The main content area where different views are loaded -->
+        </StackPane>
     </center>
+    <bottom>
+        <HBox spacing="10" padding="10" alignment="CENTER">
+            <Label text="© 2024 ProjectHub" />
+            <Label fx:id="statusLabel" text="Ready" />
+        </HBox>
+    </bottom>
 </BorderPane>
