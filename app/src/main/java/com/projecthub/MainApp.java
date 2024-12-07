@@ -13,7 +13,15 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/projecthub/ui/views/MainView.fxml"));
         BorderPane root = loader.load();
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/projecthub/ui/css/styles.css").toExternalForm());
+
+        // Load and apply the stylesheet
+        String stylesheet = getClass().getResource("/com/projecthub/ui/css/styles.css").toExternalForm();
+        if (stylesheet != null) {
+            scene.getStylesheets().add(stylesheet);
+        } else {
+            System.err.println("Stylesheet not found: /com/projecthub/ui/css/styles.css");
+        }
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("ProjectHub");
         primaryStage.show();
