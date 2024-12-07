@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component;
 import com.projecthub.utils.ui.LoaderFactory;
 import com.projecthub.utils.ui.TreeItemWrapper;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
+import com.projecthub.utils.ui.TreeCellFactory;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.event.EventHandler;
@@ -18,10 +18,7 @@ import javafx.scene.control.TreeItem.TreeModificationEvent;
 @Component
 public class ProjectHubFXController {
 
-
     private ProjectHubViewModel viewModel;
-
-
     private LoaderFactory loaderFactory;
 
     @FXML
@@ -50,21 +47,7 @@ public class ProjectHubFXController {
             rootItem.getChildren().add(treeItem);
         }
 
-        schoolTreeView.setCellFactory(this::createTreeCell);
-    }
-
-    private TreeCell<TreeItemWrapper> createTreeCell(TreeView<TreeItemWrapper> treeView) {
-        return new TreeCell<TreeItemWrapper>() {
-            @Override
-            protected void updateItem(TreeItemWrapper item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getName() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getName());
-                }
-            }
-        };
+        schoolTreeView.setCellFactory(TreeCellFactory::createTreeCell);
     }
 
     private TreeItem<TreeItemWrapper> createTreeItem(TreeItemWrapper wrapper) {
@@ -92,12 +75,6 @@ public class ProjectHubFXController {
         }
     }
 
-    /**
-     * Shows an alert with the specified title and message.
-     *
-     * @param title   the title of the alert
-     * @param message the message of the alert
-     */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
