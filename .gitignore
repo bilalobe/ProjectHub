@@ -5,13 +5,14 @@ build/
 # Ignore Gradle project-specific cache directory
 .gradle
 
-
 # Except for build/libs
 build/libs/
 
-
 # Ignore Maven project-specific cache directory
 .fake
+
+# K8s playground
+k8s/
 
 # Ignore Gradle files
 gradle.properties
