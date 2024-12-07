@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.projecthub.dto.SubmissionDTO;
 import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.SubmissionDetailsViewModel;
+import com.projecthub.mapper.SubmissionMapper;
 
 import java.util.UUID;
 
@@ -23,6 +24,7 @@ import javafx.scene.control.TextField;
 public class SubmissionDetailsController extends BaseController {
 
     private final SubmissionDetailsViewModel submissionViewModel;
+    private final SubmissionMapper submissionMapper;
 
     @FXML
     private Label submissionIdLabel;
@@ -52,20 +54,29 @@ public class SubmissionDetailsController extends BaseController {
      * Constructor with dependencies injected.
      *
      * @param submissionViewModel the SubmissionDetailsViewModel instance
+     * @param submissionMapper    the SubmissionMapper instance
      */
-    public SubmissionDetailsController(SubmissionDetailsViewModel submissionViewModel) {
+    public SubmissionDetailsController(SubmissionDetailsViewModel submissionViewModel, SubmissionMapper submissionMapper) {
         this.submissionViewModel = submissionViewModel;
+        this.submissionMapper = submissionMapper;
     }
 
     @FXML
     public void initialize() {
+        bindProperties();
+        setupEventHandlers();
+    }
+
+    private void bindProperties() {
         submissionIdLabel.textProperty().bind(submissionViewModel.submissionIdProperty().asString());
         studentNameLabel.textProperty().bind(submissionViewModel.studentNameProperty());
         projectNameLabel.textProperty().bind(submissionViewModel.projectNameProperty());
         timestampLabel.textProperty().bind(submissionViewModel.timestampProperty());
         gradeField.textProperty().bindBidirectional(submissionViewModel.gradeProperty());
         contentArea.textProperty().bindBidirectional(submissionViewModel.contentProperty());
+    }
 
+    private void setupEventHandlers() {
         saveSubmissionButton.setOnAction(this::saveSubmission);
         deleteSubmissionButton.setOnAction(this::deleteSubmission);
     }
@@ -76,15 +87,19 @@ public class SubmissionDetailsController extends BaseController {
 
     @FXML
     private void saveSubmission(ActionEvent event) {
-        // ...enhanced input validation...
         try {
-            SubmissionDTO submissionSummary = new SubmissionDTO(
-            );
+            // Create a new SubmissionDTO using the mapper
+            SubmissionDTO submissionSummary = submissionMapper.toSubmissionDTO(submissionViewModel);
+
+            // Save the submission
             submissionViewModel.saveSubmission(submissionSummary);
+
+            // Show success alert
             showAlert(Alert.AlertType.INFORMATION, "Success", "Submission saved successfully.");
         } catch (Exception e) {
-            logger.error("Failed to save submission", e);
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to save submission.");
+            // Log the error and show error alert
+            logError("Failed to save submission", e);
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to save submission: " + e.getMessage());
         }
     }
 
@@ -99,15 +114,8 @@ public class SubmissionDetailsController extends BaseController {
             submissionViewModel.deleteSubmission(submissionId);
             showAlert(Alert.AlertType.INFORMATION, "Success", "Submission deleted successfully.");
         } catch (Exception e) {
+            logError("Failed to delete submission", e);
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete submission: " + e.getMessage());
         }
     }
-
-    protected void showAlert(Alert.AlertType alertType, String title, String message) {
-            Alert alert = new Alert(alertType);
-            alert.setTitle(title);
-            alert.setHeaderText(null);
-            alert.setContentText(message);
-            alert.showAndWait();
-        }
 }
