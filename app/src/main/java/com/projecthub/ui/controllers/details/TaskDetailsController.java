@@ -112,7 +112,15 @@ public class TaskDetailsController extends BaseController {
 
     @FXML
     private void handleSaveTask(ActionEvent event) {
-        UUID taskId = UUID.randomUUID();
+        saveTask(UUID.randomUUID());
+    }
+
+    @FXML
+    private void handleSaveTask(ActionEvent event, UUID taskId) {
+        saveTask(taskId);
+    }
+
+    private void saveTask(UUID taskId) {
         try {
             String name = taskNameField.getText();
             String description = taskDescriptionField.getText();
@@ -168,42 +176,6 @@ public class TaskDetailsController extends BaseController {
             taskDueDatePicker.setValue(selectedTask.getDueDate());
             taskForm.setVisible(true);
             saveTaskButton.setOnAction(e -> handleSaveTask(e, selectedTask.getId()));
-        }
-    }
-
-    @FXML
-    private void handleSaveTask(ActionEvent event, UUID taskId) {
-        try {
-            String name = taskNameField.getText();
-            String description = taskDescriptionField.getText();
-            String status = taskStatusField.getText();
-            LocalDate dueDate = taskDueDatePicker.getValue();
-
-            if (!isValidTaskInput(name, description)) {
-                showAlert(Alert.AlertType.ERROR, "Validation Error", "Please provide valid task details.");
-                return;
-            }
-
-            Task<Void> saveTask = new Task<>() {
-                @Override
-                protected Void call() throws Exception {
-                    try {
-                        TaskDTO taskSummary = new TaskDTO(taskId, name, description, status, dueDate, null, null, null, null, false, null);
-                        taskViewModel.saveTask(taskSummary);
-                    } catch (Exception e) {
-                        logger.error("Error saving task", e);
-                        throw e;
-                    }
-                    return null;
-                }
-            };
-
-            saveTask.setOnSucceeded(this::handleSaveTaskSuccess);
-            saveTask.setOnFailed(this::handleSaveTaskFailure);
-
-            new Thread(saveTask).start();
-        } catch (Exception e) {
-            showAlert("Error", "Failed to save task: " + e.getMessage());
         }
     }
 

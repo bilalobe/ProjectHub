@@ -1,8 +1,8 @@
 package com.projecthub.controller;
 
 import com.projecthub.dto.AppUserDTO;
-import com.projecthub.service.AppUserService;
 import com.projecthub.exception.ResourceNotFoundException;
+import com.projecthub.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -71,5 +71,11 @@ public class AppUserController {
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
         logger.error("Resource not found", ex);
         return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex) {
+        logger.error("An error occurred", ex);
+        return ResponseEntity.status(500).body("An internal error occurred. Please try again later.");
     }
 }
