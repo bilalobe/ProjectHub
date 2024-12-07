@@ -150,13 +150,8 @@ public class AppUserDetailsController extends BaseController {
 
     @FXML
     private void handleDeleteUser(ActionEvent actionEvent) {
-        String selectedUser = userListView.getSelectionModel().getSelectedItem();
-        if (selectedUser == null) {
-            showAlert("Error", "No user selected.");
-            return;
-        }
-
-        String userId = selectedUser.split(":")[0].trim();
+        String userId = getSelectedUserId();
+        if (userId == null) return;
 
         Task<Void> deleteUserTask = new Task<>() {
             @Override
@@ -190,21 +185,23 @@ public class AppUserDetailsController extends BaseController {
 
     @FXML
     private void handleUpdateUser(ActionEvent actionEvent) {
-        String selectedUser = userListView.getSelectionModel().getSelectedItem();
-        if (selectedUser == null) {
-            showAlert("Error", "No user selected.");
-            return;
-        }
+        String userId = getSelectedUserId();
+        if (userId == null) return;
 
-        String userId = selectedUser.split(":")[0].trim();
         String newPassword = newPasswordField.getText();
-
         if (newPassword.isEmpty()) {
             showAlert("Error", "New password cannot be empty.");
             return;
         }
 
-        Task<Void> updateUserTask = new Task<>() {
+        Task<Void> updateUserTask = createUpdateUserTask(userId, newPassword);
+        updateUserTask.setOnSucceeded(this::handleUpdateUserSuccess);
+        updateUserTask.setOnFailed(this::handleUpdateUserFailure);
+        new Thread(updateUserTask).start();
+    }
+
+    private Task<Void> createUpdateUserTask(String userId, String newPassword) {
+        return new Task<>() {
             @Override
             protected Void call() throws Exception {
                 try {
@@ -219,9 +216,6 @@ public class AppUserDetailsController extends BaseController {
                 return null;
             }
         };
-        updateUserTask.setOnSucceeded(this::handleUpdateUserSuccess);
-        updateUserTask.setOnFailed(this::handleUpdateUserFailure);
-        new Thread(updateUserTask).start();
     }
 
     private void handleUpdateUserSuccess(WorkerStateEvent event) {
@@ -243,21 +237,23 @@ public class AppUserDetailsController extends BaseController {
 
     @FXML
     private void handleResetPassword(ActionEvent actionEvent) {
-        String selectedUser = userListView.getSelectionModel().getSelectedItem();
-        if (selectedUser == null) {
-            showAlert("Error", "No user selected.");
-            return;
-        }
+        String userId = getSelectedUserId();
+        if (userId == null) return;
 
-        String userId = selectedUser.split(":")[0].trim();
         String newPassword = newPasswordField.getText();
-
         if (newPassword.isEmpty()) {
             showAlert("Error", "New password cannot be empty.");
             return;
         }
 
-        Task<Void> resetPasswordTask = new Task<>() {
+        Task<Void> resetPasswordTask = createResetPasswordTask(userId, newPassword);
+        resetPasswordTask.setOnSucceeded(this::handleResetPasswordSuccess);
+        resetPasswordTask.setOnFailed(this::handleResetPasswordFailure);
+        new Thread(resetPasswordTask).start();
+    }
+
+    private Task<Void> createResetPasswordTask(String userId, String newPassword) {
+        return new Task<>() {
             @Override
             protected Void call() throws Exception {
                 try {
@@ -272,9 +268,6 @@ public class AppUserDetailsController extends BaseController {
                 return null;
             }
         };
-        resetPasswordTask.setOnSucceeded(this::handleResetPasswordSuccess);
-        resetPasswordTask.setOnFailed(this::handleResetPasswordFailure);
-        new Thread(resetPasswordTask).start();
     }
 
     private void handleResetPasswordSuccess(WorkerStateEvent event) {
@@ -292,6 +285,15 @@ public class AppUserDetailsController extends BaseController {
         } else {
             showAlert("Error", "Failed to reset password: " + exception.getMessage());
         }
+    }
+
+    private String getSelectedUserId() {
+        String selectedUser = userListView.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            showAlert("Error", "No user selected.");
+            return null;
+        }
+        return selectedUser.split(":")[0].trim();
     }
 
     private void showAlert(String title, String message) {
