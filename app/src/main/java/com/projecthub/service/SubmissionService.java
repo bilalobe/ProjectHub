@@ -43,7 +43,7 @@ public class SubmissionService {
         validateSubmissionDTO(submissionDTO);
         Submission submission = submissionMapper.toSubmission(submissionDTO);
         Submission savedSubmission = submissionRepository.save(submission);
-        logger.info("Submission created with ID: {}", savedSubmission.getId());
+        logger.info("Submission reintroduced with ID: {}", savedSubmission.getId());
         return submissionMapper.toSubmissionDTO(savedSubmission);
     }
 
