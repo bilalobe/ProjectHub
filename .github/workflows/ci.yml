@@ -69,4 +69,4 @@ jobs:
         docker push $IMAGE_NAME
 
     - name: Run Application
-      run: docker-compose -f compose-dev.yaml up -d app
+      run: docker-compose -f docker-compose.yaml up -d app
