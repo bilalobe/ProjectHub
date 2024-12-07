@@ -401,3 +401,77 @@ graph TD
     class K,L,M,N,O,P,Q backend
     class R database
     class U,V auth
+
+sequenceDiagram
+    participant Developer
+    participant GitHub
+    participant GitHubActions
+    participant DockerHub
+    participant Kubernetes
+
+    Developer->>GitHub: Push Code
+    GitHub->>GitHubActions: Trigger CI Pipeline
+    GitHubActions->>GitHubActions: Checkout Code
+    GitHubActions->>GitHubActions: Build Application
+    GitHubActions->>GitHubActions: Run Tests
+    GitHubActions->>GitHubActions: Build Docker Image
+    GitHubActions->>DockerHub: Push Docker Image
+    GitHubActions->>Kubernetes: Deploy to Kubernetes
+    Kubernetes->>Kubernetes: Update Deployment
+    Kubernetes->>Developer: Deployment Status
+
+%% ongoing
+
+flowchart TB
+    subgraph Developer
+        A[Developer]
+    end
+
+    subgraph VersionControl
+        B[GitHub Repository]
+    end
+
+    subgraph CICD
+        C[GitHub Actions]
+    end
+
+    subgraph Registry
+        D[Docker Hub]
+    end
+
+    subgraph KubernetesCluster
+        E[Kubernetes]
+        F[Ingress Controller]
+        G[Backend Service]
+        H[Frontend Service]
+        I[Database Service]
+        J[Authentication Service]
+    end
+
+    subgraph Monitoring
+        K[Prometheus]
+        L[Grafana]
+    end
+
+    subgraph Logging
+        M[Elasticsearch]
+        N[Logstash]
+        O[Kibana]
+    end
+
+    A -->|Pushes Code| B
+    B -->|Triggers CI/CD| C
+    C -->|Builds & Tests| C
+    C -->|Builds Docker Image| D
+    D -->|Stores Image| D
+    C -->|Deploys to| E
+    F -->|Routes Traffic| G & H
+    G -->|Communicates with| I & J
+    E -->|Monitors| K
+    K -->|Visualizes Metrics| L
+    E -->|Logs to| M
+    M -->|Processes Logs| N
+    N -->|Visualizes Logs| O
+
+
+
