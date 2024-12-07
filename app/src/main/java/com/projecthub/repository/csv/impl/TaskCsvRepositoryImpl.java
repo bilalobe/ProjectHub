@@ -2,6 +2,7 @@ package com.projecthub.repository.csv.impl;
 
 import com.projecthub.model.Task;
 import com.projecthub.repository.csv.TaskCsvRepository;
+import com.projecthub.repository.csv.helper.CsvHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -72,22 +73,12 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
             tasks.removeIf(t -> t.getId().equals(task.getId()));
             tasks.add(task);
 
-            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getTasksFilepath()))) {
-                ColumnPositionMappingStrategy<Task> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(Task.class);
-                String[] memberFieldsToBindTo = {"id", "name", "description", "projectId"};
-                strategy.setColumnMapping(memberFieldsToBindTo);
-
-                StatefulBeanToCsv<Task> beanToCsv = new StatefulBeanToCsvBuilder<Task>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
-
-                beanToCsv.write(tasks);
-            }
+            String[] columns = {"id", "name", "description", "projectId"};
+            CsvHelper.writeBeansToCsv(csvProperties.getTasksFilepath(), Task.class, tasks, columns);
 
             logger.info("Task saved successfully: {}", task);
             return task;
-        } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+        } catch (Exception e) {
             logger.error("Error saving task to CSV", e);
             throw new RuntimeException("Error saving task to CSV", e);
         }

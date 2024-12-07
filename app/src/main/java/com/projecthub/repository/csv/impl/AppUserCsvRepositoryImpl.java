@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.projecthub.repository.csv.AppUserCsvRepository;
+import com.projecthub.repository.csv.helper.CsvHelper;
 
 @Repository("csvUserRepository")
 public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
@@ -82,19 +83,11 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
             List<AppUser> users = findAll();
             users.removeIf(u -> u.getId().equals(user.getId()));
             users.add(user);
-            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getUsersFilepath()))) {
-                ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(AppUser.class);
-                String[] memberFieldsToBindTo = {"id", "username", "email", "firstName", "lastName", "teamId"};
-                strategy.setColumnMapping(memberFieldsToBindTo);
-                StatefulBeanToCsv<AppUser> beanToCsv = new StatefulBeanToCsvBuilder<AppUser>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
-                beanToCsv.write(users);
-            }
+            String[] columns = {"id", "username", "email", "firstName", "lastName", "teamId"};
+            CsvHelper.writeBeansToCsv(csvProperties.getUsersFilepath(), AppUser.class, users, columns);
             logger.info("User saved successfully: {}", user);
             return user;
-        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException | com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
+        } catch (Exception e) {
             logger.error("Error saving user to CSV", e);
             throw new RuntimeException("Error saving user to CSV", e);
         }

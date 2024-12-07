@@ -6,6 +6,7 @@ import com.opencsv.bean.*;
 import com.projecthub.config.CsvProperties;
 import com.projecthub.model.Component;
 import com.projecthub.repository.csv.ComponentCsvRepository;
+import com.projecthub.repository.csv.helper.CsvHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
@@ -79,20 +80,11 @@ public class ComponentCsvRepositoryImpl implements ComponentCsvRepository {
             List<Component> components = findAll();
             components.removeIf(c -> c.getId().equals(component.getId()));
             components.add(component);
-            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getComponentsFilepath()))) {
-                ColumnPositionMappingStrategy<Component> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(Component.class);
-                String[] memberFieldsToBindTo = { "id", "name", "description", "projectId" };
-                strategy.setColumnMapping(memberFieldsToBindTo);
-                StatefulBeanToCsv<Component> beanToCsv = new StatefulBeanToCsvBuilder<Component>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
-                beanToCsv.write(components);
-            }
+            String[] columns = { "id", "name", "description", "projectId" };
+            CsvHelper.writeBeansToCsv(csvProperties.getComponentsFilepath(), Component.class, components, columns);
             logger.info("Component saved successfully: {}", component);
             return component;
-        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException
-                | com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
+        } catch (Exception e) {
             logger.error("Error saving component to CSV", e);
             throw new RuntimeException("Error saving component to CSV", e);
         }

@@ -6,6 +6,7 @@ import com.opencsv.bean.*;
 import com.projecthub.config.CsvProperties;
 import com.projecthub.model.School;
 import com.projecthub.repository.csv.SchoolCsvRepository;
+import com.projecthub.repository.csv.helper.CsvHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
@@ -79,19 +80,11 @@ public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
             List<School> schools = findAll();
             schools.removeIf(s -> s.getId().equals(school.getId()));
             schools.add(school);
-            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getSchoolsFilepath()))) {
-                ColumnPositionMappingStrategy<School> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(School.class);
-                String[] memberFieldsToBindTo = {"id", "name"};
-                strategy.setColumnMapping(memberFieldsToBindTo);
-                StatefulBeanToCsv<School> beanToCsv = new StatefulBeanToCsvBuilder<School>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
-                beanToCsv.write(schools);
-            }
+            String[] columns = {"id", "name"};
+            CsvHelper.writeBeansToCsv(csvProperties.getSchoolsFilepath(), School.class, schools, columns);
             logger.info("School saved successfully: {}", school);
             return school;
-        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException | com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
+        } catch (Exception e) {
             logger.error("Error saving school to CSV", e);
             throw new RuntimeException("Error saving school to CSV", e);
         }

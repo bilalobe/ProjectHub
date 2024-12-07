@@ -6,6 +6,7 @@ import com.opencsv.bean.*;
 import com.projecthub.config.CsvProperties;
 import com.projecthub.repository.csv.ProjectCsvRepository;
 import com.projecthub.model.Project;
+import com.projecthub.repository.csv.helper.CsvHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
@@ -79,19 +80,11 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
             List<Project> projects = findAll();
             projects.removeIf(p -> p.getId().equals(project.getId()));
             projects.add(project);
-            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getProjectsFilepath()))) {
-                ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(Project.class);
-                String[] memberFieldsToBindTo = {"id", "name", "description", "teamId", "deadline", "startDate", "endDate", "status"};
-                strategy.setColumnMapping(memberFieldsToBindTo);
-                StatefulBeanToCsv<Project> beanToCsv = new StatefulBeanToCsvBuilder<Project>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
-                beanToCsv.write(projects);
-            }
+            String[] columns = {"id", "name", "description", "teamId", "deadline", "startDate", "endDate", "status"};
+            CsvHelper.writeBeansToCsv(csvProperties.getProjectsFilepath(), Project.class, projects, columns);
             logger.info("Project saved successfully: {}", project);
             return project;
-        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException | com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
+        } catch (Exception e) {
             logger.error("Error saving project to CSV", e);
             throw new RuntimeException("Error saving project to CSV", e);
         }

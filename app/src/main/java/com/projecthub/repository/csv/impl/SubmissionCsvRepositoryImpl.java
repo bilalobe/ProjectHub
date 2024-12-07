@@ -6,6 +6,7 @@ import com.opencsv.bean.*;
 import com.projecthub.config.CsvProperties;
 import com.projecthub.model.Submission;
 import com.projecthub.repository.csv.SubmissionCsvRepository;
+import com.projecthub.repository.csv.helper.CsvHelper;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -80,19 +81,11 @@ public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
             List<Submission> submissions = findAll();
             submissions.removeIf(s -> s.getId().equals(submission.getId()));
             submissions.add(submission);
-            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getSubmissionsFilepath()))) {
-                ColumnPositionMappingStrategy<Submission> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(Submission.class);
-                String[] memberFieldsToBindTo = {"id", "projectId", "studentId", "content", "timestamp", "grade"};
-                strategy.setColumnMapping(memberFieldsToBindTo);
-                StatefulBeanToCsv<Submission> beanToCsv = new StatefulBeanToCsvBuilder<Submission>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
-                beanToCsv.write(submissions);
-            }
+            String[] columns = {"id", "studentId", "projectId", "submissionDate", "content"};
+            CsvHelper.writeBeansToCsv(csvProperties.getSubmissionsFilepath(), Submission.class, submissions, columns);
             logger.info("Submission saved successfully: {}", submission);
             return submission;
-        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException | com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
+        } catch (Exception e) {
             logger.error("Error saving submission to CSV", e);
             throw new RuntimeException("Error saving submission to CSV", e);
         }

@@ -8,6 +8,7 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.projecthub.config.CsvProperties;
 import com.projecthub.model.Cohort;
 import com.projecthub.repository.csv.CohortCsvRepository;
+import com.projecthub.repository.csv.helper.CsvHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
@@ -64,10 +65,11 @@ public class CohortCsvRepositoryImpl implements CohortCsvRepository {
             List<Cohort> cohorts = findAll();
             cohorts.removeIf(c -> c.getId().equals(cohort.getId()));
             cohorts.add(cohort);
-            writeCohortsToFile(cohorts);
+            String[] columns = {"id", "name", "schoolId"};
+            CsvHelper.writeBeansToCsv(csvProperties.getCohortsFilepath(), Cohort.class, cohorts, columns);
             logger.info("Cohort saved successfully: {}", cohort);
             return cohort;
-        } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+        } catch (Exception e) {
             logger.error("Error saving cohort to CSV", e);
             throw new RuntimeException("Error saving cohort to CSV", e);
         }

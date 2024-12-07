@@ -1,23 +1,24 @@
 package com.projecthub.repository.csv.impl;
 
 import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.*;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBeanBuilder;
 import com.projecthub.config.CsvProperties;
 import com.projecthub.model.Team;
 import com.projecthub.repository.csv.TeamCsvRepository;
-
+import com.projecthub.repository.csv.helper.CsvHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Repository("csvTeamRepository")
 public class TeamCsvRepositoryImpl implements TeamCsvRepository {
@@ -77,19 +78,11 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
             List<Team> teams = findAll();
             teams.removeIf(t -> t.getId().equals(team.getId()));
             teams.add(team);
-            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getTeamsFilepath()))) {
-                ColumnPositionMappingStrategy<Team> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(Team.class);
-                String[] memberFieldsToBindTo = {"id", "name"};
-                strategy.setColumnMapping(memberFieldsToBindTo);
-                StatefulBeanToCsv<Team> beanToCsv = new StatefulBeanToCsvBuilder<Team>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
-                beanToCsv.write(teams);
-            }
+            String[] columns = {"id", "name"};
+            CsvHelper.writeBeansToCsv(csvProperties.getTeamsFilepath(), Team.class, teams, columns);
             logger.info("Team saved successfully: {}", team);
             return team;
-        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException | com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
+        } catch (Exception e) {
             logger.error("Error saving team to CSV", e);
             throw new RuntimeException("Error saving team to CSV", e);
         }
@@ -142,18 +135,10 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
             backupCSVFile(csvProperties.getTeamsFilepath());
             List<Team> teams = findAll();
             teams.removeIf(t -> t.getId().equals(id));
-            try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getTeamsFilepath()))) {
-                ColumnPositionMappingStrategy<Team> strategy = new ColumnPositionMappingStrategy<>();
-                strategy.setType(Team.class);
-                String[] memberFieldsToBindTo = {"id", "name"};
-                strategy.setColumnMapping(memberFieldsToBindTo);
-                StatefulBeanToCsv<Team> beanToCsv = new StatefulBeanToCsvBuilder<Team>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
-                beanToCsv.write(teams);
-            }
+            String[] columns = {"id", "name"};
+            CsvHelper.writeBeansToCsv(csvProperties.getTeamsFilepath(), Team.class, teams, columns);
             logger.info("Team deleted successfully: {}", id);
-        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException | com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
+        } catch (Exception e) {
             logger.error("Error deleting team from CSV", e);
             throw new RuntimeException("Error deleting team from CSV", e);
         }
