@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Service class for managing schools.
@@ -103,6 +102,6 @@ public class SchoolService {
         logger.info("Retrieving all schools");
         return schoolRepository.findAll().stream()
                 .map(schoolMapper::toSchoolDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

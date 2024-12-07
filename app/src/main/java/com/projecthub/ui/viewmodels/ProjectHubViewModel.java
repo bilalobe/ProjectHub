@@ -99,7 +99,7 @@ public class ProjectHubViewModel {
             List<ProjectDTO> filteredProjects = projectService.getAllProjects().stream()
                     .filter(project -> project.getName().toLowerCase().contains(lowerCaseQuery) ||
                             project.getDescription().toLowerCase().contains(lowerCaseQuery))
-                    .collect(Collectors.toList());
+                    .toList();
             projects.setAll(filteredProjects);
         } catch (Exception e) {
             logger.error("Failed to search projects with query: {}", query, e);

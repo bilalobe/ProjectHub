@@ -2,7 +2,6 @@ package com.projecthub.utils.ui;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -37,47 +36,58 @@ import javafx.scene.control.TreeItem;
 @Component
 public class PopulatorUtility {
 
-    
-    private SchoolRepository schoolRepository;
+    private final SchoolRepository schoolRepository;
+    private final SchoolMapper schoolMapper;
 
-    
-    private CohortRepository cohortRepository;
+    private final CohortRepository cohortRepository;
+    private final CohortMapper cohortMapper;
 
-    
-    private TeamRepository teamRepository;
+    private final TeamRepository teamRepository;
+    private final TeamMapper teamMapper;
 
-    
-    private ProjectRepository projectRepository;
+    private final ProjectRepository projectRepository;
+    private final ProjectMapper projectMapper;
 
-    
-    private ComponentRepository componentRepository;
+    private final ComponentRepository componentRepository;
+    private final ComponentMapper componentMapper;
 
-    
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
+    private final StudentMapper studentMapper;
 
-    
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+    private final TaskMapper taskMapper;
 
-    
-    private SchoolMapper schoolMapper;
+    public PopulatorUtility(
+            SchoolRepository schoolRepository,
+            SchoolMapper schoolMapper,
+            CohortRepository cohortRepository,
+            CohortMapper cohortMapper,
+            TeamRepository teamRepository,
+            TeamMapper teamMapper,
+            ProjectRepository projectRepository,
+            ProjectMapper projectMapper,
+            ComponentRepository componentRepository,
+            ComponentMapper componentMapper,
+            StudentRepository studentRepository,
+            StudentMapper studentMapper,
+            TaskRepository taskRepository,
+            TaskMapper taskMapper) {
 
-    
-    private CohortMapper cohortMapper;
-
-    
-    private TeamMapper teamMapper;
-
-    
-    private ProjectMapper projectMapper;
-
-    
-    private ComponentMapper componentMapper;
-
-    
-    private StudentMapper studentMapper;
-
-    
-    private TaskMapper taskMapper;
+        this.schoolRepository = schoolRepository;
+        this.schoolMapper = schoolMapper;
+        this.cohortRepository = cohortRepository;
+        this.cohortMapper = cohortMapper;
+        this.teamRepository = teamRepository;
+        this.teamMapper = teamMapper;
+        this.projectRepository = projectRepository;
+        this.projectMapper = projectMapper;
+        this.componentRepository = componentRepository;
+        this.componentMapper = componentMapper;
+        this.studentRepository = studentRepository;
+        this.studentMapper = studentMapper;
+        this.taskRepository = taskRepository;
+        this.taskMapper = taskMapper;
+    }
 
     /**
      * Populates the TreeView with Schools.
@@ -88,7 +98,8 @@ public class PopulatorUtility {
         try {
             List<SchoolDTO> schools = schoolRepository.findAll().stream()
                     .map(schoolMapper::toSchoolDTO)
-                    .collect(Collectors.toList());
+                    .toList();
+
             for (SchoolDTO school : schools) {
                 TreeItemWrapper schoolWrapper = new TreeItemWrapper(school.getName(), school);
                 TreeItem<TreeItemWrapper> schoolItem = new TreeItem<>(schoolWrapper);
@@ -109,7 +120,8 @@ public class PopulatorUtility {
         try {
             List<CohortDTO> cohorts = cohortRepository.findBySchoolId(schoolId).stream()
                     .map(cohortMapper::toCohortDTO)
-                    .collect(Collectors.toList());
+                    .toList();
+
             for (CohortDTO cohort : cohorts) {
                 TreeItemWrapper cohortWrapper = new TreeItemWrapper(cohort.getName(), cohort);
                 TreeItem<TreeItemWrapper> cohortItem = new TreeItem<>(cohortWrapper);
@@ -130,7 +142,8 @@ public class PopulatorUtility {
         try {
             List<TeamDTO> teams = teamRepository.findByCohortId(cohortId).stream()
                     .map(teamMapper::toTeamDTO)
-                    .collect(Collectors.toList());
+                    .toList();
+
             for (TeamDTO team : teams) {
                 TreeItemWrapper teamWrapper = new TreeItemWrapper(team.getName(), team);
                 TreeItem<TreeItemWrapper> teamItem = new TreeItem<>(teamWrapper);
@@ -151,7 +164,8 @@ public class PopulatorUtility {
         try {
             List<ProjectDTO> projects = projectRepository.findByTeamId(teamId).stream()
                     .map(projectMapper::toProjectDTO)
-                    .collect(Collectors.toList());
+                    .toList();
+
             for (ProjectDTO project : projects) {
                 TreeItemWrapper projectWrapper = new TreeItemWrapper(project.getName(), project);
                 TreeItem<TreeItemWrapper> projectItem = new TreeItem<>(projectWrapper);
@@ -172,7 +186,8 @@ public class PopulatorUtility {
         try {
             List<ComponentDTO> components = componentRepository.findByProjectId(projectId).stream()
                     .map(componentMapper::toComponentDTO)
-                    .collect(Collectors.toList());
+                    .toList();
+
             for (ComponentDTO component : components) {
                 TreeItemWrapper componentWrapper = new TreeItemWrapper(component.getName(), component);
                 TreeItem<TreeItemWrapper> componentItem = new TreeItem<>(componentWrapper);
@@ -193,7 +208,8 @@ public class PopulatorUtility {
         try {
             List<StudentDTO> students = studentRepository.findByCohortId(cohortId).stream()
                     .map(studentMapper::toStudentDTO)
-                    .collect(Collectors.toList());
+                    .toList();
+
             for (StudentDTO student : students) {
                 TreeItemWrapper studentWrapper = new TreeItemWrapper(student.getFirstName(), student);
                 TreeItem<TreeItemWrapper> studentItem = new TreeItem<>(studentWrapper);
@@ -214,7 +230,8 @@ public class PopulatorUtility {
         try {
             List<TaskDTO> tasks = taskRepository.findByProjectId(projectId).stream()
                     .map(taskMapper::toTaskDTO)
-                    .collect(Collectors.toList());
+                    .toList();
+
             for (TaskDTO task : tasks) {
                 TreeItemWrapper taskWrapper = new TreeItemWrapper(task.getName(), task);
                 TreeItem<TreeItemWrapper> taskItem = new TreeItem<>(taskWrapper);

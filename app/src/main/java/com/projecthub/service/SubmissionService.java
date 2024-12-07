@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Service class for managing submissions.
@@ -85,7 +84,7 @@ public class SubmissionService {
         logger.info("Retrieving all submissions");
         return submissionRepository.findAll().stream()
                 .map(submissionMapper::toSubmissionDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -98,7 +97,7 @@ public class SubmissionService {
         logger.info("Retrieving submissions for student ID: {}", studentId);
         return submissionRepository.findByStudentId(studentId).stream()
                 .map(submissionMapper::toSubmissionDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

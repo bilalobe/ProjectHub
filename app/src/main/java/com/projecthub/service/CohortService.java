@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Service class for managing cohorts.
@@ -63,7 +62,7 @@ public class CohortService {
         logger.info("Retrieving all cohorts");
         return cohortRepository.findAll().stream()
                 .map(cohortMapper::toCohortDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -76,7 +75,7 @@ public class CohortService {
         logger.info("Retrieving cohorts for school ID {}", schoolId);
         return cohortRepository.findBySchoolId(schoolId).stream()
                 .map(cohortMapper::toCohortDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

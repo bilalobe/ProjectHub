@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Service class for managing tasks.
@@ -105,7 +104,7 @@ public class TaskService {
         logger.info("Retrieving all tasks");
         return taskRepository.findAll().stream()
                 .map(taskMapper::toTaskDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void validateTaskDTO(TaskDTO taskDTO) {
@@ -130,7 +129,7 @@ public class TaskService {
         logger.info("Retrieving tasks for project ID: {}", projectId);
         return taskRepository.findByProjectId(projectId).stream()
                 .map(taskMapper::toTaskDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -143,7 +142,7 @@ public class TaskService {
         logger.info("Retrieving tasks for user ID: {}", userId);
         return taskRepository.findByAssignedUserId(userId).stream()
                 .map(taskMapper::toTaskDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

@@ -13,7 +13,6 @@ import org.mapstruct.Named;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class SchoolMapper {
@@ -38,27 +37,27 @@ public abstract class SchoolMapper {
     protected List<Team> mapTeamIdsToTeams(List<UUID> teamIds) {
         return teamIds.stream()
                 .map(id -> teamRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid team ID: " + id)))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Named("mapTeamsToTeamIds")
     protected List<UUID> mapTeamsToTeamIds(List<Team> teams) {
         return teams.stream()
                 .map(Team::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Named("mapCohortIdsToCohorts")
     protected List<Cohort> mapCohortIdsToCohorts(List<UUID> cohortIds) {
         return cohortIds.stream()
                 .map(id -> cohortRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid cohort ID: " + id)))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Named("mapCohortsToCohortIds")
     protected List<UUID> mapCohortsToCohortIds(List<Cohort> cohorts) {
         return cohorts.stream()
                 .map(Cohort::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

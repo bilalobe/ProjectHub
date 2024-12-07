@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Service class for managing teams.
@@ -121,7 +120,7 @@ public class TeamService {
         logger.info("Retrieving all teams");
         return teamRepository.findAll().stream()
                 .map(teamMapper::toTeamDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void validateTeamDTO(TeamDTO teamDTO) {
@@ -167,7 +166,7 @@ public class TeamService {
         logger.info("Retrieving teams for cohort ID: {}", cohortId);
         return teamRepository.findByCohortId(cohortId).stream()
                 .map(teamMapper::toTeamDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -181,7 +180,7 @@ public class TeamService {
         findTeamById(teamId);
         return projectRepository.findByTeamId(teamId).stream()
                 .map(projectMapper::toProjectDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -197,7 +196,7 @@ public class TeamService {
                 .map(student -> appUserRepository.findById(student.getId())
                         .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + student.getId())))
                 .map(appUserMapper::toAppUserDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

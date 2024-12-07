@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * ViewModel for managing task details.
@@ -86,7 +85,7 @@ public class TaskDetailsViewModel {
             List<TaskDTO> filteredTasks = taskService.getAllTasks().stream()
                     .filter(task -> task.getName().toLowerCase().contains(lowerCaseQuery) ||
                             task.getDescription().toLowerCase().contains(lowerCaseQuery))
-                    .collect(Collectors.toList());
+                    .toList();
             tasks.setAll(filteredTasks);
         } catch (Exception e) {
             logger.error("Failed to search tasks with query: {}", query, e);

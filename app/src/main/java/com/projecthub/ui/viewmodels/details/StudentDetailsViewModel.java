@@ -106,7 +106,7 @@ public class StudentDetailsViewModel {
             List<SubmissionDTO> submissionSummaries = getSubmissionsByStudentId(studentId);
             List<Submission> submissionList = submissionSummaries.stream()
                     .map(this::mapToSubmission)
-                    .collect(Collectors.toList());
+                    .toList();
             submissions.setAll(submissionList);
         } catch (Exception e) {
             logger.error("Failed to load submissions for student ID: {}", studentId, e);

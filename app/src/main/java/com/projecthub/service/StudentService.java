@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Service class for managing students.
@@ -86,7 +85,7 @@ public class StudentService {
         logger.info("Retrieving all students");
         return studentRepository.findAll().stream()
                 .map(studentMapper::toStudentDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void validateStudentDTO(StudentDTO studentDTO) {

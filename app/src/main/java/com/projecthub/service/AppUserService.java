@@ -191,7 +191,7 @@ public class AppUserService {
         logger.info("Retrieving all users");
         return appUserRepository.findAll().stream()
                 .map(appUserMapper::toAppUserDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

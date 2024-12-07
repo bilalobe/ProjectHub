@@ -110,7 +110,7 @@ public class ComponentService {
         logger.info("Retrieving all components");
         return componentRepository.findAll().stream()
                 .map(componentMapper::toComponentDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -123,6 +123,6 @@ public class ComponentService {
         logger.info("Retrieving components for project ID {}", projectId);
         return componentRepository.findByProjectId(projectId).stream()
                 .map(componentMapper::toComponentDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

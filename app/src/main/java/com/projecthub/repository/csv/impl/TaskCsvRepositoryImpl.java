@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
@@ -150,7 +149,7 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
     public List<Task> findByProjectId(UUID projectId) {
         return findAll().stream()
                 .filter(t -> t.getProject().getId().equals(projectId))
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

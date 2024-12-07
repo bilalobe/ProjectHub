@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Controller for displaying student details.
@@ -108,7 +107,7 @@ public class StudentDetailsController extends BaseController {
             List<SubmissionDTO> submissionSummaries = studentDetailsViewModel.getSubmissionsByStudentId(student.getId());
             List<Submission> submissions = submissionSummaries.stream()
                     .map(studentDetailsViewModel::mapToSubmission)
-                    .collect(Collectors.toList());
+                    .toList();
             ObservableList<Submission> submissionList = FXCollections.observableArrayList(submissions);
             submissionTableView.setItems(submissionList);
         } catch (Exception e) {
