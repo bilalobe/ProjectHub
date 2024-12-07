@@ -6,6 +6,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 
+import java.net.URL;
+
 public class MainApp extends Application {
 
     @Override
@@ -15,9 +17,9 @@ public class MainApp extends Application {
         Scene scene = new Scene(root);
 
         // Load and apply the stylesheet
-        String stylesheet = getClass().getResource("/com/projecthub/ui/css/styles.css").toExternalForm();
-        if (stylesheet != null) {
-            scene.getStylesheets().add(stylesheet);
+        URL stylesheetURL = getClass().getResource("/com/projecthub/ui/css/styles.css");
+        if (stylesheetURL != null) {
+            scene.getStylesheets().add(stylesheetURL.toExternalForm());
         } else {
             System.err.println("Stylesheet not found: /com/projecthub/ui/css/styles.css");
         }
