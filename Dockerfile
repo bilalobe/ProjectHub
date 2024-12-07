@@ -37,7 +37,7 @@ RUN groupadd --gid $USER_GID $USERNAME || echo "Group exists" \
 USER $USERNAME
 
 # Copy jar from build stage
-COPY --from=build /app/build/libs/app-0.1.0-SNAPSHOT.jar /app.jar
+COPY --from=build /build/libs/app-0.1.0-SNAPSHOT.jar /app.jar
 
 # Verify the contents of the libs directory
 RUN cd /app/build/libs && ls -la
