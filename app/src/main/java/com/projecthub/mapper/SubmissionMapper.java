@@ -2,6 +2,7 @@ package com.projecthub.mapper;
 
 import com.projecthub.dto.SubmissionDTO;
 import com.projecthub.model.Submission;
+import com.projecthub.ui.viewmodels.details.SubmissionDetailsViewModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -36,4 +37,16 @@ public interface SubmissionMapper {
     @Mapping(target = "createdBy", ignore = true) // Assuming createdBy is managed separately
     @Mapping(target = "deleted", ignore = true) // Assuming deleted is managed separately
     void updateSubmissionFromDTO(SubmissionDTO submissionDTO, @MappingTarget Submission submission);
+
+    // New method to convert SubmissionDetailsViewModel to SubmissionDTO
+    @Mapping(source = "submissionId", target = "id")
+    @Mapping(source = "projectId", target = "projectId")
+    @Mapping(source = "studentId", target = "studentId")
+    @Mapping(source = "content", target = "content")
+    @Mapping(source = "timestamp", target = "timestamp")
+    @Mapping(source = "grade", target = "grade")
+    @Mapping(source = "projectName", target = "projectName")
+    @Mapping(source = "studentFirstName", target = "studentFirstName")
+    @Mapping(source = "studentLastName", target = "studentLastName")
+    SubmissionDTO toSubmissionDTO(SubmissionDetailsViewModel viewModel);
 }
