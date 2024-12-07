@@ -25,14 +25,6 @@ public interface TeamJpaRepository extends JpaRepository<Team, UUID> {
     Optional<Team> findTeamById(UUID teamId);
 
     /**
-     * Finds teams by class ID.
-     *
-     * @param classId the UUID of the class
-     * @return a list of {@code Team} objects belonging to the class
-     */
-    List<Team> findByClassId(UUID classId);
-
-    /**
      * Finds teams by cohort ID.
      *
      * @param cohortId the UUID of the cohort

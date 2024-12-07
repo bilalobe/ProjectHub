@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.context.annotation.Profile;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -15,14 +14,6 @@ import java.util.UUID;
 @Repository("jpaStudentRepository")
 @Profile("jpa")
 public interface StudentJpaRepository extends JpaRepository<Student, UUID> {
-
-    /**
-     * Finds a student by username.
-     *
-     * @param username the username of the student
-     * @return an {@code Optional} containing the student if found
-     */
-    Optional<Student> findByUsername(String username);
 
     /**
      * Finds students by team ID.
