@@ -1,7 +1,6 @@
 package com.projecthub.ui.controllers;
 
 import com.projecthub.ui.viewmodels.DashboardViewModel;
-
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
