@@ -1,45 +1,85 @@
-<!-- XML -->
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.projecthub.ui.controllers.details.SubmissionDetailsController"
-      spacing="15" padding="20">
+<VBox spacing="20" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
 
-    <Label text="Submission Details" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    <!-- Header Info Card -->
+    <VBox spacing="10" styleClass="info-card">
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <VBox spacing="5">
+                <Label styleClass="label-caption" text="Student" />
+                <Label fx:id="studentNameLabel" styleClass="title-label" />
+            </VBox>
+            <Separator orientation="VERTICAL" />
+            <VBox spacing="5">
+                <Label styleClass="label-caption" text="Project" />
+                <Label fx:id="projectNameLabel" styleClass="title-label" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <VBox alignment="CENTER_RIGHT" spacing="5">
+                <Label styleClass="label-caption" text="Submitted" />
+                <Label fx:id="timestampLabel" styleClass="subtitle-label" />
+            </VBox>
+        </HBox>
+    </VBox>
 
-    <GridPane hgap="10" vgap="10">
-        <columnConstraints>
-            <ColumnConstraints minWidth="120" halignment="RIGHT"/>
-            <ColumnConstraints hgrow="ALWAYS" />
-        </columnConstraints>
+    <!-- Submission Content -->
+    <VBox spacing="10" styleClass="content-card" VBox.vgrow="ALWAYS">
+        <Label styleClass="section-header" text="Submission Content" />
+        <TextArea fx:id="contentArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS" />
+    </VBox>
 
-        <Label text="Submission ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-        <Label fx:id="submissionIdLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+    <!-- Grading Section -->
+    <GridPane hgap="10" styleClass="grading-card" vgap="10">
+        <padding>
+            <Insets />
+        </padding>
+        <Label text="Grade:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="gradeField" maxWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-        <Label text="Student Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-        <Label fx:id="studentNameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-
-        <Label text="Project Name:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-        <Label fx:id="projectNameLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-
-        <Label text="Timestamp:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-        <Label fx:id="timestampLabel" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-
-        <Label text="Grade:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
-        <TextField fx:id="gradeField" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-
-        <Label text="Content:" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.valignment="TOP" />
-        <TextArea fx:id="contentArea" GridPane.rowIndex="5" GridPane.columnIndex="1" prefRowCount="5"/>
-
+        <Label text="Feedback:" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+        <TextArea fx:id="feedbackArea" prefRowCount="3" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <columnConstraints>
+         <ColumnConstraints />
+         <ColumnConstraints />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
     </GridPane>
 
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="saveSubmissionButton" text="Save" styleClass="button-primary" />
-        <Button fx:id="deleteSubmissionButton" text="Delete" styleClass="button-danger" />
+    <!-- Action Buttons -->
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="saveButton" styleClass="button-primary" text="Save" />
+        <Button fx:id="deleteButton" styleClass="button-danger" text="Delete" />
+        <Button fx:id="clearButton" styleClass="button-secondary" text="Clear" />
     </HBox>
+
+    <!-- Status Bar -->
+    <HBox spacing="10" styleClass="status-bar">
+        <Label fx:id="statusLabel" text="Ready" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="submissionIdLabel" styleClass="text-muted" />
+    </HBox>
+
+    <stylesheets>
+        <URL value="@../css/styles.css" />
+    </stylesheets>
 </VBox>

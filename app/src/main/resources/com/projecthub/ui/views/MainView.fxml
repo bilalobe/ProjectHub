@@ -1,46 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.geometry.Insets?>
 
 <?import java.net.URL?>
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-    fx:controller="com.projecthub.ui.controllers.MainViewController">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.projecthub.ui.controllers.MainViewController">
 
     <top>
-        <MenuBar>
+        <MenuBar prefHeight="14.0" prefWidth="802.0">
             <Menu text="File">
-                <MenuItem text="Preferences" onAction="#handlePreferences" />
+                <MenuItem onAction="#handlePreferences" text="Preferences" />
                 <SeparatorMenuItem />
-                <MenuItem text="Exit" onAction="#handleExit" />
+                <MenuItem onAction="#handleExit" text="Exit" />
             </Menu>
             <Menu text="Help">
-                <MenuItem text="About" onAction="#handleAbout" />
+                <MenuItem onAction="#handleAbout" text="About" />
             </Menu>
         </MenuBar>
     </top>
 
     <left>
-        <VBox fx:id="navigationPane" styleClass="nav-pane" spacing="10">
+        <VBox fx:id="navigationPane" spacing="10" styleClass="nav-pane">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10" />
+                <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
-            <Button text="Dashboard" onAction="#showDashboard" maxWidth="Infinity">
+            <Button maxWidth="Infinity" onAction="#showDashboard" text="Dashboard">
                 <tooltip>
                     <Tooltip text="View Dashboard" />
                 </tooltip>
             </Button>
-            <Button text="Projects" onAction="#showProjects" maxWidth="Infinity">
+            <Button maxWidth="Infinity" onAction="#showProjects" text="Projects">
                 <tooltip>
                     <Tooltip text="View Projects" />
                 </tooltip>
             </Button>
-            <Button text="Teams" onAction="#showTeams" maxWidth="Infinity">
+            <Button maxWidth="Infinity" onAction="#showTeams" text="Teams">
                 <tooltip>
                     <Tooltip text="View Teams" />
                 </tooltip>
             </Button>
-            <Button text="Users" onAction="#showUsers" maxWidth="Infinity">
+            <Button maxWidth="Infinity" onAction="#showUsers" text="Users">
                 <tooltip>
                     <Tooltip text="View Users" />
                 </tooltip>
@@ -51,7 +58,7 @@
     <center>
         <StackPane fx:id="mainContent" styleClass="main-content">
             <padding>
-                <Insets top="20" right="20" bottom="20" left="20" />
+                <Insets bottom="20" left="20" right="20" top="20" />
             </padding>
         </StackPane>
     </center>
@@ -59,7 +66,7 @@
     <right>
         <VBox fx:id="contextualSidebar" styleClass="sidebar">
             <padding>
-                <Insets top="20" right="20" bottom="20" left="20" />
+                <Insets bottom="20" left="20" right="20" top="20" />
             </padding>
         </VBox>
     </right>

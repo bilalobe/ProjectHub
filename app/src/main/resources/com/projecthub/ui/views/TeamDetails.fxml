@@ -1,56 +1,107 @@
-<!-- XML -->
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.projecthub.ui.controllers.details.TeamDetailsController"
-      spacing="15" padding="20">
+<VBox spacing="20" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
 
-    <Label text="Team Details" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    <!-- Team Info Card -->
+    <GridPane hgap="10" styleClass="info-card" vgap="10">
+        <padding>
+            <Insets />
+        </padding>
 
-    <GridPane hgap="10" vgap="10">
-        <columnConstraints>
-            <ColumnConstraints minWidth="100" halignment="RIGHT"/>
-            <ColumnConstraints hgrow="ALWAYS"/>
-        </columnConstraints>
+        <Label text="Team Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="teamNameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-        <Label text="Team ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-        <Label fx:id="teamIdLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-
-        <Label text="Team Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-        <TextField fx:id="teamNameField" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-
-        <Label text="Cohort:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-        <ComboBox fx:id="cohortComboBox" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+        <Label text="Cohort:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <ComboBox fx:id="cohortComboBox" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <columnConstraints>
+         <ColumnConstraints />
+         <ColumnConstraints />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
     </GridPane>
 
-    <Label text="Projects" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-    <TableView fx:id="projectsTableView" prefHeight="150">
-        <columns>
-            <TableColumn fx:id="projectIdColumn" text="Project ID" />
-            <TableColumn fx:id="projectNameColumn" text="Project Name" />
-        </columns>
-    </TableView>
+    <!-- Split Content -->
+    <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+        <!-- Members Section -->
+        <VBox spacing="10">
+            <Label styleClass="section-header" text="Team Members" />
+            
+            <TableView fx:id="membersTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="memberNameColumn" text="Name" />
+                    <TableColumn fx:id="memberRoleColumn" text="Role" />
+                    <TableColumn fx:id="memberEmailColumn" text="Email" />
+                </columns>
+                <placeholder>
+                    <Label text="No members assigned" />
+                </placeholder>
+            </TableView>
 
-    <Label text="Team Members" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-    <TableView fx:id="membersTableView" prefHeight="150">
-        <columns>
-            <TableColumn fx:id="memberIdColumn" text="Member ID" />
-            <TableColumn fx:id="memberNameColumn" text="Member Name" />
-        </columns>
-    </TableView>
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button fx:id="addMemberButton" text="Add Member" />
+                <Button fx:id="removeMemberButton" text="Remove Member" />
+            </HBox>
+        </VBox>
 
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="addMemberButton" text="Add Member" />
-        <Button fx:id="removeMemberButton" text="Remove Member" />
+        <!-- Projects Section -->
+        <VBox spacing="10">
+            <Label styleClass="section-header" text="Team Projects" />
+            
+            <TableView fx:id="projectsTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="projectNameColumn" text="Name" />
+                    <TableColumn fx:id="projectStatusColumn" text="Status" />
+                    <TableColumn fx:id="projectDeadlineColumn" text="Deadline" />
+                </columns>
+                <placeholder>
+                    <Label text="No projects assigned" />
+                </placeholder>
+            </TableView>
+
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button fx:id="addProjectButton" text="Add Project" />
+                <Button fx:id="removeProjectButton" text="Remove Project" />
+            </HBox>
+        </VBox>
+    </SplitPane>
+
+    <!-- Action Buttons -->
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="saveButton" styleClass="button-primary" text="Save Changes" />
+        <Button fx:id="deleteButton" styleClass="button-danger" text="Delete Team" />
+        <Button fx:id="clearButton" styleClass="button-secondary" text="Clear" />
     </HBox>
 
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="saveTeamButton" text="Save" styleClass="button-primary" />
-        <Button fx:id="deleteTeamButton" text="Delete" styleClass="button-danger" />
+    <!-- Status Bar -->
+    <HBox spacing="10" styleClass="status-bar">
+        <Label fx:id="statusLabel" text="Ready" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="teamIdLabel" styleClass="text-muted" />
     </HBox>
+
+    <stylesheets>
+        <URL value="@../css/styles.css" />
+    </stylesheets>
 </VBox>

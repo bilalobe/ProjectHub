@@ -1,36 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.projecthub.ui.controllers.details.CohortDetailsController"
-      spacing="10" padding="10">
+<VBox spacing="20" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
 
-    <Label text="Cohort Details" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+    <!-- Cohort Info Card -->
+    <GridPane hgap="10" styleClass="info-card" vgap="10">
+        <padding>
+            <Insets />
+        </padding>
 
-    <GridPane hgap="10" vgap="10">
-        <Label text="Cohort ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-        <Label fx:id="cohortIdLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+        <Label text="Cohort Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="cohortNameField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" />
 
-        <Label text="Cohort Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-        <Label fx:id="cohortNameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-
-        <Label text="School Name:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-        <Label fx:id="schoolNameLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+        <Label text="School:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <ComboBox fx:id="schoolComboBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <columnConstraints>
+         <ColumnConstraints />
+         <ColumnConstraints />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
     </GridPane>
 
-    <TableView fx:id="teamsTableView" prefHeight="200">
-        <columns>
-            <TableColumn fx:id="teamIdColumn" text="Team ID" />
-            <TableColumn fx:id="teamNameColumn" text="Team Name" />
-        </columns>
-    </TableView>
+    <!-- Teams Section -->
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label styleClass="section-header" text="Teams" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="addTeamButton" styleClass="button-primary" text="Add Team" />
+        </HBox>
 
-    <HBox spacing="10">
-        <Button fx:id="saveCohortButton" text="Save Cohort" />
-        <Button fx:id="deleteCohortButton" text="Delete Cohort" />
+        <TableView fx:id="teamsTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="teamNameColumn" text="Team Name" />
+                <TableColumn fx:id="memberCountColumn" text="Members" />
+                <TableColumn fx:id="projectCountColumn" text="Projects" />
+                <TableColumn fx:id="statusColumn" text="Status" />
+            </columns>
+            <placeholder>
+                <Label text="No teams assigned to this cohort" />
+            </placeholder>
+        </TableView>
+
+        <HBox alignment="CENTER_RIGHT" spacing="10">
+            <Button fx:id="editTeamButton" styleClass="button-secondary" text="Edit Team" />
+            <Button fx:id="removeTeamButton" styleClass="button-danger" text="Remove Team" />
+        </HBox>
+    </VBox>
+
+    <!-- Action Buttons -->
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="saveButton" styleClass="button-primary" text="Save Changes" />
+        <Button fx:id="deleteButton" styleClass="button-danger" text="Delete Cohort" />
+        <Button fx:id="clearButton" styleClass="button-secondary" text="Clear" />
     </HBox>
+
+    <!-- Status Bar -->
+    <HBox spacing="10" styleClass="status-bar">
+        <Label fx:id="statusLabel" text="Ready" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="teamCountLabel" styleClass="text-muted" />
+    </HBox>
+
+    <stylesheets>
+        <URL value="@../css/styles.css" />
+    </stylesheets>
 </VBox>

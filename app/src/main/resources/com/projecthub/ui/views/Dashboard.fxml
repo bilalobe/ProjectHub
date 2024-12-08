@@ -1,49 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.chart.*?>
-<?import javafx.geometry.Insets?>
 
-<VBox spacing="20" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" spacing="20" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
+        <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
     <!-- Statistics Cards -->
-    <HBox spacing="20" alignment="CENTER">
-        <VBox styleClass="stat-card" alignment="CENTER">
-            <Label text="Total Users"/>
-            <Label fx:id="totalUsersLabel" styleClass="stat-number"/>
+    <HBox alignment="CENTER" spacing="20">
+        <VBox alignment="CENTER" styleClass="stat-card">
+            <Label text="Total Users" />
+            <Label fx:id="totalUsersLabel" styleClass="stat-number" />
         </VBox>
-        <VBox styleClass="stat-card" alignment="CENTER">
-            <Label text="Total Projects"/>
-            <Label fx:id="totalProjectsLabel" styleClass="stat-number"/>
+        <VBox alignment="CENTER" styleClass="stat-card">
+            <Label text="Total Projects" />
+            <Label fx:id="totalProjectsLabel" styleClass="stat-number" />
         </VBox>
-        <VBox styleClass="stat-card" alignment="CENTER">
-            <Label text="Total Teams"/>
-            <Label fx:id="totalTeamsLabel" styleClass="stat-number"/>
+        <VBox alignment="CENTER" styleClass="stat-card">
+            <Label text="Total Teams" />
+            <Label fx:id="totalTeamsLabel" styleClass="stat-number" />
         </VBox>
     </HBox>
 
     <!-- Project Status Distribution Chart -->
     <VBox>
-        <Label text="Project Status Distribution" styleClass="section-header"/>
-        <PieChart fx:id="projectStatusChart"/>
+        <Label styleClass="section-header" text="Project Status Distribution" />
+        <PieChart fx:id="projectStatusChart" />
     </VBox>
 
     <!-- Recent Activities -->
     <VBox VBox.vgrow="ALWAYS">
-        <Label text="Recent Activities" styleClass="section-header"/>
+        <Label styleClass="section-header" text="Recent Activities" />
         <TableView fx:id="recentActivitiesTable" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="timestampColumn" text="Timestamp"/>
-                <TableColumn fx:id="activityColumn" text="Activity"/>
-                <TableColumn fx:id="userColumn" text="User"/>
+                <TableColumn fx:id="timestampColumn" text="Timestamp" />
+                <TableColumn fx:id="activityColumn" text="Activity" />
+                <TableColumn fx:id="userColumn" text="User" />
             </columns>
         </TableView>
     </VBox>
 
     <stylesheets>
-        <URL value="@../css/styles.css"/>
+        <URL value="@../css/styles.css" />
     </stylesheets>
 </VBox>
