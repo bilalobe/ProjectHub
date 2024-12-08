@@ -1,5 +1,8 @@
 # ProjectHub
 
+![Project Logo](app/src/main/resources/com/projecthub/ui/images/logo.png)
+
+
 **A comprehensive platform for managing student projects, component evaluations, and project distribution, built with JavaFX, Spring Boot, and PostgreSQL.**
 
 [![JavaFX](https://img.shields.io/badge/JavaFX-23-blue.svg)](https://openjfx.io/)
