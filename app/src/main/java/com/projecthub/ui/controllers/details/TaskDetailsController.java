@@ -19,6 +19,8 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 
@@ -60,10 +62,10 @@ public class TaskDetailsController extends BaseController {
     private TextField taskNameField;
 
     @FXML
-    private TextField taskDescriptionField;
+    private TextArea taskDescriptionField;
 
     @FXML
-    private TextField taskStatusField;
+    private ComboBox<String> taskStatusField;
 
     @FXML
     private DatePicker taskDueDatePicker;
@@ -73,6 +75,9 @@ public class TaskDetailsController extends BaseController {
 
     @FXML
     private Button deleteTaskButton;
+
+    @FXML
+    private Button clearButton;
 
     /**
      * Constructor with dependencies injected.
@@ -101,6 +106,14 @@ public class TaskDetailsController extends BaseController {
 
         saveTaskButton.setOnAction(this::handleSaveTask);
         deleteTaskButton.setOnAction(this::handleDeleteTask);
+
+        // Disable clear button when all fields are empty
+        clearButton.disableProperty().bind(
+            taskNameField.textProperty().isEmpty()
+                .and(taskDescriptionField.textProperty().isEmpty())
+                .and(taskStatusField.valueProperty().isNull())
+                .and(taskDueDatePicker.valueProperty().isNull())
+        );
     }
 
     @FXML
@@ -124,7 +137,7 @@ public class TaskDetailsController extends BaseController {
         try {
             String name = taskNameField.getText();
             String description = taskDescriptionField.getText();
-            String status = taskStatusField.getText();
+            String status = taskStatusField.getValue();
             LocalDate dueDate = taskDueDatePicker.getValue();
 
             if (!isValidTaskInput(name, description)) {
@@ -172,7 +185,7 @@ public class TaskDetailsController extends BaseController {
         if (selectedTask != null) {
             taskNameField.setText(selectedTask.getName());
             taskDescriptionField.setText(selectedTask.getDescription());
-            taskStatusField.setText(selectedTask.getStatus());
+            taskStatusField.setValue(selectedTask.getStatus());
             taskDueDatePicker.setValue(selectedTask.getDueDate());
             taskForm.setVisible(true);
             saveTaskButton.setOnAction(e -> handleSaveTask(e, selectedTask.getId()));
@@ -192,7 +205,7 @@ public class TaskDetailsController extends BaseController {
     private void clearForm() {
         taskNameField.clear();
         taskDescriptionField.clear();
-        taskStatusField.clear();
+        taskStatusField.setValue(null);
         taskDueDatePicker.setValue(null);
     }
 
