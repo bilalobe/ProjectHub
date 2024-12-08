@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.projecthub.ui.controllers.MainViewController">
+
+    <top>
+        <MenuBar>
+            <Menu text="File">
+                <MenuItem text="Preferences" onAction="#handlePreferences" />
+                <SeparatorMenuItem />
+                <MenuItem text="Exit" onAction="#handleExit" />
+            </Menu>
+            <Menu text="Help">
+                <MenuItem text="About" onAction="#handleAbout" />
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <left>
+        <VBox fx:id="navigationPane" styleClass="nav-pane" spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10" />
+            </padding>
+            <Button text="Dashboard" onAction="#showDashboard" maxWidth="Infinity">
+                <tooltip>
+                    <Tooltip text="View Dashboard" />
+                </tooltip>
+            </Button>
+            <Button text="Projects" onAction="#showProjects" maxWidth="Infinity">
+                <tooltip>
+                    <Tooltip text="View Projects" />
+                </tooltip>
+            </Button>
+            <Button text="Teams" onAction="#showTeams" maxWidth="Infinity">
+                <tooltip>
+                    <Tooltip text="View Teams" />
+                </tooltip>
+            </Button>
+            <Button text="Users" onAction="#showUsers" maxWidth="Infinity">
+                <tooltip>
+                    <Tooltip text="View Users" />
+                </tooltip>
+            </Button>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="mainContent" styleClass="main-content">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20" />
+            </padding>
+        </StackPane>
+    </center>
+
+    <right>
+        <VBox fx:id="contextualSidebar" styleClass="sidebar">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20" />
+            </padding>
+        </VBox>
+    </right>
+
+    <stylesheets>
+        <URL value="@../css/styles.css" />
+    </stylesheets>
+</BorderPane>

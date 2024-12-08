@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Statistics Cards -->
+    <HBox spacing="20" alignment="CENTER">
+        <VBox styleClass="stat-card" alignment="CENTER">
+            <Label text="Total Users"/>
+            <Label fx:id="totalUsersLabel" styleClass="stat-number"/>
+        </VBox>
+        <VBox styleClass="stat-card" alignment="CENTER">
+            <Label text="Total Projects"/>
+            <Label fx:id="totalProjectsLabel" styleClass="stat-number"/>
+        </VBox>
+        <VBox styleClass="stat-card" alignment="CENTER">
+            <Label text="Total Teams"/>
+            <Label fx:id="totalTeamsLabel" styleClass="stat-number"/>
+        </VBox>
+    </HBox>
+
+    <!-- Project Status Distribution Chart -->
+    <VBox>
+        <Label text="Project Status Distribution" styleClass="section-header"/>
+        <PieChart fx:id="projectStatusChart"/>
+    </VBox>
+
+    <!-- Recent Activities -->
+    <VBox VBox.vgrow="ALWAYS">
+        <Label text="Recent Activities" styleClass="section-header"/>
+        <TableView fx:id="recentActivitiesTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="timestampColumn" text="Timestamp"/>
+                <TableColumn fx:id="activityColumn" text="Activity"/>
+                <TableColumn fx:id="userColumn" text="User"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <stylesheets>
+        <URL value="@../css/styles.css"/>
+    </stylesheets>
+</VBox>
