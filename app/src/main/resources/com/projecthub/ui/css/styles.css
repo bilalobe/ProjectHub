@@ -1,0 +1,221 @@
+/* General Styles */
+.root {
+    -fx-font-family: 'Aptos', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Aptos', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Menu Bar Styles */
+.menu-bar {
+    -fx-background-color: #d0d7df;
+    background-color: #8fa2b4;
+    -fx-text-fill: white;
+}
+
+.menu, .menu-item {
+    -fx-text-fill: white;
+}
+
+.menu-item:hover {
+    -fx-background-color: #3b5998;
+    background-color: #3b5998;
+}
+
+/* Button Styles */
+.button {
+    -fx-background-color: #5dade2;
+    background-color: #5dade2;
+    -fx-text-fill: white;
+    -fx-padding: 8px 16px;
+    padding: 8px 16px;
+    -fx-border-radius: 4px;
+    border-radius: 4px;
+    -fx-font-size: 13px;
+    font-size: 13px;
+    -fx-font-weight: normal;
+    font-weight: normal;
+}
+
+.button:hover {
+    -fx-background-color: #5499c7;
+    background-color: #5499c7;
+}
+
+.button:disabled {
+    -fx-background-color: #aab7b8;
+    background-color: #aab7b8;
+    -fx-text-fill: #d5dbdb;
+}
+
+/* Label Styles */
+.label {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 13px;
+    font-size: 13px;
+}
+
+.label-title {
+    -fx-font-size: 20px;
+    font-size: 20px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+.label-subtitle {
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+/* Status Bar Styles */
+.status-bar {
+    -fx-background-color: #f2f3f4;
+    background-color: #f2f3f4;
+    -fx-padding: 8px;
+    padding: 8px;
+    -fx-border-color: #d5dbdb;
+    border-color: #d5dbdb;
+    -fx-border-width: 1px 0 0 0;
+    border-width: 1px 0 0 0;
+    -fx-border-radius: 4px;
+    border-radius: 4px;
+}
+
+/* Table View Styles */
+.table-view {
+    -fx-background-color: #f2f3f4;
+    background-color: #f2f3f4;
+    -fx-border-color: #d5dbdb;
+    border-color: #d5dbdb;
+    -fx-border-width: 1px;
+    border-width: 1px;
+    -fx-border-radius: 4px;
+    border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.table-column-header {
+    -fx-background-color: #d5dbdb;
+    background-color: #d5dbdb;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+.table-row-cell {
+    -fx-background-color: #f2f3f4;
+    background-color: #f2f3f4;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #5dade2;
+    background-color: #5dade2;
+    -fx-text-fill: white;
+}
+
+/* Chart Styles */
+.chart-title {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+/* Pane Styles */
+.pane {
+    -fx-background-color: #f2f3f4;
+    background-color: #f2f3f4;
+    -fx-padding: 16px;
+    padding: 16px;
+    -fx-border-color: #d5dbdb;
+    border-color: #d5dbdb;
+    -fx-border-width: 1px;
+    border-width: 1px;
+    -fx-border-radius: 4px;
+    border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+/* Section Header Styles */
+.section-header {
+    -fx-background-color: #5dade2;
+    background-color: #5dade2;
+    -fx-text-fill: white;
+    -fx-padding: 8px;
+    padding: 8px;
+    -fx-border-radius: 4px;
+    border-radius: 4px;
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+.section-header:hover {
+    -fx-background-color: #5499c7;
+    background-color: #5499c7;
+}
+
+.section-header:disabled {
+    -fx-background-color: #aab7b8;
+    background-color: #aab7b8;
+    -fx-text-fill: #d5dbdb;
+}
+
+.section-header-label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+/* Stat Card Styles */
+.stat-card .stat-number {
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-font-size: 16px;
+    font-size: 16px;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    -fx-background-color: #34495e;
+    background-color: #34495e;
+    -fx-text-fill: white;
+    -fx-padding: 8px;
+    padding: 8px;
+    -fx-border-radius: 4px;
+    border-radius: 4px;
+}
+
+/* Navigation Pane Styles */
+.nav-pane {
+    -fx-background-color: #f2f3f4;
+    background-color: #f2f3f4;
+    -fx-padding: 8px;
+    padding: 8px;
+    -fx-border-color: #d5dbdb;
+    border-color: #d5dbdb;
+    -fx-border-width: 1px;
+    border-width: 1px;
+    -fx-border-radius: 4px;
+    border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+/* Main Content Styles */
+.main-content {
+    -fx-background-color: #ffffff;
+    background-color: #ffffff;
+    -fx-padding: 16px;
+    padding: 16px;
+    -fx-border-color: #d5dbdb;
+    border-color: #d5dbdb;
+    -fx-border-width: 1px;
+    border-width: 1px;
+    -fx-border-radius: 4px;
+    border-radius: 4px;
+    -fx-background-radius: 4px;
+}
