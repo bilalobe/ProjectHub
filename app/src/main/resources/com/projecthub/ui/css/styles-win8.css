@@ -126,21 +126,6 @@
     font-weight: bold;
 }
 
-/* Pane Styles */
-.pane {
-    -fx-background-color: #ffffff;
-    background-color: #ffffff;
-    -fx-padding: 20px;
-    padding: 20px;
-    -fx-border-color: #bdc3c7;
-    border-color: #bdc3c7;
-    -fx-border-width: 1px;
-    border-width: 1px;
-    -fx-border-radius: 5px;
-    border-radius: 5px;
-    -fx-background-radius: 5px;
-}
-
 /* Section Header Styles */
 .section-header {
     -fx-background-color: #3498db;
