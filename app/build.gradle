@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'com.gluonhq.gluonfx-gradle-plugin' version '1.0.24'
     id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.6'
 }
@@ -11,17 +12,15 @@ version '0.1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
-    maven { url 'https://repo.spring.io/release' }
+    maven { url 'https://repo.spring.io/snapshot' }
     maven { url 'https://repo.spring.io/milestone' }
 }
 
+configurations.all {
+    exclude group: 'commons-logging', module: 'commons-logging'
+}
+
 dependencies {
-    // JavaFX dependencies
-    implementation 'org.openjfx:javafx-controls:23.0.1'
-    implementation 'org.openjfx:javafx-fxml:23.0.1'
-    implementation 'org.openjfx:javafx-graphics:23.0.1'
-    implementation 'org.openjfx:javafx-media:23.0.1'
-    implementation 'org.openjfx:javafx-web:23.0.1'
 
     // ModelMapper for object mapping
     implementation 'org.modelmapper:modelmapper:3.2.2'
@@ -78,12 +77,29 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
 }
 
+javafx {
+    version = '23.0.1'
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.media', 'javafx.graphics']
+}
+
+application {
+    mainClass = 'com.projecthub.MainApp'
+}
+
 bootRun {
     mainClass = 'com.projecthub.MainApp'
     jvmArgs = [
-        '--module-path', "${javafx.sdk}/lib",
-        '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media'
+        '--module-path', configurations.runtimeClasspath.asPath,
+        '--add-modules', 'javafx.controls,javafx.fxml,javafx.web,javafx.media,javafx.graphics'
     ]
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
 }
 
 jar {
