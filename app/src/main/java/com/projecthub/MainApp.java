@@ -16,12 +16,20 @@ public class MainApp extends Application {
         BorderPane root = loader.load();
         Scene scene = new Scene(root);
 
-        // Load and apply the stylesheet
-        URL stylesheetURL = getClass().getResource("/com/projecthub/ui/css/styles.css");
-        if (stylesheetURL != null) {
-            scene.getStylesheets().add(stylesheetURL.toExternalForm());
+        // Load and apply the Gluon theme stylesheet
+        URL gluonStylesheetURL = getClass().getResource("/com/gluonhq/charm/glisten/afterburner/glisten.css");
+        if (gluonStylesheetURL != null) {
+            scene.getStylesheets().add(gluonStylesheetURL.toExternalForm());
         } else {
-            System.err.println("Stylesheet not found: /com/projecthub/ui/css/styles.css");
+            System.err.println("Gluon stylesheet not found: /com/gluonhq/charm/glisten/afterburner/glisten.css");
+        }
+
+        // Load and apply the custom stylesheet
+        URL customStylesheetURL = getClass().getResource("/com/projecthub/ui/css/styles.css");
+        if (customStylesheetURL != null) {
+            scene.getStylesheets().add(customStylesheetURL.toExternalForm());
+        } else {
+            System.err.println("Custom stylesheet not found: /com/projecthub/ui/css/styles.css");
         }
 
         primaryStage.setScene(scene);
