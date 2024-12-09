@@ -185,6 +185,110 @@ graph TD
         A -->|Interacts with| E[Team Management]
         A -->|Interacts with| F[Cohort Management]
         A -->|Interacts with| G[School Management]
+        A -->|Interacts with| H[Login]
+        A -->|Interacts with| I[Register]
+    end
+
+    subgraph Controllers
+        B -->|Updates| J[DashboardController]
+        C -->|Updates| K[ProjectDetailsController]
+        D -->|Updates| L[ComponentDetailsController]
+        E -->|Updates| M[TeamDetailsController]
+        F -->|Updates| N[CohortDetailsController]
+        G -->|Updates| O[SchoolDetailsController]
+        H -->|Updates| P[AuthController]
+        I -->|Updates| P[AuthController]
+    end
+
+    subgraph ViewModels
+        J -->|Calls| Q[DashboardViewModel]
+        K -->|Calls| R[ProjectDetailsViewModel]
+        L -->|Calls| S[ComponentDetailsViewModel]
+        M -->|Calls| T[TeamDetailsViewModel]
+        N -->|Calls| U[CohortDetailsViewModel]
+        O -->|Calls| V[SchoolDetailsViewModel]
+        P -->|Calls| W[AuthViewModel]
+    end
+
+    subgraph Services
+        Q -->|Calls| X[DashboardService]
+        R -->|Calls| Y[ProjectService]
+        S -->|Calls| Z[ComponentService]
+        T -->|Calls| AA[TeamService]
+        U -->|Calls| AB[CohortService]
+        V -->|Calls| AC[SchoolService]
+        W -->|Calls| AD[AuthService]
+    end
+
+    subgraph Repositories
+        X -->|Accesses| AE[DashboardRepository]
+        Y -->|Accesses| AF[ProjectRepository]
+        Z -->|Accesses| AG[ComponentRepository]
+        AA -->|Accesses| AH[TeamRepository]
+        AB -->|Accesses| AI[CohortRepository]
+        AC -->|Accesses| AJ[SchoolRepository]
+        AD -->|Accesses| AK[AuthRepository]
+    end
+
+    subgraph Database
+        AE -->|Persists| AL[DashboardTable]
+        AF -->|Persists| AM[ProjectTable]
+        AG -->|Persists| AN[ComponentTable]
+        AH -->|Persists| AO[TeamTable]
+        AI -->|Persists| AP[CohortTable]
+        AJ -->|Persists| AQ[SchoolTable]
+        AK -->|Persists| AR[UserTable]
+    end
+
+    AL -->|Returns Data to| AE
+    AM -->|Returns Data to| AF
+    AN -->|Returns Data to| AG
+    AO -->|Returns Data to| AH
+    AP -->|Returns Data to| AI
+    AQ -->|Returns Data to| AJ
+    AR -->|Returns Data to| AK
+
+    AE -->|Returns Data to| X
+    AF -->|Returns Data to| Y
+    AG -->|Returns Data to| Z
+    AH -->|Returns Data to| AA
+    AI -->|Returns Data to| AB
+    AJ -->|Returns Data to| AC
+    AK -->|Returns Data to| AD
+
+    X -->|Returns Data to| Q
+    Y -->|Returns Data to| R
+    Z -->|Returns Data to| S
+    AA -->|Returns Data to| T
+    AB -->|Returns Data to| U
+    AC -->|Returns Data to| V
+    AD -->|Returns Data to| W
+
+    Q -->|Updates| J
+    R -->|Updates| K
+    S -->|Updates| L
+    T -->|Updates| M
+    U -->|Updates| N
+    V -->|Updates| O
+    W -->|Updates| P
+
+    J -->|Updates| B
+    K -->|Updates| C
+    L -->|Updates| D
+    M -->|Updates| E
+    N -->|Updates| F
+    O -->|Updates| G
+    P -->|Updates| H
+    P -->|Updates| I
+
+graph TD
+    subgraph User Interface
+        A[User] -->|Interacts with| B[Dashboard]
+        A -->|Interacts with| C[Project Management]
+        A -->|Interacts with| D[Component Management]
+        A -->|Interacts with| E[Team Management]
+        A -->|Interacts with| F[Cohort Management]
+        A -->|Interacts with| G[School Management]
     end
 
     subgraph Controllers
