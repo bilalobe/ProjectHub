@@ -28,6 +28,8 @@ include:
   - name: DuplicatedCode
   - name: ExtractMethodRecommender
   - name: RedundantMethodOverride
+  - name: JavadocDeclaration
+
 
 
 
