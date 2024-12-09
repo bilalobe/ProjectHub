@@ -3,6 +3,7 @@ package com.projecthub.repository.jpa;
 import com.projecthub.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 import java.util.Optional;
@@ -13,6 +14,8 @@ import java.util.UUID;
  */
 @Repository("jpaUserRepository")
 @Profile("jpa")
+@Primary
+
 public interface AppUserJpaRepository extends JpaRepository<AppUser, UUID> {
 
     /**
