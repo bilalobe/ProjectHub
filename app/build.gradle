@@ -14,6 +14,7 @@ repositories {
     mavenCentral()
     maven { url 'https://repo.spring.io/snapshot' }
     maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://nexus.gluonhq.com/nexus/content/repositories/releases/' }
 }
 
 configurations.all {
@@ -21,6 +22,9 @@ configurations.all {
 }
 
 dependencies {
+
+    // Lombok for boilerplate code reduction
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
     // ModelMapper for object mapping
     implementation 'org.modelmapper:modelmapper:3.2.2'
@@ -73,8 +77,11 @@ dependencies {
     // Testing dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
-    runtimeOnly 'org.springframework.boot:spring-boot-docker-compose'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
+
+    // Gluon dependencies
+    implementation 'com.gluonhq:charm-glisten:6.2.3'
+    implementation 'com.gluonhq:glisten-afterburner:2.1.0'
 }
 
 javafx {
