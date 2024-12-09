@@ -2,7 +2,6 @@ package com.projecthub.mapper;
 
 import com.projecthub.dto.AppUserDTO;
 import com.projecthub.model.AppUser;
-import com.projecthub.model.Team;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -13,32 +12,12 @@ public interface AppUserMapper {
 
     AppUserMapper INSTANCE = Mappers.getMapper(AppUserMapper.class);
 
-    @Mapping(source = "team.id", target = "teamId")
+    @Mapping(target = "password", ignore = true)
     AppUserDTO toAppUserDTO(AppUser user);
 
-    default AppUser toAppUser(AppUserDTO userDTO, Team team, String encodedPassword) {
-        if (userDTO == null) {
-            return null;
-        }
-        AppUser user = new AppUser();
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(encodedPassword);
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
-        user.setTeam(team);
-        return user;
-    }
+    @Mapping(target = "password", source = "encodedPassword")
+    AppUser toAppUser(AppUserDTO userDTO, String encodedPassword);
 
-    default void updateAppUserFromDTO(AppUserDTO userDTO, @MappingTarget AppUser user, Team team, String encodedPassword) {
-        if (userDTO == null || user == null) {
-            return;
-        }
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(encodedPassword);
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
-        user.setTeam(team);
-    }
+    @Mapping(target = "password", source = "encodedPassword")
+    void updateAppUserFromDTO(AppUserDTO userDTO, @MappingTarget AppUser user, String encodedPassword);
 }
