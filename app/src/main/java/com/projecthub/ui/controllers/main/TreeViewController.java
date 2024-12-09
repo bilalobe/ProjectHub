@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.ProjectDTO;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
-import com.projecthub.utils.ui.LoaderFactory;
-import com.projecthub.utils.ui.TreeItemLoader;
-import com.projecthub.utils.ui.TreeItemWrapper;
-import com.projecthub.utils.ui.TreeCellFactory;
+import com.projecthub.util.ui.LoaderFactory;
+import com.projecthub.util.ui.TreeCellFactory;
+import com.projecthub.util.ui.TreeItemLoader;
+import com.projecthub.util.ui.TreeItemWrapper;
 
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
