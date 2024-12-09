@@ -4,9 +4,7 @@ import com.projecthub.dto.AppUserDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.AppUserMapper;
 import com.projecthub.model.AppUser;
-import com.projecthub.model.Team;
 import com.projecthub.repository.AppUserRepository;
-import com.projecthub.repository.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +26,6 @@ public class AppUserService {
     private static final Logger logger = LoggerFactory.getLogger(AppUserService.class);
 
     private final AppUserRepository appUserRepository;
-    private final TeamRepository teamRepository;
     private final AppUserMapper appUserMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -41,16 +38,13 @@ public class AppUserService {
      * Constructs an AppUserService with the required dependencies.
      *
      * @param appUserRepository the repository for AppUser entities
-     * @param teamRepository    the repository for Team entities
      * @param appUserMapper     the mapper for converting between AppUser and AppUserDTO
      * @param passwordEncoder   the encoder for hashing passwords
      */
     public AppUserService(AppUserRepository appUserRepository,
-                          TeamRepository teamRepository,
                           AppUserMapper appUserMapper,
                           PasswordEncoder passwordEncoder) {
         this.appUserRepository = appUserRepository;
-        this.teamRepository = teamRepository;
         this.appUserMapper = appUserMapper;
         this.passwordEncoder = passwordEncoder;
     }
@@ -69,9 +63,8 @@ public class AppUserService {
         validateUserDTO(userDTO);
         validatePasswordStrength(rawPassword);
 
-        Team team = findTeamById(userDTO.getTeamId());
         String encodedPassword = encodePassword(rawPassword);
-        AppUser user = appUserMapper.toAppUser(userDTO, team, encodedPassword);
+        AppUser user = appUserMapper.toAppUser(userDTO, encodedPassword);
         AppUser savedUser = appUserRepository.save(user);
 
         logger.info("User created with ID: {}", savedUser.getId());
@@ -94,18 +87,12 @@ public class AppUserService {
         validateUserDTO(userDTO);
 
         AppUser existingUser = findUserById(id);
-        Team team = findTeamById(userDTO.getTeamId());
 
-        existingUser.setUsername(userDTO.getUsername());
-        existingUser.setFirstName(userDTO.getFirstName());
-        existingUser.setLastName(userDTO.getLastName());
-        existingUser.setTeam(team);
+        String encodedPassword = rawPassword != null && !rawPassword.isEmpty()
+                ? encodePassword(rawPassword)
+                : existingUser.getPassword();
 
-        if (rawPassword != null && !rawPassword.isEmpty()) {
-            validatePasswordStrength(rawPassword);
-            existingUser.setPassword(encodePassword(rawPassword));
-        }
-
+        appUserMapper.updateAppUserFromDTO(userDTO, existingUser, encodedPassword);
         AppUser updatedUser = appUserRepository.save(existingUser);
 
         logger.info("User updated with ID: {}", updatedUser.getId());
@@ -237,18 +224,6 @@ public class AppUserService {
     }
 
     /**
-     * Finds a team by its UUID.
-     *
-     * @param teamId the UUID of the team to find
-     * @return the Team entity
-     * @throws ResourceNotFoundException if the team with the specified ID does not exist
-     */
-    private Team findTeamById(UUID teamId) {
-        return teamRepository.findById(teamId)
-                .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + teamId));
-    }
-
-    /**
      * Validates the provided AppUserDTO for required fields.
      *
      * @param userDTO the AppUserDTO to validate
@@ -261,8 +236,14 @@ public class AppUserService {
         if (userDTO.getUsername() == null || userDTO.getUsername().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty");
         }
-        if (userDTO.getTeamId() == null) {
-            throw new IllegalArgumentException("Team ID cannot be null");
+        if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+        if (userDTO.getFirstName() == null || userDTO.getFirstName().isEmpty()) {
+            throw new IllegalArgumentException("First name cannot be null or empty");
+        }
+        if (userDTO.getLastName() == null || userDTO.getLastName().isEmpty()) {
+            throw new IllegalArgumentException("Last name cannot be null or empty");
         }
     }
 }
