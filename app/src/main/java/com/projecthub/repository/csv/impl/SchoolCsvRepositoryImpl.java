@@ -11,6 +11,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -23,6 +24,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Repository("csvSchoolRepository")
+@Profile("csv")
 public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(SchoolCsvRepositoryImpl.class);

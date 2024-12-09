@@ -13,6 +13,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -32,6 +33,7 @@ import java.util.UUID;
  * </p>
  */
 @Repository("csvCohortRepository")
+@Profile("csv")
 public class CohortCsvRepositoryImpl implements CohortCsvRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(CohortCsvRepositoryImpl.class);

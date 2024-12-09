@@ -13,6 +13,7 @@ import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Profile;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -24,6 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Repository("csvSubmissionRepository")
+@Profile("csv")
 public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(SubmissionCsvRepositoryImpl.class);

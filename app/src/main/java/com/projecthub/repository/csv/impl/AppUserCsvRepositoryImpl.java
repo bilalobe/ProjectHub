@@ -11,6 +11,7 @@ import jakarta.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -26,6 +27,7 @@ import com.projecthub.repository.csv.AppUserCsvRepository;
 import com.projecthub.repository.csv.helper.CsvHelper;
 
 @Repository("csvUserRepository")
+@Profile("csv")
 public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(AppUserCsvRepositoryImpl.class);
@@ -168,5 +170,16 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
         return findAll().stream()
                 .filter(u -> u.getUsername().equals(username))
                 .findFirst();
+    }
+
+    /**
+     * Checks if a user exists by their ID.
+     *
+     * @param id the ID of the user
+     * @return {@code true} if the user exists, {@code false} otherwise
+     */
+    @Override
+    public boolean existsById(UUID id) {
+        return findById(id).isPresent();
     }
 }
