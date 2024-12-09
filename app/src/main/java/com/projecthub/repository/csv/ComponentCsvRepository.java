@@ -4,14 +4,9 @@ import com.projecthub.model.Component;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Repository;
-
 /**
  * Repository interface for {@link Component} entities.
  */
-@Repository("componentCsvRepository")
-@Profile("csv")
 public interface ComponentCsvRepository extends BaseCsvRepository<Component> {
 
     /**

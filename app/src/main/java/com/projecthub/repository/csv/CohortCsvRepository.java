@@ -4,14 +4,9 @@ import com.projecthub.model.Cohort;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Repository;
-
 /**
  * Repository interface for {@link Cohort} entities.
  */
-@Repository("cohortCsvRepository")
-@Profile("csv")
 public interface CohortCsvRepository extends BaseCsvRepository<Cohort> {
 
     /**

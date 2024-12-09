@@ -15,13 +15,4 @@ public interface BaseCsvRepository<T> {
     Optional<T> findById(UUID id);
     void deleteById(UUID id);
 
-    /**
-     * Checks if an entity with the given ID exists.
-     *
-     * @param id the ID of the entity
-     * @return true if the entity exists, false otherwise
-     */
-    default boolean existsById(UUID id) {
-        return findById(id).isPresent();
-    }
 }
