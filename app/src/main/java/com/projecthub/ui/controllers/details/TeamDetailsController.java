@@ -9,7 +9,7 @@ import com.projecthub.dto.ProjectDTO;
 import com.projecthub.dto.TeamDTO;
 import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.TeamDetailsViewModel;
-import com.projecthub.utils.UUIDStringConverter;
+import com.projecthub.util.UUIDStringConverter;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
