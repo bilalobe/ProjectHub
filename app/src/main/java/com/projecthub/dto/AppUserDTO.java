@@ -1,5 +1,7 @@
 package com.projecthub.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.opencsv.bean.CsvBindByName;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -28,6 +30,14 @@ public class AppUserDTO {
     private String username;
 
     /**
+     * The password of the user.
+     * This field is only used for deserialization (input) and not for serialization (output).
+     */
+    @JsonProperty(access = Access.WRITE_ONLY)
+    @NotBlank(message = "Password is mandatory")
+    private String password;
+
+    /**
      * The email address of the user.
      */
     @CsvBindByName(column = "email")
@@ -49,12 +59,6 @@ public class AppUserDTO {
     @NotBlank(message = "Last name is mandatory")
     private String lastName;
 
-    /**
-     * The team ID of the user.
-     */
-    @CsvBindByName(column = "teamId")
-    private UUID teamId;
-
     // No-argument constructor
     public AppUserDTO() {
         // Default constructor
@@ -68,15 +72,13 @@ public class AppUserDTO {
      * @param email     the email address of the user
      * @param firstName the first name of the user
      * @param lastName  the last name of the user
-     * @param teamId    the team ID of the user
      */
-    public AppUserDTO(UUID id, String username, String email, String firstName, String lastName, UUID teamId) {
+    public AppUserDTO(UUID id, String username, String email, String firstName, String lastName) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.teamId = teamId;
     }
 
     /**
@@ -113,6 +115,24 @@ public class AppUserDTO {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * Gets the password of the user.
+     *
+     * @return the user's password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Sets the password of the user.
+     *
+     * @param password the user's password
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**
@@ -167,23 +187,5 @@ public class AppUserDTO {
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    /**
-     * Gets the team ID of the user.
-     *
-     * @return the user's team ID
-     */
-    public UUID getTeamId() {
-        return teamId;
-    }
-
-    /**
-     * Sets the team ID of the user.
-     *
-     * @param teamId the user's team ID
-     */
-    public void setTeamId(UUID teamId) {
-        this.teamId = teamId;
     }
 }
