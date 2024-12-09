@@ -3,7 +3,6 @@ package com.projecthub.controller;
 import com.projecthub.dto.AppUserDTO;
 import com.projecthub.service.AppUserService;
 import com.projecthub.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,8 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * REST controller for handling user authentication.
- * Provides endpoints for user registration and login.
+ * REST controller for handling user authentication. Provides endpoints for user
+ * registration and login.
  */
 @RestController
 @RequestMapping("/auth")
@@ -25,11 +24,11 @@ public class AuthController {
     /**
      * Constructs an AuthController with the required dependencies.
      *
-     * @param appUserService the service for managing application users
-     * @param authenticationManager the authentication manager for handling authentication
-     * @param jwtUtil the utility for generating JWT tokens
+     * @param appUserService        the service for managing application users
+     * @param authenticationManager the authentication manager for handling
+     *                              authentication
+     * @param jwtUtil               the utility for generating JWT tokens
      */
-    @Autowired
     public AuthController(AppUserService appUserService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.appUserService = appUserService;
         this.authenticationManager = authenticationManager;
@@ -55,9 +54,8 @@ public class AuthController {
      */
     @PostMapping("/login")
     public String login(@RequestBody AppUserDTO userDTO) {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword())
-        );
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwtToken = jwtUtil.generateToken(userDTO.getUsername());
         return jwtToken;
