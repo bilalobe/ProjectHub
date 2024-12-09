@@ -30,13 +30,6 @@ public class RepositoryConfig {
     @Profile("csv")
     @EnableTransactionManagement
     static class CsvRepositoryConfig {
-        // Configuration for CSV repositories if needed
 
-        @Bean
-        public Jackson2RepositoryPopulatorFactoryBean repositoryPopulator() {
-            Jackson2RepositoryPopulatorFactoryBean factory = new Jackson2RepositoryPopulatorFactoryBean();
-            factory.setResources(new ClassPathResource[]{new ClassPathResource("data.json")});
-            return factory;
-        }
     }
 }
