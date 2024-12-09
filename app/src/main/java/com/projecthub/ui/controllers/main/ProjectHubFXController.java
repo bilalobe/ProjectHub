@@ -2,10 +2,10 @@ package com.projecthub.ui.controllers.main;
 
 import org.springframework.stereotype.Component;
 
-import com.projecthub.utils.ui.LoaderFactory;
-import com.projecthub.utils.ui.TreeItemWrapper;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
-import com.projecthub.utils.ui.TreeCellFactory;
+import com.projecthub.util.ui.LoaderFactory;
+import com.projecthub.util.ui.TreeCellFactory;
+import com.projecthub.util.ui.TreeItemWrapper;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
