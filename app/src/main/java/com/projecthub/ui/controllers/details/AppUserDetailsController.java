@@ -114,7 +114,7 @@ public class AppUserDetailsController extends BaseController {
             @Override
             protected Void call() throws Exception {
                 try {
-                    AppUserDTO userSummary = new AppUserDTO(null, username, password, null, null, null);
+                    AppUserDTO userSummary = new AppUserDTO(null, username, password, null, null);
                     userService.createUser(userSummary, password);
                 } catch (InvalidInputException | UserAlreadyExistsException e) {
                     logger.error("Error saving user: {}", e.getMessage());
