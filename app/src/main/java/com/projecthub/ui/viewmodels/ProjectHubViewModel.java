@@ -8,7 +8,8 @@ import com.projecthub.service.CohortService;
 import com.projecthub.service.ComponentService;
 import com.projecthub.service.ProjectService;
 import com.projecthub.service.TeamService;
-import com.projecthub.utils.ui.TreeItemWrapper;
+import com.projecthub.util.ui.TreeItemWrapper;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
