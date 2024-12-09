@@ -1,4 +1,4 @@
-package com.projecthub.utils;
+package com.projecthub.util;
 
 import javafx.util.StringConverter;
 

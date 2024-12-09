@@ -1,4 +1,4 @@
-package com.projecthub.utils.ui;
+package com.projecthub.util.ui;
 
 import java.util.List;
 import java.util.UUID;

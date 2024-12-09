@@ -1,4 +1,4 @@
-package com.projecthub.utils.ui;
+package com.projecthub.util.ui;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

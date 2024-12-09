@@ -1,13 +1,13 @@
-package com.projecthub.utils.ui;
+package com.projecthub.util.ui;
 
 import org.springframework.stereotype.Component;
 
 import com.projecthub.dto.CohortDTO;
 import com.projecthub.dto.SchoolDTO;
 import com.projecthub.dto.TeamDTO;
-import com.projecthub.utils.ui.loaders.CohortLoader;
-import com.projecthub.utils.ui.loaders.SchoolLoader;
-import com.projecthub.utils.ui.loaders.TeamLoader;
+import com.projecthub.util.ui.loaders.CohortLoader;
+import com.projecthub.util.ui.loaders.SchoolLoader;
+import com.projecthub.util.ui.loaders.TeamLoader;
 
 @Component
 public class LoaderFactory {

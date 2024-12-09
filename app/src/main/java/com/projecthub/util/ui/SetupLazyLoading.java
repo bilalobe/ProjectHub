@@ -1,4 +1,4 @@
-package com.projecthub.utils.ui;
+package com.projecthub.util.ui;
 
 import org.springframework.stereotype.Component;
 
