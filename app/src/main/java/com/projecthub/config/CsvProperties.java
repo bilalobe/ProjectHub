@@ -94,4 +94,8 @@ public class CsvProperties {
     public String getUsersFilepath() {
         return usersFilepath;
     }
+
+    public void setUsersFilepath(String usersFilepath) {
+        this.usersFilepath = usersFilepath;
+    }
 }
