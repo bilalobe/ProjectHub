@@ -2,14 +2,13 @@ package com.projecthub.controller;
 
 import com.projecthub.dto.AppUserProfileDTO;
 import com.projecthub.service.AppUserProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 /**
- * REST controller for handling user profile operations.
- * Provides endpoints for retrieving and updating user profiles.
+ * REST controller for handling user profile operations. Provides endpoints for
+ * retrieving and updating user profiles.
  */
 @RestController
 @RequestMapping("/profile")
@@ -17,7 +16,6 @@ public class AppUserProfileController {
 
     private final AppUserProfileService userProfileService;
 
-    @Autowired
     public AppUserProfileController(AppUserProfileService userProfileService) {
         this.userProfileService = userProfileService;
     }
@@ -36,8 +34,9 @@ public class AppUserProfileController {
     /**
      * Updates a user profile with the provided details.
      *
-     * @param id the UUID of the user to update
-     * @param userProfileDTO the data transfer object containing updated profile details
+     * @param id             the UUID of the user to update
+     * @param userProfileDTO the data transfer object containing updated profile
+     *                       details
      * @return the updated UserProfileDTO
      */
     @PutMapping("/{id}")
