@@ -289,26 +289,26 @@ sequenceDiagram
 sequenceDiagram
     participant User
     participant AngularApp
-    participant ProjectService (Frontend)
+    participant ProjectService
     participant BackendAPI
     participant ProjectController
-    participant ProjectService (Backend)
+    participant ProjectService
     participant JPARepository
     participant Database
 
     User->>+AngularApp: Create New Project
-    AngularApp->>+ProjectService (Frontend): Submit Project Data
-    ProjectService (Frontend)->>+BackendAPI: POST /projects
+    AngularApp->>+ProjectService: Submit Project Data
+    ProjectService->>+BackendAPI: POST /projects
     BackendAPI->>+ProjectController: Handle Request
-    ProjectController->>+ProjectService (Backend): Save Project
-    ProjectService (Backend)->>+JPARepository: Save Project Entity
+    ProjectController->>+ProjectService: Save Project
+    ProjectService->>+JPARepository: Save Project Entity
     JPARepository->>+Database: Insert Record
     Database-->>-JPARepository: Confirmation
-    JPARepository-->>-ProjectService (Backend): Entity Saved
-    ProjectService (Backend)-->>-ProjectController: Success
+    JPARepository-->>-ProjectService Entity Saved
+    ProjectService-->>-ProjectController: Success
     ProjectController-->>-BackendAPI: HTTP 201 Created
-    BackendAPI-->>-ProjectService (Frontend): Response
-    ProjectService (Frontend)-->>-AngularApp: Project Created
+    BackendAPI-->>-ProjectService: Response
+    ProjectService-->>-AngularApp: Project Created
     AngularApp-->>-User: Project Successfully Created
 
 graph TD
@@ -473,5 +473,236 @@ flowchart TB
     M -->|Processes Logs| N
     N -->|Visualizes Logs| O
 
+graph TD
+    A[Spring Boot Application] -->|Active Profile: csv| B[AppUserCsvRepository]
+    A[Spring Boot Application] -->|Active Profile: h2| C[AppUserJpaRepository]
+    A[Spring Boot Application] -->|Active Profile: postgres| C[AppUserJpaRepository]
 
+    B[AppUserCsvRepository] --> D[AppUserCsvRepositoryImpl]
+    C[AppUserJpaRepository] --> E[AppUserRepository]
 
+    subgraph CSV Profile
+        B[AppUserCsvRepository]
+        D[AppUserCsvRepositoryImpl]
+    end
+
+    subgraph JPA Profile
+        C[AppUserJpaRepository]
+        E[AppUserRepository]
+    end
+
+    subgraph Database
+        F[CSV File]
+        G[H2 Database]
+        H[PostgreSQL Database]
+    end
+
+    D[AppUserCsvRepositoryImpl] --> F[CSV File]
+    E[AppUserRepository] --> G[H2 Database]
+    E[AppUserRepository] --> H[PostgreSQL Database]
+
+flowchart TD
+    %% User Interface
+    subgraph User Interface
+        A[User]
+        A -->|Interacts with| B[UI]
+    end
+
+    %% Controllers
+    subgraph Controllers
+        B -->|Handles Input| C[ComponentDetailsController]
+        B -->|Handles Input| D[TreeViewController]
+    end
+
+    %% View Models
+    subgraph View Models
+        C -->|Validates and Prepares Data| E[ComponentViewModel]
+        D -->|Gets Data| F[TreeItemWrapper]
+    end
+
+    %% Services
+    subgraph Services
+        E -->|Performs CRUD Operation| G[ComponentService]
+        F -->|Gets Loader| H[LoaderFactory]
+    end
+
+    %% Repositories
+    subgraph Repositories
+        G -->|Saves/Updates/Deletes Component| I[ComponentRepository]
+        H -->|Returns Loader| J[TreeItemLoader]
+    end
+
+    %% Database
+    subgraph Database
+        I -->|Persists Data| K[Database]
+    end
+
+    %% Data Flow
+    K -->|Returns Data to| I
+    I -->|Returns Result to| G
+    G -->|Returns Result to| E
+    E -->|Updates View| C
+    C -->|Displays Result| B
+    J -->|Loads Children| D
+    D -->|Updates Tree View| B
+
+sequenceDiagram
+    participant User
+    participant DesktopApp
+    participant AuthController
+    participant AuthService
+    participant UserRepository
+    participant Database
+
+    Note over User,DesktopApp: Registration Flow
+
+    User->>+DesktopApp: Fill Registration Form
+    DesktopApp->>+AuthController: POST /register
+    AuthController->>+AuthService: registerUser(UserDTO)
+    AuthService->>+UserRepository: save(User)
+    UserRepository->>+Database: Insert User Record
+    Database-->>-UserRepository: Success
+    UserRepository-->>-AuthService: User Saved
+    AuthService-->>-AuthController: Registration Success
+    AuthController-->>-DesktopApp: HTTP 201 Created
+    DesktopApp-->>-User: Registration Successful
+    alt Registration Failed
+        AuthService-->>AuthController: Registration Failed
+        AuthController-->>DesktopApp: HTTP 400 Bad Request
+        DesktopApp-->>User: Registration Failed
+    end
+
+    Note over User,DesktopApp: Login Flow
+
+    User->>+DesktopApp: Enter Credentials
+    DesktopApp->>+AuthController: POST /login
+    AuthController->>+AuthService: authenticate(username, password)
+    AuthService->>+UserRepository: findByUsername(username)
+    UserRepository-->>-AuthService: User Details
+    AuthService->>AuthService: Verify Password
+    alt Password Correct
+        AuthService-->>AuthController: JWT Token
+        AuthController-->>DesktopApp: JWT Token
+        DesktopApp-->>User: Login Successful
+        DesktopApp->>DesktopApp: Store JWT Token for Authenticated Requests
+    else Password Incorrect
+        AuthService-->>AuthController: Authentication Failed
+        AuthController-->>DesktopApp: HTTP 401 Unauthorized
+        DesktopApp-->>User: Login Failed
+    end
+
+<!-- chefs kiss -->
+flowchart TD
+    %% User Interface
+    subgraph User Interface
+        A[User]
+        A -->|Interacts with| B[JavaFX Desktop App]
+    end
+
+    %% JavaFX Desktop App
+    subgraph JavaFX Desktop App
+        B -->|Uses| C[NavigationController]
+        C -->|Loads| D[TreeView]
+        C -->|Loads| E[BorderPane]
+    end
+
+    %% NavigationController
+    subgraph NavigationController
+        C -->|Handles Selection| F[TreeItem]
+        F -->|Triggers| G[LoaderFactory]
+        G -->|Returns| H[FXMLLoader]
+        H -->|Loads| I[View]
+    end
+
+    %% ViewModels and Controllers
+    subgraph ViewModels and Controllers
+        I -->|Uses| J[ViewModel]
+        J -->|Calls| K[Service]
+        K -->|Accesses| L[Repository]
+    end
+
+    %% Repositories
+    subgraph Repositories
+        L -->|Interacts with| M[Database]
+        L -->|Interacts with| N[CSV Files]
+    end
+
+    %% Database
+    subgraph Database
+        M[H2 Database]
+        M[PostgreSQL Database]
+    end
+
+    %% CSV Files
+    subgraph CSV Files
+        N[CSV File]
+    end
+
+    %% Data Flow
+    K -->|Returns Data to| J
+    J -->|Updates View| I
+    I -->|Displays Result| B
+    M -->|Returns Data to| L
+    N -->|Returns Data to| L
+    L -->|Returns Result to| K
+
+classDiagram
+    %% Interfaces
+    class AppUserRepository {
+        +save(user)
+        +findAll()
+        +findById(id)
+        +findByUsername(username)
+        +deleteById(id)
+        +existsById(id)
+    }
+
+    class JpaRepository {
+        +save(entity)
+        +findById(id)
+        +findAll()
+        +deleteById(id)
+    }
+
+    class BaseCsvRepository {
+        +save(entity)
+        +findAll()
+        +findById(id)
+        +deleteById(id)
+        +existsById(id)
+    }
+
+    class AppUserCsvRepository {
+        +findByUsername(username)
+    }
+
+    %% Implementations
+    class AppUserJpaRepository {
+    }
+
+    class AppUserCsvRepositoryImpl {
+        +save(user)
+        +findAll()
+        +findById(id)
+        +deleteById(id)
+        +findByUsername(username)
+    }
+
+    class AppUser {
+        id
+        username
+        password
+        email
+    }
+
+    %% Relationships
+    AppUserRepository <|-- AppUserJpaRepository
+    AppUserRepository <|-- AppUserCsvRepository
+    BaseCsvRepository <|-- AppUserCsvRepository
+    JpaRepository <|-- AppUserJpaRepository
+    AppUserCsvRepositoryImpl ..|> AppUserCsvRepository
+    AppUserCsvRepositoryImpl --> AppUser
+
+    %% Notes
+    note for AppUserJpaRepository "Repository: jpaUserRepository, Profile: jpa"
+    note for AppUserCsvRepositoryImpl "Repository: csvUserRepository, Profile: csv, Primary"
