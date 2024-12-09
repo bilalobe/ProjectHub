@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.stereotype.Repository;
-
 /*
  * Repository interface for the Component entity.
  */
-@Repository
 
 public interface ComponentRepository {
 

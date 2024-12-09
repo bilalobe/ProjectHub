@@ -6,12 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.stereotype.Repository;
-
 /**
  * Repository interface for {@link Team} entities.
  */
-@Repository
 public interface TeamRepository {
     Team save(Team team);
     List<Team> findAll();

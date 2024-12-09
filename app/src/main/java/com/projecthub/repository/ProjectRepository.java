@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.stereotype.Repository;
-
 /**
  * Repository interface for {@link Project} entities.
  */
-@Repository
 
 public interface ProjectRepository {
     Project save(Project project);

@@ -2,11 +2,12 @@ package com.projecthub.repository;
 
 import com.projecthub.dto.ProjectStatusDTO;
 import com.projecthub.dto.RecentActivityDTO;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+/**
+ * Repository class for dashboard-related operations.
+ */
 public class DashboardRepository {
 
     public int countTotalUsers() {
