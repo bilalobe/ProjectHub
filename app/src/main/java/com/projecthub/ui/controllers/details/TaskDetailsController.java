@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.projecthub.dto.TaskDTO;
 import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.TaskDetailsViewModel;
-import com.projecthub.utils.UUIDStringConverter;
+import com.projecthub.util.UUIDStringConverter;
 
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
