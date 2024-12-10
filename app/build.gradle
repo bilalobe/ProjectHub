@@ -86,7 +86,7 @@ dependencies {
 
 javafx {
     version = '23.0.1'
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.media', 'javafx.graphics']
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.media', 'javafx.graphics', 'javafx.swing']
 }
 
 application {
