@@ -1,27 +1,17 @@
 package com.projecthub.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * DTO for project status data.
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProjectStatusDTO {
+
     private String status;
     private int count;
-
-    public ProjectStatusDTO(String status, int count) {
-        this.status = status;
-        this.count = count;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
 }
