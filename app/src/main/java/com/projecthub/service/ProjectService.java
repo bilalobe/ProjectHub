@@ -4,7 +4,7 @@ import com.projecthub.dto.ProjectDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.ProjectMapper;
 import com.projecthub.model.Project;
-import com.projecthub.repository.ProjectRepository;
+import com.projecthub.repository.jpa.ProjectJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,10 @@ public class ProjectService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectService.class);
 
-    private final ProjectRepository projectRepository;
+    private final ProjectJpaRepository<UUID> projectRepository;
     private final ProjectMapper projectMapper;
 
-    public ProjectService(ProjectRepository projectRepository, ProjectMapper projectMapper) {
+    public ProjectService(ProjectJpaRepository<UUID> projectRepository, ProjectMapper projectMapper) {
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
     }

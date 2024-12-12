@@ -4,7 +4,7 @@ import com.projecthub.dto.AppUserProfileDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.AppUserProfileMapper;
 import com.projecthub.model.AppUser;
-import com.projecthub.repository.AppUserRepository;
+import com.projecthub.repository.jpa.AppUserJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,10 @@ public class AppUserProfileService {
 
     private static final Logger logger = LoggerFactory.getLogger(AppUserProfileService.class);
 
-    private final AppUserRepository appUserRepository;
+    private final AppUserJpaRepository appUserRepository;
     private final AppUserProfileMapper userProfileMapper;
 
-    public AppUserProfileService(AppUserRepository appUserRepository, AppUserProfileMapper userProfileMapper) {
+    public AppUserProfileService(AppUserJpaRepository appUserRepository, AppUserProfileMapper userProfileMapper) {
         this.appUserRepository = appUserRepository;
         this.userProfileMapper = userProfileMapper;
     }

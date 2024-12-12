@@ -1,10 +1,16 @@
 package com.projecthub.service;
 
 import com.projecthub.dto.AppUserDTO;
+import com.projecthub.dto.RegisterRequestDTO;
+import com.projecthub.dto.UpdateUserRequestDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.AppUserMapper;
 import com.projecthub.model.AppUser;
-import com.projecthub.repository.AppUserRepository;
+import com.projecthub.repository.jpa.AppUserJpaRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -25,9 +32,10 @@ public class AppUserService {
 
     private static final Logger logger = LoggerFactory.getLogger(AppUserService.class);
 
-    private final AppUserRepository appUserRepository;
+    private final AppUserJpaRepository appUserRepository;
     private final AppUserMapper appUserMapper;
     private final PasswordEncoder passwordEncoder;
+    private final Validator validator;
 
     // Define a regex pattern for password strength validation
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
@@ -40,62 +48,100 @@ public class AppUserService {
      * @param appUserRepository the repository for AppUser entities
      * @param appUserMapper     the mapper for converting between AppUser and AppUserDTO
      * @param passwordEncoder   the encoder for hashing passwords
+     * @param validator         the validator for validating user details
      */
-    public AppUserService(AppUserRepository appUserRepository,
+    public AppUserService(AppUserJpaRepository appUserRepository,
                           AppUserMapper appUserMapper,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          Validator validator) {
         this.appUserRepository = appUserRepository;
         this.appUserMapper = appUserMapper;
         this.passwordEncoder = passwordEncoder;
+        this.validator = validator;
     }
 
     /**
-     * Creates a new user with the provided details and raw password.
+     * Creates a new user with the provided registration details.
      *
-     * @param userDTO     the data transfer object containing user details
-     * @param rawPassword the raw password for the user
+     * @param registerRequest the registration request containing user details
      * @return the created AppUserDTO
-     * @throws IllegalArgumentException if userDTO or rawPassword is invalid
+     * @throws IllegalArgumentException if user already exists
      */
     @Transactional
-    public AppUserDTO createUser(AppUserDTO userDTO, String rawPassword) {
+    public AppUserDTO createUser(@Valid RegisterRequestDTO registerRequest) {
         logger.info("Creating a new user");
-        validateUserDTO(userDTO);
-        validatePasswordStrength(rawPassword);
 
-        String encodedPassword = encodePassword(rawPassword);
-        AppUser user = appUserMapper.toAppUser(userDTO, encodedPassword);
+        validateRegisterRequest(registerRequest);
+
+        // Check if username or email already exists
+        if (appUserRepository.existsByUsername(registerRequest.getUsername())) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+        if (appUserRepository.existsByEmail(registerRequest.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        // Encode the password
+        String encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
+
+        // Map RegisterRequestDTO to AppUser entity
+        AppUser user = appUserMapper.toAppUser(registerRequest, encodedPassword);
+
+        // Save the user
         AppUser savedUser = appUserRepository.save(user);
 
         logger.info("User created with ID: {}", savedUser.getId());
+
+        // Map AppUser entity to AppUserDTO
         return appUserMapper.toAppUserDTO(savedUser);
     }
 
     /**
-     * Updates an existing user with the provided details and raw password.
+     * Updates an existing user with the provided update details.
      *
-     * @param id          the UUID of the user to update
-     * @param userDTO     the data transfer object containing updated user details
-     * @param rawPassword the new raw password for the user (optional)
+     * @param id                the UUID of the user to update
+     * @param updateUserRequest the update request containing new user details
      * @return the updated AppUserDTO
-     * @throws ResourceNotFoundException if the user with the specified ID does not exist
-     * @throws IllegalArgumentException  if userDTO is invalid
+     * @throws ResourceNotFoundException if the user does not exist
      */
     @Transactional
-    public AppUserDTO updateUser(UUID id, AppUserDTO userDTO, String rawPassword) {
+    public AppUserDTO updateUser(UUID id, @Valid UpdateUserRequestDTO updateUserRequest) {
         logger.info("Updating user with ID: {}", id);
-        validateUserDTO(userDTO);
 
-        AppUser existingUser = findUserById(id);
+        validateUpdateRequest(updateUserRequest);
 
-        String encodedPassword = rawPassword != null && !rawPassword.isEmpty()
-                ? encodePassword(rawPassword)
-                : existingUser.getPassword();
+        // Find existing user
+        AppUser existingUser = appUserRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
 
-        appUserMapper.updateAppUserFromDTO(userDTO, existingUser, encodedPassword);
+        // Check for username or email conflicts with other users
+        if (!existingUser.getUsername().equals(updateUserRequest.getUsername()) &&
+                appUserRepository.existsByUsername(updateUserRequest.getUsername())) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+        if (!existingUser.getEmail().equals(updateUserRequest.getEmail()) &&
+                appUserRepository.existsByEmail(updateUserRequest.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        // Update fields
+        existingUser.setFirstName(updateUserRequest.getFirstName());
+        existingUser.setLastName(updateUserRequest.getLastName());
+        existingUser.setEmail(updateUserRequest.getEmail());
+        existingUser.setUsername(updateUserRequest.getUsername());
+
+        // Update password if provided
+        if (updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(updateUserRequest.getPassword());
+            existingUser.setPassword(encodedPassword);
+        }
+
+        // Save updated user
         AppUser updatedUser = appUserRepository.save(existingUser);
 
         logger.info("User updated with ID: {}", updatedUser.getId());
+
+        // Map AppUser entity to AppUserDTO
         return appUserMapper.toAppUserDTO(updatedUser);
     }
 
@@ -212,6 +258,32 @@ public class AppUserService {
     }
 
     /**
+     * Validates the RegisterRequestDTO.
+     *
+     * @param registerRequest the registration request to validate
+     * @throws ConstraintViolationException if validation fails
+     */
+    private void validateRegisterRequest(RegisterRequestDTO registerRequest) {
+        Set<ConstraintViolation<RegisterRequestDTO>> violations = validator.validate(registerRequest);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Registration validation failed", violations);
+        }
+    }
+
+    /**
+     * Validates the UpdateUserRequestDTO.
+     *
+     * @param updateUserRequest the update request to validate
+     * @throws ConstraintViolationException if validation fails
+     */
+    private void validateUpdateRequest(UpdateUserRequestDTO updateUserRequest) {
+        Set<ConstraintViolation<UpdateUserRequestDTO>> violations = validator.validate(updateUserRequest);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Update validation failed", violations);
+        }
+    }
+
+    /**
      * Finds a user by their UUID.
      *
      * @param id the UUID of the user to find
@@ -221,29 +293,5 @@ public class AppUserService {
     private AppUser findUserById(UUID id) {
         return appUserRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
-    }
-
-    /**
-     * Validates the provided AppUserDTO for required fields.
-     *
-     * @param userDTO the AppUserDTO to validate
-     * @throws IllegalArgumentException if userDTO or required fields are invalid
-     */
-    private void validateUserDTO(AppUserDTO userDTO) {
-        if (userDTO == null) {
-            throw new IllegalArgumentException("UserDTO cannot be null");
-        }
-        if (userDTO.getUsername() == null || userDTO.getUsername().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty");
-        }
-        if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
-            throw new IllegalArgumentException("Email cannot be null or empty");
-        }
-        if (userDTO.getFirstName() == null || userDTO.getFirstName().isEmpty()) {
-            throw new IllegalArgumentException("First name cannot be null or empty");
-        }
-        if (userDTO.getLastName() == null || userDTO.getLastName().isEmpty()) {
-            throw new IllegalArgumentException("Last name cannot be null or empty");
-        }
     }
 }

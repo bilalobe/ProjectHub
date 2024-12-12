@@ -4,7 +4,7 @@ import com.projecthub.dto.SubmissionDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.SubmissionMapper;
 import com.projecthub.model.Submission;
-import com.projecthub.repository.SubmissionRepository;
+import com.projecthub.repository.jpa.SubmissionJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,10 @@ public class SubmissionService {
 
     private static final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
 
-    private final SubmissionRepository submissionRepository;
+    private final SubmissionJpaRepository submissionRepository;
     private final SubmissionMapper submissionMapper;
 
-    public SubmissionService(SubmissionRepository submissionRepository, SubmissionMapper submissionMapper) {
+    public SubmissionService(SubmissionJpaRepository submissionRepository, SubmissionMapper submissionMapper) {
         this.submissionRepository = submissionRepository;
         this.submissionMapper = submissionMapper;
     }
@@ -33,16 +33,16 @@ public class SubmissionService {
      * Saves a new submission.
      *
      * @param submissionDTO the submission data transfer object
-     * @return the saved submission DTO
+     * @return 
      * @throws IllegalArgumentException if submissionDTO is null
      */
     @Transactional
     public SubmissionDTO saveSubmission(SubmissionDTO submissionDTO) {
-        logger.info("Saving... submission");
+        logger.info("Saving submission");
         validateSubmissionDTO(submissionDTO);
         Submission submission = submissionMapper.toSubmission(submissionDTO);
         Submission savedSubmission = submissionRepository.save(submission);
-        logger.info("Submission reintroduced with ID: {}", savedSubmission.getId());
+        logger.info("Submission saved with ID: {}", savedSubmission.getId());
         return submissionMapper.toSubmissionDTO(savedSubmission);
     }
 
@@ -105,36 +105,34 @@ public class SubmissionService {
      *
      * @param id            the ID of the submission to update
      * @param submissionDTO the submission data transfer object
-     * @return the updated submission DTO
      * @throws ResourceNotFoundException if the submission is not found
      * @throws IllegalArgumentException  if submissionDTO is null
      */
     @Transactional
-    public SubmissionDTO updateSubmission(UUID id, SubmissionDTO submissionDTO) {
+    public void updateSubmission(UUID id, SubmissionDTO submissionDTO) {
         logger.info("Updating submission with ID: {}", id);
         validateSubmissionDTO(submissionDTO);
         Submission existingSubmission = findSubmissionById(id);
         submissionMapper.updateSubmissionFromDTO(submissionDTO, existingSubmission);
         Submission updatedSubmission = submissionRepository.save(existingSubmission);
         logger.info("Submission updated with ID: {}", updatedSubmission.getId());
-        return submissionMapper.toSubmissionDTO(updatedSubmission);
+        submissionMapper.toSubmissionDTO(updatedSubmission);
     }
 
     /**
      * Creates a new submission.
      *
      * @param submissionDTO the submission data transfer object
-     * @return the created submission DTO
      * @throws IllegalArgumentException if submissionDTO is null
      */
     @Transactional
-    public SubmissionDTO createSubmission(SubmissionDTO submissionDTO) {
+    public void createSubmission(SubmissionDTO submissionDTO) {
         logger.info("Creating a new submission");
         validateSubmissionDTO(submissionDTO);
         Submission submission = submissionMapper.toSubmission(submissionDTO);
         Submission savedSubmission = submissionRepository.save(submission);
         logger.info("Submission created with ID: {}", savedSubmission.getId());
-        return submissionMapper.toSubmissionDTO(savedSubmission);
+        submissionMapper.toSubmissionDTO(savedSubmission);
     }
 
     private void validateSubmissionDTO(SubmissionDTO submissionDTO) {

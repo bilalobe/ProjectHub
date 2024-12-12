@@ -1,8 +1,8 @@
 package com.projecthub.service;
 
-import com.projecthub.repository.DashboardRepository;
 import com.projecthub.dto.ProjectStatusDTO;
 import com.projecthub.dto.RecentActivityDTO;
+import com.projecthub.repository.jpa.DashboardJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,10 +13,9 @@ import java.util.List;
 @Service
 public class DashboardService {
 
-    private final DashboardRepository dashboardRepository;
+    private final DashboardJpaRepository dashboardRepository;
 
-
-    public DashboardService(DashboardRepository dashboardRepository) {
+    public DashboardService(DashboardJpaRepository dashboardRepository) {
         this.dashboardRepository = dashboardRepository;
     }
 

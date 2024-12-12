@@ -4,7 +4,7 @@ import com.projecthub.dto.SchoolDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.SchoolMapper;
 import com.projecthub.model.School;
-import com.projecthub.repository.SchoolRepository;
+import com.projecthub.repository.jpa.SchoolJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,10 @@ public class SchoolService {
 
     private static final Logger logger = LoggerFactory.getLogger(SchoolService.class);
 
-    private final SchoolRepository schoolRepository;
+    private final SchoolJpaRepository schoolRepository;
     private final SchoolMapper schoolMapper;
 
-    public SchoolService(SchoolRepository schoolRepository, SchoolMapper schoolMapper) {
+    public SchoolService(SchoolJpaRepository schoolRepository, SchoolMapper schoolMapper) {
         this.schoolRepository = schoolRepository;
         this.schoolMapper = schoolMapper;
     }
@@ -100,7 +100,8 @@ public class SchoolService {
      */
     public List<SchoolDTO> getAllSchools() {
         logger.info("Retrieving all schools");
-        return schoolRepository.findAll().stream()
+        List<School> schools = (List<School>) schoolRepository.findAll();
+        return schools.stream()
                 .map(schoolMapper::toSchoolDTO)
                 .toList();
     }

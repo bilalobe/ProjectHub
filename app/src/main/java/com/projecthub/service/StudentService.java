@@ -4,7 +4,7 @@ import com.projecthub.dto.StudentDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.StudentMapper;
 import com.projecthub.model.Student;
-import com.projecthub.repository.StudentRepository;
+import com.projecthub.repository.jpa.StudentJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,10 @@ public class StudentService {
 
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
-    private final StudentRepository studentRepository;
+    private final StudentJpaRepository studentRepository;
     private final StudentMapper studentMapper;
 
-    public StudentService(StudentRepository studentRepository, StudentMapper studentMapper) {
+    public StudentService(StudentJpaRepository studentRepository, StudentMapper studentMapper) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
     }
@@ -33,7 +33,7 @@ public class StudentService {
      * Creates a new student.
      *
      * @param studentDTO the student data transfer object
-     * @return the saved student DTO
+     * @return the created student DTO
      * @throws IllegalArgumentException if studentDTO is null
      */
     @Transactional
@@ -88,6 +88,12 @@ public class StudentService {
                 .toList();
     }
 
+    /**
+     * Validates the student DTO.
+     *
+     * @param studentDTO the student data transfer object
+     * @throws IllegalArgumentException if studentDTO is null
+     */
     private void validateStudentDTO(StudentDTO studentDTO) {
         if (studentDTO == null) {
             throw new IllegalArgumentException("StudentDTO cannot be null");

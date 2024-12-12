@@ -5,8 +5,8 @@ import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.CohortMapper;
 import com.projecthub.model.Cohort;
 import com.projecthub.model.School;
-import com.projecthub.repository.CohortRepository;
-import com.projecthub.repository.SchoolRepository;
+import com.projecthub.repository.jpa.CohortJpaRepository;
+import com.projecthub.repository.jpa.SchoolJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,11 +23,11 @@ public class CohortService {
 
     private static final Logger logger = LoggerFactory.getLogger(CohortService.class);
 
-    private final CohortRepository cohortRepository;
-    private final SchoolRepository schoolRepository;
+    private final CohortJpaRepository<UUID> cohortRepository;
+    private final SchoolJpaRepository schoolRepository;
     private final CohortMapper cohortMapper;
 
-    public CohortService(CohortRepository cohortRepository, SchoolRepository schoolRepository, CohortMapper cohortMapper) {
+    public CohortService(CohortJpaRepository<UUID> cohortRepository, SchoolJpaRepository schoolRepository, CohortMapper cohortMapper) {
         this.cohortRepository = cohortRepository;
         this.schoolRepository = schoolRepository;
         this.cohortMapper = cohortMapper;

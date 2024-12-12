@@ -4,7 +4,7 @@ import com.projecthub.dto.TaskDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.mapper.TaskMapper;
 import com.projecthub.model.Task;
-import com.projecthub.repository.TaskRepository;
+import com.projecthub.repository.jpa.TaskJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,10 @@ public class TaskService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
-    private final TaskRepository taskRepository;
+    private final TaskJpaRepository taskRepository;
     private final TaskMapper taskMapper;
 
-    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper) {
+    public TaskService(TaskJpaRepository taskRepository, TaskMapper taskMapper) {
         this.taskRepository = taskRepository;
         this.taskMapper = taskMapper;
     }
@@ -149,17 +149,16 @@ public class TaskService {
      * Saves a task (creates or updates).
      *
      * @param taskDTO the task data transfer object
-     * @return the saved task DTO
      * @throws IllegalArgumentException if taskDTO is null
      */
     @Transactional
-    public TaskDTO saveTask(TaskDTO taskDTO) {
+    public void saveTask(TaskDTO taskDTO) {
         logger.info("Saving task");
         validateTaskDTO(taskDTO);
         if (taskDTO.getId() != null) {
-            return updateTask(taskDTO.getId(), taskDTO);
+            updateTask(taskDTO.getId(), taskDTO);
         } else {
-            return createTask(taskDTO);
+            createTask(taskDTO);
         }
     }
 }

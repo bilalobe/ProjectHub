@@ -1,25 +1,26 @@
 package com.projecthub.service;
 
-import com.projecthub.dto.AppUserDTO;
-import com.projecthub.dto.ProjectDTO;
-import com.projecthub.dto.TeamDTO;
-import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.mapper.ProjectMapper;
-import com.projecthub.mapper.TeamMapper;
-import com.projecthub.mapper.AppUserMapper;
-import com.projecthub.model.Team;
-import com.projecthub.model.Student;
-import com.projecthub.model.AppUser;
-import com.projecthub.repository.TeamRepository;
-import com.projecthub.repository.AppUserRepository;
-import com.projecthub.repository.ProjectRepository;
+import java.util.List;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.UUID;
+import com.projecthub.dto.AppUserDTO;
+import com.projecthub.dto.ProjectDTO;
+import com.projecthub.dto.TeamDTO;
+import com.projecthub.exception.ResourceNotFoundException;
+import com.projecthub.mapper.AppUserMapper;
+import com.projecthub.mapper.ProjectMapper;
+import com.projecthub.mapper.TeamMapper;
+import com.projecthub.model.AppUser;
+import com.projecthub.model.Student;
+import com.projecthub.model.Team;
+import com.projecthub.repository.jpa.AppUserJpaRepository;
+import com.projecthub.repository.jpa.ProjectJpaRepository;
+import com.projecthub.repository.jpa.TeamJpaRepository;
 
 /**
  * Service class for managing teams.
@@ -29,14 +30,14 @@ public class TeamService {
 
     private static final Logger logger = LoggerFactory.getLogger(TeamService.class);
 
-    private final TeamRepository teamRepository;
-    private final AppUserRepository appUserRepository;
-    private final ProjectRepository projectRepository;
+    private final TeamJpaRepository<UUID> teamRepository;
+    private final AppUserJpaRepository appUserRepository;
+    private final ProjectJpaRepository<UUID> projectRepository;
     private final TeamMapper teamMapper;
     private final ProjectMapper projectMapper;
     private final AppUserMapper appUserMapper;
 
-    public TeamService(TeamRepository teamRepository, AppUserRepository appUserRepository, ProjectRepository projectRepository, TeamMapper teamMapper, ProjectMapper projectMapper, AppUserMapper appUserMapper) {
+    public TeamService(TeamJpaRepository<UUID> teamRepository, AppUserJpaRepository appUserRepository, ProjectJpaRepository<UUID> projectRepository, TeamMapper teamMapper, ProjectMapper projectMapper, AppUserMapper appUserMapper) {
         this.teamRepository = teamRepository;
         this.appUserRepository = appUserRepository;
         this.projectRepository = projectRepository;
@@ -149,7 +150,7 @@ public class TeamService {
         Team team = findTeamById(teamId);
         AppUser user = appUserRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
-        Student student = new Student(user.getId(), user.getFirstName(), user.getEmail(), user.getLastName(), team);
+        Student student = new Student(user.getFirstName(), user.getEmail(), user.getLastName(), team);
         team.getStudents().add(student);
         Team updatedTeam = teamRepository.save(team);
         logger.info("User added to team with ID: {}", updatedTeam.getId());
@@ -178,7 +179,7 @@ public class TeamService {
     public List<ProjectDTO> getProjectsByTeamId(UUID teamId) {
         logger.info("Retrieving projects for team ID: {}", teamId);
         findTeamById(teamId);
-        return projectRepository.findByTeamId(teamId).stream()
+        return projectRepository.findAllByTeamId(teamId).stream()
                 .map(projectMapper::toProjectDTO)
                 .toList();
     }
@@ -193,8 +194,14 @@ public class TeamService {
         logger.info("Retrieving members for team ID: {}", teamId);
         Team team = findTeamById(teamId);
         return team.getStudents().stream()
-                .map(student -> appUserRepository.findById(student.getId())
-                        .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + student.getId())))
+                .map(student -> {
+                    UUID studentId = student.getId();
+                    if (studentId == null) {
+                        throw new IllegalArgumentException("Student ID cannot be null");
+                    }
+                    return appUserRepository.findById(studentId)
+                            .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + studentId));
+                })
                 .map(appUserMapper::toAppUserDTO)
                 .toList();
     }
