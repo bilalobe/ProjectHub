@@ -14,7 +14,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .components(new Components())
                 .info(new Info().title("ProjectHub API")
-                                .description("API documentation for ProjectHub application.")
-                                .version("1.0.0"));
+                        .description("API documentation for ProjectHub application.")
+                        .version("1.0.0"));
     }
 }
