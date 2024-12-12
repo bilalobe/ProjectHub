@@ -24,7 +24,11 @@
     <!-- Search Bar -->
     <HBox alignment="CENTER_LEFT" spacing="10">
         <TextField fx:id="searchField" promptText="Search users..." HBox.hgrow="ALWAYS" />
-        <Button fx:id="refreshButton" styleClass="button-secondary" text="Refresh" />
+        <Button fx:id="refreshButton" styleClass="button-secondary" text="Refresh">
+            <tooltip>
+                <Tooltip text="Click to refresh the user list." />
+            </tooltip>
+        </Button>
     </HBox>
 
     <!-- Main Content -->
@@ -54,7 +58,11 @@
                 </padding>
 
                 <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <TextField fx:id="usernameField" promptText="Username..." HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <tooltip>
+                        <Tooltip text="Enter the user's unique username." />
+                    </tooltip>
+                </TextField>
 
                 <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="1" />

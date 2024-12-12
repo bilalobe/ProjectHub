@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="20" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.projecthub.ui.controllers.SettingsViewController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+
+    <!-- Header -->
+    <Label text="%settings.title" styleClass="header-label">
+        <font>
+            <Font size="24" />
+        </font>
+        <tooltip>
+            <Tooltip text="Configure your application settings here." />
+        </tooltip>
+    </Label>
+
+    <!-- Settings Grid -->
+    <GridPane hgap="10" vgap="15">
+        <padding>
+            <Insets />
+        </padding>
+
+        <!-- Theme Selection -->
+        <Label text="%settings.theme" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <ComboBox fx:id="themeComboBox" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="200">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Light" />
+                    <String fx:value="Dark" />
+                </FXCollections>
+            </items>
+            <tooltip>
+                <Tooltip text="Select your preferred application theme." />
+            </tooltip>
+        </ComboBox>
+
+        <!-- Language Selection -->
+        <Label text="%settings.language" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <ComboBox fx:id="languageComboBox" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="English" />
+                    <String fx:value="Spanish" />
+                    <String fx:value="Arabic" />
+                </FXCollections>
+            </items>
+            <tooltip>
+                <Tooltip text="Choose the language for the application interface." />
+            </tooltip>
+        </ComboBox>
+
+        <!-- Notifications -->
+        <Label text="%settings.notifications" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <CheckBox fx:id="emailNotificationsCheckBox" text="%settings.emailNotifications" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <tooltip>
+                <Tooltip text="Enable or disable email notifications." />
+            </tooltip>
+        </CheckBox>
+
+        <!-- Account Management -->
+        <Label text="%settings.account" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="3" alignment="CENTER_LEFT">
+            <Button fx:id="changePasswordButton" text="%settings.changePassword" prefWidth="150">
+                <tooltip>
+                    <Tooltip text="Click to change your account password." />
+                </tooltip>
+            </Button>
+            <Button fx:id="logoutButton" text="%settings.logout" prefWidth="100">
+                <tooltip>
+                    <Tooltip text="Logout from your account." />
+                </tooltip>
+            </Button>
+        </HBox>
+    </GridPane>
+
+    <!-- Save Settings Button -->
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="saveButton" text="%settings.save" styleClass="button-primary" prefWidth="100">
+            <tooltip>
+                <Tooltip text="Save all your settings changes." />
+            </tooltip>
+        </Button>
+        <Button fx:id="cancelButton" text="%settings.cancel" styleClass="button-secondary" prefWidth="100">
+            <tooltip>
+                <Tooltip text="Discard changes and return to the previous view." />
+            </tooltip>
+        </Button>
+    </HBox>
+</VBox>

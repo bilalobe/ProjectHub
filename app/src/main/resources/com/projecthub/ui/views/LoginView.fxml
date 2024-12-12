@@ -42,11 +42,19 @@
         <Button fx:id="loginButton" 
                 text="Sign In" 
                 styleClass="login-button"
-                maxWidth="Infinity"/>
+                maxWidth="Infinity">
+            <tooltip>
+                <Tooltip text="Click to sign in to your account." />
+            </tooltip>
+        </Button>
         
         <Hyperlink fx:id="forgotPasswordLink" 
                    text="Forgot password?"
-                   alignment="CENTER"/>
+                   alignment="CENTER">
+            <tooltip>
+                <Tooltip text="Click to reset your password." />
+            </tooltip>
+        </Hyperlink>
     </VBox>
 
     <!-- Error Message -->

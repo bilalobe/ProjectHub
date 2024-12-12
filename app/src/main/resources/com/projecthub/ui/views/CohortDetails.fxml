@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -27,10 +28,18 @@
         </padding>
 
         <Label text="Cohort Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="cohortNameField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" />
+        <TextField fx:id="cohortNameField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0">
+            <tooltip>
+                <Tooltip text="Enter the name of the cohort." />
+            </tooltip>
+        </TextField>
 
         <Label text="School:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <ComboBox fx:id="schoolComboBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <ComboBox fx:id="schoolComboBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <tooltip>
+                <Tooltip text="Select the associated school for the cohort." />
+            </tooltip>
+        </ComboBox>
       <columnConstraints>
          <ColumnConstraints />
          <ColumnConstraints />
