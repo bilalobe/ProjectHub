@@ -17,13 +17,17 @@ repositories {
     maven { url 'https://nexus.gluonhq.com/nexus/content/repositories/releases/' }
 }
 
-configurations.all {
+configurations.configureEach {
     exclude group: 'commons-logging', module: 'commons-logging'
 }
 
 dependencies {
+    // JavaFX dependencies
 
     // Lombok for boilerplate code reduction
+    implementation 'org.projectlombok:lombok:1.18.34'
+
+    // JWT for token handling
     implementation 'io.jsonwebtoken:jjwt:0.12.6'
 
     // ModelMapper for object mapping
@@ -87,6 +91,19 @@ dependencies {
 javafx {
     version = '23.0.1'
     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.media', 'javafx.graphics', 'javafx.swing']
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ["-Xlint:unused", "--enable-preview"]
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs += "--enable-preview"
 }
 
 application {
