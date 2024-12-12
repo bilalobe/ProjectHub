@@ -1,12 +1,15 @@
 package com.projecthub.controller;
 
 import com.projecthub.dto.AppUserDTO;
+import com.projecthub.dto.RegisterRequestDTO;
+import com.projecthub.dto.UpdateUserRequestDTO;
 import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +26,8 @@ import java.util.UUID;
  * <ul>
  *   <li>{@link #getAllUsers()} - Retrieves all users.</li>
  *   <li>{@link #getUserById(UUID)} - Retrieves a user by their ID.</li>
- *   <li>{@link #createUser(AppUserDTO)} - Creates a new user.</li>
- *   <li>{@link #updateUser(UUID, AppUserDTO)} - Updates an existing user.</li>
+ *   <li>{@link #createUser(RegisterRequestDTO)} - Creates a new user.</li>
+ *   <li>{@link #updateUser(UUID, UpdateUserRequestDTO)} - Updates an existing user.</li>
  *   <li>{@link #deleteUser(UUID)} - Deletes a user by their ID.</li>
  * </ul>
  * 
@@ -69,28 +72,26 @@ public class AppUserController {
 
     @Operation(summary = "Create a new user")
     @PostMapping
-    public ResponseEntity<AppUserDTO> createUser(@Valid @RequestBody AppUserDTO userDTO) {
+    public ResponseEntity<AppUserDTO> createUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
         logger.info("Creating a new user");
-        String rawPassword = userDTO.getPassword(); // Extract raw password from DTO
-        AppUserDTO createdUser = userService.createUser(userDTO, rawPassword);
-        return ResponseEntity.ok(createdUser);
+        AppUserDTO createdUser = userService.createUser(registerRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @Operation(summary = "Update a user")
     @PutMapping("/{id}")
-    public ResponseEntity<AppUserDTO> updateUser(@PathVariable UUID id, @Valid @RequestBody AppUserDTO userDTO) {
+    public ResponseEntity<AppUserDTO> updateUser(@PathVariable UUID id, @Valid @RequestBody UpdateUserRequestDTO updateUserRequest) {
         logger.info("Updating user with ID {}", id);
-        String rawPassword = userDTO.getPassword(); // Extract raw password from DTO if provided
-        AppUserDTO updatedUser = userService.updateUser(id, userDTO, rawPassword);
+        AppUserDTO updatedUser = userService.updateUser(id, updateUserRequest);
         return ResponseEntity.ok(updatedUser);
     }
 
     @Operation(summary = "Delete a user by ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         logger.info("Deleting user with ID {}", id);
         userService.deleteUser(id);
-        return ResponseEntity.ok("User deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

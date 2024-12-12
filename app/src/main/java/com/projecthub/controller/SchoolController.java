@@ -1,8 +1,11 @@
 package com.projecthub.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
+
 
 import com.projecthub.dto.SchoolDTO;
 import com.projecthub.exception.ResourceNotFoundException;
@@ -69,7 +72,14 @@ public class SchoolController {
         return ResponseEntity.ok("School deleted successfully");
     }
 
-    @ExceptionHandler({ResourceNotFoundException.class, Exception.class})
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        logger.error("Resource not found", ex);
+        ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.NOT_FOUND, "Resource not found: " + ex.getMessage()).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler({Exception.class})
     public ResponseEntity<String> handleExceptions(Exception ex) {
         logger.error("An error occurred", ex);
         return ResponseEntity.status(400).body(ex.getMessage());

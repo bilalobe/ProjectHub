@@ -3,6 +3,7 @@ package com.projecthub.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,12 +46,12 @@ public class SubmissionController {
 
     @Operation(summary = "Create a new submission")
     @PostMapping
-    public ResponseEntity<String> createSubmission(@Valid @RequestBody SubmissionDTO submissionDTO) {
+    public ResponseEntity<SubmissionDTO> createSubmission(@Valid @RequestBody SubmissionDTO submissionDTO) {
         try {
-            submissionService.saveSubmission(submissionDTO);
-            return ResponseEntity.ok("Submission created successfully");
+            SubmissionDTO createdSubmission = submissionService.saveSubmission(submissionDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdSubmission);
         } catch (Exception e) {
-            return ResponseEntity.status(400).body("Error creating submission");
+            return ResponseEntity.status(400).body(null);
         }
     }
 

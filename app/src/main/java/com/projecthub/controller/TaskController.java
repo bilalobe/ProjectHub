@@ -3,6 +3,7 @@ package com.projecthub.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,7 +67,7 @@ public class TaskController {
     public ResponseEntity<TaskDTO> createTask(@Valid @RequestBody TaskDTO taskSummary) {
         logger.info("Creating a new task");
         TaskDTO createdTask = taskService.createTask(taskSummary);
-        return ResponseEntity.ok(createdTask);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
 
     @Operation(summary = "Update a task")

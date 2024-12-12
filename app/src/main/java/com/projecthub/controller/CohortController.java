@@ -3,11 +3,11 @@ package com.projecthub.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.projecthub.dto.CohortDTO;
-import com.projecthub.exception.ResourceNotFoundException;
 import com.projecthub.service.CohortService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,31 +42,35 @@ public class CohortController {
     /**
      * Retrieves all Cohorts.
      *
-     * @return a list of all CohortSummary objects
+     * @return a list of all CohortDTO objects
      */
     @Operation(summary = "Get all Cohorts")
     @GetMapping
-    public List<CohortDTO> getAllCohorts() {
-        return cohortService.getAllCohorts();
+    public ResponseEntity<List<CohortDTO>> getAllCohorts() {
+        logger.info("Retrieving all cohorts");
+        List<CohortDTO> cohorts = cohortService.getAllCohorts();
+        return ResponseEntity.ok(cohorts);
     }
 
     /**
      * Retrieves all Cohorts associated with a specific School.
      *
      * @param schoolId the ID of the School
-     * @return a list of CohortSummary objects
+     * @return a list of CohortDTO objects
      */
     @Operation(summary = "Get Cohorts by School ID")
     @GetMapping("/school/{schoolId}")
-    public List<CohortDTO> getCohortsBySchoolId(@PathVariable UUID schoolId) {
-        return cohortService.getCohortsBySchoolId(schoolId);
+    public ResponseEntity<List<CohortDTO>> getCohortsBySchoolId(@PathVariable UUID schoolId) {
+        logger.info("Retrieving cohorts for school ID {}", schoolId);
+        List<CohortDTO> cohorts = cohortService.getCohortsBySchoolId(schoolId);
+        return ResponseEntity.ok(cohorts);
     }
 
     /**
      * Retrieves a Cohort by its ID.
      *
      * @param id the ID of the Cohort
-     * @return the CohortSummary
+     * @return the CohortDTO
      */
     @Operation(summary = "Get Cohort by ID")
     @GetMapping("/{id}")
@@ -79,38 +83,30 @@ public class CohortController {
     /**
      * Creates a new Cohort.
      *
-     * @param cohortSummary the CohortSummary to create
-     * @return the created CohortSummary
+     * @param cohortDTO the CohortDTO to create
+     * @return the created CohortDTO
      */
     @Operation(summary = "Create a new Cohort")
     @PostMapping
-    public ResponseEntity<CohortDTO> createCohort(@Valid @RequestBody CohortDTO cohortSummary) {
-        try {
-            CohortDTO createdCohort = cohortService.saveCohort(cohortSummary);
-            return ResponseEntity.ok(createdCohort);
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(null);
-        }
+    public ResponseEntity<CohortDTO> createCohort(@Valid @RequestBody CohortDTO cohortDTO) {
+        logger.info("Creating a new cohort");
+        CohortDTO createdCohort = cohortService.saveCohort(cohortDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCohort);
     }
 
     /**
      * Updates an existing Cohort.
      *
-     * @param id     the ID of the Cohort to update
-     * @param cohortSummary the updated CohortSummary details
-     * @return the updated CohortSummary
+     * @param id        the ID of the Cohort to update
+     * @param cohortDTO the updated CohortDTO details
+     * @return the updated CohortDTO
      */
     @Operation(summary = "Update an existing Cohort")
     @PutMapping("/{id}")
-    public ResponseEntity<CohortDTO> updateCohort(@PathVariable UUID id, @Valid @RequestBody CohortDTO cohortSummary) {
-        try {
-            CohortDTO updatedCohort = cohortService.updateCohort(id, cohortSummary);
-            return ResponseEntity.ok(updatedCohort);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(404).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(null);
-        }
+    public ResponseEntity<CohortDTO> updateCohort(@PathVariable UUID id, @Valid @RequestBody CohortDTO cohortDTO) {
+        logger.info("Updating cohort with ID {}", id);
+        CohortDTO updatedCohort = cohortService.updateCohort(id, cohortDTO);
+        return ResponseEntity.ok(updatedCohort);
     }
 
     /**
@@ -120,18 +116,9 @@ public class CohortController {
      */
     @Operation(summary = "Delete a Cohort by ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCohort(@PathVariable UUID id) {
-        try {
-            cohortService.deleteCohort(id);
-            return ResponseEntity.ok("Cohort deleted successfully");
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(404).body("Cohort not found");
-        }
-    }
-
-    @ExceptionHandler({ResourceNotFoundException.class, Exception.class})
-    public ResponseEntity<String> handleExceptions(Exception ex) {
-        logger.error("An error occurred", ex);
-        return ResponseEntity.status(400).body(ex.getMessage());
+    public ResponseEntity<Void> deleteCohort(@PathVariable UUID id) {
+        logger.info("Deleting cohort with ID {}", id);
+        cohortService.deleteCohort(id);
+        return ResponseEntity.noContent().build();
     }
 }

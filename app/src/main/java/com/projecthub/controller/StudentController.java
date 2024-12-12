@@ -1,6 +1,7 @@
 package com.projecthub.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,10 +65,10 @@ public class StudentController {
      */
     @Operation(summary = "Create a new student")
     @PostMapping
-    public ResponseEntity<String> createStudent(@Valid @RequestBody StudentDTO studentDTO) {
+    public ResponseEntity<StudentDTO> createStudent(@Valid @RequestBody StudentDTO studentDTO) {
         logger.info("Creating a new student");
-        studentService.saveStudent(studentDTO);
-        return ResponseEntity.ok("Student created successfully");
+        StudentDTO createdStudent = studentService.saveStudent(studentDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
     }
 
     /**
@@ -78,10 +79,10 @@ public class StudentController {
      */
     @Operation(summary = "Delete a student by ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteStudent(@PathVariable UUID id) {
         logger.info("Deleting student with ID {}", id);
         studentService.deleteStudent(id);
-        return ResponseEntity.ok("Student deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler({ResourceNotFoundException.class, Exception.class})

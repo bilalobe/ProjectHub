@@ -3,6 +3,7 @@ package com.projecthub.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -56,7 +57,7 @@ public class TeamController {
     @PostMapping
     public ResponseEntity<TeamDTO> createTeam(@Valid @RequestBody TeamDTO team) {
         TeamDTO createdTeam = teamService.createTeam(team);
-        return ResponseEntity.ok(createdTeam);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTeam);
     }
 
     @Operation(summary = "Update an existing team")
@@ -68,9 +69,9 @@ public class TeamController {
 
     @Operation(summary = "Delete team by ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTeam(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteTeam(@PathVariable UUID id) {
         teamService.deleteTeam(id);
-        return ResponseEntity.ok("Team deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Add user to team")

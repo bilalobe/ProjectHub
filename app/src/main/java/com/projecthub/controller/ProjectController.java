@@ -3,6 +3,7 @@ package com.projecthub.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,8 +42,13 @@ public class ProjectController {
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable UUID id) {
         logger.info("Retrieving project with ID {}", id);
-        ProjectDTO project = projectService.getProjectById(id);
-        return ResponseEntity.ok(project);
+        try {
+            ProjectDTO project = projectService.getProjectById(id);
+            return ResponseEntity.ok(project);
+        } catch (ResourceNotFoundException e) {
+            logger.error("Project not found with ID {}", id, e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @Operation(summary = "Create a new project")
@@ -51,10 +57,10 @@ public class ProjectController {
         logger.info("Creating a new project");
         try {
             ProjectDTO savedProject = projectService.createProject(projectSummary);
-            return ResponseEntity.ok(savedProject);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
         } catch (Exception e) {
             logger.error("Error creating project", e);
-            return ResponseEntity.status(400).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -67,29 +73,35 @@ public class ProjectController {
             return ResponseEntity.ok(updatedProjectSummary);
         } catch (ResourceNotFoundException e) {
             logger.error("Project not found with ID {}", id, e);
-            return ResponseEntity.status(404).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             logger.error("Error updating project", e);
-            return ResponseEntity.status(400).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
     @Operation(summary = "Delete a project by ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProject(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteProject(@PathVariable UUID id) {
         logger.info("Deleting project with ID {}", id);
         try {
             projectService.deleteProject(id);
-            return ResponseEntity.ok("Project deleted successfully");
+            return ResponseEntity.noContent().build();
         } catch (ResourceNotFoundException e) {
             logger.error("Project not found with ID {}", id, e);
-            return ResponseEntity.status(404).body("Project not found with ID " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @ExceptionHandler({ResourceNotFoundException.class, Exception.class})
-    public ResponseEntity<String> handleExceptions(Exception ex) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        logger.error("Resource not found", ex);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex) {
         logger.error("An error occurred", ex);
-        return ResponseEntity.status(404).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An internal error occurred. Please try again later.");
     }
 }
