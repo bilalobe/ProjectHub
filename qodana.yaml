@@ -29,6 +29,7 @@ include:
   - name: ExtractMethodRecommender
   - name: RedundantMethodOverride
   - name: JavadocDeclaration
+  - name: DanglingJavadoc
 
 
 
