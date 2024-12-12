@@ -1,7 +1,7 @@
 # Dockerfile
 
 # Use the official Java Dev Container image as a base
-FROM mcr.microsoft.com/devcontainers/java:0-21-bookworm
+FROM mcr.microsoft.com/devcontainers/java:21-bookworm
 
 # Install Node.js (LTS version) and Angular CLI
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
