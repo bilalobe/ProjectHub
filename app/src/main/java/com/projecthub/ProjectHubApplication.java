@@ -2,13 +2,13 @@ package com.projecthub;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import com.projecthub.config.CsvProperties;
 
+/**
+ * The main class for the Project Hub application.
+ */
 @SpringBootApplication
-@EnableConfigurationProperties(CsvProperties.class)
-@EnableJpaRepositories(basePackages = "com.projecthub.repository.jpa")
+@EnableJpaRepositories(basePackages = "com.projecthub.repository")
 public class ProjectHubApplication {
 
     public static void main(String[] args) {
