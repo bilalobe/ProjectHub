@@ -18,8 +18,8 @@ public interface StudentJpaRepository extends JpaRepository<Student, UUID> {
     /**
      * Finds students by team ID.
      *
-     * @param teamId the UUID of the team
+     * @param team_id the UUID of the team
      * @return a list of {@code Student} objects belonging to the team
      */
-    List<Student> findByTeamId(UUID teamId);
+    <PK> List<Student> findByTeamId(PK team_id);
 }

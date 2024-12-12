@@ -13,13 +13,13 @@ import java.util.UUID;
  */
 @Repository("jpaCohortRepository")
 @Profile("jpa")
-public interface CohortJpaRepository extends JpaRepository<Cohort, UUID> {
+public interface CohortJpaRepository<PK> extends JpaRepository<Cohort, UUID> {
 
     /**
      * Finds cohorts by school ID.
      *
-     * @param schoolId the UUID of the school
+     * @param school_id the UUID of the school
      * @return a list of {@code Cohort} objects belonging to the school
      */
-    List<Cohort> findBySchoolId(UUID schoolId);
+    List<Cohort> findBySchoolId(PK school_id);
 }

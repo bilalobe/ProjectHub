@@ -25,4 +25,8 @@ public interface AppUserJpaRepository extends JpaRepository<AppUser, UUID> {
      * @return an {@code Optional} containing the user if found
      */
     Optional<AppUser> findByUsername(String username);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 }

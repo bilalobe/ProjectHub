@@ -14,21 +14,21 @@ import java.util.UUID;
  */
 @Repository("jpaTeamRepository")
 @Profile("jpa")
-public interface TeamJpaRepository extends JpaRepository<Team, UUID> {
+public interface TeamJpaRepository<PK> extends JpaRepository<Team, UUID> {
 
     /**
      * Finds a team by its ID.
      *
-     * @param teamId the UUID of the team
+     * @param team_id the UUID of the team
      * @return an {@code Optional} containing the team if found
      */
-    Optional<Team> findTeamById(UUID teamId);
+    Optional<Team> findTeamById(PK team_id);
 
     /**
      * Finds teams by cohort ID.
      *
-     * @param cohortId the UUID of the cohort
+     * @param cohort_id the UUID of the cohort
      * @return a list of {@code Team} objects belonging to the cohort
      */
-    List<Team> findByCohortId(UUID cohortId);
+    List<Team> findByCohortId(PK cohort_id);
 }

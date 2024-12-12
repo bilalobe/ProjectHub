@@ -15,15 +15,15 @@ import java.util.UUID;
  */
 @Repository("jpaProjectRepository")
 @Profile("jpa")
-public interface ProjectJpaRepository extends JpaRepository<Project, UUID> {
+public interface ProjectJpaRepository<PK> extends JpaRepository<Project, UUID> {
 
     /**
      * Finds all projects by team ID.
      *
-     * @param teamId the UUID of the team
+     * @param team_id the UUID of the team
      * @return a list of {@code Project} objects belonging to the team
      */
-    List<Project> findAllByTeamId(UUID teamId);
+    List<Project> findAllByTeamId(PK team_id);
 
     /**
      * Finds a project with its components by project ID.

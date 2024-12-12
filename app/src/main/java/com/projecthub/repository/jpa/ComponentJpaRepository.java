@@ -14,13 +14,13 @@ import java.util.UUID;
  */
 @Repository("jpaComponentRepository")
 @Profile("jpa")
-public interface ComponentJpaRepository extends JpaRepository<Component, UUID> {
+public interface ComponentJpaRepository<PK> extends JpaRepository<Component, UUID> {
 
     /**
      * Finds components by project ID.
      *
-     * @param projectId the UUID of the project
+     * @param project_id the UUID of the project
      * @return a list of {@code Component} objects belonging to the project
      */
-    List<Component> findByProjectId(UUID projectId);
+    List<Component> findByProjectId(PK project_id);
 }
