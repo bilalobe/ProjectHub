@@ -5,23 +5,16 @@ import com.projecthub.model.Cohort;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", uses = {SchoolMapper.class})
+@Mapper(componentModel = "spring")
 public interface CohortMapper {
 
-    CohortMapper INSTANCE = Mappers.getMapper(CohortMapper.class);
-
-    @Mapping(source = "schoolId", target = "school.id")
-    @Mapping(target = "teams", ignore = true) // Assuming teams are managed separately
-    @Mapping(target = "deleted", ignore = true) // Assuming deleted is managed separately
+    @Mapping(target = "school.id", source = "schoolId")
     Cohort toCohort(CohortDTO cohortDTO);
 
     @Mapping(source = "school.id", target = "schoolId")
     CohortDTO toCohortDTO(Cohort cohort);
 
-    @Mapping(source = "schoolId", target = "school.id")
-    @Mapping(target = "teams", ignore = true) // Assuming teams are managed separately
-    @Mapping(target = "deleted", ignore = true) // Assuming deleted is managed separately
+    @Mapping(target = "school.id", source = "schoolId")
     void updateCohortFromDTO(CohortDTO cohortDTO, @MappingTarget Cohort cohort);
 }

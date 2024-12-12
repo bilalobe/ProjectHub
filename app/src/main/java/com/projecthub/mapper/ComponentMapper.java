@@ -5,21 +5,16 @@ import com.projecthub.model.Component;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", uses = {ProjectMapper.class})
+@Mapper(componentModel = "spring")
 public interface ComponentMapper {
 
-    ComponentMapper INSTANCE = Mappers.getMapper(ComponentMapper.class);
-
-    @Mapping(source = "projectId", target = "project.id")
-    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "project.id", source = "projectId")
     Component toComponent(ComponentDTO componentDTO);
 
     @Mapping(source = "project.id", target = "projectId")
     ComponentDTO toComponentDTO(Component component);
 
-    @Mapping(source = "projectId", target = "project.id")
-    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "project.id", source = "projectId")
     void updateComponentFromDTO(ComponentDTO componentDTO, @MappingTarget Component component);
 }

@@ -4,7 +4,6 @@ import com.projecthub.dto.AppUserProfileDTO;
 import com.projecthub.model.AppUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 
 /**
  * Mapper interface for converting between AppUser and UserProfileDTO.
@@ -12,8 +11,6 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper(componentModel = "spring")
 public interface AppUserProfileMapper {
-
-    AppUserProfileMapper INSTANCE = Mappers.getMapper(AppUserProfileMapper.class);
 
     /**
      * Converts an AppUser entity to a UserProfileDTO.
@@ -27,7 +24,7 @@ public interface AppUserProfileMapper {
      * Updates an existing AppUser entity from a UserProfileDTO.
      *
      * @param userProfileDTO the UserProfileDTO containing updated profile details
-     * @param user the AppUser entity to update
+     * @param user           the AppUser entity to update
      */
     void updateUserProfileFromDTO(AppUserProfileDTO userProfileDTO, @MappingTarget AppUser user);
 }
