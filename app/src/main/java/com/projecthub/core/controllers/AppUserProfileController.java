@@ -1,7 +1,7 @@
-package com.projecthub.controller;
+package com.projecthub.core.controllers;
 
-import com.projecthub.dto.AppUserProfileDTO;
-import com.projecthub.service.AppUserProfileService;
+import com.projecthub.core.dto.AppUserProfileDTO;
+import com.projecthub.core.services.AppUserProfileService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;

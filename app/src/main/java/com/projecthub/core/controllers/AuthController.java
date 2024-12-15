@@ -1,5 +1,11 @@
-package com.projecthub.controller;
+package com.projecthub.core.controllers;
 
+import com.projecthub.core.dto.AppUserDTO;
+import com.projecthub.core.dto.LoginRequestDTO;
+import com.projecthub.core.dto.RegisterRequestDTO;
+import com.projecthub.core.services.AuthService;
+import com.projecthub.utils.JwtUtil;
+import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -8,14 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.projecthub.dto.AppUserDTO;
-import com.projecthub.dto.LoginRequestDTO;
-import com.projecthub.dto.RegisterRequestDTO;
-import com.projecthub.service.AuthService;
-import com.projecthub.util.JwtUtil;
-
-import jakarta.validation.Valid;
 
 /**
  * AuthController is a REST controller that handles authentication-related requests.
@@ -43,7 +41,7 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@Valid @RequestBody LoginRequestDTO loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtUtil.generateToken(loginRequest.getUsername());

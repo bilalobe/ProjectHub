@@ -1,28 +1,28 @@
-package com.projecthub.controller;
+package com.projecthub.core.controllers;
 
-import com.projecthub.dto.AppUserDTO;
-import com.projecthub.dto.RegisterRequestDTO;
-import com.projecthub.dto.UpdateUserRequestDTO;
+import com.projecthub.core.dto.AppUserDTO;
+import com.projecthub.core.dto.RegisterRequestDTO;
+import com.projecthub.core.dto.UpdateUserRequestDTO;
+import com.projecthub.core.services.AppUserService;
 import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.service.AppUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
 /**
  * Controller for handling user-related operations in ProjectHub.
- * 
+ *
  * <p>This controller provides endpoints for creating, retrieving, updating, and deleting users.
  * It also includes exception handling for resource not found and general exceptions.</p>
- * 
+ *
  * <ul>
  *   <li>{@link #getAllUsers()} - Retrieves all users.</li>
  *   <li>{@link #getUserById(UUID)} - Retrieves a user by their ID.</li>
@@ -30,13 +30,13 @@ import java.util.UUID;
  *   <li>{@link #updateUser(UUID, UpdateUserRequestDTO)} - Updates an existing user.</li>
  *   <li>{@link #deleteUser(UUID)} - Deletes a user by their ID.</li>
  * </ul>
- * 
+ *
  * <p>Exception Handling:</p>
  * <ul>
  *   <li>{@link #handleResourceNotFoundException(ResourceNotFoundException)} - Handles resource not found exceptions.</li>
  *   <li>{@link #handleException(Exception)} - Handles general exceptions.</li>
  * </ul>
- * 
+ *
  * @see AppUserService
  * @see AppUserDTO
  * @see ResourceNotFoundException

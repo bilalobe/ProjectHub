@@ -1,29 +1,19 @@
-package com.projecthub.controller;
+package com.projecthub.core.controllers;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.projecthub.dto.SubmissionDTO;
+import com.projecthub.core.dto.SubmissionDTO;
+import com.projecthub.core.services.SubmissionService;
 import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.service.SubmissionService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @Tag(name = "Submission API", description = "Operations pertaining to submissions in ProjectHub")
 @RestController
@@ -33,11 +23,11 @@ public class SubmissionController {
     private static final Logger logger = LoggerFactory.getLogger(SubmissionController.class);
 
     private final SubmissionService submissionService;
-    
+
     public SubmissionController(SubmissionService submissionService) {
         this.submissionService = submissionService;
     }
-    
+
     @GetMapping
     public ResponseEntity<List<SubmissionDTO>> getAllSubmissions() {
         List<SubmissionDTO> submissions = submissionService.getAllSubmissions();

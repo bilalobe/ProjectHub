@@ -1,21 +1,19 @@
-package com.projecthub.controller;
+package com.projecthub.core.controllers;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import com.projecthub.dto.ProjectDTO;
+import com.projecthub.core.dto.ProjectDTO;
+import com.projecthub.core.services.ProjectService;
 import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.service.ProjectService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @Tag(name = "Project API", description = "Operations pertaining to projects in ProjectHub")
 @RestController
