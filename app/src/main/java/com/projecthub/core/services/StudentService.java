@@ -1,10 +1,10 @@
-package com.projecthub.service;
+package com.projecthub.core.services;
 
-import com.projecthub.dto.StudentDTO;
+import com.projecthub.core.dto.StudentDTO;
+import com.projecthub.core.mappers.StudentMapper;
+import com.projecthub.core.models.Student;
+import com.projecthub.core.repositories.jpa.StudentJpaRepository;
 import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.mapper.StudentMapper;
-import com.projecthub.model.Student;
-import com.projecthub.repository.jpa.StudentJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

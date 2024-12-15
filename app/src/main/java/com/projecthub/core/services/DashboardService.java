@@ -1,8 +1,8 @@
-package com.projecthub.service;
+package com.projecthub.core.services;
 
-import com.projecthub.dto.ProjectStatusDTO;
-import com.projecthub.dto.RecentActivityDTO;
-import com.projecthub.repository.jpa.DashboardJpaRepository;
+import com.projecthub.core.dto.ProjectStatusDTO;
+import com.projecthub.core.dto.RecentActivityDTO;
+import com.projecthub.core.repositories.jpa.DashboardJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

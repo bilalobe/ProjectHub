@@ -1,10 +1,10 @@
-package com.projecthub.service;
+package com.projecthub.core.services;
 
-import com.projecthub.dto.ProjectDTO;
+import com.projecthub.core.dto.ProjectDTO;
+import com.projecthub.core.mappers.ProjectMapper;
+import com.projecthub.core.models.Project;
+import com.projecthub.core.repositories.jpa.ProjectJpaRepository;
 import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.mapper.ProjectMapper;
-import com.projecthub.model.Project;
-import com.projecthub.repository.jpa.ProjectJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,10 @@ public class ProjectService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectService.class);
 
-    private final ProjectJpaRepository<UUID> projectRepository;
+    private final ProjectJpaRepository projectRepository;
     private final ProjectMapper projectMapper;
 
-    public ProjectService(ProjectJpaRepository<UUID> projectRepository, ProjectMapper projectMapper) {
+    public ProjectService(ProjectJpaRepository projectRepository, ProjectMapper projectMapper) {
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
     }
@@ -51,8 +51,8 @@ public class ProjectService {
     /**
      * Updates an existing project.
      *
-     * @param id          the ID of the project to update
-     * @param projectDTO  the project data transfer object
+     * @param id         the ID of the project to update
+     * @param projectDTO the project data transfer object
      * @return the updated project DTO
      * @throws ResourceNotFoundException if the project is not found
      */

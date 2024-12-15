@@ -1,12 +1,12 @@
-package com.projecthub.service;
+package com.projecthub.core.services;
 
-import com.projecthub.dto.AppUserDTO;
-import com.projecthub.dto.RegisterRequestDTO;
-import com.projecthub.dto.UpdateUserRequestDTO;
+import com.projecthub.core.dto.AppUserDTO;
+import com.projecthub.core.dto.RegisterRequestDTO;
+import com.projecthub.core.dto.UpdateUserRequestDTO;
+import com.projecthub.core.mappers.AppUserMapper;
+import com.projecthub.core.models.AppUser;
+import com.projecthub.core.repositories.jpa.AppUserJpaRepository;
 import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.mapper.AppUserMapper;
-import com.projecthub.model.AppUser;
-import com.projecthub.repository.jpa.AppUserJpaRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
@@ -31,16 +31,14 @@ import java.util.regex.Pattern;
 public class AppUserService {
 
     private static final Logger logger = LoggerFactory.getLogger(AppUserService.class);
-
-    private final AppUserJpaRepository appUserRepository;
-    private final AppUserMapper appUserMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final Validator validator;
-
     // Define a regex pattern for password strength validation
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
             "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$"
     );
+    private final AppUserJpaRepository appUserRepository;
+    private final AppUserMapper appUserMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final Validator validator;
 
     /**
      * Constructs an AppUserService with the required dependencies.
@@ -164,7 +162,7 @@ public class AppUserService {
     /**
      * Resets the password for a user with the given UUID.
      *
-     * @param id         the UUID of the user whose password is to be reset
+     * @param id          the UUID of the user whose password is to be reset
      * @param rawPassword the new raw password
      * @throws ResourceNotFoundException if the user with the specified ID does not exist
      * @throws IllegalArgumentException  if rawPassword is invalid

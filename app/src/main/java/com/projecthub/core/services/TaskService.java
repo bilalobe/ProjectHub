@@ -1,10 +1,10 @@
-package com.projecthub.service;
+package com.projecthub.core.services;
 
-import com.projecthub.dto.TaskDTO;
+import com.projecthub.core.dto.TaskDTO;
+import com.projecthub.core.mappers.TaskMapper;
+import com.projecthub.core.models.Task;
+import com.projecthub.core.repositories.jpa.TaskJpaRepository;
 import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.mapper.TaskMapper;
-import com.projecthub.model.Task;
-import com.projecthub.repository.jpa.TaskJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -1,26 +1,25 @@
-package com.projecthub.service;
+package com.projecthub.core.services;
 
-import java.util.List;
-import java.util.UUID;
-
+import com.projecthub.core.dto.AppUserDTO;
+import com.projecthub.core.dto.ProjectDTO;
+import com.projecthub.core.dto.TeamDTO;
+import com.projecthub.core.mappers.AppUserMapper;
+import com.projecthub.core.mappers.ProjectMapper;
+import com.projecthub.core.mappers.TeamMapper;
+import com.projecthub.core.models.AppUser;
+import com.projecthub.core.models.Student;
+import com.projecthub.core.models.Team;
+import com.projecthub.core.repositories.jpa.AppUserJpaRepository;
+import com.projecthub.core.repositories.jpa.ProjectJpaRepository;
+import com.projecthub.core.repositories.jpa.TeamJpaRepository;
+import com.projecthub.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.projecthub.dto.AppUserDTO;
-import com.projecthub.dto.ProjectDTO;
-import com.projecthub.dto.TeamDTO;
-import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.mapper.AppUserMapper;
-import com.projecthub.mapper.ProjectMapper;
-import com.projecthub.mapper.TeamMapper;
-import com.projecthub.model.AppUser;
-import com.projecthub.model.Student;
-import com.projecthub.model.Team;
-import com.projecthub.repository.jpa.AppUserJpaRepository;
-import com.projecthub.repository.jpa.ProjectJpaRepository;
-import com.projecthub.repository.jpa.TeamJpaRepository;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Service class for managing teams.
@@ -30,14 +29,14 @@ public class TeamService {
 
     private static final Logger logger = LoggerFactory.getLogger(TeamService.class);
 
-    private final TeamJpaRepository<UUID> teamRepository;
+    private final TeamJpaRepository teamRepository;
     private final AppUserJpaRepository appUserRepository;
-    private final ProjectJpaRepository<UUID> projectRepository;
+    private final ProjectJpaRepository projectRepository;
     private final TeamMapper teamMapper;
     private final ProjectMapper projectMapper;
     private final AppUserMapper appUserMapper;
 
-    public TeamService(TeamJpaRepository<UUID> teamRepository, AppUserJpaRepository appUserRepository, ProjectJpaRepository<UUID> projectRepository, TeamMapper teamMapper, ProjectMapper projectMapper, AppUserMapper appUserMapper) {
+    public TeamService(TeamJpaRepository teamRepository, AppUserJpaRepository appUserRepository, ProjectJpaRepository projectRepository, TeamMapper teamMapper, ProjectMapper projectMapper, AppUserMapper appUserMapper) {
         this.teamRepository = teamRepository;
         this.appUserRepository = appUserRepository;
         this.projectRepository = projectRepository;

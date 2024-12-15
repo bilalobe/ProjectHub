@@ -1,10 +1,10 @@
-package com.projecthub.service;
+package com.projecthub.core.services;
 
-import com.projecthub.dto.ComponentDTO;
+import com.projecthub.core.dto.ComponentDTO;
+import com.projecthub.core.mappers.ComponentMapper;
+import com.projecthub.core.models.Component;
+import com.projecthub.core.repositories.jpa.ComponentJpaRepository;
 import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.mapper.ComponentMapper;
-import com.projecthub.model.Component;
-import com.projecthub.repository.jpa.ComponentJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,10 @@ public class ComponentService {
 
     private static final Logger logger = LoggerFactory.getLogger(ComponentService.class);
 
-    private final ComponentJpaRepository<UUID> componentRepository;
+    private final ComponentJpaRepository componentRepository;
     private final ComponentMapper componentMapper;
 
-    public ComponentService(ComponentJpaRepository<UUID> componentRepository, ComponentMapper componentMapper) {
+    public ComponentService(ComponentJpaRepository componentRepository, ComponentMapper componentMapper) {
         this.componentRepository = componentRepository;
         this.componentMapper = componentMapper;
     }

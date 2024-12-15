@@ -1,10 +1,10 @@
-package com.projecthub.service;
+package com.projecthub.core.services;
 
-import com.projecthub.dto.SubmissionDTO;
+import com.projecthub.core.dto.SubmissionDTO;
+import com.projecthub.core.mappers.SubmissionMapper;
+import com.projecthub.core.models.Submission;
+import com.projecthub.core.repositories.jpa.SubmissionJpaRepository;
 import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.mapper.SubmissionMapper;
-import com.projecthub.model.Submission;
-import com.projecthub.repository.jpa.SubmissionJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class SubmissionService {
      * Saves a new submission.
      *
      * @param submissionDTO the submission data transfer object
-     * @return 
+     * @return
      * @throws IllegalArgumentException if submissionDTO is null
      */
     @Transactional

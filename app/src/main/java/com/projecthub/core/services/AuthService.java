@@ -1,11 +1,11 @@
-package com.projecthub.service;
+package com.projecthub.core.services;
 
-import com.projecthub.dto.AppUserDTO;
-import com.projecthub.dto.LoginRequestDTO;
-import com.projecthub.dto.RegisterRequestDTO;
-import com.projecthub.model.AppUser;
-import com.projecthub.repository.jpa.AppUserJpaRepository;
-import com.projecthub.util.JwtUtil;
+import com.projecthub.core.dto.AppUserDTO;
+import com.projecthub.core.dto.LoginRequestDTO;
+import com.projecthub.core.dto.RegisterRequestDTO;
+import com.projecthub.core.models.AppUser;
+import com.projecthub.core.repositories.jpa.AppUserJpaRepository;
+import com.projecthub.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
