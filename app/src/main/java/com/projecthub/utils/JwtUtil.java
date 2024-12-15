@@ -1,4 +1,4 @@
-package com.projecthub.util;
+package com.projecthub.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
