@@ -1,7 +1,7 @@
-package com.projecthub.mapper;
+package com.projecthub.core.mappers;
 
-import com.projecthub.dto.SubmissionDTO;
-import com.projecthub.model.Submission;
+import com.projecthub.core.dto.SubmissionDTO;
+import com.projecthub.core.models.Submission;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

@@ -1,7 +1,7 @@
-package com.projecthub.mapper;
+package com.projecthub.core.mappers;
 
-import com.projecthub.dto.CohortDTO;
-import com.projecthub.model.Cohort;
+import com.projecthub.core.dto.CohortDTO;
+import com.projecthub.core.models.Cohort;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

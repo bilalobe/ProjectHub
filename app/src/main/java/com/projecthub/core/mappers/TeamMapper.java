@@ -1,7 +1,7 @@
-package com.projecthub.mapper;
+package com.projecthub.core.mappers;
 
-import com.projecthub.dto.TeamDTO;
-import com.projecthub.model.Team;
+import com.projecthub.core.dto.TeamDTO;
+import com.projecthub.core.models.Team;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

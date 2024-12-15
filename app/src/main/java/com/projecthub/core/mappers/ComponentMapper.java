@@ -1,7 +1,7 @@
-package com.projecthub.mapper;
+package com.projecthub.core.mappers;
 
-import com.projecthub.dto.ComponentDTO;
-import com.projecthub.model.Component;
+import com.projecthub.core.dto.ComponentDTO;
+import com.projecthub.core.models.Component;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

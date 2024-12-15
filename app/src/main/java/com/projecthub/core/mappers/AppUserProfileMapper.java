@@ -1,7 +1,7 @@
-package com.projecthub.mapper;
+package com.projecthub.core.mappers;
 
-import com.projecthub.dto.AppUserProfileDTO;
-import com.projecthub.model.AppUser;
+import com.projecthub.core.dto.AppUserProfileDTO;
+import com.projecthub.core.models.AppUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

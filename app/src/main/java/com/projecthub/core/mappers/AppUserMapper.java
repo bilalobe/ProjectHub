@@ -1,9 +1,12 @@
-package com.projecthub.mapper;
+package com.projecthub.core.mappers;
 
-import com.projecthub.dto.AppUserDTO;
-import com.projecthub.dto.RegisterRequestDTO;
-import com.projecthub.model.AppUser;
-import org.mapstruct.*;
+import com.projecthub.core.dto.AppUserDTO;
+import com.projecthub.core.dto.RegisterRequestDTO;
+import com.projecthub.core.models.AppUser;
+import org.mapstruct.Context;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface AppUserMapper {

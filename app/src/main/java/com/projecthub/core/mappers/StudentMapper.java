@@ -1,7 +1,7 @@
-package com.projecthub.mapper;
+package com.projecthub.core.mappers;
 
-import com.projecthub.dto.StudentDTO;
-import com.projecthub.model.Student;
+import com.projecthub.core.dto.StudentDTO;
+import com.projecthub.core.models.Student;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
