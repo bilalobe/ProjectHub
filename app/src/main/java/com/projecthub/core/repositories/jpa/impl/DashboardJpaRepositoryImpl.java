@@ -1,8 +1,8 @@
-package com.projecthub.repository.jpa.impl;
+package com.projecthub.core.repositories.jpa.impl;
 
-import com.projecthub.dto.ProjectStatusDTO;
-import com.projecthub.dto.RecentActivityDTO;
-import com.projecthub.repository.jpa.DashboardJpaRepository;
+import com.projecthub.core.dto.ProjectStatusDTO;
+import com.projecthub.core.dto.RecentActivityDTO;
+import com.projecthub.core.repositories.jpa.DashboardJpaRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;

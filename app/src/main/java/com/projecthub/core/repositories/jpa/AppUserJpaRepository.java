@@ -1,10 +1,10 @@
-package com.projecthub.repository.jpa;
+package com.projecthub.core.repositories.jpa;
 
-import com.projecthub.model.AppUser;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.projecthub.core.models.AppUser;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;

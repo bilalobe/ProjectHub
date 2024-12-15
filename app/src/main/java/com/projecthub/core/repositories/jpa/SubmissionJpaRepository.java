@@ -1,6 +1,6 @@
-package com.projecthub.repository.jpa;
+package com.projecthub.core.repositories.jpa;
 
-import com.projecthub.model.Submission;
+import com.projecthub.core.models.Submission;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -18,16 +18,16 @@ public interface SubmissionJpaRepository extends JpaRepository<Submission, UUID>
     /**
      * Finds submissions by student ID.
      *
-     * @param student_id the UUID of the student
+     * @param studentId the UUID of the student
      * @return a list of {@code Submission} objects belonging to the student
      */
-    <PK> List<Submission> findByStudentId(PK student_id);
+    List<Submission> findByStudentId(UUID studentId);
 
     /**
      * Finds submissions by project ID.
      *
-     * @param project_id the UUID of the project
+     * @param projectId the UUID of the project
      * @return a list of {@code Submission} objects belonging to the project
      */
-    <PK> List<Submission> findByProjectId(PK project_id);
+    List<Submission> findByProjectId(UUID projectId);
 }

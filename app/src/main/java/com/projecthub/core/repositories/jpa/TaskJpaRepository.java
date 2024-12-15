@@ -1,9 +1,9 @@
-package com.projecthub.repository.jpa;
+package com.projecthub.core.repositories.jpa;
 
-import com.projecthub.model.Task;
+import com.projecthub.core.models.Task;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 import java.util.UUID;

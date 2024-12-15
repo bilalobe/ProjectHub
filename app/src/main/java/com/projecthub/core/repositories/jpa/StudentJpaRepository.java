@@ -1,9 +1,9 @@
-package com.projecthub.repository.jpa;
+package com.projecthub.core.repositories.jpa;
 
-import com.projecthub.model.Student;
+import com.projecthub.core.models.Student;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,8 +18,16 @@ public interface StudentJpaRepository extends JpaRepository<Student, UUID> {
     /**
      * Finds students by team ID.
      *
-     * @param team_id the UUID of the team
+     * @param teamId the UUID of the team
      * @return a list of {@code Student} objects belonging to the team
      */
-    <PK> List<Student> findByTeamId(PK team_id);
+    List<Student> findByTeamId(UUID teamId);
+
+    /**
+     * Finds students by cohort ID.
+     *
+     * @param cohortId the UUID of the cohort
+     * @return a list of {@code Student} objects belonging to the cohort
+     */
+    List<Student> findByCohortId(UUID cohortId);
 }
