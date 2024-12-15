@@ -1,14 +1,18 @@
-package com.projecthub.repository.csv.impl;
+package com.projecthub.core.repositories.csv.impl;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.*;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.projecthub.config.CsvProperties;
-import com.projecthub.model.Cohort;
-import com.projecthub.repository.csv.CohortCsvRepository;
-import com.projecthub.repository.csv.helper.CsvHelper;
+import com.projecthub.core.models.Cohort;
+import com.projecthub.core.repositories.csv.CohortCsvRepository;
+import com.projecthub.core.repositories.csv.helper.CsvHelper;
+import com.projecthub.core.repositories.csv.helper.CsvFileHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
@@ -16,14 +20,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Objects;
 
 /**
  * Implementation of {@link CohortCsvRepository} that manages Cohort data using CSV files.
@@ -63,9 +67,9 @@ public class CohortCsvRepositoryImpl implements CohortCsvRepository {
     public Cohort save(Cohort cohort) {
         validateCohort(cohort);
         try {
-            backupCSVFile(csvProperties.getCohortsFilepath());
-            List<Cohort> cohorts = findAll();
-            cohorts.removeIf(c -> c.getId().equals(cohort.getId()));
+            CsvFileHelper.backupCSVFile(csvProperties.getCohortsFilepath());
+            List<Cohort> cohorts = readCohortsFromFile();
+            cohorts.removeIf(c -> Objects.equals(c.getId(), cohort.getId()));
             cohorts.add(cohort);
             String[] columns = {"id", "name", "schoolId"};
             CsvHelper.writeBeansToCsv(csvProperties.getCohortsFilepath(), Cohort.class, cohorts, columns);
@@ -101,9 +105,15 @@ public class CohortCsvRepositoryImpl implements CohortCsvRepository {
      */
     @Override
     public Optional<Cohort> findById(UUID id) {
-        return findAll().stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst();
+        try {
+            List<Cohort> cohorts = readCohortsFromFile();
+            return cohorts.stream()
+                    .filter(c -> Objects.equals(c.getId(), id))
+                    .findFirst();
+        } catch (IOException e) {
+            logger.error("Error reading cohorts from CSV", e);
+            throw new RuntimeException("Error reading cohorts from CSV", e);
+        }
     }
 
     /**
@@ -115,9 +125,9 @@ public class CohortCsvRepositoryImpl implements CohortCsvRepository {
     @Override
     public void deleteById(UUID id) {
         try {
-            backupCSVFile(csvProperties.getCohortsFilepath());
-            List<Cohort> cohorts = findAll();
-            cohorts.removeIf(c -> c.getId().equals(id));
+            CsvFileHelper.backupCSVFile(csvProperties.getCohortsFilepath());
+            List<Cohort> cohorts = readCohortsFromFile();
+            cohorts.removeIf(c -> Objects.equals(c.getId(), id));
             writeCohortsToFile(cohorts);
             logger.info("Cohort deleted successfully: {}", id);
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
@@ -134,22 +144,15 @@ public class CohortCsvRepositoryImpl implements CohortCsvRepository {
      */
     @Override
     public List<Cohort> findBySchoolId(UUID schoolId) {
-        return findAll().stream()
-                .filter(c -> c.getSchool().getId().equals(schoolId))
-                .toList();
-    }
-
-    /**
-     * Creates a backup of the specified CSV file.
-     *
-     * @param filePath the path of the CSV file to back up
-     * @throws IOException if an I/O error occurs during backup
-     */
-    private void backupCSVFile(String filePath) throws IOException {
-        Path source = Path.of(filePath);
-        Path backup = Path.of(filePath + ".backup");
-        Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
-        logger.info("Backup created for file: {}", filePath);
+        try {
+            List<Cohort> cohorts = readCohortsFromFile();
+            return cohorts.stream()
+                    .filter(c -> c.getSchool() != null && Objects.equals(c.getSchool().getId(), schoolId))
+                    .toList();
+        } catch (IOException e) {
+            logger.error("Error reading cohorts from CSV", e);
+            throw new RuntimeException("Error reading cohorts from CSV", e);
+        }
     }
 
     /**
@@ -186,9 +189,9 @@ public class CohortCsvRepositoryImpl implements CohortCsvRepository {
      * Writes the list of {@code Cohort} objects to the CSV file.
      *
      * @param cohorts the list of {@code Cohort} objects to write
-     * @throws IOException                           if an I/O error occurs
-     * @throws CsvDataTypeMismatchException          if a data type mismatch occurs
-     * @throws CsvRequiredFieldEmptyException        if a required field is empty
+     * @throws IOException                    if an I/O error occurs
+     * @throws CsvDataTypeMismatchException   if a data type mismatch occurs
+     * @throws CsvRequiredFieldEmptyException if a required field is empty
      */
     private void writeCohortsToFile(List<Cohort> cohorts) throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getCohortsFilepath()))) {

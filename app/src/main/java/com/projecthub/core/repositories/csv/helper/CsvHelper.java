@@ -1,16 +1,14 @@
-package com.projecthub.repository.csv.helper;
+package com.projecthub.core.repositories.csv.helper;
 
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.*;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileWriter;
 import java.util.List;
-
-/**
- * Provides helper methods for CSV operations.
- */
 
 /**
  * Writes a list of beans to a CSV file at the specified filepath.

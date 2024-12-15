@@ -1,30 +1,32 @@
-package com.projecthub.repository.csv.impl;
+package com.projecthub.core.repositories.csv.impl;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.*;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.projecthub.config.CsvProperties;
-import com.projecthub.model.AppUser;
-
+import com.projecthub.core.models.AppUser;
+import com.projecthub.core.repositories.csv.AppUserCsvRepository;
+import com.projecthub.core.repositories.csv.helper.CsvHelper;
+import com.projecthub.core.repositories.csv.helper.CsvFileHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
-import com.projecthub.repository.csv.AppUserCsvRepository;
-import com.projecthub.repository.csv.helper.CsvHelper;
 
 @Repository("csvUserRepository")
 @Profile("csv")
@@ -38,19 +40,6 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
     public AppUserCsvRepositoryImpl(CsvProperties csvProperties, Validator validator) {
         this.csvProperties = csvProperties;
         this.validator = validator;
-    }
-
-    /**
-     * Creates a backup of the CSV file.
-     *
-     * @param filePath the path of the CSV file to back up
-     * @throws IOException if an I/O error occurs during backup
-     */
-    private void backupCSVFile(String filePath) throws IOException {
-        Path source = Path.of(filePath);
-        Path backup = Path.of(filePath + ".backup");
-        Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
-        logger.info("Backup created for file: {}", filePath);
     }
 
     /**
@@ -81,9 +70,9 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
     public AppUser save(AppUser user) {
         validateUser(user);
         try {
-            backupCSVFile(csvProperties.getUsersFilepath());
+            CsvFileHelper.backupCSVFile(csvProperties.getUsersFilepath());
             List<AppUser> users = findAll();
-            users.removeIf(u -> u.getId().equals(user.getId()));
+            users.removeIf(u -> Objects.equals(u.getId(), user.getId()));
             users.add(user);
             String[] columns = {"id", "username", "email", "firstName", "lastName", "teamId"};
             CsvHelper.writeBeansToCsv(csvProperties.getUsersFilepath(), AppUser.class, users, columns);
@@ -126,7 +115,7 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
     @Override
     public Optional<AppUser> findById(UUID id) {
         return findAll().stream()
-                .filter(u -> u.getId().equals(id))
+                .filter(u -> Objects.equals(u.getId(), id))
                 .findFirst();
     }
 
@@ -139,9 +128,9 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
     @Override
     public void deleteById(UUID id) {
         try {
-            backupCSVFile(csvProperties.getUsersFilepath());
+            CsvFileHelper.backupCSVFile(csvProperties.getUsersFilepath());
             List<AppUser> users = findAll();
-            users.removeIf(u -> u.getId().equals(id));
+            users.removeIf(u -> Objects.equals(u.getId(), id));
             try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getUsersFilepath()))) {
                 ColumnPositionMappingStrategy<AppUser> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(AppUser.class);
@@ -153,7 +142,8 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
                 beanToCsv.write(users);
             }
             logger.info("User deleted successfully: {}", id);
-        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException | com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
+        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException |
+                 com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
             logger.error("Error deleting user from CSV", e);
             throw new RuntimeException("Error deleting user from CSV", e);
         }
@@ -170,16 +160,5 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
         return findAll().stream()
                 .filter(u -> u.getUsername().equals(username))
                 .findFirst();
-    }
-
-    /**
-     * Checks if a user exists by their ID.
-     *
-     * @param id the ID of the user
-     * @return {@code true} if the user exists, {@code false} otherwise
-     */
-    @Override
-    public boolean existsById(UUID id) {
-        return findById(id).isPresent();
     }
 }

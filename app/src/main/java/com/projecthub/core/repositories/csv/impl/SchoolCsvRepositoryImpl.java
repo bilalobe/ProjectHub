@@ -1,12 +1,15 @@
-package com.projecthub.repository.csv.impl;
+package com.projecthub.core.repositories.csv.impl;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.*;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.projecthub.config.CsvProperties;
-import com.projecthub.model.School;
-import com.projecthub.repository.csv.SchoolCsvRepository;
-import com.projecthub.repository.csv.helper.CsvHelper;
+import com.projecthub.core.models.School;
+import com.projecthub.core.repositories.csv.SchoolCsvRepository;
+import com.projecthub.core.repositories.csv.helper.CsvHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
@@ -14,7 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -22,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Objects;
 
 @Repository("csvSchoolRepository")
 @Profile("csv")
@@ -80,7 +86,7 @@ public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
         try {
             backupCSVFile(csvProperties.getSchoolsFilepath());
             List<School> schools = findAll();
-            schools.removeIf(s -> s.getId().equals(school.getId()));
+            schools.removeIf(s -> Objects.equals(s.getId(), school.getId()));
             schools.add(school);
             String[] columns = {"id", "name"};
             CsvHelper.writeBeansToCsv(csvProperties.getSchoolsFilepath(), School.class, schools, columns);
@@ -123,7 +129,7 @@ public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
     @Override
     public Optional<School> findById(UUID id) {
         return findAll().stream()
-                .filter(s -> s.getId().equals(id))
+                .filter(s -> Objects.equals(s.getId(), id))
                 .findFirst();
     }
 
@@ -138,7 +144,7 @@ public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
         try {
             backupCSVFile(csvProperties.getSchoolsFilepath());
             List<School> schools = findAll();
-            schools.removeIf(s -> s.getId().equals(id));
+            schools.removeIf(s -> Objects.equals(s.getId(), id));
             try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getSchoolsFilepath()))) {
                 ColumnPositionMappingStrategy<School> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(School.class);
@@ -150,7 +156,8 @@ public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
                 beanToCsv.write(schools);
             }
             logger.info("School deleted successfully: {}", id);
-        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException | com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
+        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException |
+                 com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
             logger.error("Error deleting school from CSV", e);
             throw new RuntimeException("Error deleting school from CSV", e);
         }

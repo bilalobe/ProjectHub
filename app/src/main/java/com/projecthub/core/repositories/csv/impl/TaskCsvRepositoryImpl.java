@@ -1,23 +1,4 @@
-package com.projecthub.repository.csv.impl;
-
-import com.projecthub.model.Task;
-import com.projecthub.repository.csv.TaskCsvRepository;
-import com.projecthub.repository.csv.helper.CsvHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Repository;
-
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+package com.projecthub.core.repositories.csv.impl;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
@@ -28,9 +9,25 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.projecthub.config.CsvProperties;
-
+import com.projecthub.core.models.Task;
+import com.projecthub.core.repositories.csv.TaskCsvRepository;
+import com.projecthub.core.repositories.csv.helper.CsvHelper;
+import com.projecthub.core.repositories.csv.helper.CsvFileHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
+
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.Objects;
 
 @Repository("csvTaskRepository")
 @Profile("csv")
@@ -44,13 +41,6 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
     public TaskCsvRepositoryImpl(CsvProperties csvProperties, Validator validator) {
         this.csvProperties = csvProperties;
         this.validator = validator;
-    }
-
-    private void backupCSVFile(String filePath) throws IOException {
-        Path source = Path.of(filePath);
-        Path backup = Path.of(String.format("%s.backup", filePath));
-        Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
-        logger.info("Backup created for file: {}", filePath);
     }
 
     private void validateTask(Task task) {
@@ -68,9 +58,9 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
     public Task save(Task task) {
         validateTask(task);
         try {
-            backupCSVFile(csvProperties.getTasksFilepath());
+            CsvFileHelper.backupCSVFile(csvProperties.getTasksFilepath());
             List<Task> tasks = findAll();
-            tasks.removeIf(t -> t.getId().equals(task.getId()));
+            tasks.removeIf(t -> Objects.equals(t.getId(), task.getId()));
             tasks.add(task);
 
             String[] columns = {"id", "name", "description", "projectId"};
@@ -105,16 +95,16 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
     @Override
     public Optional<Task> findById(UUID id) {
         return findAll().stream()
-                .filter(t -> t.getId().equals(id))
+                .filter(t -> Objects.equals(t.getId(), id))
                 .findFirst();
     }
 
     @Override
     public void deleteById(UUID id) {
         try {
-            backupCSVFile(csvProperties.getTasksFilepath());
+            CsvFileHelper.backupCSVFile(csvProperties.getTasksFilepath());
             List<Task> tasks = findAll();
-            tasks.removeIf(t -> t.getId().equals(id));
+            tasks.removeIf(t -> Objects.equals(t.getId(), id));
 
             try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getTasksFilepath()))) {
                 ColumnPositionMappingStrategy<Task> strategy = new ColumnPositionMappingStrategy<>();
@@ -139,8 +129,7 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
     @Override
     public List<Task> findByProjectId(UUID projectId) {
         return findAll().stream()
-                .filter(t -> t.getProject().getId().equals(projectId))
+                .filter(t -> t.getProject() != null && Objects.equals(t.getProject().getId(), projectId))
                 .toList();
     }
-
 }

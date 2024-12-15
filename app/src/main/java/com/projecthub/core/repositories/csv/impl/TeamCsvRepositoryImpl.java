@@ -1,18 +1,19 @@
-package com.projecthub.repository.csv.impl;
+package com.projecthub.core.repositories.csv.impl;
 
 import com.opencsv.CSVReader;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.projecthub.config.CsvProperties;
-import com.projecthub.model.Team;
-import com.projecthub.repository.csv.TeamCsvRepository;
-import com.projecthub.repository.csv.helper.CsvHelper;
+import com.projecthub.core.models.Team;
+import com.projecthub.core.repositories.csv.TeamCsvRepository;
+import com.projecthub.core.repositories.csv.helper.CsvHelper;
+import com.projecthub.core.repositories.csv.helper.CsvFileHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Objects;
 
 @Repository("csvTeamRepository")
 @Profile("csv")
@@ -33,19 +35,6 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
     public TeamCsvRepositoryImpl(CsvProperties csvProperties, Validator validator) {
         this.csvProperties = csvProperties;
         this.validator = validator;
-    }
-
-    /**
-     * Creates a backup of the CSV file.
-     *
-     * @param filePath the path of the CSV file to back up
-     * @throws IOException if an I/O error occurs during backup
-     */
-    private void backupCSVFile(String filePath) throws IOException {
-        java.nio.file.Path source = java.nio.file.Path.of(filePath);
-        java.nio.file.Path backup = java.nio.file.Path.of(filePath + ".backup");
-        java.nio.file.Files.copy(source, backup, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-        logger.info("Backup created for file: {}", filePath);
     }
 
     /**
@@ -76,9 +65,9 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
     public Team save(Team team) {
         validateTeam(team);
         try {
-            backupCSVFile(csvProperties.getTeamsFilepath());
+            CsvFileHelper.backupCSVFile(csvProperties.getTeamsFilepath());
             List<Team> teams = findAll();
-            teams.removeIf(t -> t.getId().equals(team.getId()));
+            teams.removeIf(t -> Objects.equals(t.getId(), team.getId()));
             teams.add(team);
             String[] columns = {"id", "name"};
             CsvHelper.writeBeansToCsv(csvProperties.getTeamsFilepath(), Team.class, teams, columns);
@@ -121,7 +110,7 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
     @Override
     public Optional<Team> findById(UUID id) {
         return findAll().stream()
-                .filter(t -> t.getId().equals(id))
+                .filter(t -> Objects.equals(t.getId(), id))
                 .findFirst();
     }
 
@@ -134,9 +123,9 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
     @Override
     public void deleteById(UUID id) {
         try {
-            backupCSVFile(csvProperties.getTeamsFilepath());
+            CsvFileHelper.backupCSVFile(csvProperties.getTeamsFilepath());
             List<Team> teams = findAll();
-            teams.removeIf(t -> t.getId().equals(id));
+            teams.removeIf(t -> Objects.equals(t.getId(), id));
             String[] columns = {"id", "name"};
             CsvHelper.writeBeansToCsv(csvProperties.getTeamsFilepath(), Team.class, teams, columns);
             logger.info("Team deleted successfully: {}", id);
@@ -155,7 +144,7 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
     @Override
     public List<Team> findByCohortId(UUID cohortId) {
         return findAll().stream()
-                .filter(t -> t.getCohort().getId().equals(cohortId))
+                .filter(t -> t.getCohort() != null && Objects.equals(t.getCohort().getId(), cohortId))
                 .toList();
     }
 }

@@ -1,6 +1,6 @@
-package com.projecthub.repository.csv;
+package com.projecthub.core.repositories.csv;
 
-import com.projecthub.model.School;
+import com.projecthub.core.models.School;
 
 /**
  * Repository interface for {@link School} entities.

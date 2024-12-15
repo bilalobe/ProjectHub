@@ -1,12 +1,16 @@
-package com.projecthub.repository.csv.impl;
+package com.projecthub.core.repositories.csv.impl;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.*;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.projecthub.config.CsvProperties;
-import com.projecthub.repository.csv.ProjectCsvRepository;
-import com.projecthub.model.Project;
-import com.projecthub.repository.csv.helper.CsvHelper;
+import com.projecthub.core.models.Project;
+import com.projecthub.core.repositories.csv.ProjectCsvRepository;
+import com.projecthub.core.repositories.csv.helper.CsvHelper;
+import com.projecthub.core.repositories.csv.helper.CsvFileHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
@@ -14,14 +18,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Objects;
 
 @Repository("csvProjectRepository")
 @Profile("csv")
@@ -35,19 +39,6 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
     public ProjectCsvRepositoryImpl(CsvProperties csvProperties, Validator validator) {
         this.csvProperties = csvProperties;
         this.validator = validator;
-    }
-
-    /**
-     * Creates a backup of the CSV file.
-     *
-     * @param filePath the path of the CSV file to back up
-     * @throws IOException if an I/O error occurs during backup
-     */
-    private void backupCSVFile(String filePath) throws IOException {
-        Path source = Path.of(filePath);
-        Path backup = Path.of(filePath + ".backup");
-        Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
-        logger.info("Backup created for file: {}", filePath);
     }
 
     /**
@@ -78,9 +69,9 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
     public Project save(Project project) {
         validateProject(project);
         try {
-            backupCSVFile(csvProperties.getProjectsFilepath());
+            CsvFileHelper.backupCSVFile(csvProperties.getProjectsFilepath());
             List<Project> projects = findAll();
-            projects.removeIf(p -> p.getId().equals(project.getId()));
+            projects.removeIf(p -> Objects.equals(p.getId(), project.getId()));
             projects.add(project);
             String[] columns = {"id", "name", "description", "teamId", "deadline", "startDate", "endDate", "status"};
             CsvHelper.writeBeansToCsv(csvProperties.getProjectsFilepath(), Project.class, projects, columns);
@@ -123,7 +114,7 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
     @Override
     public Optional<Project> findById(UUID id) {
         return findAll().stream()
-                .filter(p -> p.getId().equals(id))
+                .filter(p -> Objects.equals(p.getId(), id))
                 .findFirst();
     }
 
@@ -136,9 +127,9 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
     @Override
     public void deleteById(UUID id) {
         try {
-            backupCSVFile(csvProperties.getProjectsFilepath());
+            CsvFileHelper.backupCSVFile(csvProperties.getProjectsFilepath());
             List<Project> projects = findAll();
-            projects.removeIf(p -> p.getId().equals(id));
+            projects.removeIf(p -> Objects.equals(p.getId(), id));
             try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getProjectsFilepath()))) {
                 ColumnPositionMappingStrategy<Project> strategy = new ColumnPositionMappingStrategy<>();
                 strategy.setType(Project.class);
@@ -150,7 +141,8 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
                 beanToCsv.write(projects);
             }
             logger.info("Project deleted successfully: {}", id);
-        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException | com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
+        } catch (IOException | com.opencsv.exceptions.CsvDataTypeMismatchException |
+                 com.opencsv.exceptions.CsvRequiredFieldEmptyException e) {
             logger.error("Error deleting project from CSV", e);
             throw new RuntimeException("Error deleting project from CSV", e);
         }
@@ -165,7 +157,7 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
     @Override
     public List<Project> findAllByTeamId(UUID teamId) {
         return findAll().stream()
-                .filter(p -> p.getTeam().getId().equals(teamId))
+                .filter(p -> p.getTeam() != null && Objects.equals(p.getTeam().getId(), teamId))
                 .toList();
     }
 }

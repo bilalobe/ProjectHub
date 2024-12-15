@@ -1,4 +1,4 @@
-package com.projecthub.repository.csv;
+package com.projecthub.core.repositories.csv;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,8 +11,11 @@ import java.util.UUID;
  */
 public interface BaseCsvRepository<T> {
     T save(T entity);
+
     List<T> findAll();
+
     Optional<T> findById(UUID id);
+
     void deleteById(UUID id);
 
 }

@@ -1,6 +1,6 @@
-package com.projecthub.repository.csv;
+package com.projecthub.core.repositories.csv;
 
-import com.projecthub.model.Submission;
+import com.projecthub.core.models.Submission;
 
 import java.util.List;
 import java.util.UUID;

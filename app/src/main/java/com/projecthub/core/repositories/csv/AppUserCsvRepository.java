@@ -1,13 +1,13 @@
-package com.projecthub.repository.csv;
+package com.projecthub.core.repositories.csv;
 
-import com.projecthub.model.AppUser;
-import com.projecthub.repository.AppUserRepository;
+import com.projecthub.core.models.AppUser;
+
 import java.util.Optional;
 
 /**
  * Repository interface for {@link AppUser} entities.
  */
-public interface AppUserCsvRepository extends BaseCsvRepository<AppUser>, AppUserRepository {
+public interface AppUserCsvRepository extends BaseCsvRepository<AppUser> {
 
 
     /**

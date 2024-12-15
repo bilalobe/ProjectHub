@@ -1,6 +1,7 @@
-package com.projecthub.repository.csv;
+package com.projecthub.core.repositories.csv;
 
-import com.projecthub.model.Student;
+import com.projecthub.core.models.Student;
+
 import java.util.List;
 import java.util.UUID;
 
