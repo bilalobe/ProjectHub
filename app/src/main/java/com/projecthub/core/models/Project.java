@@ -1,4 +1,4 @@
-package com.projecthub.model;
+package com.projecthub.core.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

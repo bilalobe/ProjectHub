@@ -1,4 +1,4 @@
-package com.projecthub.model;
+package com.projecthub.core.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
