@@ -1,4 +1,4 @@
-package com.projecthub.dto;
+package com.projecthub.core.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

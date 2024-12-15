@@ -1,4 +1,4 @@
-package com.projecthub.dto;
+package com.projecthub.core.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,14 +8,14 @@ import lombok.Data;
 /**
  * Data Transfer Object for updating user information.
  * This class is used to encapsulate the data required to update a user's details.
- * 
+ * <p>
  * Fields:
  * - username: The username of the user. It is required and must be between 3 and 50 characters.
  * - password: The password of the user. It is optional but must be at least 6 characters long if provided.
  * - email: The email address of the user. It is required and must be a valid email format.
  * - firstName: The first name of the user. It is required and must not exceed 100 characters.
  * - lastName: The last name of the user. It is required and must not exceed 100 characters.
- * 
+ * <p>
  * Annotations:
  * - @Data: Lombok annotation to generate getters, setters, toString, equals, and hashCode methods.
  * - @NotBlank: Ensures the field is not null and not empty.

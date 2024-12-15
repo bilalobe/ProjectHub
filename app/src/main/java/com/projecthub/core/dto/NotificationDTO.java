@@ -1,4 +1,4 @@
-package com.projecthub.dto;
+package com.projecthub.core.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,20 +8,18 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * DTO for comment data.
+ * DTO for notification data.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentDTO {
+public class NotificationDTO {
 
     private UUID id;
 
-    private String content;
-
-    private UUID authorId;
-
-    private UUID taskId;
+    private String message;
 
     private LocalDateTime timestamp;
+
+    private UUID userId;
 }

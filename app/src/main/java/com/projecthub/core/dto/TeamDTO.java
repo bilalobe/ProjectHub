@@ -1,8 +1,7 @@
-package com.projecthub.dto;
+package com.projecthub.core.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,21 +9,23 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 /**
- * Data Transfer Object for the Cohort entity.
- * Used for transferring cohort data between processes.
+ * Data Transfer Object for the Team entity.
+ * Used for transferring team data between processes.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CohortDTO {
+public class TeamDTO {
 
-    @NotNull(message = "Cohort ID cannot be null")
+    @NotNull(message = "Team ID cannot be null")
     private UUID id;
 
-    @NotBlank(message = "Cohort name is mandatory")
-    @Size(max = 255, message = "Name must be less than 255 characters")
+    @NotBlank(message = "Team name is mandatory")
     private String name;
 
     @NotNull(message = "School ID cannot be null")
     private UUID schoolId;
+
+    @NotNull(message = "Cohort ID cannot be null")
+    private UUID cohortId;
 }

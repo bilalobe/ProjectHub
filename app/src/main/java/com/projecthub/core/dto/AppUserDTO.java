@@ -1,4 +1,4 @@
-package com.projecthub.dto;
+package com.projecthub.core.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,21 +7,20 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 /**
- * Data Transfer Object for user profile-related data.
+ * Data Transfer Object for the AppUser entity.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppUserProfileDTO {
+public class AppUserDTO {
 
     private UUID id;
+
     private String username;
+
     private String email;
+
     private String firstName;
+
     private String lastName;
-    private String avatarUrl;
-    private String statusMessage;
-    private int postCount;
-    private int followerCount;
-    private int followingCount;
 }
