@@ -28,7 +28,7 @@ dependencies {
     // JavaFX dependencies
 
     // Lombok for boilerplate code reduction
-    implementation 'org.projectlombok:lombok:1.18.34'
+    implementation 'org.projectlombok:lombok:1.18.36'
 
     // JWT for token handling
     implementation 'io.jsonwebtoken:jjwt:0.12.6'
