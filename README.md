@@ -1,7 +1,6 @@
 # ProjectHub
 
-![Project Logo](app/src/main/resources/com/projecthub/ui/images/logo.png)
-
+![Project Logo](app/src/main/resources/images/logo.png)
 
 **A comprehensive platform for managing student projects, component evaluations, and project distribution, built with JavaFX, Spring Boot, and PostgreSQL.**
 
@@ -15,176 +14,143 @@
 
 ## Overview
 
-**ProjectHub** is a powerful and intuitive platform designed to streamline the project management workflow for both students and teachers. This application provides a rich desktop experience using JavaFX, robust backend services with Spring Boot, and reliable data storage with PostgreSQL.
+ProjectHub is a powerful and intuitive platform designed to streamline the management of student projects, facilitate component evaluations, and simplify project distribution. It offers a rich desktop experience through JavaFX and a responsive web interface with Angular, backed by a robust Spring Boot backend and PostgreSQL database.
 
-## Key Features
+## Features
 
-### Project Management
+- **Project Creation and Management**: Easily create, edit, and manage student projects. Assign projects to teams, define deadlines, and specify requirements.
+- **Component Evaluation**: Evaluate project components that contribute to final deliverables. Ensure quality submissions with an integrated evaluation system.
+- **Team Collaboration**: Teams can view project details, submit project components, and track their submissions.
+- **Secure Authentication**: Robust user authentication mechanisms to protect data and ensure secure access.
+- **Plugin Support**: Extend functionality with plugins, such as the CSV plugin for data import/export.
+- **Cross-Platform Availability**: Access ProjectHub via the desktop client or the web interface.
 
-- **Create and Edit Projects:** Teachers can create new projects, set deadlines, and assign them to teams.
-- **View Project Details:** Teams can view detailed information about their projects, including descriptions, deadlines, and assigned tasks.
-- **Manage Project Components:** Add, edit, and delete project components.
+## Architecture
 
-### Team Collaboration
+ProjectHub follows a modular architecture to promote scalability and maintainability:
 
-- **Team Dashboard:** View team members, assigned projects, and submission status.
-- **Submit Components:** Teams can submit project components for evaluation.
-- **Track Submissions:** Monitor the status of submitted components and receive feedback.
-
-### Component Evaluation
-
-- **Evaluate Submissions:** Teachers can evaluate submitted components and provide feedback.
-- **Grade Submissions:** Assign grades to submitted components.
-
-### Navigation
-
-- **Tree-Based Navigation:** Navigate through schools, cohorts, teams, and projects using an intuitive tree structure.
-
-### Security
-
-- **User Authentication:** Secure login for users with role-based access control.
-- **Data Protection:** Ensure data security and privacy.
-
-## Technologies Used
-
-### Frontend
-
-- **JavaFX:** Provides a rich client application platform for creating desktop applications.
-- **FXML:** Used for defining the user interface in XML format.
-
-### Backend
-
-- **Spring Boot:** Simplifies the development of production-ready applications.
-    - **Spring Data JPA:** Provides easy integration with JPA for database operations.
-    - **Spring Security:** Ensures secure authentication and authorization.
-    - **Springdoc OpenAPI:** Generates API documentation.
-
-### Database
-
-- **PostgreSQL:** A powerful, open-source object-relational database system.
-
-### Build and Dependency Management
-
-- **Gradle:** An advanced build automation tool.
-
-### Containerization
-
-- **Docker:** Ensures consistent environments for development, testing, and production.
+- **Backend**: Built with Spring Boot, providing RESTful APIs and business logic.
+- **Frontend Web Interface**: Developed with Angular, offering a responsive and interactive user experience.
+- **Desktop Client**: Implemented using JavaFX for a rich desktop experience.
+- **Database**: Utilizes PostgreSQL for reliable and efficient data storage.
+- **Plugins**: Supports plugins to enhance and extend core functionalities.
 
 ## Getting Started
 
 ### Prerequisites
 
-- **Java 23** or higher
-- **Gradle 8.11** or higher
+- **Java Development Kit (JDK) 17** or higher
+- **Node.js** and **npm** (for the Angular frontend)
 - **PostgreSQL** database
-- **Docker** (optional, for containerization)
+- **Gradle** build tool (included via Gradle Wrapper)
 
 ### Installation
 
-1. **Clone the repository:**
+#### Clone the Repository
 
-     ```sh
-     git clone https://github.com/yourusername/projecthub.git
-     cd projecthub
-     ```
-
-2. **Configure the database:**
-
-     Update the `application.properties` file with your PostgreSQL database configuration.
-
-3. **Build the project:**
-
-     ```sh
-     ./gradlew build
-     ```
-
-4. **Run the application:**
-
-     ```sh
-     ./gradlew bootRun
-     ```
-
-5. **Access the application:**
-
-     Open your browser and navigate to `http://localhost:8080`.
-
-### Running with Docker
-
-1. **Build the Docker image:**
-
-     ```sh
-     docker build -t projecthub .
-     ```
-
-2. **Run the Docker container:**
-
-     ```sh
-     docker run -p 8080:8080 projecthub
-     ```
-
-## Directory Structure
-
-```
-.devcontainer/
-    devcontainer.json
-    Dockerfile
-.github/
-    workflows/
-        ci.yml
-.vscode/
-    settings.json
-app/
-    build/
-    build.gradle
-    logs/
-    README.md
-    src/
-build/
-    reports/
-    tmp/
-compose-dev.yaml
-Dockerfile
-gradle/
-    libs.versions.toml
-    wrapper/
-gradle.properties
-gradlew
-gradlew.bat
-LICENSE
-README.md
-settings.gradle
+```bash
+git clone https://github.com/yourusername/ProjectHub.git
+cd ProjectHub
 ```
 
-## Configuration
+#### Database Setup
 
-### Database Configuration
+1. **Install PostgreSQL** if not already installed.
+2. **Create a new database** named `projecthub`:
 
-Update the `application-dev.properties` file with your PostgreSQL database credentials:
+   ```sql
+   CREATE DATABASE projecthub;
+   ```
 
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/yourdatabase
-spring.datasource.username=yourusername
-spring.datasource.password=yourpassword
-```
+3. **Configure Database Connection**:
 
-### Security Configuration
+   Update the database connection settings in 
 
-Update the `application-dev.properties` file with your security credentials:
+application.properties
 
-```properties
-spring.security.user.name=yourusername
-spring.security.user.password=yourpassword
-```
+ or `application.yml`:
+
+   ```properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/projecthub
+   spring.datasource.username=your_db_username
+   spring.datasource.password=your_db_password
+   ```
+
+### Running the Application
+
+#### Backend (Spring Boot Application)
+
+1. Navigate to the app directory:
+
+   ```bash
+   cd app
+   ```
+
+2. Build and run the application:
+
+   ```bash
+   ./gradlew bootRun
+   ```
+
+   The backend server will start on `http://localhost:8080`.
+
+#### Frontend (Angular Application)
+
+1. Open a new terminal and navigate to the frontend directory:
+
+   ```bash
+   cd frontend
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Run the development server:
+
+   ```bash
+   ng serve
+   ```
+
+   Access the web interface at `http://localhost:4200`.
+
+#### Desktop Client (JavaFX Application)
+
+1. Ensure the backend is running.
+2. Run the JavaFX application:
+
+   ```bash
+   cd app
+   ./gradlew run
+   ```
+
+## Usage
+
+- **Access the Web Interface**: Navigate to `http://localhost:4200` in your web browser.
+- **Desktop Client**: Launch the JavaFX application as described above.
+- **API Documentation**: Access API endpoints and documentation at `http://localhost:8080/swagger-ui.html` (if Swagger is configured).
+- **User Accounts**: Register a new user or log in with your credentials to access features based on your role (e.g., Teacher, Student).
 
 ## Contributing
 
-We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING.md) for more details.
+We welcome contributions! Please read our Contributing Guidelines to get started.
+
+- **Report Issues**: Use the [GitHub Issues](https://github.com/yourusername/ProjectHub/issues) page to report bugs or request new features.
+- **Code of Conduct**: Please adhere to our Code of Conduct to maintain a welcoming community.
+
+## Security Policy
+
+For information on supported versions and reporting vulnerabilities, please refer to our Security Policy.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+ProjectHub is licensed under the MIT License.
 
 ## Contact
 
-For any inquiries or support, please contact us at [support@projecthub.com](mailto:elkhatabibilal@gmail.com).
+For questions, support, or further information, please contact:
+
+- **Email**: [support@projecthub.com](mailto:support@projecthub.com)
+- **Project Repository**: [GitHub - ProjectHub](https://github.com/yourusername/ProjectHub)
