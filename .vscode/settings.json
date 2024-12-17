@@ -2,7 +2,6 @@
     "java.compile.nullAnalysis.mode": "automatic",
     "java.errors.incompleteClasspath.severity": "info",
     "terminal.integrated.suggest.builtinCompletions": {
-
         "pwshCode": true,
         "pwshGit": true
     },
@@ -10,6 +9,10 @@
     "java.format.settings.url": ".vscode/java-formatter.xml",
     "yaml.schemas": {
         "kubernetes://schema/apps/v1%40deployment": "file:///k%3A/ProjectHub/k8s/backend-deployment.yaml"
-    }
-    
+    },
+    "java.jdt.ls.java.home": "C:\\Program Files\\Eclipse Adoptium\\jdk-23.0.1.11-hotspot",
+    "java.project.sourcePaths": [
+        "app/src/main/java",
+        "plugins/projecthub-csv-plugin/app/src/main/java"
+    ]
 }
