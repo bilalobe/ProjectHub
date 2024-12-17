@@ -810,3 +810,267 @@ classDiagram
     %% Notes
     note for AppUserJpaRepository "Repository: jpaUserRepository, Profile: jpa"
     note for AppUserCsvRepositoryImpl "Repository: csvUserRepository, Profile: csv, Primary"
+
+
+%%% CSV Plugin Integration Architecture
+flowchart TD
+    subgraph Main Application
+        A[Spring Boot App] -->|uses| B[Repository Interfaces]
+        B -->|defines| C[BaseCsvRepository]
+        B -->|defines| D[AppUserCsvRepository]
+        B -->|defines| E[ProjectCsvRepository]
+    end
+
+    subgraph CSV Plugin
+        F[CSV Implementation] -->|implements| C
+        F -->|implements| D
+        F -->|implements| E
+        F -->|uses| G[CsvHelper]
+        F -->|uses| H[CsvFileHelper]
+        G -->|reads/writes| I[CSV Files]
+    end
+
+    subgraph Configuration
+        J[Profile: csv] -->|activates| F
+        K[Profile: jpa] -->|activates| L[JPA Implementation]
+    end
+
+%%% ProjectHub Complete Architecture
+flowchart TD
+    %% User Interaction Layer
+    subgraph UI ["User Interaction Layer"]
+        A[Desktop User] & B[Web User]
+        A -->|uses| C[JavaFX Client]
+        B -->|uses| D[Angular Web App]
+    end
+
+    %% Client Applications
+    subgraph Desktop ["Desktop Application"]
+        C -->|contains| E[FXML Views]
+        C -->|uses| F[ViewModels]
+        C -->|managed by| G[Controllers]
+        F -->|updates| E
+        G -->|coordinates| F
+    end
+
+    subgraph Web ["Web Application"]
+        D -->|contains| H[Angular Components]
+        D -->|uses| I[Services]
+        D -->|manages| J[State]
+        I -->|updates| H
+        J -->|coordinates| I
+    end
+
+    %% API Gateway
+    subgraph Gateway ["API Gateway Layer"]
+        K[Spring Cloud Gateway]
+        C & D -->|requests via| K
+        K -->|routes to| L[Backend Services]
+    end
+
+    %% Core Application
+    subgraph Backend ["Backend Services"]
+        L -->|processes| M[REST Controllers]
+        M -->|uses| N[Service Layer]
+        N -->|implements| O[Business Logic]
+        O -->|uses| P[Repository Layer]
+    end
+
+    %% Data Access Layer
+    subgraph DataAccess ["Data Access Layer"]
+        P -->|abstracts| Q[Repository Interfaces]
+        Q -->|implemented by| R[JPA Repositories]
+        Q -->|implemented by| S[CSV Repositories]
+    end
+
+    %% Plugin Architecture
+    subgraph CSVPlugin ["CSV Plugin"]
+        S -->|uses| T[CSV Config]
+        S -->|managed by| U[CSV Properties]
+        S -->|utilizes| V[CSV Helpers]
+        V -->|reads/writes| W[CSV Files]
+        T -->|configures| U
+    end
+
+    %% Database Layer
+    subgraph Storage ["Storage Layer"]
+        R -->|persists to| X[PostgreSQL]
+        R -->|persists to| Y[H2 Database]
+        S -->|persists to| W
+    end
+
+    %% Cross-Cutting Concerns
+    subgraph CrossCutting ["Cross-Cutting Concerns"]
+        Z[Security]
+        AA[Logging]
+        AB[Monitoring]
+        AC[Caching]
+    end
+
+    %% Support Services
+    subgraph Support ["Support Services"]
+        AD[Auth Service]
+        AE[Email Service]
+        AF[Audit Service]
+    end
+
+    %% Relationships
+    Backend -->|uses| CrossCutting
+    Backend -->|integrates| Support
+    Gateway -->|authenticates via| AD
+    N -->|logs via| AA
+    N -->|monitors via| AB
+    N -->|caches via| AC
+    O -->|audits via| AF
+    O -->|notifies via| AE
+
+    %% Styling
+    classDef ui fill:#D5E8D4,stroke:#82B366
+    classDef client fill:#DAE8FC,stroke:#6C8EBF
+    classDef gateway fill:#FFE6CC,stroke:#D79B00
+    classDef backend fill:#E1D5E7,stroke:#9673A6
+    classDef data fill:#F8CECC,stroke:#B85450
+    classDef plugin fill:#FFF2CC,stroke:#D6B656
+    classDef support fill:#D4E1F5,stroke:#3A5F8B
+    
+    class A,B ui
+    class C,D,E,F,G,H,I,J client
+    class K gateway
+    class L,M,N,O backend
+    class P,Q,R data
+    class S,T,U,V,W plugin
+    class AD,AE,AF support
+
+    %% Notes
+    note "Handles client requests" K
+    note "Manages business logic" N
+    note "Plugin-based storage" S
+    note "Cross-cutting concerns" Z
+
+%%% ProjectHub Extended Architecture with Plugins
+flowchart TD
+    %% User Interaction Layer
+    subgraph UI ["User Interaction Layer"]
+        A[Desktop User] & B[Web User]
+        A -->|uses| C[JavaFX Client] 
+        B -->|uses| D[Angular Web App]
+    end
+
+    %% Client Applications 
+    subgraph Desktop ["Desktop Application"]
+        C -->|contains| E[FXML Views]
+        C -->|uses| F[ViewModels]
+        C -->|managed by| G[Controllers]
+        F -->|updates| E
+        G -->|coordinates| F
+    end
+
+    subgraph Web ["Web Application"]
+        D -->|contains| H[Angular Components]
+        D -->|uses| I[Services] 
+        D -->|manages| J[State]
+        I -->|updates| H
+        J -->|coordinates| I
+    end
+
+    %% API Gateway
+    subgraph Gateway ["API Gateway Layer"]
+        K[Spring Cloud Gateway]
+        C & D -->|requests via| K
+        K -->|routes to| L[Backend Services]
+    end
+
+    %% Core Application
+    subgraph Backend ["Backend Services"]
+        L -->|processes| M[REST Controllers]
+        M -->|uses| N[Service Layer]
+        N -->|implements| O[Business Logic]
+        O -->|uses| P[Repository Layer]
+        O -->|uses| AG[Plugin Manager]
+    end
+
+    %% Plugin Architecture
+    subgraph Plugins ["Plugin System"]
+        AG -->|manages| AH[Plugin Registry]
+        AH -->|registers| AI[Storage Plugins]
+        AH -->|registers| AJ[Export Plugins]
+        AH -->|registers| AK[Integration Plugins]
+        AH -->|registers| AL[Auth Plugins]
+        AH -->|registers| AM[Notification Plugins]
+    end
+
+    %% Storage Plugins
+    subgraph StoragePlugins ["Storage Plugins"]
+        AI -->|includes| S[CSV Plugin]
+        AI -->|includes| AN[XML Plugin]
+        AI -->|includes| AO[JSON Plugin]
+        AI -->|includes| AP[NoSQL Plugin]
+    end
+
+    %% Export Plugins
+    subgraph ExportPlugins ["Export Plugins"]
+        AJ -->|includes| AQ[PDF Export]
+        AJ -->|includes| AR[Excel Export]
+        AJ -->|includes| AS[Report Generator]
+    end
+
+    %% Integration Plugins
+    subgraph IntegrationPlugins ["Integration Plugins"]
+        AK -->|includes| AT[GitHub]
+        AK -->|includes| AU[Jira]
+        AK -->|includes| AV[Trello]
+    end
+
+    %% Auth Plugins
+    subgraph AuthPlugins ["Auth Plugins"]
+        AL -->|includes| AW[OAuth]
+        AL -->|includes| AX[LDAP]
+        AL -->|includes| AY[SSO]
+    end
+
+    %% Notification Plugins
+    subgraph NotificationPlugins ["Notification Plugins"]
+        AM -->|includes| AZ[Email]
+        AM -->|includes| BA[Slack]
+        AM -->|includes| BB[Teams]
+    end
+
+    %% Cross-Cutting & Support Services remain same as before
+    ...
+
+    %% Additional Styling
+    classDef plugin fill:#FFF2CC,stroke:#D6B656
+    classDef pluginSystem fill:#FFE6CC,stroke:#D79B00
+    
+    class AG,AH pluginSystem
+    class AI,AJ,AK,AL,AM,S,AN,AO,AP,AQ,AR,AS,AT,AU,AV,AW,AX,AY,AZ,BA,BB plugin
+
+    %% Notes
+    note "Plugin System Core" AG
+    note "Extensible Architecture" 
+    
+flowchart TD
+    subgraph Primary["Primary Storage: PostgreSQL"]
+        PG[PostgreSQL Database]
+        style PG fill:#f5d1c4,stroke:#333
+    end
+
+    subgraph Local["Local Storage"]
+        H2[H2 Database]
+        CSV[CSV Files]
+        style H2 fill:#d1f5c4,stroke:#333
+        style CSV fill:#c4d1f5,stroke:#333
+    end
+
+    subgraph Sync["Synchronization"]
+        SYNC[Sync Service]
+        style SYNC fill:#f5c4d1,stroke:#333
+    end
+
+    Desktop[Desktop App] -->|Offline| H2
+    Desktop -->|Offline| CSV
+    Desktop -->|Online| SYNC
+    Web[Web App] -->|Direct| PG
+    SYNC -->|Sync when online| PG
+    H2 -->|Sync| SYNC
+    CSV -->|Sync| SYNC
