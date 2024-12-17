@@ -10,4 +10,4 @@ pluginManagement {
 }
 
 rootProject.name = 'ProjectHub'
-include 'app'
+include 'app', 'frontend', 'plugins:projecthub-csv-plugin'
