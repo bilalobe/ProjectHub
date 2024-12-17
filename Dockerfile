@@ -44,11 +44,10 @@ ARG USERNAME=projecthub_devel
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-RUN groupadd --gid $USER_GID $USERNAME || echo "Group exists" \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
-
+RUN groupadd --gid "$USER_GID" "$USERNAME" || echo "Group exists" \
+    && useradd --uid "$USER_UID" --gid "$USER_GID" -m "$USERNAME" \
+    && echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/"$USERNAME" \
+    && chmod 0440 /etc/sudoers.d/"$USERNAME"
 
 
 # Set the non-root user and working directory
