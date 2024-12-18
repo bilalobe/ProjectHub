@@ -10,7 +10,7 @@ import { User } from '../../models/user.model';
 export class UserManagementComponent implements OnInit {
   users: User[] = [];
 
-  constructor(private userService: UserService) { }
+  constructor(private readonly userService: UserService) { }
 
   ngOnInit(): void {
     this.loadUsers();

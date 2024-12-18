@@ -10,7 +10,7 @@ import { Project } from '../../models/project.model';
 export class ProjectManagementComponent implements OnInit {
   projects: Project[] = [];
 
-  constructor(private projectService: ProjectService) { }
+  constructor(private readonly projectService: ProjectService) { }
 
   ngOnInit(): void {
     this.loadProjects();

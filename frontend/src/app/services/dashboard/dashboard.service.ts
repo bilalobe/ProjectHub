@@ -8,9 +8,9 @@ import { RecentActivityDTO } from '../../models/recent-activity.dto';
   providedIn: 'root'
 })
 export class DashboardService {
-  private apiUrl = 'http://localhost:8080/api/dashboard';
+  private readonly apiUrl = 'http://localhost:8080/api/dashboard';
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   getTotalUsers(): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/total-users`);
