@@ -4,7 +4,35 @@
 [versions]
 guava = "33.0.0-jre"
 junit-jupiter = "5.10.2"
+spring-boot = "3.4.0"
+spring-dependency = "1.1.6"
+spring-cloud = "2023.0.0"
+javafx = "23.0.1"
+gluon = "1.0.24"
+sonar = "6.0.1.5171"
+lombok = "1.18.36"
+jwt = "0.12.6"
+modelmapper = "3.2.2"
+opencsv = "5.9"
+owasp = "1.3.1"
+mapstruct = "1.6.3"
+junit = "5.11.3"
+hikari = "5.0.1"
+postgresql = "42.6.0"
+springdoc = "1.8.0"
+slf4j = "2.0.16"
 
 [libraries]
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+# Spring Framework
+spring-boot-starter = { group = "org.springframework.boot", name = "spring-boot-starter" }
+spring-boot-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" }
+spring-boot-data-jpa = { group = "org.springframework.boot", name = "spring-boot-starter-data-jpa" }
+spring-boot-security = { group = "org.springframework.boot", name = "spring-boot-starter-security" }
+spring-boot-web = { group = "org.springframework.boot", name = "spring-boot-starter-web" }
+spring-boot-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" }
+
+# Gluon
+gluon-charm = { group = "com.gluonhq", name = "charm-glisten", version = "6.2.3" }
+gluon-afterburner = { group = "com.gluonhq", name = "glisten-afterburner", version = "2.1.0" }
