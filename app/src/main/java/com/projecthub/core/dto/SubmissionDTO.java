@@ -1,5 +1,7 @@
 package com.projecthub.core.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -33,11 +35,21 @@ public class SubmissionDTO {
     @NotNull(message = "Timestamp cannot be null")
     private LocalDateTime timestamp;
 
+    @Min(value = 0, message = "Grade must be at least 0")
+    @Max(value = 100, message = "Grade must be at most 100")
     private Integer grade;
+
+    @NotBlank(message = "Status is mandatory")
+    private String status;
+
+    @NotNull(message = "SubmittedAt cannot be null")
+    private LocalDateTime submittedAt;
 
     private String projectName;
 
     private String studentFirstName;
 
     private String studentLastName;
+
+
 }
