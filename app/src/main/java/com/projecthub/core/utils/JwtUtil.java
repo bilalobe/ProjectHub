@@ -1,5 +1,14 @@
-package com.projecthub.utils;
+package com.projecthub.core.utils;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -7,20 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import javax.crypto.SecretKey;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-
 /**
  * Utility class for handling JSON Web Tokens (JWT).
  */
 @Component
 public class JwtUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
     /**
      * Secret key for signing JWTs.
@@ -58,7 +60,7 @@ public class JwtUtil {
     /**
      * Generates a JWT token with claims and subject.
      *
-     * @param claims the claims to include in the token.
+     * @param claims  the claims to include in the token.
      * @param subject the subject (username) of the token.
      * @return the generated JWT token.
      */
@@ -96,8 +98,8 @@ public class JwtUtil {
     /**
      * Retrieves a specific claim from a JWT token.
      *
-     * @param <T> the type of the claim.
-     * @param token the JWT token.
+     * @param <T>            the type of the claim.
+     * @param token          the JWT token.
      * @param claimsResolver a function to extract the desired claim.
      * @return the extracted claim.
      */
@@ -122,25 +124,50 @@ public class JwtUtil {
     }
 
     /**
-     * Checks if a JWT token is expired.
-     *
-     * @param token the JWT token.
-     * @return true if the token is expired, false otherwise.
+     * Enhanced token validation with multiple checks.
      */
-    private boolean isTokenExpired(String token) {
-        Date expirationDate = getExpirationDateFromToken(token);
-        return expirationDate.before(new Date());
+    public boolean validateToken(String token) {
+        try {
+            if (token == null || token.isEmpty()) {
+                return false;
+            }
+
+            SecretKey key = (SecretKey) getSigningKey();
+            Claims claims = Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+            // Check if token is expired
+            if (claims.getExpiration().before(new Date())) {
+                logger.debug("Token is expired");
+                return false;
+            }
+
+            // Check if token was issued in the future
+            if (claims.getIssuedAt().after(new Date())) {
+                logger.debug("Token was issued in the future");
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            logger.error("Token validation failed", e);
+            return false;
+        }
     }
 
     /**
-     * Validates a JWT token against a username.
-     *
-     * @param token the JWT token.
-     * @param username the username to validate against.
-     * @return true if the token is valid and matches the username, false otherwise.
+     * Validate token for a specific username.
      */
     public boolean validateToken(String token, String username) {
-        String usernameFromToken = getUsernameFromToken(token);
-        return (usernameFromToken.equals(username) && !isTokenExpired(token));
+        try {
+            String tokenUsername = getUsernameFromToken(token);
+            return (tokenUsername.equals(username) && validateToken(token));
+        } catch (Exception e) {
+            logger.error("Token validation failed for user: " + username, e);
+            return false;
+        }
     }
 }

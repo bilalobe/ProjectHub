@@ -1,12 +1,18 @@
-package com.projecthub.utils;
+package com.projecthub.core.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class IdGeneratorUtil {
 
+    // Private constructor to prevent instantiation
+    private IdGeneratorUtil() {
+        throw new UnsupportedOperationException("Utility class cannot be instantiated");
+    }
+
     /**
      * Generates a unique ID based on input data.
+     *
      * @param data The input string to generate ID from
      * @return A numeric ID derived from the hash of the input
      */
@@ -22,9 +28,9 @@ public class IdGeneratorUtil {
             String idString = hexString.substring(0, Math.min(7, hexString.length()));
             return Integer.parseInt(idString, 16);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-256 algorithm not available.", e);
+            throw new IdGenerationException("SHA-256 algorithm not available.", e);
         } catch (NumberFormatException e) {
-            throw new RuntimeException("Failed to parse hash to integer.", e);
+            throw new IdGenerationException("Failed to parse hash to integer.", e);
         }
     }
 
@@ -39,5 +45,12 @@ public class IdGeneratorUtil {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    // Custom exception for ID generation errors
+    public static class IdGenerationException extends RuntimeException {
+        public IdGenerationException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }
