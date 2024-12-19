@@ -1,10 +1,11 @@
-package com.projecthub.core.services;
+package com.projecthub.core.services.school;
 
 import com.projecthub.core.dto.SchoolDTO;
+import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.mappers.SchoolMapper;
 import com.projecthub.core.models.School;
 import com.projecthub.core.repositories.jpa.SchoolJpaRepository;
-import com.projecthub.exception.ResourceNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -100,7 +101,7 @@ public class SchoolService {
      */
     public List<SchoolDTO> getAllSchools() {
         logger.info("Retrieving all schools");
-        List<School> schools = (List<School>) schoolRepository.findAll();
+        List<School> schools = schoolRepository.findAll();
         return schools.stream()
                 .map(schoolMapper::toSchoolDTO)
                 .toList();

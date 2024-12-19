@@ -1,12 +1,13 @@
-package com.projecthub.core.services;
+package com.projecthub.core.services.school;
 
 import com.projecthub.core.dto.CohortDTO;
+import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.mappers.CohortMapper;
 import com.projecthub.core.models.Cohort;
 import com.projecthub.core.models.School;
 import com.projecthub.core.repositories.jpa.CohortJpaRepository;
 import com.projecthub.core.repositories.jpa.SchoolJpaRepository;
-import com.projecthub.exception.ResourceNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
