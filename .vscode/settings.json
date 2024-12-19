@@ -14,5 +14,9 @@
     "java.project.sourcePaths": [
         "app/src/main/java",
         "plugins/projecthub-csv-plugin/app/src/main/java"
-    ]
+    ],
+    "sonarlint.connectedMode.project": {
+        "connectionId": "bilalobe",
+        "projectKey": "bilalobe_ProjectHub"
+    }
 }
