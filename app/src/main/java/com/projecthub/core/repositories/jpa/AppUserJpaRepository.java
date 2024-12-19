@@ -29,4 +29,8 @@ public interface AppUserJpaRepository extends JpaRepository<AppUser, UUID> {
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
+
+    Optional<AppUser> findByResetToken(String token);
+
+    Optional<AppUser> findByEmail(String email);
 }
