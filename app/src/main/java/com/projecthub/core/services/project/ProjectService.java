@@ -1,10 +1,11 @@
-package com.projecthub.core.services;
+package com.projecthub.core.services.project;
 
 import com.projecthub.core.dto.ProjectDTO;
+import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.mappers.ProjectMapper;
 import com.projecthub.core.models.Project;
 import com.projecthub.core.repositories.jpa.ProjectJpaRepository;
-import com.projecthub.exception.ResourceNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,13 +21,16 @@ import java.util.UUID;
 public class ProjectService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectService.class);
+    private static final String PROJECT_NOT_FOUND_ERROR = "Project not found with ID: ";
 
     private final ProjectJpaRepository projectRepository;
     private final ProjectMapper projectMapper;
+    private final ProjectService self;
 
-    public ProjectService(ProjectJpaRepository projectRepository, ProjectMapper projectMapper) {
+    public ProjectService(ProjectJpaRepository projectRepository, ProjectMapper projectMapper, ProjectService self) {
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
+        this.self = self;
     }
 
     /**
@@ -60,7 +64,7 @@ public class ProjectService {
     public ProjectDTO updateProject(UUID id, ProjectDTO projectDTO) {
         logger.info("Updating project with ID {}", id);
         Project existingProject = projectRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_ERROR + id));
         projectMapper.updateProjectFromDTO(projectDTO, existingProject);
         Project updatedProject = projectRepository.save(existingProject);
         logger.info("Project updated with ID {}", updatedProject.getId());
@@ -77,7 +81,7 @@ public class ProjectService {
     public void deleteProject(UUID id) {
         logger.info("Deleting project with ID {}", id);
         if (!projectRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Project not found with ID: " + id);
+            throw new ResourceNotFoundException(PROJECT_NOT_FOUND_ERROR + id);
         }
         projectRepository.deleteById(id);
         logger.info("Project deleted with ID {}", id);
@@ -93,7 +97,7 @@ public class ProjectService {
     public ProjectDTO getProjectById(UUID id) {
         logger.info("Retrieving project with ID {}", id);
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_ERROR + id));
         return projectMapper.toProjectDTO(project);
     }
 
@@ -118,14 +122,13 @@ public class ProjectService {
      */
     @Transactional
     public ProjectDTO saveProject(ProjectDTO projectDTO) {
-        logger.info("Saving project");
         if (projectDTO == null) {
             throw new IllegalArgumentException("ProjectDTO cannot be null");
         }
         if (projectDTO.getId() != null) {
-            return updateProject(projectDTO.getId(), projectDTO);
+            return self.updateProject(projectDTO.getId(), projectDTO);
         } else {
-            return createProject(projectDTO);
+            return self.createProject(projectDTO);
         }
     }
 }

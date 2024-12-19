@@ -1,10 +1,11 @@
-package com.projecthub.core.services;
+package com.projecthub.core.services.project;
 
 import com.projecthub.core.dto.ComponentDTO;
+import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.mappers.ComponentMapper;
 import com.projecthub.core.models.Component;
 import com.projecthub.core.repositories.jpa.ComponentJpaRepository;
-import com.projecthub.exception.ResourceNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
