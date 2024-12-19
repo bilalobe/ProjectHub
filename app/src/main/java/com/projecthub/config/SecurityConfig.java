@@ -84,7 +84,7 @@ public class SecurityConfig
     {
         http
                 .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRepository(new CookieCsrfTokenRepository())
                 )
                 .headers(headers -> headers
                         .contentSecurityPolicy(policy -> policy
