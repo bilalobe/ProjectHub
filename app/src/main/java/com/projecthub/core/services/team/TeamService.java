@@ -1,8 +1,9 @@
-package com.projecthub.core.services;
+package com.projecthub.core.services.team;
 
 import com.projecthub.core.dto.AppUserDTO;
 import com.projecthub.core.dto.ProjectDTO;
 import com.projecthub.core.dto.TeamDTO;
+import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.mappers.AppUserMapper;
 import com.projecthub.core.mappers.ProjectMapper;
 import com.projecthub.core.mappers.TeamMapper;
@@ -12,7 +13,7 @@ import com.projecthub.core.models.Team;
 import com.projecthub.core.repositories.jpa.AppUserJpaRepository;
 import com.projecthub.core.repositories.jpa.ProjectJpaRepository;
 import com.projecthub.core.repositories.jpa.TeamJpaRepository;
-import com.projecthub.exception.ResourceNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
