@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" styleClass="task-management-container"
+            xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.projecthub.ui.controllers.TaskManagementController">
+
+    <top>
+        <VBox styleClass="header-section">
+            <HBox alignment="CENTER_LEFT" spacing="15" styleClass="task-header">
+                <Button fx:id="backButton" accessibleText="%accessibility.backToTasks" styleClass="button-flat"
+                        text="%task.backButton">
+                    <tooltip>
+                        <Tooltip text="%tooltip.backToTaskList"/>
+                    </tooltip>
+                </Button>
+
+                <Label accessibleText="%accessibility.taskTitle" styleClass="heading-large, text-strong"
+                       text="%task.title"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <ComboBox fx:id="projectSelector" accessibleText="%accessibility.projectSelector"
+                          promptText="%task.selectProject" styleClass="input, project-select"/>
+            </HBox>
+            <Separator/>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="task-scroll">
+            <VBox prefWidth="378.0" spacing="20" styleClass="task-content">
+                <padding>
+                    <Insets bottom="20" left="20" right="20" top="20"/>
+                </padding>
+
+                <GridPane hgap="10" styleClass="task-form, card-item" vgap="10">
+                    <padding>
+                        <Insets/>
+                    </padding>
+
+                    <!-- Task Name -->
+                    <Label accessibleText="%accessibility.taskName" styleClass="text-muted" text="%task.name"
+                           GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField fx:id="taskNameField" promptText="%task.namePlaceholder" styleClass="input, task-name"
+                               GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <Label fx:id="taskNameError" styleClass="error-text" visible="false" GridPane.columnIndex="1"
+                           GridPane.rowIndex="1"/>
+
+                    <!-- Task Description -->
+                    <Label accessibleText="%accessibility.taskDescription" styleClass="text-muted"
+                           text="%task.description" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <TextArea fx:id="taskDescriptionArea" promptText="%task.descriptionPlaceholder"
+                              styleClass="input, task-description" wrapText="true" GridPane.columnIndex="1"
+                              GridPane.rowIndex="2"/>
+
+                    <!-- Task Status -->
+                    <Label accessibleText="%accessibility.taskStatus" styleClass="text-muted" text="%task.status"
+                           GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <ComboBox fx:id="taskStatusCombo" styleClass="input, task-status" GridPane.columnIndex="1"
+                              GridPane.rowIndex="3"/>
+
+                    <!-- Task Assignee -->
+                    <Label accessibleText="%accessibility.taskAssignee" styleClass="text-muted" text="%task.assignee"
+                           GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <ComboBox fx:id="assigneeCombo" styleClass="input, task-assignee" GridPane.columnIndex="1"
+                              GridPane.rowIndex="4"/>
+
+                    <!-- Task Deadline -->
+                    <Label accessibleText="%accessibility.taskDeadline" styleClass="text-muted" text="%task.deadline"
+                           GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                    <DatePicker fx:id="deadlinePicker" promptText="%task.deadlinePlaceholder"
+                                styleClass="input, task-deadline" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="100"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                    </rowConstraints>
+                </GridPane>
+
+                <!-- Action Buttons -->
+                <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="action-container">
+                    <Button fx:id="saveButton" accessibleText="%accessibility.saveTask" disable="${controller.saving}"
+                            styleClass="button-primary" text="%action.save">
+                        <tooltip>
+                            <Tooltip text="%tooltip.saveTask"/>
+                        </tooltip>
+                    </Button>
+
+                    <Button fx:id="deleteButton" accessibleText="%accessibility.deleteTask"
+                            disable="${!controller.canDelete}" styleClass="button-danger" text="%action.delete">
+                        <tooltip>
+                            <Tooltip text="%tooltip.deleteTask"/>
+                        </tooltip>
+                    </Button>
+                </HBox>
+
+                <!-- Subtasks Table -->
+                <VBox spacing="10" styleClass="subtasks-container, card-item">
+                    <HBox alignment="CENTER_LEFT" styleClass="component-header">
+                        <Label accessibleText="%accessibility.subtasksList" styleClass="section-header, heading-medium"
+                               text="%task.subtasks"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="addSubtaskButton" disable="${!controller.canAddSubtask}" styleClass="button-flat"
+                                text="%task.addSubtask">
+                            <tooltip>
+                                <Tooltip text="%tooltip.addSubtask"/>
+                            </tooltip>
+                        </Button>
+                    </HBox>
+
+                    <TableView fx:id="subtasksTable" prefHeight="133.0" prefWidth="348.0" styleClass="subtasks-table"
+                               VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="subtaskNameColumn" text="%subtask.name"/>
+                            <TableColumn fx:id="subtaskStatusColumn" text="%subtask.status"/>
+                            <TableColumn fx:id="subtaskAssigneeColumn" text="%subtask.assignee"/>
+                            <TableColumn fx:id="subtaskDeadlineColumn" text="%subtask.deadline"/>
+                            <TableColumn fx:id="subtaskActionsColumn" text="%subtask.actions"/>
+                        </columns>
+                        <placeholder>
+                            <Label styleClass="text-muted" text="%subtask.empty"/>
+                        </placeholder>
+                    </TableView>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" styleClass="status-bar">
+            <padding>
+                <Insets bottom="5" left="10" right="10" top="5"/>
+            </padding>
+            <Label fx:id="statusLabel" styleClass="status-message" text="%status.ready"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lastUpdatedLabel" styleClass="text-muted, text-small"/>
+        </HBox>
+    </bottom>
+
+    <stylesheets>
+        <URL value="@../css/styles.css"/>
+        <URL value="@../css/task.css"/>
+    </stylesheets>
+</BorderPane>

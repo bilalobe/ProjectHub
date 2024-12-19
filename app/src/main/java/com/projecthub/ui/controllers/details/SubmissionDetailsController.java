@@ -1,21 +1,15 @@
 package com.projecthub.ui.controllers.details;
 
-import org.springframework.stereotype.Component;
-
-import com.projecthub.dto.SubmissionDTO;
+import com.projecthub.core.dto.SubmissionDTO;
+import com.projecthub.core.mapper.SubmissionMapper;
 import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.SubmissionDetailsViewModel;
-import com.projecthub.mapper.SubmissionMapper;
-
-import java.util.UUID;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 /**
  * Controller for handling submission details.

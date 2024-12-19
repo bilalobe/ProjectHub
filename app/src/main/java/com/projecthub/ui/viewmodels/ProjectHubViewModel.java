@@ -1,20 +1,19 @@
 package com.projecthub.ui.viewmodels;
 
-import com.projecthub.dto.CohortDTO;
-import com.projecthub.dto.ComponentDTO;
-import com.projecthub.dto.ProjectDTO;
-import com.projecthub.dto.TeamDTO;
-import com.projecthub.service.CohortService;
-import com.projecthub.service.ComponentService;
-import com.projecthub.service.ProjectService;
-import com.projecthub.service.TeamService;
-import com.projecthub.util.ui.TreeItemWrapper;
-
+import com.projecthub.core.dto.CohortDTO;
+import com.projecthub.core.dto.ComponentDTO;
+import com.projecthub.core.dto.ProjectDTO;
+import com.projecthub.core.dto.TeamDTO;
+import com.projecthub.core.services.project.ComponentService;
+import com.projecthub.core.services.project.ProjectService;
+import com.projecthub.core.services.school.CohortService;
+import com.projecthub.core.services.team.TeamService;
+import com.projecthub.ui.utils.TreeItemWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.beans.value.ObservableValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.StatusBar?>
+<?import com.gluonhq.charm.glisten.control.FloatingActionButton?>
+<?import com.gluonhq.charm.glisten.visual.MaterialDesignIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            fx:controller="com.projecthub.ui.controllers.UserDetailsController">
+
+    <top>
+        <ToolBar>
+            <Button fx:id="backButton" styleClass="icon-button">
+                <tooltip>
+                    <Tooltip text="%tooltip.goBack"/>
+                </tooltip>
+                <!-- Icon will be set programmatically -->
+            </Button>
+            <Label text="%userDetails.title" styleClass="toolbar-title"/>
+        </ToolBar>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.3" styleClass="split-pane-material">
+            <!-- Left Panel -->
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane-material">
+                <VBox spacing="16" styleClass="form-container">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
+
+                    <TextField fx:id="nameField"
+                               promptText="%user.name"
+                               styleClass="material-input"/>
+
+                    <TextField fx:id="emailField"
+                               promptText="%user.email"
+                               styleClass="material-input"/>
+
+                    <ListView fx:id="rolesList"
+                              styleClass="roles-list"/>
+                </VBox>
+            </ScrollPane>
+
+            <!-- Right Panel -->
+            <VBox spacing="16" styleClass="content-panel">
+                <padding>
+                    <Insets top="16" right="16" bottom="16" left="16"/>
+                </padding>
+
+                <!-- Action Buttons -->
+                <HBox alignment="CENTER_RIGHT" spacing="10">
+                    <FloatingActionButton fx:id="saveButton"
+                                          styleClass="fab-primary">
+                        <tooltip>
+                            <Tooltip text="%action.save"/>
+                        </tooltip>
+                        <!-- Icon will be set programmatically -->
+                    </FloatingActionButton>
+
+                    <FloatingActionButton fx:id="deleteButton"
+                                          styleClass="fab-danger">
+                        <tooltip>
+                            <Tooltip text="%action.delete"/>
+                        </tooltip>
+                        <!-- Icon will be set programmatically -->
+                    </FloatingActionButton>
+
+                    <FloatingActionButton fx:id="clearButton"
+                                          styleClass="fab-secondary">
+                        <tooltip>
+                            <Tooltip text="%action.clear"/>
+                        </tooltip>
+                        <!-- Icon will be set programmatically -->
+                    </FloatingActionButton>
+                </HBox>
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <bottom>
+        <StatusBar styleClass="status-bar-material">
+            <left>
+                <Label fx:id="statusLabel"
+                       styleClass="status-text"
+                       text="%status.ready"/>
+            </left>
+            <right>
+                <Label fx:id="userCountLabel"
+                       styleClass="status-count"/>
+            </right>
+        </StatusBar>
+    </bottom>
+
+    <stylesheets>
+        <URL value="@../css/styles.css"/>
+        <URL value="@../css/material.css"/>
+    </stylesheets>
+
+</BorderPane>

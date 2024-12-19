@@ -1,31 +1,36 @@
 package com.projecthub.ui.controllers.main;
 
-import org.springframework.stereotype.Component;
-
+import com.projecthub.ui.utils.LoaderFactory;
+import com.projecthub.ui.utils.TreeCellFactory;
+import com.projecthub.ui.utils.TreeItemWrapper;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
-import com.projecthub.util.ui.LoaderFactory;
-import com.projecthub.util.ui.TreeCellFactory;
-import com.projecthub.util.ui.TreeItemWrapper;
-
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
-import javafx.event.EventHandler;
 import javafx.scene.control.TreeItem.TreeModificationEvent;
+import javafx.scene.control.TreeView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ProjectHubFXController {
 
-    private ProjectHubViewModel viewModel;
-    private LoaderFactory loaderFactory;
+    private final ProjectHubViewModel viewModel;
+    private final LoaderFactory loaderFactory;
 
     @FXML
     private TreeView<TreeItemWrapper> schoolTreeView;
 
     @FXML
     private TextField searchField;
+
+    @Autowired
+    public ProjectHubFXController(ProjectHubViewModel viewModel, LoaderFactory loaderFactory) {
+        this.viewModel = viewModel;
+        this.loaderFactory = loaderFactory;
+    }
 
     @FXML
     public void initialize() {

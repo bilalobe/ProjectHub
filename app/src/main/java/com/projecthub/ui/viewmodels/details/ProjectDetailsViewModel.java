@@ -1,11 +1,14 @@
 package com.projecthub.ui.viewmodels.details;
 
-import com.projecthub.dto.ComponentDTO;
-import com.projecthub.dto.ProjectDTO;
-import com.projecthub.service.ComponentService;
-import com.projecthub.service.ProjectService;
-import com.projecthub.service.TeamService;
-import javafx.beans.property.*;
+import com.projecthub.core.dto.ComponentDTO;
+import com.projecthub.core.dto.ProjectDTO;
+import com.projecthub.core.services.project.ComponentService;
+import com.projecthub.core.services.project.ProjectService;
+import com.projecthub.core.services.team.TeamService;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;

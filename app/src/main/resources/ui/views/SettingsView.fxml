@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import java.net.URL?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            styleClass="settings-container"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            fx:controller="com.projecthub.ui.controllers.SettingsViewController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" styleClass="header-container">
+            <padding>
+                <Insets bottom="16" left="24" right="24" top="24"/>
+            </padding>
+            <Label text="%settings.title" styleClass="title-label">
+                <font>
+                    <Font name="System Bold" size="28"/>
+                </font>
+            </Label>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="settings-scroll">
+            <VBox spacing="32">
+                <padding>
+                    <Insets bottom="24" left="24" right="24" top="8"/>
+                </padding>
+
+                <!-- Theme Section -->
+                <VBox spacing="16" styleClass="settings-section">
+                    <Label text="%settings.theme" styleClass="section-header"/>
+                    <ComboBox fx:id="themeComboBox"
+                              maxWidth="300"
+                              promptText="Select Theme"
+                              styleClass="combo-box-material"/>
+                    <Separator/>
+                </VBox>
+
+                <!-- Language Section -->
+                <VBox spacing="16" styleClass="settings-section">
+                    <Label text="%settings.language" styleClass="section-header"/>
+                    <ComboBox fx:id="languageComboBox"
+                              maxWidth="300"
+                              promptText="Select Language"
+                              styleClass="combo-box-material"/>
+                    <Separator/>
+                </VBox>
+
+                <!-- Notifications Section -->
+                <VBox spacing="16" styleClass="settings-section">
+                    <Label text="%settings.notifications" styleClass="section-header"/>
+                    <VBox spacing="12">
+                        <CheckBox fx:id="emailNotificationsCheckBox"
+                                  text="%settings.emailNotifications"
+                                  styleClass="check-box-material"/>
+                        <CheckBox fx:id="pushNotificationsCheckBox"
+                                  text="%settings.pushNotifications"
+                                  styleClass="check-box-material"/>
+                    </VBox>
+                    <Separator/>
+                </VBox>
+
+                <!-- Account Section -->
+                <VBox spacing="16" styleClass="settings-section">
+                    <Label text="%settings.account" styleClass="section-header"/>
+                    <HBox spacing="16">
+                        <Button fx:id="changePasswordButton"
+                                text="%settings.changePassword"
+                                styleClass="button-outlined"/>
+                        <Button fx:id="logoutButton"
+                                text="%settings.logout"
+                                styleClass="button-text"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT"
+              spacing="16"
+              styleClass="actions-container">
+            <padding>
+                <Insets bottom="24" left="24" right="24" top="16"/>
+            </padding>
+            <Button fx:id="cancelButton"
+                    text="%settings.cancel"
+                    styleClass="button-text"/>
+            <Button fx:id="saveButton"
+                    text="%settings.save"
+                    defaultButton="true"
+                    styleClass="button-contained"/>
+        </HBox>
+    </bottom>
+
+    <stylesheets>
+        <URL value="@../css/styles.css"/>
+        <URL value="@../css/material.css"/>
+    </stylesheets>
+</BorderPane>

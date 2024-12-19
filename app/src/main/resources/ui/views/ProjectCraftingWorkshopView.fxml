@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.*?>
+<?import com.gluonhq.charm.glisten.mvc.View?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<View xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/23.0.1"
+      fx:controller="com.projecthub.ui.controllers.WorkshopController"
+      styleClass="workshop-view">
+
+    <top>
+        <AppBar titleText="%workshop.title">
+            <AppBar.navIcon>
+                <MaterialDesignIconButton fx:id="backButton"
+                                          text="ARROW_BACK"
+                                          styleClass="nav-button">
+                    <tooltip>
+                        <Tooltip text="%tooltip.backButton"/>
+                    </tooltip>
+                </MaterialDesignIconButton>
+            </AppBar.navIcon>
+
+            <AppBar.actionItems>
+                <MaterialDesignIconButton fx:id="saveButton"
+                                          text="CONTENT_SAVE"
+                                          styleClass="action-button">
+                    <tooltip>
+                        <Tooltip text="%tooltip.saveWork"/>
+                    </tooltip>
+                </MaterialDesignIconButton>
+                <MaterialDesignIconButton fx:id="undoButton"
+                                          text="UNDO"
+                                          styleClass="action-button">
+                    <tooltip>
+                        <Tooltip text="%tooltip.undoAction"/>
+                    </tooltip>
+                </MaterialDesignIconButton>
+                <MaterialDesignIconButton fx:id="redoButton"
+                                          text="REDO"
+                                          styleClass="action-button">
+                    <tooltip>
+                        <Tooltip text="%tooltip.redoAction"/>
+                    </tooltip>
+                </MaterialDesignIconButton>
+            </AppBar.actionItems>
+        </AppBar>
+    </top>
+
+    <left>
+        <DrawerPopupView styleClass="left-drawer">
+            <header>
+                <Label text="%workshop.drawer.left.title"
+                       styleClass="drawer-header"/>
+            </header>
+            <content>
+                <TabPane>
+                    <tabs>
+                        <Tab text="%workshop.resources">
+                            <VBox spacing="10">
+                                <SearchBox fx:id="resourceSearch"
+                                           promptText="%workshop.searchResources"/>
+                                <CharmListView fx:id="resourceList"
+                                               VBox.vgrow="ALWAYS"/>
+                            </VBox>
+                        </Tab>
+                        <Tab text="%workshop.layers">
+                            <VBox spacing="10">
+                                <CharmListView fx:id="layerList"
+                                               VBox.vgrow="ALWAYS"/>
+                                <MaterialDesignIconButton fx:id="addLayerButton"
+                                                          text="ADD"
+                                                          styleClass="add-button">
+                                    <tooltip>
+                                        <Tooltip text="%tooltip.addLayer"/>
+                                    </tooltip>
+                                </MaterialDesignIconButton>
+                            </VBox>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </content>
+        </DrawerPopupView>
+    </left>
+
+    <center>
+        <StackPane styleClass="workspace-container">
+            <Canvas fx:id="workspaceCanvas" styleClass="workspace-canvas"/>
+            <Canvas fx:id="guideCanvas"
+                    styleClass="guide-canvas"
+                    mouseTransparent="true"/>
+            <BottomNavigation>
+                <BottomNavigationButton fx:id="zoomInButton"
+                                        text="ADD">
+                    <tooltip>
+                        <Tooltip text="%tooltip.zoomIn"/>
+                    </tooltip>
+                </BottomNavigationButton>
+                <ComboBox fx:id="zoomLevel"
+                          styleClass="zoom-combo"/>
+                <BottomNavigationButton fx:id="zoomOutButton"
+                                        text="REMOVE">
+                    <tooltip>
+                        <Tooltip text="%tooltip.zoomOut"/>
+                    </tooltip>
+                </BottomNavigationButton>
+            </BottomNavigation>
+        </StackPane>
+    </center>
+
+    <right>
+        <DrawerPopupView styleClass="right-drawer">
+            <content>
+                <TabPane>
+                    <Tab text="%workshop.properties">
+                        <ScrollPane>
+                            <Accordion>
+                                <TitledPane text="%property.position">
+                                    <content>
+                                        <Form>
+                                            <IntegerSpinner fx:id="positionX"/>
+                                            <IntegerSpinner fx:id="positionY"/>
+                                        </Form>
+                                    </content>
+                                </TitledPane>
+                                <TitledPane text="%property.size">
+                                    <content>
+                                        <Form>
+                                            <IntegerSpinner fx:id="sizeWidth"/>
+                                            <IntegerSpinner fx:id="sizeHeight"/>
+                                            <ToggleSwitch fx:id="lockAspectRatio"
+                                                          text="%property.lockRatio"/>
+                                        </Form>
+                                    </content>
+                                </TitledPane>
+                            </Accordion>
+                        </ScrollPane>
+                    </Tab>
+                </TabPane>
+            </content>
+        </DrawerPopupView>
+    </right>
+
+    <bottom>
+        <StatusBar>
+            <Label fx:id="statusLabel" text="%status.ready"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="coordinatesLabel"/>
+            <Label fx:id="zoomLabel"/>
+        </StatusBar>
+    </bottom>
+
+    <stylesheets>
+        <URL value="@../css/styles.css"/>
+        <URL value="@../css/workshop.css"/>
+        <URL value="@../css/material.css"/>
+    </stylesheets>
+
+</View>

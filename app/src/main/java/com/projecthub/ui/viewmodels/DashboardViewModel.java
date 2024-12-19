@@ -1,15 +1,14 @@
 package com.projecthub.ui.viewmodels;
 
-import com.projecthub.service.DashboardService;
-import javafx.beans.property.SimpleIntegerProperty;
+import com.projecthub.core.services.dashboard.DashboardService;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.PieChart;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public class DashboardViewModel {
@@ -53,15 +52,15 @@ public class DashboardViewModel {
         totalTeams.set(dashboardService.getTotalTeams());
 
         projectStatusDistribution.setAll(
-            dashboardService.getProjectStatusDistribution().stream()
-                .map(dto -> new PieChart.Data(dto.getStatus(), dto.getCount()))
-                .collect(Collectors.toList())
+                dashboardService.getProjectStatusDistribution().stream()
+                        .map(dto -> new PieChart.Data(dto.getStatus(), dto.getCount()))
+                        .collect(Collectors.toList())
         );
 
         recentActivities.setAll(
-            dashboardService.getRecentActivities().stream()
-                .map(dto -> new RecentActivity(dto.getTimestamp(), dto.getActivity(), dto.getUser()))
-                .collect(Collectors.toList())
+                dashboardService.getRecentActivities().stream()
+                        .map(dto -> new RecentActivity(dto.getTimestamp(), dto.getActivity(), dto.getUser()))
+                        .collect(Collectors.toList())
         );
     }
 

@@ -1,23 +1,17 @@
 package com.projecthub.ui.controllers.details;
 
-import com.projecthub.dto.ComponentDTO;
+import com.projecthub.core.dto.ComponentDTO;
 import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.ComponentDetailsViewModel;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-
-import java.util.UUID;
-
-import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component
 public class ComponentDetailsController extends BaseController {
@@ -86,9 +80,15 @@ public class ComponentDetailsController extends BaseController {
 
             componentViewModel.saveComponent(componentSummary);
             showAlert("Success", "Component saved successfully.");
+        } catch (ValidationException ve) {
+            logger.warn("Validation failed for component", ve);
+            showAlert("Validation Error", ve.getMessage());
+        } catch (DatabaseException de) {
+            logger.error("Database error while saving component", de);
+            showAlert("Database Error", "Unable to save component. Please try again later.");
         } catch (Exception e) {
-            logger.error("Failed to save component", e);
-            showAlert("Error", "Failed to save component.");
+            logger.error("Unexpected error while saving component", e);
+            showAlert("Error", "An unexpected error occurred. Please contact support.");
         }
     }
 

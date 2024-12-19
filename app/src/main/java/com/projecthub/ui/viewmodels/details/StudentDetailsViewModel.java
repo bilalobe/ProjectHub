@@ -1,10 +1,10 @@
 package com.projecthub.ui.viewmodels.details;
 
-import com.projecthub.dto.SubmissionDTO;
-import com.projecthub.mapper.SubmissionMapper;
-import com.projecthub.model.Student;
-import com.projecthub.model.Submission;
-import com.projecthub.service.SubmissionService;
+import com.projecthub.core.dto.SubmissionDTO;
+import com.projecthub.core.mappers.SubmissionMapper;
+import com.projecthub.core.models.Student;
+import com.projecthub.core.models.Submission;
+import com.projecthub.core.services.student.SubmissionService;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;

@@ -1,25 +1,18 @@
 package com.projecthub.ui.controllers.details;
 
-import java.util.UUID;
-
-import org.springframework.stereotype.Component;
-
-import com.projecthub.dto.AppUserDTO;
-import com.projecthub.dto.ProjectDTO;
-import com.projecthub.dto.TeamDTO;
+import com.projecthub.core.dto.AppUserDTO;
+import com.projecthub.core.dto.ProjectDTO;
+import com.projecthub.core.dto.TeamDTO;
+import com.projecthub.core.utils.UUIDStringConverter;
 import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.TeamDetailsViewModel;
-import com.projecthub.util.UUIDStringConverter;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 /**
  * Controller for handling team details UI interactions.

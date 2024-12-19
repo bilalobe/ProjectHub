@@ -1,29 +1,19 @@
 package com.projecthub.ui.controllers.details;
 
-import java.time.LocalDate;
-
-import org.springframework.stereotype.Component;
-
-import com.projecthub.dto.TaskDTO;
+import com.projecthub.core.dto.TaskDTO;
+import com.projecthub.core.utils.UUIDStringConverter;
 import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.TaskDetailsViewModel;
-import com.projecthub.util.UUIDStringConverter;
-
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 /**
@@ -109,10 +99,10 @@ public class TaskDetailsController extends BaseController {
 
         // Disable clear button when all fields are empty
         clearButton.disableProperty().bind(
-            taskNameField.textProperty().isEmpty()
-                .and(taskDescriptionField.textProperty().isEmpty())
-                .and(taskStatusField.valueProperty().isNull())
-                .and(taskDueDatePicker.valueProperty().isNull())
+                taskNameField.textProperty().isEmpty()
+                        .and(taskDescriptionField.textProperty().isEmpty())
+                        .and(taskStatusField.valueProperty().isNull())
+                        .and(taskDueDatePicker.valueProperty().isNull())
         );
     }
 

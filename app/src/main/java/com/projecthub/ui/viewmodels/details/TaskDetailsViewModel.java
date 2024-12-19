@@ -1,7 +1,7 @@
 package com.projecthub.ui.viewmodels.details;
 
-import com.projecthub.dto.TaskDTO;
-import com.projecthub.service.TaskService;
+import com.projecthub.core.dto.TaskDTO;
+import com.projecthub.core.services.project.TaskService;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;

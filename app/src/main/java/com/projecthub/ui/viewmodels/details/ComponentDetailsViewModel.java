@@ -1,11 +1,14 @@
 package com.projecthub.ui.viewmodels.details;
 
-import com.projecthub.dto.ComponentDTO;
-import com.projecthub.service.ComponentService;
-import javafx.beans.property.*;
-import org.springframework.stereotype.Component;
+import com.projecthub.core.dto.ComponentDTO;
+import com.projecthub.core.services.project.ComponentService;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 

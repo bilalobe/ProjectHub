@@ -1,8 +1,8 @@
 package com.projecthub.ui.viewmodels.details;
 
-import com.projecthub.dto.SubmissionDTO;
-import com.projecthub.service.StudentService;
-import com.projecthub.service.SubmissionService;
+import com.projecthub.core.dto.SubmissionDTO;
+import com.projecthub.core.services.student.StudentService;
+import com.projecthub.core.services.student.SubmissionService;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;

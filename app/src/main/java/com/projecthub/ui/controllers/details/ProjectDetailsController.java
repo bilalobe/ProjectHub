@@ -1,18 +1,17 @@
 package com.projecthub.ui.controllers.details;
 
-import com.projecthub.dto.ComponentDTO;
-import com.projecthub.dto.ProjectDTO;
+import com.projecthub.core.dto.ComponentDTO;
+import com.projecthub.core.dto.ProjectDTO;
 import com.projecthub.ui.viewmodels.details.ProjectDetailsViewModel;
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.layout.GridPane;
-import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 

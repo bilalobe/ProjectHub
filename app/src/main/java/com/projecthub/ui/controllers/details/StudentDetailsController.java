@@ -1,11 +1,10 @@
 package com.projecthub.ui.controllers.details;
 
-import com.projecthub.dto.SubmissionDTO;
-import com.projecthub.model.Student;
-import com.projecthub.model.Submission;
+import com.projecthub.core.dto.SubmissionDTO;
+import com.projecthub.core.models.Student;
+import com.projecthub.core.models.Submission;
 import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.StudentDetailsViewModel;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,10 +14,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-import org.springframework.stereotype.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,26 +1,24 @@
 package com.projecthub.ui.controllers.main;
 
-import org.springframework.stereotype.Component;
-
-import com.projecthub.dto.ProjectDTO;
+import com.projecthub.core.dto.ProjectDTO;
+import com.projecthub.ui.utils.LoaderFactory;
+import com.projecthub.ui.utils.TreeCellFactory;
+import com.projecthub.ui.utils.TreeItemLoader;
+import com.projecthub.ui.utils.TreeItemWrapper;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
-import com.projecthub.util.ui.LoaderFactory;
-import com.projecthub.util.ui.TreeCellFactory;
-import com.projecthub.util.ui.TreeItemLoader;
-import com.projecthub.util.ui.TreeItemWrapper;
-
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import org.springframework.stereotype.Component;
 
 @Component
 public class TreeViewController {
 
-    private ProjectHubViewModel viewModel;
-    private LoaderFactory loaderFactory;
+    private final ProjectHubViewModel viewModel;
+    private final LoaderFactory loaderFactory;
 
     @FXML
     private TreeView<TreeItemWrapper> schoolTreeView;
@@ -30,6 +28,11 @@ public class TreeViewController {
 
     @FXML
     private TextArea projectDescriptionTextArea;
+
+    public TreeViewController(ProjectHubViewModel viewModel, LoaderFactory loaderFactory) {
+        this.viewModel = viewModel;
+        this.loaderFactory = loaderFactory;
+    }
 
     @FXML
     public void initialize() {

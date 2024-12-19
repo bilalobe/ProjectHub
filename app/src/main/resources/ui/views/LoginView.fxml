@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" spacing="20" styleClass="login-container"
+      xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.projecthub.ui.controllers.LoginController">
+    <padding>
+        <Insets bottom="40" left="40" right="40" top="40"/>
+    </padding>
+
+    <!-- Logo/Title Section -->
+    <VBox alignment="CENTER" spacing="10">
+        <Icon content="HELP"/>
+        <ImageView fx:id="logoImage" fitHeight="100" fitWidth="100" preserveRatio="true"/>
+        <Label styleClass="login-title" text="%login.title"/>
+        <Label styleClass="login-subtitle" text="%login.subtitle"/>
+    </VBox>
+
+    <!-- Authentication Methods Tabs -->
+    <TabPane styleClass="auth-tabs">
+        <tabs>
+            <!-- Username/Password Tab -->
+            <Tab text="%login.tab.credentials">
+                <VBox spacing="15">
+                    <TextField fx:id="usernameField" promptText="%login.username.prompt" styleClass="auth-field"/>
+
+                    <HBox spacing="5">
+                        <PasswordField fx:id="passwordField" promptText="%login.password.prompt" styleClass="auth-field"
+                                       HBox.hgrow="ALWAYS"/>
+                        <ToggleButton fx:id="passwordToggle" styleClass="visibility-toggle"/>
+                    </HBox>
+
+                    <CheckBox fx:id="rememberMeCheckbox" text="%login.rememberMe"/>
+                </VBox>
+            </Tab>
+
+            <!-- Passkey Tab -->
+            <Tab text="%login.tab.passkey">
+                <VBox spacing="15" alignment="CENTER">
+                    <Button fx:id="passkeyButton" text="%login.passkey.button" styleClass="passkey-button"/>
+                    <Label text="%login.passkey.info" styleClass="info-text" wrapText="true"/>
+                </VBox>
+            </Tab>
+        </tabs>
+    </TabPane>
+
+    <!-- GitHub OAuth -->
+    <Button fx:id="githubLoginButton" text="%login.github"/>
+
+    <!-- Action Buttons -->
+    <VBox spacing="10">
+        <Button fx:id="loginButton" styleClass="primary-button" text="%login.submit"/>
+
+        <HBox alignment="CENTER" spacing="10">
+            <Hyperlink fx:id="forgotPasswordLink" text="%login.forgotPassword"/>
+            <Hyperlink fx:id="registerLink" text="%login.register"/>
+        </HBox>
+    </VBox>
+
+    <!-- Error Message -->
+    <Label fx:id="errorLabel" styleClass="error-label" visible="false"/>
+
+    <stylesheets>
+        <URL value="@../css/styles.css"/>
+        <URL value="@../css/auth.css"/>
+    </stylesheets>
+</VBox>

@@ -1,14 +1,15 @@
 package com.projecthub.ui.viewmodels.details;
 
-import com.projecthub.dto.CohortDTO;
-import com.projecthub.dto.TeamDTO;
-import com.projecthub.model.School;
-import com.projecthub.service.CohortService;
-import com.projecthub.service.TeamService;
+import com.projecthub.core.dto.CohortDTO;
+import com.projecthub.core.dto.TeamDTO;
+import com.projecthub.core.models.School;
+import com.projecthub.core.services.school.CohortService;
+import com.projecthub.core.services.team.TeamService;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ public class CohortDetailsViewModel {
     private final ObjectProperty<UUID> schoolId = new SimpleObjectProperty<>();
 
     private final ObservableList<TeamDTO> teams = FXCollections.observableArrayList();
+    private final ObservableList<String> schools = FXCollections.observableArrayList();
+    private final StringProperty selectedSchool = new SimpleStringProperty();
 
     private CohortDTO cohort;
 
@@ -68,6 +71,18 @@ public class CohortDetailsViewModel {
         return teams;
     }
 
+    public ObservableList<String> getSchools() {
+        return schools;
+    }
+
+    public StringProperty selectedSchoolProperty() {
+        return selectedSchool;
+    }
+
+    public ObservableValue<ObservableList<String>> schoolsProperty() {
+        return new SimpleObjectProperty<>(schools);
+    }
+
     /**
      * Sets the current cohort and loads related teams.
      *
@@ -93,6 +108,18 @@ public class CohortDetailsViewModel {
             teams.addAll(teamService.getTeamsByCohortId(cohort.getId()));
         } catch (Exception e) {
             logger.error("Failed to load teams for cohort ID: {}", cohortId.get(), e);
+        }
+    }
+
+    private void loadSchools() {
+        schools.clear();
+        try {
+            cohortService.getAllSchools()
+                    .stream()
+                    .map(school -> school.getName())
+                    .forEach(schools::add);
+        } catch (Exception e) {
+            logger.error("Failed to load schools", e);
         }
     }
 

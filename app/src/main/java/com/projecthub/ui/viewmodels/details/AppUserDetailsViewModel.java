@@ -1,17 +1,18 @@
 package com.projecthub.ui.viewmodels.details;
 
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.projecthub.dto.AppUserDTO;
-import com.projecthub.service.AppUserService;
-
+import com.projecthub.core.dto.AppUserDTO;
+import com.projecthub.core.dto.RegisterRequestDTO;
+import com.projecthub.core.dto.UpdateUserRequestDTO;
+import com.projecthub.core.services.AppUserService;
 import jakarta.annotation.PostConstruct;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * ViewModel for managing application user details.
@@ -23,6 +24,13 @@ public class AppUserDetailsViewModel {
 
     private final AppUserService userService;
 
+    /**
+     * -- GETTER --
+     * Gets the list of users.
+     *
+     * @return the observable list of users
+     */
+    @Getter
     private final ObservableList<AppUserDTO> users = FXCollections.observableArrayList();
 
     /**
@@ -37,15 +45,6 @@ public class AppUserDetailsViewModel {
     @PostConstruct
     public void init() {
         loadUsers();
-    }
-
-    /**
-     * Gets the list of users.
-     *
-     * @return the observable list of users
-     */
-    public ObservableList<AppUserDTO> getUsers() {
-        return users;
     }
 
     /**
@@ -72,7 +71,8 @@ public class AppUserDetailsViewModel {
             return;
         }
         try {
-            userService.createUser(user, "default");
+            RegisterRequestDTO registerRequest = new RegisterRequestDTO();
+            userService.createUser(registerRequest);
             users.add(user);
         } catch (Exception e) {
             logger.error("Failed to add user: {}", user, e);
@@ -90,7 +90,8 @@ public class AppUserDetailsViewModel {
             return;
         }
         try {
-            userService.updateUser(user.getId(), user, "default");
+            UpdateUserRequestDTO updateUserRequest = new UpdateUserRequestDTO();
+            userService.updateUser(user.getId(), updateUserRequest);
             int index = users.indexOf(user);
             if (index >= 0) {
                 users.set(index, user);

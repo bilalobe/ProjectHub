@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import com.gluonhq.charm.glisten.control.*?>
+<?import com.gluonhq.charm.glisten.visual.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="rootPane"
+            styleClass="team-management-container"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            fx:controller="com.projecthub.ui.controllers.TeamManagementController">
+
+    <top>
+        <VBox spacing="16" styleClass="header-container">
+            <padding>
+                <Insets top="16" right="24" bottom="16" left="24"/>
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="16" styleClass="team-header">
+                <Button fx:id="backButton"
+                        mnemonicParsing="false"
+                        styleClass="button-icon-only"
+                        onAction="#handleBack">
+                    <graphic>
+                        <MaterialDesignIconView glyphName="ARROW_BACK" size="24"/>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="%tooltip.backToTeamPage"/>
+                    </tooltip>
+                </Button>
+
+                <Label text="%team.title" styleClass="title-large"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <ChoiceBox fx:id="teamSelector"
+                           styleClass="combo-box-editable">
+                    <tooltip>
+                        <Tooltip text="%tooltip.selectTeam"/>
+                    </tooltip>
+                </ChoiceBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll">
+            <VBox spacing="24" styleClass="content-container">
+                <padding>
+                    <Insets top="24" right="24" bottom="24" left="24"/>
+                </padding>
+
+                <!-- Team Info Section -->
+                <VBox spacing="16" styleClass="section-card">
+                    <Label text="%team.info" styleClass="section-title"/>
+
+                    <GridPane hgap="16" vgap="16">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="120"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <!-- Team Name -->
+                        <Label text="%team.name"
+                               styleClass="field-label"
+                               GridPane.rowIndex="0"
+                               GridPane.columnIndex="0"/>
+
+                        <TextField fx:id="teamNameField"
+                                   promptText="%team.namePlaceholder"
+                                   styleClass="text-field-standard"
+                                   GridPane.rowIndex="0"
+                                   GridPane.columnIndex="1"/>
+
+                        <!-- Team Cohort -->
+                        <Label text="%team.cohort"
+                               styleClass="field-label"
+                               GridPane.rowIndex="1"
+                               GridPane.columnIndex="0"/>
+
+                        <ChoiceBox fx:id="cohortSelector"
+                                   styleClass="combo-box-standard"
+                                   GridPane.rowIndex="1"
+                                   GridPane.columnIndex="1"/>
+                    </GridPane>
+                </VBox>
+
+                <!-- Members Section -->
+                <VBox spacing="16" styleClass="section-card">
+                    <HBox alignment="CENTER_LEFT" spacing="16">
+                        <Label text="%team.members" styleClass="section-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="addMemberButton"
+                                onAction="#handleAddMember"
+                                styleClass="button-primary">
+                            <graphic>
+                                <MaterialDesignIconView glyphName="ADD" size="18"/>
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="%tooltip.addMember"/>
+                            </tooltip>
+                        </Button>
+                    </HBox>
+
+                    <TableView fx:id="membersTable"
+                               VBox.vgrow="ALWAYS"
+                               styleClass="table-view-standard">
+                        <columns>
+                            <TableColumn fx:id="memberNameColumn" text="%team.memberName"/>
+                            <TableColumn fx:id="memberRoleColumn" text="%team.memberRole"/>
+                            <TableColumn fx:id="memberEmailColumn" text="%team.memberEmail"/>
+                            <TableColumn fx:id="memberActionsColumn" text="%team.actions"/>
+                        </columns>
+                        <placeholder>
+                            <StackPane>
+                                <Label fx:id="membersEmptyLabel"
+                                       text="%team.noMembers"
+                                       styleClass="placeholder-text"/>
+                                <MaterialProgressIndicator fx:id="membersLoadingIndicator"
+                                                           visible="false"/>
+                            </StackPane>
+                        </placeholder>
+                    </TableView>
+                </VBox>
+
+                <!-- Projects Section -->
+                <VBox spacing="16" styleClass="section-card">
+                    <HBox alignment="CENTER_LEFT" spacing="16">
+                        <Label text="%team.projects" styleClass="section-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="addProjectButton"
+                                onAction="#handleAddProject"
+                                styleClass="button-primary">
+                            <graphic>
+                                <MaterialDesignIconView glyphName="ADD" size="18"/>
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="%tooltip.addProject"/>
+                            </tooltip>
+                        </Button>
+                    </HBox>
+
+                    <TableView fx:id="projectsTable"
+                               VBox.vgrow="ALWAYS"
+                               styleClass="table-view-standard">
+                        <columns>
+                            <TableColumn fx:id="projectNameColumn" text="%team.projectName"/>
+                            <TableColumn fx:id="projectStatusColumn" text="%team.projectStatus"/>
+                            <TableColumn fx:id="projectDeadlineColumn" text="%team.projectDeadline"/>
+                            <TableColumn fx:id="projectActionsColumn" text="%team.actions"/>
+                        </columns>
+                        <placeholder>
+                            <StackPane>
+                                <Label fx:id="projectsEmptyLabel"
+                                       text="%team.noProjects"
+                                       styleClass="placeholder-text"/>
+                                <MaterialProgressIndicator fx:id="projectsLoadingIndicator"
+                                                           visible="false"/>
+                            </StackPane>
+                        </placeholder>
+                    </TableView>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox styleClass="status-bar">
+            <padding>
+                <Insets top="8" right="16" bottom="8" left="16"/>
+            </padding>
+            <Label fx:id="statusLabel"
+                   styleClass="status-text"
+                   text="%status.ready"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <ProgressBar fx:id="operationProgress"
+                         visible="false"
+                         prefWidth="200"/>
+        </HBox>
+    </bottom>
+
+    <stylesheets>
+        <URL value="@../css/styles.css"/>
+        <URL value="@../css/teams.css"/>
+    </stylesheets>
+
+</BorderPane>

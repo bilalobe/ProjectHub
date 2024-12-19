@@ -1,17 +1,12 @@
 package com.projecthub.ui.controllers.details;
 
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
-
-import com.projecthub.dto.AppUserDTO;
-import com.projecthub.exception.InvalidInputException;
-import com.projecthub.exception.ResourceNotFoundException;
-import com.projecthub.exception.UserAlreadyExistsException;
+import com.projecthub.core.dto.AppUserDTO;
+import com.projecthub.core.exceptions.InvalidInputException;
+import com.projecthub.core.exceptions.ResourceNotFoundException;
+import com.projecthub.core.exceptions.UserAlreadyExistsException;
+import com.projecthub.core.services.AppUserService;
 import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.AppUserDetailsViewModel;
-import com.projecthub.service.AppUserService;
-
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -22,11 +17,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Controller for managing application user details.
@@ -34,34 +30,25 @@ import org.slf4j.LoggerFactory;
 @Component
 public class AppUserDetailsController extends BaseController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AppUserDetailsController.class);
     private final AppUserService userService;
     private final AppUserDetailsViewModel appUserViewModel;
-
     @FXML
     private ListView<String> userListView;
-
     @FXML
     private TextField usernameField;
-
     @FXML
     private TextField passwordField;
-
     @FXML
     private TextField newPasswordField;
-
     @FXML
     private Button saveUserButton;
-
     @FXML
     private Button deleteUserButton;
-
     @FXML
     private Button updateUserButton;
-
     @FXML
     private Button resetPasswordButton;
-
-    private static final Logger logger = LoggerFactory.getLogger(AppUserDetailsController.class);
 
     /**
      * Constructor with dependencies injected.

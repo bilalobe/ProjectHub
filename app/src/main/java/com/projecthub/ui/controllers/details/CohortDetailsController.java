@@ -1,10 +1,13 @@
 package com.projecthub.ui.controllers.details;
 
-import com.projecthub.dto.CohortDTO;
-import com.projecthub.dto.TeamDTO;
+import com.gluonhq.charm.glisten.control.FloatingActionButton;
+import com.gluonhq.charm.glisten.control.Icon;
+import com.gluonhq.charm.glisten.mvc.View;
+import com.gluonhq.charm.glisten.visual.MaterialDesignIcon;
+import com.projecthub.core.dto.CohortDTO;
+import com.projecthub.core.dto.TeamDTO;
 import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.CohortDetailsViewModel;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -22,6 +25,9 @@ public class CohortDetailsController extends BaseController {
     private final CohortDetailsViewModel cohortViewModel;
 
     @FXML
+    private View cohortDetailsView;
+
+    @FXML
     private Label cohortIdLabel;
 
     @FXML
@@ -29,6 +35,9 @@ public class CohortDetailsController extends BaseController {
 
     @FXML
     private TextField schoolIdField;
+
+    @FXML
+    private ComboBox<String> schoolComboBox;
 
     @FXML
     private TableView<TeamDTO> teamsTableView;
@@ -40,10 +49,27 @@ public class CohortDetailsController extends BaseController {
     private TableColumn<TeamDTO, String> teamNameColumn;
 
     @FXML
+    private TableColumn<TeamDTO, Integer> memberCountColumn;
+
+    @FXML
+    private TableColumn<TeamDTO, Integer> projectCountColumn;
+
+    @FXML
+    private TableColumn<TeamDTO, String> statusColumn;
+
+    @FXML
     private Button saveCohortButton;
 
     @FXML
     private Button deleteCohortButton;
+
+    @FXML
+    private Icon backButton;
+
+    @FXML
+    private Label statusLabel;
+
+    private FloatingActionButton addTeamButton;
 
     /**
      * Constructor with dependencies injected.
@@ -56,17 +82,50 @@ public class CohortDetailsController extends BaseController {
 
     @FXML
     public void initialize() {
+        // Initialize table columns
+        initializeTableColumns();
+
+        // Bind properties
+        bindProperties();
+
+        // Set up event handlers
+        setupEventHandlers();
+
+        // Initialize FAB
+        addTeamButton = new FloatingActionButton(MaterialDesignIcon.ADD.text,
+                event -> showAddTeamDialog());
+        addTeamButton.showOn(cohortDetailsView);
+    }
+
+    private void initializeTableColumns() {
+        teamIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        memberCountColumn.setCellValueFactory(new PropertyValueFactory<>("memberCount"));
+        projectCountColumn.setCellValueFactory(new PropertyValueFactory<>("projectCount"));
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+    }
+
+    private void bindProperties() {
         cohortIdLabel.textProperty().bind(cohortViewModel.cohortIdProperty().asString());
         cohortNameField.textProperty().bindBidirectional(cohortViewModel.cohortNameProperty());
         schoolIdField.textProperty().bind(cohortViewModel.schoolIdProperty().asString());
-
-        teamIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
+        schoolComboBox.itemsProperty().bind(cohortViewModel.schoolsProperty());
+        schoolComboBox.valueProperty().bindBidirectional(cohortViewModel.selectedSchoolProperty());
         teamsTableView.setItems(cohortViewModel.getTeams());
+    }
 
+    private void setupEventHandlers() {
         saveCohortButton.setOnAction(this::saveCohort);
         deleteCohortButton.setOnAction(this::deleteCohort);
+        backButton.setOnMouseClicked(event -> navigateBack());
+    }
+
+    private void showAddTeamDialog() {
+        // Implement team creation dialog
+    }
+
+    private void navigateBack() {
+        // Implement navigation logic
     }
 
     private void saveCohort(ActionEvent event) {

@@ -1,17 +1,17 @@
 package com.projecthub.ui.viewmodels.details;
 
-import com.projecthub.dto.AppUserDTO;
-import com.projecthub.dto.ProjectDTO;
-import com.projecthub.dto.TeamDTO;
-import com.projecthub.service.CohortService;
-import com.projecthub.service.TeamService;
+import com.projecthub.core.dto.AppUserDTO;
+import com.projecthub.core.dto.ProjectDTO;
+import com.projecthub.core.dto.TeamDTO;
+import com.projecthub.core.services.school.CohortService;
+import com.projecthub.core.services.team.TeamService;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 

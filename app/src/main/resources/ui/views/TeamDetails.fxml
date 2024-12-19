@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="20" xmlns="http://javafx.com/javafx/23.0.1">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20"/>
+    </padding>
+
+    <!-- Team Info Card -->
+    <GridPane hgap="10" styleClass="info-card" vgap="10">
+        <padding>
+            <Insets/>
+        </padding>
+
+        <Label text="Team Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="teamNameField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Cohort:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="cohortComboBox" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <columnConstraints>
+            <ColumnConstraints/>
+            <ColumnConstraints/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints/>
+            <RowConstraints/>
+        </rowConstraints>
+    </GridPane>
+
+    <!-- Split Content -->
+    <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+        <!-- Members Section -->
+        <VBox spacing="10">
+            <Label styleClass="section-header" text="Team Members"/>
+
+            <TableView fx:id="membersTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="memberNameColumn" text="Name"/>
+                    <TableColumn fx:id="memberRoleColumn" text="Role"/>
+                    <TableColumn fx:id="memberEmailColumn" text="Email"/>
+                </columns>
+                <placeholder>
+                    <Label text="No members assigned"/>
+                </placeholder>
+            </TableView>
+
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button fx:id="addMemberButton" text="Add Member"/>
+                <Button fx:id="removeMemberButton" text="Remove Member"/>
+            </HBox>
+        </VBox>
+
+        <!-- Projects Section -->
+        <VBox spacing="10">
+            <Label styleClass="section-header" text="Team Projects"/>
+
+            <TableView fx:id="projectsTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="projectNameColumn" text="Name"/>
+                    <TableColumn fx:id="projectStatusColumn" text="Status"/>
+                    <TableColumn fx:id="projectDeadlineColumn" text="Deadline"/>
+                </columns>
+                <placeholder>
+                    <Label text="No projects assigned"/>
+                </placeholder>
+            </TableView>
+
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button fx:id="addProjectButton" text="Add Project"/>
+                <Button fx:id="removeProjectButton" text="Remove Project"/>
+            </HBox>
+        </VBox>
+    </SplitPane>
+
+    <!-- Action Buttons -->
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="saveButton" styleClass="button-primary" text="Save Changes"/>
+        <Button fx:id="deleteButton" styleClass="button-danger" text="Delete Team"/>
+        <Button fx:id="clearButton" styleClass="button-secondary" text="Clear"/>
+    </HBox>
+
+    <!-- Status Bar -->
+    <HBox spacing="10" styleClass="status-bar">
+        <Label fx:id="statusLabel" text="Ready"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="teamIdLabel" styleClass="text-muted"/>
+    </HBox>
+
+    <stylesheets>
+        <URL value="@../css/styles.css"/>
+    </stylesheets>
+</VBox>

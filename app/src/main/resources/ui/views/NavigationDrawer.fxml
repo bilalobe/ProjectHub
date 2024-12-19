@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.DrawerItem?>
+<?import com.gluonhq.charm.glisten.control.DrawerTitle?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.projecthub.ui.controllers.NavigationDrawerController"
+      spacing="10" padding="20">
+
+    <DrawerTitle text="Navigation" styleClass="drawer-title" />
+
+    <!-- Example Navigation Items -->
+    <DrawerItem text="Home" onAction="#navigateHome" styleClass="drawer-item">
+        <graphic>
+            <ImageView fitWidth="24" fitHeight="24">
+                <image>
+                    <Image url="@../icons/home_icon.png"/>
+                </image>
+            </ImageView>
+        </graphic>
+    </DrawerItem>
+
+    <DrawerItem text="Cohorts" onAction="#navigateCohorts" styleClass="drawer-item">
+        <graphic>
+            <ImageView fitWidth="24" fitHeight="24">
+                <image>
+                    <Image url="@../icons/cohorts_icon.png"/>
+                </image>
+            </ImageView>
+        </graphic>
+    </DrawerItem>
+
+    <DrawerItem text="Settings" onAction="#navigateSettings" styleClass="drawer-item">
+        <graphic>
+            <ImageView fitWidth="24" fitHeight="24">
+                <image>
+                    <Image url="@../icons/settings_icon.png"/>
+                </image>
+            </ImageView>
+        </graphic>
+    </DrawerItem>
+
+    <!-- Add more DrawerItems as needed -->
+    
+</VBox>
