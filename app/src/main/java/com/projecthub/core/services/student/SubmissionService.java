@@ -1,14 +1,17 @@
-package com.projecthub.core.services;
+package com.projecthub.core.services.student;
 
 import com.projecthub.core.dto.SubmissionDTO;
+import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.mappers.SubmissionMapper;
 import com.projecthub.core.models.Submission;
 import com.projecthub.core.repositories.jpa.SubmissionJpaRepository;
-import com.projecthub.exception.ResourceNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,9 +27,12 @@ public class SubmissionService {
     private final SubmissionJpaRepository submissionRepository;
     private final SubmissionMapper submissionMapper;
 
-    public SubmissionService(SubmissionJpaRepository submissionRepository, SubmissionMapper submissionMapper) {
+    private final SubmissionService self;
+
+    public SubmissionService(SubmissionJpaRepository submissionRepository, SubmissionMapper submissionMapper, SubmissionService self) {
         this.submissionRepository = submissionRepository;
         this.submissionMapper = submissionMapper;
+        this.self = self;
     }
 
     /**
@@ -133,6 +139,27 @@ public class SubmissionService {
         Submission savedSubmission = submissionRepository.save(submission);
         logger.info("Submission created with ID: {}", savedSubmission.getId());
         submissionMapper.toSubmissionDTO(savedSubmission);
+    }
+
+    /**
+     * Gets paginated submissions.
+     */
+    public Page<SubmissionDTO> getSubmissionsPage(Pageable pageable) {
+        logger.info("Retrieving submissions page {} of size {}",
+                pageable.getPageNumber(), pageable.getPageSize());
+        return submissionRepository.findAll(pageable)
+                .map(submissionMapper::toSubmissionDTO);
+    }
+
+    /**
+     * Validates and processes a submission.
+     */
+    @Transactional
+    public SubmissionDTO processSubmission(SubmissionDTO submissionDTO) {
+        validateSubmissionDTO(submissionDTO);
+
+        // Add status and timestamp
+        return self.saveSubmission(submissionDTO);
     }
 
     private void validateSubmissionDTO(SubmissionDTO submissionDTO) {
