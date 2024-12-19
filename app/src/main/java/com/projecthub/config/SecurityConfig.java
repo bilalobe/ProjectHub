@@ -1,5 +1,7 @@
 package com.projecthub.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -16,27 +18,47 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
+/**
+ * Security configuration class that sets up authentication, authorization,
+ * and other security-related configurations for the application.
+ *
+ * @since 1.0.0
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
-public class SecurityConfig {
+public class SecurityConfig 
+{
 
     private final Environment env;
 
-    public SecurityConfig(Environment env) {
+    public SecurityConfig(Environment env) 
+    {
         this.env = env;
     }
 
+    /**
+     * Configures the password encoder bean for secure password hashing.
+     *
+     * @return BCryptPasswordEncoder instance for password encryption
+     */
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() 
+    {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures the user details service with default admin user.
+     * Credentials are loaded from environment variables or defaults to admin/password.
+     *
+     * @return InMemoryUserDetailsManager configured with default admin user
+     */
     @Bean
-    public UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService()
+        {
         String username = env.getProperty("APP_USER_NAME", "admin");
         String rawPassword = env.getProperty("APP_USER_PASSWORD", "password");
         String encodedPassword = passwordEncoder().encode(rawPassword);
@@ -49,25 +71,45 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(user);
     }
 
+    /**
+     * Configures the security filter chain with CSRF protection, session management,
+     * and authorization rules.
+     *
+     * @param http HttpSecurity object to configure
+     * @return Configured SecurityFilterChain
+     * @throws Exception if security configuration fails
+     */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception 
+    {
         http
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
+                .headers(headers -> headers
+                        .contentSecurityPolicy(policy -> policy
+                                .policyDirectives("default-src 'self'")
+                        )
+                )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/public/**").permitAll() // Allow public access to specific URLs
+                        .requestMatchers("/public/**", "/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(withDefaults())
                 .oauth2Login(withDefaults())
                 .httpBasic(withDefaults())
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Use stateless sessions
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(true)
                 );
 
         return http.build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception 
+    {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }
