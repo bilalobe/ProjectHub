@@ -26,5 +26,5 @@ import java.util.UUID;
 public abstract class BaseEntity extends AbstractAuditable<AppUser, UUID> {
 
     @Column(name = "deleted", nullable = false)
-    private final boolean deleted = false;
+    private static final boolean deleted = false;
 }
