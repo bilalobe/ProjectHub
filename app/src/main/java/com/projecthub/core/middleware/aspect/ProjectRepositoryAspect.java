@@ -1,4 +1,4 @@
-package com.projecthub.middleware.aspect;
+package com.projecthub.core.middleware.aspect;
 
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;

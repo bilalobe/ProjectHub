@@ -1,6 +1,6 @@
-package com.projecthub.middleware.listener;
+package com.projecthub.core.middleware.listener;
 
-import com.projecthub.model.Project;
+import com.projecthub.core.models.Project;
 
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
