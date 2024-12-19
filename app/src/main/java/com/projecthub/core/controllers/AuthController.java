@@ -3,17 +3,28 @@ package com.projecthub.core.controllers;
 import com.projecthub.core.dto.AppUserDTO;
 import com.projecthub.core.dto.LoginRequestDTO;
 import com.projecthub.core.dto.RegisterRequestDTO;
-import com.projecthub.core.services.AuthService;
-import com.projecthub.utils.JwtUtil;
+import com.projecthub.core.dto.AuthResponseDTO;
+import com.projecthub.core.dto.AuthenticationResult;
+import com.projecthub.core.dto.ErrorResponse;
+import com.projecthub.core.exceptions.UserAlreadyExistsException;
+import com.projecthub.core.exceptions.InvalidCredentialsException;
+import com.projecthub.core.exceptions.AuthenticationFailedException;
+import com.projecthub.core.services.user.UserRegistrationService;
+import com.projecthub.core.services.auth.AuthenticationService;
 import jakarta.validation.Valid;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * AuthController is a REST controller that handles authentication-related requests.
@@ -22,28 +33,82 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    private final AuthService authService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+    // Removed unused fields
+    private final UserRegistrationService userRegistrationService;
+    private final AuthenticationService authenticationService;
 
-    public AuthController(AuthService authService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
-        this.authService = authService;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
+    public AuthController(
+            UserRegistrationService userRegistrationService,
+            AuthenticationService authenticationService) {
+        this.userRegistrationService = userRegistrationService;
+        this.authenticationService = authenticationService;
     }
 
     @PostMapping("/register")
-    public AppUserDTO registerUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
-        return authService.register(registerRequest);
+    public ResponseEntity<AppUserDTO> registerUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
+        try {
+            AppUserDTO user = userRegistrationService.registerUser(registerRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        } catch (UserAlreadyExistsException e) {
+            logger.warn("Registration failed: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        } catch (Exception e) {
+            logger.error("Unexpected error during registration for user: {}", registerRequest.getUsername(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PostMapping("/login")
-    public String login(@Valid @RequestBody LoginRequestDTO loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
+        try {
+            AuthenticationResult result = authenticationService.authenticate(loginRequest);
+            // Modified to use existing constructor
+            AuthResponseDTO authResponse = new AuthResponseDTO(result.getToken());
+            return ResponseEntity.ok(authResponse);
+        } catch (BadCredentialsException e) {
+            logger.warn("Login failed for user {}: Invalid credentials", loginRequest.getUsername());
+            throw new InvalidCredentialsException("Invalid username or password");
+        } catch (Exception e) {
+            logger.error("Login failed for user {}", loginRequest.getUsername(), e);
+            throw new AuthenticationFailedException("Authentication failed");
+        }
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "User registration failed",
+                ex.getMessage()
         );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtUtil.generateToken(loginRequest.getUsername());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Authentication failed",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .toList();
+
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation failed",
+                errors
+        );
+        return ResponseEntity.badRequest().body(error);
     }
 }

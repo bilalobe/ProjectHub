@@ -1,8 +1,9 @@
 package com.projecthub.core.controllers;
 
 import com.projecthub.core.dto.StudentDTO;
-import com.projecthub.core.services.StudentService;
-import com.projecthub.exception.ResourceNotFoundException;
+import com.projecthub.core.exceptions.ResourceNotFoundException;
+import com.projecthub.core.services.student.StudentService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

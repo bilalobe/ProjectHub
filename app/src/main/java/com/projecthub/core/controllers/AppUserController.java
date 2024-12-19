@@ -3,8 +3,9 @@ package com.projecthub.core.controllers;
 import com.projecthub.core.dto.AppUserDTO;
 import com.projecthub.core.dto.RegisterRequestDTO;
 import com.projecthub.core.dto.UpdateUserRequestDTO;
+import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.services.AppUserService;
-import com.projecthub.exception.ResourceNotFoundException;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

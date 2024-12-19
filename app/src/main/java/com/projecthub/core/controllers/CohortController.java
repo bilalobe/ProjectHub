@@ -1,7 +1,8 @@
 package com.projecthub.core.controllers;
 
 import com.projecthub.core.dto.CohortDTO;
-import com.projecthub.core.services.CohortService;
+import com.projecthub.core.services.school.CohortService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
