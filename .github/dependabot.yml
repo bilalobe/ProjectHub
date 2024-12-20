@@ -9,9 +9,6 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
-    versioning-strategy: "increase"
-    allow:
-      - dependency-type: "direct"
 
   # npm dependencies for the Angular frontend
   - package-ecosystem: "npm"
