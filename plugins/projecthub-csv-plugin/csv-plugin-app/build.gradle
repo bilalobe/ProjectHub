@@ -1,11 +1,10 @@
 plugins {
     id 'java-library'
-    id 'maven-publish'
-    id 'org.springframework.boot' version '3.2.0'
-    id 'io.spring.dependency-management' version '1.1.4'
+    alias(libs.plugins.springBoot)
+    alias(libs.plugins.springDependencyManagement)
 }
 
-group = 'com.projecthub.repository'
+group = 'com.projecthub.plugins'
 version = '0.1.0-SNAPSHOT'
 
 repositories {
@@ -13,24 +12,42 @@ repositories {
 }
 
 dependencies {
-    api 'com.opencsv:opencsv:5.9'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation project(':core')
 
-    compileOnly 'org.projectlombok:lombok:1.18.30'
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    implementation libs.openCsv
+    implementation libs.springBootStarterDataJpa
+    implementation libs.springBootStarterValidation
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-    testImplementation 'org.mockito:mockito-core:5.7.0'
+    implementation libs.pf4j
+    implementation libs.pf4jSpring
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+    testImplementation libs.bundles.testing
+
+    implementation 'io.micrometer:micrometer-core'
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+    manifest {
+        attributes(
+            'Plugin-Class': 'com.projecthub.plugins.csv.CsvPlugin',
+            'Plugin-Id': 'projecthub-csv-plugin',
+            'Plugin-Version': '1.0.0',
+            'Plugin-Provider': 'ProjectHub'
+        )
+    }
 }
 
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = project.group
-            artifactId = project.name
-            version = project.version
-
             from components.java
         }
     }
