@@ -1,6 +1,6 @@
 # ProjectHub
 
-![Project Logo](app/src/main/resources/images/logo.png)
+![Project Logo](desktop-ui/src/main/resources/images/logo.png)
 
 **A comprehensive platform for managing student projects, component evaluations, and project distribution, built with JavaFX, Spring Boot, and PostgreSQL.**
 
@@ -39,7 +39,7 @@ ProjectHub follows a modular architecture to promote scalability and maintainabi
 
 ### Prerequisites
 
-- **Java Development Kit (JDK) 17** or higher
+- **Java Development Kit (JDK) 21** or higher
 - **Node.js** and **npm** (for the Angular frontend)
 - **PostgreSQL** database
 - **Gradle** build tool (included via Gradle Wrapper)
@@ -49,7 +49,7 @@ ProjectHub follows a modular architecture to promote scalability and maintainabi
 #### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/ProjectHub.git
+git clone https://github.com/bilalobe/ProjectHub.git
 cd ProjectHub
 ```
 
@@ -83,7 +83,7 @@ application.properties
 1. Navigate to the app directory:
 
    ```bash
-   cd app
+   cd core
    ```
 
 2. Build and run the application:
@@ -122,7 +122,7 @@ application.properties
 2. Run the JavaFX application:
 
    ```bash
-   cd app
+   cd desktop-ui
    ./gradlew run
    ```
 
