@@ -1,0 +1,64 @@
+{
+  "properties": [
+    {
+      "name": "app.components.filepath",
+      "type": "java.lang.String",
+      "description": "Path to the components CSV file",
+      "sourceType": "com.projecthub.config.CsvProperties"
+    },
+    {
+      "name": "app.projects.filepath",
+      "type": "java.lang.String",
+      "description": "Path to the projects CSV file",
+      "sourceType": "com.projecthub.config.CsvProperties"
+    },
+    {
+      "name": "app.schools.filepath",
+      "type": "java.lang.String",
+      "description": "Path to the schools CSV file",
+      "sourceType": "com.projecthub.config.CsvProperties"
+    },
+    {
+      "name": "app.students.filepath",
+      "type": "java.lang.String",
+      "description": "Path to the students CSV file",
+      "sourceType": "com.projecthub.config.CsvProperties"
+    },
+    {
+      "name": "app.submissions.filepath",
+      "type": "java.lang.String",
+      "description": "Path to the submissions CSV file",
+      "sourceType": "com.projecthub.config.CsvProperties"
+    },
+    {
+      "name": "app.tasks.filepath",
+      "type": "java.lang.String",
+      "description": "Path to the tasks CSV file",
+      "sourceType": "com.projecthub.config.CsvProperties"
+    },
+    {
+      "name": "app.teachers.filepath",
+      "type": "java.lang.String",
+      "description": "Path to the teachers CSV file",
+      "sourceType": "com.projecthub.config.CsvProperties"
+    },
+    {
+      "name": "app.teams.filepath",
+      "type": "java.lang.String",
+      "description": "Path to the teams CSV file",
+      "sourceType": "com.projecthub.config.CsvProperties"
+    },
+    {
+      "name": "app.cohorts.filepath",
+      "type": "java.lang.String",
+      "description": "Path to the cohorts CSV file",
+      "sourceType": "com.projecthub.config.CsvProperties"
+    },
+    {
+      "name": "app.submissions.tempdir",
+      "type": "java.lang.String",
+      "description": "Path to the submissions temporary directory",
+      "sourceType": "com.projecthub.config.CsvProperties"
+    }
+  ]
+}
