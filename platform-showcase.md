@@ -1,3 +1,4 @@
+%% 
 sequenceDiagram
     participant User
     participant UI
@@ -16,6 +17,7 @@ sequenceDiagram
     ComponentViewModel->>ComponentDetailsController: Update View
     ComponentDetailsController->>UI: Display Result
 
+%% Tree View Expansion Sequence
 sequenceDiagram
     participant User
     participant UI
@@ -32,6 +34,7 @@ sequenceDiagram
     TreeItemLoader->>TreeViewController: Load Children
     TreeViewController->>UI: Update Tree View
 
+%% Project Service Class Diagram
 classDiagram
     class ProjectService {
         +createProject(ProjectDTO)
@@ -62,6 +65,7 @@ classDiagram
     ProjectHubViewModel --> ProjectService
     ProjectHubViewModel --> ComponentService
 
+%% Component State Diagram
 stateDiagram-v2
     [*] --> Idle
     Idle --> Creating : Create Component
@@ -77,6 +81,7 @@ stateDiagram-v2
     Deleting --> Idle : Success
     Deleting --> Error : Failure
 
+%% Entity Relationship Diagram
 erDiagram
     USER {
         UUID id
@@ -117,6 +122,7 @@ erDiagram
     COHORT ||--o{ TEAM : "has"
     SCHOOL ||--o{ COHORT : "includes"
 
+%% Requirements Diagram
 requirementDiagram
     requirement user_management {
         id: 1
@@ -149,6 +155,7 @@ requirementDiagram
     cohort_management --> team_management
     school_management --> cohort_management
 
+%% System Architecture Diagram
 graph TD
     A[User Interface] -->|Interacts with| B[Controllers]
     B -->|Updates| C[ViewModels]
@@ -161,6 +168,7 @@ graph TD
     C -->|Updates| B
     B -->|Updates| A
 
+%% Student Management Sequence
 sequenceDiagram
     participant User
     participant Controller
@@ -177,6 +185,7 @@ sequenceDiagram
     Service->>Controller: Return Response
     Controller->>User: Display Result
 
+%% User Interface Diagram
 graph TD
     subgraph User Interface
         A[User] -->|Interacts with| B[Dashboard]
@@ -281,6 +290,7 @@ graph TD
     P -->|Updates| H
     P -->|Updates| I
 
+%% Simplified User Interface Diagram
 graph TD
     subgraph User Interface
         A[User] -->|Interacts with| B[Dashboard]
@@ -371,6 +381,7 @@ graph TD
     L -->|Updates| F
     M -->|Updates| G
 
+%% Authentication Sequence
 sequenceDiagram
     participant User
     participant AngularApp
@@ -390,6 +401,7 @@ sequenceDiagram
     AuthService-->>-AngularApp: Authentication Success
     AngularApp-->>-User: Access Granted
 
+%% Project Creation Sequence
 sequenceDiagram
     participant User
     participant AngularApp
@@ -415,8 +427,8 @@ sequenceDiagram
     ProjectService-->>-AngularApp: Project Created
     AngularApp-->>-User: Project Successfully Created
 
+%% User Interfaces Diagram
 graph TD
-    %% User Interfaces
     subgraph User Interfaces
         A[User]
         A -->|Interacts with| B[Angular Web App]
@@ -506,6 +518,7 @@ graph TD
     class R database
     class U,V auth
 
+%% CI/CD Pipeline Sequence
 sequenceDiagram
     participant Developer
     participant GitHub
@@ -524,8 +537,7 @@ sequenceDiagram
     Kubernetes->>Kubernetes: Update Deployment
     Kubernetes->>Developer: Deployment Status
 
-%% ongoing
-
+%% CI/CD Pipeline Diagram
 flowchart TB
     subgraph Developer
         A[Developer]
@@ -577,7 +589,9 @@ flowchart TB
     M -->|Processes Logs| N
     N -->|Visualizes Logs| O
 
+%% Repository Profiles Diagram
 graph TD
+
     A[Spring Boot Application] -->|Active Profile: csv| B[AppUserCsvRepository]
     A[Spring Boot Application] -->|Active Profile: h2| C[AppUserJpaRepository]
     A[Spring Boot Application] -->|Active Profile: postgres| C[AppUserJpaRepository]
@@ -605,6 +619,7 @@ graph TD
     E[AppUserRepository] --> G[H2 Database]
     E[AppUserRepository] --> H[PostgreSQL Database]
 
+%% Component Interaction Diagram
 flowchart TD
     %% User Interface
     subgraph User Interface
@@ -650,6 +665,7 @@ flowchart TD
     J -->|Loads Children| D
     D -->|Updates Tree View| B
 
+%% Registration and Login Sequence
 sequenceDiagram
     participant User
     participant DesktopApp
@@ -695,7 +711,7 @@ sequenceDiagram
         DesktopApp-->>User: Login Failed
     end
 
-<!-- chefs kiss -->
+%% JavaFX Desktop App Interaction Diagram
 flowchart TD
     %% User Interface
     subgraph User Interface
@@ -750,6 +766,7 @@ flowchart TD
     N -->|Returns Data to| L
     L -->|Returns Result to| K
 
+%% AppUser Repository Class Diagram
 classDiagram
     %% Interfaces
     class AppUserRepository {
@@ -811,8 +828,7 @@ classDiagram
     note for AppUserJpaRepository "Repository: jpaUserRepository, Profile: jpa"
     note for AppUserCsvRepositoryImpl "Repository: csvUserRepository, Profile: csv, Primary"
 
-
-%%% CSV Plugin Integration Architecture
+%% CSV Plugin Integration Architecture
 flowchart TD
     subgraph Main Application
         A[Spring Boot App] -->|uses| B[Repository Interfaces]
@@ -1049,6 +1065,7 @@ flowchart TD
     note "Plugin System Core" AG
     note "Extensible Architecture" 
     
+%% Storage Management flowchart
 flowchart TD
     subgraph Primary["Primary Storage: PostgreSQL"]
         PG[PostgreSQL Database]
@@ -1074,3 +1091,288 @@ flowchart TD
     SYNC -->|Sync when online| PG
     H2 -->|Sync| SYNC
     CSV -->|Sync| SYNC
+
+%% Project Structure Diagram V2
+flowchart TB
+    subgraph ProjectHub ["ProjectHub Root Project"]
+        direction TB
+        A[settings.gradle]
+        A ---> B[build.gradle]
+        A ---> C[build-logic]
+        A ---> D[core]
+        A ---> E[desktop-ui]
+        A ---> F[frontend]
+        A ---> G[plugins]
+    end
+
+    subgraph BuildLogic ["build-logic Module"]
+        C1[build.gradle]
+        C2[src/main/groovy/...]
+    end
+
+    subgraph Core ["core Module"]
+        D1[build.gradle]
+        D2[src/main/java/com/projecthub/core/...]
+    end
+
+    subgraph DesktopUI ["desktop-ui Module"]
+        E1[build.gradle]
+        E2[src/main/java/com/projecthub/ui/...]
+        E3[Depends on -> Core]
+    end
+
+    subgraph Frontend ["frontend Module (Angular App)"]
+        F1[package.json]
+        F2[src/...]
+    end
+
+    subgraph Plugins ["plugins Module"]
+        G1[projecthub-csv-plugin]
+        G1 ---> G1a[build.gradle]
+        G1 ---> G1b[src/main/java/...]
+        G1c[Depends on -> Core]
+    end
+
+    %% Connections
+    A ---> C
+    A ---> D
+    A ---> E
+    A ---> F
+    A ---> G
+
+    C ---> C1
+    D ---> D1
+    E ---> E1
+    F ---> F1
+    G ---> G1
+
+    D -->|Dependency| E3
+    G1 -->|Dependency| G1c
+
+%% Modular architecture diagram
+flowchart LR
+    subgraph Core ["core Module"]
+        direction TB
+        C1[Domain Models]
+        C2[Services]
+        C3[Repositories]
+    end
+
+    subgraph DesktopUI ["desktop-ui Module"]
+        direction TB
+        D1[Controllers]
+        D2[Views (FXML)]
+        D3[ViewModels]
+    end
+
+    subgraph Frontend ["frontend Module"]
+        direction TB
+        F1[Components]
+        F2[Services]
+        F3[Models]
+    end
+
+    subgraph Plugins ["plugins Module"]
+        direction TB
+        P1[CSV Plugin]
+        P2[Other Plugins]
+    end
+
+    subgraph Backend ["Spring Boot Application"]
+        direction TB
+        B1[REST Controllers]
+        B2[Service Layer]
+        B3[Repository Layer]
+    end
+
+    %% Dependencies
+    D1 -->|Uses| D3
+    D3 -->|Uses| C2
+    F1 -->|Uses| F2
+    F2 -->|Calls| B1
+    B1 -->|Uses| B2
+    B2 -->|Uses| C2
+    C2 -->|Implements| C1
+    C2 -->|Uses| C3
+    P1 -->|Implements| C3
+
+    %% Plugin Integration
+    P1 -->|Extends| C3
+
+    %% Notes
+    note over DesktopUI: Depends on `core`
+    note over Plugins: Depends on `core`
+    note over Frontend: Interacts via REST API
+
+    %% External Dependencies
+    Backend -->|Depends on| Core
+    DesktopUI -->|Depends on| Core
+    Plugins -->|Depends on| Core
+
+%% Build Process Diagram
+flowchart TD
+    subgraph BuildProcess ["Gradle Build Process"]
+        direction TB
+        S1[settings.gradle]
+        S2[Include Modules]
+        S3[Define Dependencies]
+        S4[Run Build Tasks]
+
+        S1 --> S2 --> S3 --> S4
+    end
+
+    subgraph Modules
+        M1[build-logic]
+        M2[core]
+        M3[desktop-ui]
+        M4[frontend]
+        M5[plugins/projecthub-csv-plugin]
+    end
+
+    subgraph BuildTasks
+        T1[clean]
+        T2[compile]
+        T3[test]
+        T4[assemble]
+    end
+
+    %% Connections
+    S4 --> T1
+    S4 --> T2
+    S4 --> T3
+    S4 --> T4
+
+    T2 -->|Compiles| M1 & M2 & M3 & M5
+    T2 -->|Builds| M4 (via npm scripts)
+
+    T3 -->|Runs Tests| M1 & M2 & M3 & M5
+
+    T4 -->|Assembles Artifacts| M1 & M2 & M3 & M5
+
+%% Dependency Graph
+flowchart LR
+    subgraph Modules
+        A[build-logic]
+        B[core]
+        C[desktop-ui]
+        D[plugins/projecthub-csv-plugin]
+        E[frontend]
+    end
+
+    %% Dependencies
+    C --> B
+    D --> B
+    E -->|Interacts via REST API| B
+
+    %% External Dependencies
+    B -->|Uses| SpringBoot
+    C -->|Uses| JavaFX
+    E -->|Uses| Angular
+
+    %% Build Logic Dependency
+    AllModules --> A
+
+%% AppStart Orchestration
+sequenceDiagram
+    participant MainClass as desktop-ui/MainClass
+    participant Core as core
+    participant Plugin as plugins/CSVPlugin
+    participant BuildLogic as build-logic
+
+    MainClass->>Core: Initialize Services
+    Core->>Plugin: Load Plugins
+    Plugin->>Core: Register Repositories
+    Core->>MainClass: Services Ready
+    BuildLogic-->>AllModules: Apply Custom Plugins
+    MainClass->>MainClass: Start Application
+
+%% Interaction Diagram with Build-Logic
+flowchart LR
+    subgraph BuildLogic ["build-logic Module"]
+        BL1[Custom Gradle Plugins]
+        BL2[Shared Configurations]
+    end
+
+    subgraph Modules
+        M1[core]
+        M2[desktop-ui]
+        M3[plugins/projecthub-csv-plugin]
+        M4[frontend]
+    end
+
+    BL1 --> M1
+    BL1 --> M2
+    BL1 --> M3
+    BL1 --> M4
+
+    BL2 --> M1
+    BL2 --> M2
+    BL2 --> M3
+    BL2 --> M4
+
+%% Plugin Architecture Diagram
+flowchart TB
+    subgraph CoreModule ["core Module"]
+        direction TB
+        C1[Service Interfaces]
+        C2[Repository Interfaces]
+    end
+
+    subgraph PluginsModule ["plugins Module"]
+        direction TB
+        P1[projecthub-csv-plugin]
+        P1a[CSVRepository Implementations]
+    end
+
+    subgraph Application ["Application Modules"]
+        A1[desktop-ui]
+        A2[backend services]
+    end
+
+    %% Connections
+    P1 -->|Implements| C2
+    C1 -->|Used by| A1 & A2
+    C2 -->|Implemented by| P1 & Other Repos
+
+    %% Profiles
+    subgraph Profiles
+        Pr1[Profile: csv]
+        Pr2[Profile: jpa]
+    end
+
+    A1 -->|Depends on| CoreModule
+    A2 -->|Depends on| CoreModule
+
+    Pr1 -->|Activates| P1
+    Pr2 -->|Activates| JPARepositories
+
+%% Multi-Project Build Lifecycle Diagram
+graph LR
+    subgraph BuildLifecycle ["Gradle Multi-Project Build Lifecycle"]
+        direction TB
+        Step1[Initialization Phase]
+        Step2[Configuration Phase]
+        Step3[Execution Phase]
+    end
+
+    subgraph Modules
+        Module1[core]
+        Module2[desktop-ui]
+        Module3[plugins]
+        Module4[build-logic]
+    end
+
+    Step1 --> Step2 --> Step3
+
+    %% Initialization Phase
+    Step1 -->|Includes| Module1 & Module2 & Module3 & Module4
+
+    %% Configuration Phase
+    Step2 -->|Configures Build Scripts| Module1 & Module2 & Module3 & Module4
+    Step2 -->|Applies Plugins| build-logic
+
+    %% Execution Phase
+    Step3 -->|Executes Tasks| Module1 & Module2 & Module3
+
+    %% Build Logic Application
+    build-logic -->|Provides| Custom Plugins & Configurations
