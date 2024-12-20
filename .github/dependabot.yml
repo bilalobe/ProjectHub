@@ -13,36 +13,6 @@ updates:
     allow:
       - dependency-type: "direct"
 
-  # Gradle dependencies for the backend (core module)
-  - package-ecosystem: "gradle"
-    directory: "/core"
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 5
-    commit-message:
-      prefix: "deps"
-      include: "scope"
-
-  # Gradle dependencies for the desktop UI
-  - package-ecosystem: "gradle"
-    directory: "/desktop-ui"
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 5
-    commit-message:
-      prefix: "deps"
-      include: "scope"
-
-  # Gradle dependencies for plugins
-  - package-ecosystem: "gradle"
-    directory: "/plugins/projecthub-csv-plugin"
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 5
-    commit-message:
-      prefix: "deps"
-      include: "scope"
-
   # npm dependencies for the Angular frontend
   - package-ecosystem: "npm"
     directory: "/frontend"
