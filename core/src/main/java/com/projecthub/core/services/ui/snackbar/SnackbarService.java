@@ -1,9 +1,9 @@
 package com.projecthub.core.services.ui.snackbar;
 
 import com.gluonhq.charm.glisten.control.Snackbar;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.application.Platform;
 
 public class SnackbarService {
 
@@ -11,10 +11,6 @@ public class SnackbarService {
 
     private SnackbarService() {
         // Private constructor to enforce singleton pattern
-    }
-
-    private static class SnackbarServiceHolder {
-        private static final SnackbarService INSTANCE = new SnackbarService();
     }
 
     public static SnackbarService getInstance() {
@@ -41,5 +37,9 @@ public class SnackbarService {
                 snackbar.show();
             });
         }
+    }
+
+    private static class SnackbarServiceHolder {
+        private static final SnackbarService INSTANCE = new SnackbarService();
     }
 }

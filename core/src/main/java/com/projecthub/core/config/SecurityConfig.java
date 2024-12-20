@@ -1,7 +1,5 @@
 package com.projecthub.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -20,6 +18,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 /**
  * Security configuration class that sets up authentication, authorization,
  * and other security-related configurations for the application.
@@ -29,13 +29,11 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
-public class SecurityConfig 
-{
+public class SecurityConfig {
 
     private final Environment env;
 
-    public SecurityConfig(Environment env) 
-    {
+    public SecurityConfig(Environment env) {
         this.env = env;
     }
 
@@ -45,8 +43,7 @@ public class SecurityConfig
      * @return BCryptPasswordEncoder instance for password encryption
      */
     @Bean
-    public PasswordEncoder passwordEncoder() 
-    {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -57,8 +54,7 @@ public class SecurityConfig
      * @return InMemoryUserDetailsManager configured with default admin user
      */
     @Bean
-    public UserDetailsService userDetailsService()
-        {
+    public UserDetailsService userDetailsService() {
         String username = env.getProperty("APP_USER_NAME", "admin");
         String rawPassword = env.getProperty("APP_USER_PASSWORD", "password");
         String encodedPassword = passwordEncoder().encode(rawPassword);
@@ -80,8 +76,7 @@ public class SecurityConfig
      * @throws Exception if security configuration fails
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception 
-    {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(new CookieCsrfTokenRepository())
@@ -108,8 +103,7 @@ public class SecurityConfig
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception 
-    {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }

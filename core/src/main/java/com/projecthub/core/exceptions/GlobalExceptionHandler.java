@@ -1,11 +1,5 @@
 package com.projecthub.core.exceptions;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -24,6 +18,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(message)
                 .debugMessage(ex.getLocalizedMessage())
                 .build();
-        
+
         LOG.error("Error occurred: {}", message, ex);
         return new ResponseEntity<>(apiError, status);
     }
@@ -65,17 +65,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (ex instanceof AccessDeniedException || ex instanceof AccountDisabledException) {
             status = HttpStatus.FORBIDDEN;
         } else if (ex instanceof UnauthorizedAccessException ||
-                   ex instanceof InvalidCredentialsException ||
-                   ex instanceof TokenExpiredException) {
+                ex instanceof InvalidCredentialsException ||
+                ex instanceof TokenExpiredException) {
             status = HttpStatus.UNAUTHORIZED;
         } else {
             status = HttpStatus.UNAUTHORIZED;
         }
 
         return createErrorResponse(
-            status,
-            getLocalizedMessage("error.authentication", locale),
-            ex
+                status,
+                getLocalizedMessage("error.authentication", locale),
+                ex
         );
     }
 
@@ -122,12 +122,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         };
 
         if (bindingResult != null) {
-            bindingResult.getFieldErrors().forEach(error -> 
-                subErrors.add(new ApiValidationError(
-                    error.getField(),
-                    error.getRejectedValue(),
-                    messageSource.getMessage(error, locale)
-                ))
+            bindingResult.getFieldErrors().forEach(error ->
+                    subErrors.add(new ApiValidationError(
+                            error.getField(),
+                            error.getRejectedValue(),
+                            messageSource.getMessage(error, locale)
+                    ))
             );
         }
 

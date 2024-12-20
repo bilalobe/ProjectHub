@@ -3,23 +3,13 @@ package com.projecthub.core.services;
 import com.projecthub.core.dto.AppUserDTO;
 import com.projecthub.core.dto.RegisterRequestDTO;
 import com.projecthub.core.dto.UpdateUserRequestDTO;
-import com.projecthub.core.exceptions.AccountDisabledException;
-import com.projecthub.core.exceptions.AccountLockedException;
-import com.projecthub.core.exceptions.AuthenticationFailedException;
-import com.projecthub.core.exceptions.EmailAlreadyExistsException;
-import com.projecthub.core.exceptions.InvalidCredentialsException;
-import com.projecthub.core.exceptions.PasswordValidationException;
-import com.projecthub.core.exceptions.UserAlreadyExistsException;
-import com.projecthub.core.exceptions.UserCreationException;
-import com.projecthub.core.exceptions.UserNotFoundException;
-import com.projecthub.core.exceptions.UserUpdateException;
+import com.projecthub.core.exceptions.*;
 import com.projecthub.core.mappers.AppUserMapper;
 import com.projecthub.core.models.AppUser;
 import com.projecthub.core.models.GithubUserInfo;
 import com.projecthub.core.repositories.jpa.AppUserJpaRepository;
 import com.projecthub.core.services.auth.GithubOAuthService;
 import com.projecthub.core.validators.PasswordValidator;
-
 import jakarta.security.auth.message.AuthException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -33,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**

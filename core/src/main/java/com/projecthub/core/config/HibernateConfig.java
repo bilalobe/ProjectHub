@@ -1,4 +1,4 @@
-package com.projecthub.config;
+package com.projecthub.core.config;
 
 import jakarta.persistence.EntityManager;
 import org.hibernate.Session;

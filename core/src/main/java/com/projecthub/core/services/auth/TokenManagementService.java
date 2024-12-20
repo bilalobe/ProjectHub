@@ -44,4 +44,9 @@ public class TokenManagementService {
     public String getUsernameFromToken(String token) {
         return jwtUtil.getUsernameFromToken(token);
     }
+
+    public void storeToken(String token) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'storeToken'");
+    }
 }

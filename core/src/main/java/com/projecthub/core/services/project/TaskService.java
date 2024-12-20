@@ -5,7 +5,6 @@ import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.mappers.TaskMapper;
 import com.projecthub.core.models.Task;
 import com.projecthub.core.repositories.jpa.TaskJpaRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

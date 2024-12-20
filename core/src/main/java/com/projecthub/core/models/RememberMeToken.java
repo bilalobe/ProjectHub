@@ -1,6 +1,5 @@
 package com.projecthub.core.models;
 
-import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;

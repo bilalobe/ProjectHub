@@ -7,7 +7,6 @@ import com.projecthub.core.models.Cohort;
 import com.projecthub.core.models.School;
 import com.projecthub.core.repositories.jpa.CohortJpaRepository;
 import com.projecthub.core.repositories.jpa.SchoolJpaRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

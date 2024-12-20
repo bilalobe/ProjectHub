@@ -1,13 +1,12 @@
 package com.projecthub.core.services.user;
 
-import com.projecthub.core.dto.RegisterRequestDTO;
 import com.projecthub.core.dto.AppUserDTO;
-import com.projecthub.core.models.AppUser;
+import com.projecthub.core.dto.RegisterRequestDTO;
 import com.projecthub.core.exceptions.UserAlreadyExistsException;
 import com.projecthub.core.mappers.AppUserMapper;
+import com.projecthub.core.models.AppUser;
 import com.projecthub.core.repositories.jpa.AppUserJpaRepository;
 import com.projecthub.core.services.auth.PasswordService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -1,28 +1,19 @@
 package com.projecthub.core.controllers;
 
-import com.projecthub.core.dto.AppUserDTO;
-import com.projecthub.core.dto.LoginRequestDTO;
-import com.projecthub.core.dto.RegisterRequestDTO;
-import com.projecthub.core.dto.AuthResponseDTO;
-import com.projecthub.core.dto.AuthenticationResult;
-import com.projecthub.core.dto.ErrorResponse;
-import com.projecthub.core.exceptions.UserAlreadyExistsException;
-import com.projecthub.core.exceptions.InvalidCredentialsException;
+import com.projecthub.core.dto.*;
 import com.projecthub.core.exceptions.AuthenticationFailedException;
-import com.projecthub.core.services.user.UserRegistrationService;
+import com.projecthub.core.exceptions.InvalidCredentialsException;
+import com.projecthub.core.exceptions.UserAlreadyExistsException;
 import com.projecthub.core.services.auth.AuthenticationService;
+import com.projecthub.core.services.user.UserRegistrationService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 

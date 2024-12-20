@@ -6,12 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 @Configuration
-public class InternationalizationConfig
-{
+public class InternationalizationConfig {
 
     @Bean
-    public MessageSource messageSource() 
-    {
+    public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource
                 = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages/messages");

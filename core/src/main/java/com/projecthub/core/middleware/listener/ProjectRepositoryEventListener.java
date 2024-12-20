@@ -1,8 +1,7 @@
 package com.projecthub.core.middleware.listener;
 
-import org.springframework.stereotype.Component;
-
 import com.projecthub.core.models.Project;
+import org.springframework.stereotype.Component;
 
 
 @Component

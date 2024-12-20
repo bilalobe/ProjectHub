@@ -27,23 +27,23 @@ import java.util.Collections;
 public class AppUser extends BaseEntity implements UserDetails {
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private final String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
-    private String password;
+    private final String password;
 
     @Column(nullable = false)
-    private String email;
+    private final String email;
 
     @Column(nullable = false)
-    private String firstName;
+    private final String firstName;
 
     @Column(nullable = false)
-    private String lastName;
+    private final String lastName;
 
     @Column(nullable = false)
-    private boolean deleted = false;
+    private final boolean deleted = false;
 
     private String avatarUrl;
     private String statusMessage;
@@ -93,5 +93,15 @@ public class AppUser extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String getPassword() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getUsername() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

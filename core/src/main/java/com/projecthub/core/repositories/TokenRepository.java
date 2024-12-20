@@ -1,8 +1,8 @@
 package com.projecthub.core.repositories;
 
+import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import jakarta.persistence.EntityManager;
 
 import java.time.LocalDateTime;
 

@@ -1,16 +1,14 @@
 package com.projecthub.core.validators;
 
+import com.projecthub.core.dto.RegisterRequestDTO;
+import com.projecthub.core.dto.UpdateUserRequestDTO;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
-
-import com.projecthub.core.dto.RegisterRequestDTO;
-import com.projecthub.core.dto.UpdateUserRequestDTO;
 
 @Component
 public class UserValidator {

@@ -5,7 +5,6 @@ import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.mappers.StudentMapper;
 import com.projecthub.core.models.Student;
 import com.projecthub.core.repositories.jpa.StudentJpaRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -13,7 +13,6 @@ import com.projecthub.core.models.Team;
 import com.projecthub.core.repositories.jpa.AppUserJpaRepository;
 import com.projecthub.core.repositories.jpa.ProjectJpaRepository;
 import com.projecthub.core.repositories.jpa.TeamJpaRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -17,11 +17,9 @@ import java.io.FileNotFoundException;
  * @since 1.0.0
  */
 @Configuration
-public class RepositoryConfig
-{
+public class RepositoryConfig {
 
-    private RepositoryConfig() 
-    {
+    private RepositoryConfig() {
     }
 
     /**
@@ -32,8 +30,7 @@ public class RepositoryConfig
     @Profile("jpa")
     @EnableJpaRepositories(basePackages = "com.projecthub.repository.jpa")
     @EnableTransactionManagement
-    static class JpaRepositoryConfig
-    {
+    static class JpaRepositoryConfig {
         // Additional JPA configurations if needed
 
         /**
@@ -43,12 +40,10 @@ public class RepositoryConfig
          * @throws FileNotFoundException if the data file is not found
          */
         @Bean
-        public Jackson2RepositoryPopulatorFactoryBean repositoryPopulator() throws FileNotFoundException
-        {
+        public Jackson2RepositoryPopulatorFactoryBean repositoryPopulator() throws FileNotFoundException {
             Jackson2RepositoryPopulatorFactoryBean factory = new Jackson2RepositoryPopulatorFactoryBean();
             ClassPathResource dataResource = new ClassPathResource("data.json");
-            if (!dataResource.exists()) 
-            {
+            if (!dataResource.exists()) {
                 throw new IllegalStateException("Initial data file 'data.json' not found");
             }
             factory.setResources(new ClassPathResource[]{dataResource});
@@ -59,8 +54,7 @@ public class RepositoryConfig
     @Configuration
     @Profile("csv")
     @EnableTransactionManagement
-    static class CsvRepositoryConfig 
-    {
+    static class CsvRepositoryConfig {
 
     }
 }

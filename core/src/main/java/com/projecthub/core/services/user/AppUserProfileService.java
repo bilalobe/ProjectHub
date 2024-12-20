@@ -5,7 +5,6 @@ import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.mappers.AppUserProfileMapper;
 import com.projecthub.core.models.AppUser;
 import com.projecthub.core.repositories.jpa.AppUserJpaRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

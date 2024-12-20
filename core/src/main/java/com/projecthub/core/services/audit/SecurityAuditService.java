@@ -36,26 +36,26 @@ public class SecurityAuditService {
     public void logAccountAction(UUID userId, SecurityAuditAction action, String details, String ipAddress) {
         SecurityAuditLog log = createAuditLog(userId, null, action, details, ipAddress);
         auditLogRepository.save(log);
-        logger.info("Security audit logged - User: {}, Action: {}, Details: {}", 
-            userId, action, details != null ? details : "none");
+        logger.info("Security audit logged - User: {}, Action: {}, Details: {}",
+                userId, action, details != null ? details : "none");
     }
 
     public void logAuthenticationAttempt(String username, boolean success, String ipAddress) {
         SecurityAuditLog log = createAuditLog(
-            null, 
-            username,
-            success ? SecurityAuditAction.LOGIN_SUCCESS : SecurityAuditAction.LOGIN_FAILURE,
-            null,
-            ipAddress
+                null,
+                username,
+                success ? SecurityAuditAction.LOGIN_SUCCESS : SecurityAuditAction.LOGIN_FAILURE,
+                null,
+                ipAddress
         );
         auditLogRepository.save(log);
         logger.info("Authentication attempt - User: {}, Success: {}", username, success);
     }
 
     private SecurityAuditLog createAuditLog(
-            UUID userId, 
+            UUID userId,
             String username,
-            SecurityAuditAction action, 
+            SecurityAuditAction action,
             String details,
             String ipAddress) {
         SecurityAuditLog log = new SecurityAuditLog();

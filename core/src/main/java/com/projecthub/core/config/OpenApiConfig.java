@@ -2,10 +2,10 @@ package com.projecthub.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,8 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 1.0.0
  */
 @Configuration
-public class OpenApiConfig
-{
+public class OpenApiConfig {
 
     /**
      * Creates and configures the OpenAPI documentation bean.
@@ -26,8 +25,7 @@ public class OpenApiConfig
      * @return Configured OpenAPI instance
      */
     @Bean
-    public OpenAPI customOpenAPI()
-        {
+    public OpenAPI customOpenAPI() {
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
                 .scheme("bearer")

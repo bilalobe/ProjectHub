@@ -1,7 +1,7 @@
 package com.projecthub.core.repositories.jpa;
 
-import com.projecthub.core.models.SecurityAuditLog;
 import com.projecthub.core.models.SecurityAuditAction;
+import com.projecthub.core.models.SecurityAuditLog;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
