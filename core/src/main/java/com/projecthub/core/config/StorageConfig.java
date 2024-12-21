@@ -1,7 +1,7 @@
-package com.projecthub.config;
+package com.projecthub.core.config;
 
-import com.projecthub.config.properties.DesktopDataSourceProperties;
-import com.projecthub.config.properties.WebDataSourceProperties;
+import com.projecthub.core.config.properties.DesktopDataSourceProperties;
+import com.projecthub.core.config.properties.WebDataSourceProperties;
 import com.projecthub.core.services.sync.SyncService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
