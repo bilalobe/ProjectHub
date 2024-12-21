@@ -5,6 +5,13 @@ import com.projecthub.core.services.user.AppUserProfileService;
 
 import java.util.UUID;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 /**
  * REST controller for handling user profile operations. Provides endpoints for
  * retrieving and updating user profiles.
