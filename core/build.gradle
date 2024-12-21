@@ -1,0 +1,39 @@
+plugins {
+    id 'java-library'
+    alias(libs.plugins.springBoot)
+    alias(libs.plugins.springDependencyManagement)
+}
+
+dependencies {
+    api libs.bundles.springBase
+    implementation libs.bundles.springCache
+    implementation libs.bundles.springWeb
+    implementation libs.bundles.swaggerV3
+    implementation libs.bundles.springBatch
+
+    implementation libs.bundles.jjwt
+    implementation libs.modelMapper
+    implementation libs.hikariCP
+    implementation libs.querydslJpa
+    implementation libs.mapstruct
+    implementation libs.thymeleaf
+    implementation libs.jakartaMail
+
+    implementation libs.springRetry
+    implementation libs.apacheCommonsNet
+    implementation libs.thymeleafSpring5
+
+
+    annotationProcessor libs.querydslApt
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    testImplementation libs.bundles.testing
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
