@@ -260,6 +260,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleAllOtherExceptions(
+            Exception ex, WebRequest request) {
+        LOG.error("Unexpected error occurred", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                           .body(ApiError.builder()
+                                .timestamp(LocalDateTime.now())
+                                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .message("An unexpected error occurred")
+                                .debugMessage(ex.getLocalizedMessage())
+                                .build());
+    }
+
     private String getLocalizedMessage(String key, Locale locale) {
         return messageSource.getMessage(key, null, key, locale);
     }
