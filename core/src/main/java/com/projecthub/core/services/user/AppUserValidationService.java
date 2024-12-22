@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserValidationService {
-    private static final Logger logger = LoggerFactory.getLogger(UserValidationService.class);
+public class AppUserValidationService {
+    private static final Logger logger = LoggerFactory.getLogger(AppUserValidationService.class);
 
     private final Validator validator;
     private final AppUserJpaRepository userRepository;
 
-    public UserValidationService(Validator validator, AppUserJpaRepository userRepository) {
+    public AppUserValidationService(Validator validator, AppUserJpaRepository userRepository) {
         this.validator = validator;
         this.userRepository = userRepository;
     }
