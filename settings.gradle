@@ -3,11 +3,9 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-    plugins {
-        id 'org.openjfx.javafxplugin' version '0.1.0'
 
-    }
+    includeBuild 'build-logic'
 }
 
 rootProject.name = 'ProjectHub'
-include 'app', 'frontend', 'plugins:projecthub-csv-plugin'
+include 'core', 'desktop-ui', 'plugins:projecthub-csv-plugin'
