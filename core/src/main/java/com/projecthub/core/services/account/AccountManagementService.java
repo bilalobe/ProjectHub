@@ -1,8 +1,8 @@
 package com.projecthub.core.services.account;
 
+import com.projecthub.core.entities.AppUser;
+import com.projecthub.core.enums.SecurityAuditAction;
 import com.projecthub.core.exceptions.UserNotFoundException;
-import com.projecthub.core.models.AppUser;
-import com.projecthub.core.models.SecurityAuditAction;
 import com.projecthub.core.repositories.jpa.AppUserJpaRepository;
 import com.projecthub.core.services.audit.SecurityAuditService;
 import org.springframework.stereotype.Service;
