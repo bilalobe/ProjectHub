@@ -1,11 +1,14 @@
 package com.projecthub.core.repositories.jpa;
 
-import com.projecthub.core.models.AppUser;
+import com.projecthub.core.entities.AppUser;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,4 +36,11 @@ public interface AppUserJpaRepository extends JpaRepository<AppUser, UUID> {
     Optional<AppUser> findByResetToken(String token);
 
     Optional<AppUser> findByEmail(String email);
+
+    Optional<AppUser> findByVerificationToken(String token);
+
+    @Modifying
+    @Query("UPDATE AppUser u SET u.verificationToken = NULL, u.verificationTokenExpiry = NULL " +
+            "WHERE u.verificationTokenExpiry < ?1 AND u.verificationToken IS NOT NULL")
+    int deleteExpiredVerificationTokens(LocalDateTime now);
 }
