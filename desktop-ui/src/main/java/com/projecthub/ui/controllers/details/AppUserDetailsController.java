@@ -1,10 +1,9 @@
 package com.projecthub.ui.controllers.details;
 
-import com.projecthub.core.dto.AppUserDTO;
+
 import com.projecthub.core.exceptions.InvalidInputException;
 import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.exceptions.UserAlreadyExistsException;
-import com.projecthub.core.services.AppUserService;
 import com.projecthub.ui.controllers.BaseController;
 import com.projecthub.ui.viewmodels.details.AppUserDetailsViewModel;
 import javafx.collections.FXCollections;
