@@ -1,4 +1,4 @@
-package com.projecthub.core.services.ui.notification;
+package com.projecthub.ui.services.notification;
 
 import javafx.scene.control.Alert;
 import org.springframework.stereotype.Service;

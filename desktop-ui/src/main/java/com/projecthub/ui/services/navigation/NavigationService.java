@@ -1,4 +1,4 @@
-package com.projecthub.core.services.ui.navigation;
+package com.projecthub.ui.services.navigation;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;

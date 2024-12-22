@@ -1,4 +1,4 @@
-package com.projecthub.core.services.ui.theme;
+package com.projecthub.ui.services.theme;
 
 import javafx.scene.Scene;
 import org.springframework.stereotype.Service;
@@ -15,14 +15,14 @@ public class ThemeService {
     private static final String LIGHT_THEME = "/css/gluon-light.css";
     private static final String DARK_THEME = "/css/gluon-dark.css";
     private final Preferences prefs = Preferences.userNodeForPackage(ThemeService.class);
-    private String currentTheme;
-    private Scene scene;
-
-    /**
-     * Initializes ThemeService without Scene. Scene will be set later.
-     */
-    public ThemeService() {
-        this.currentTheme = prefs.get(THEME_KEY, "Light"); // Default to Light theme
+    private static String currentTheme;
+        private Scene scene;
+    
+        /**
+         * Initializes ThemeService without Scene. Scene will be set later.
+         */
+        public ThemeService() {
+            // currentTheme is initialized elsewhere
     }
 
     /**
@@ -41,7 +41,7 @@ public class ThemeService {
      * @param theme the name of the theme to set ("Light" or "Dark")
      */
     public void setTheme(String theme) {
-        this.currentTheme = theme;
+        currentTheme = theme;
         applyTheme(theme);
         prefs.put(THEME_KEY, theme); // Persist the theme preference
     }
@@ -51,7 +51,7 @@ public class ThemeService {
      *
      * @return the current theme name
      */
-    public String getCurrentTheme() {
+    public static String getCurrentTheme() {
         return currentTheme;
     }
 

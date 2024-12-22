@@ -1,4 +1,4 @@
-package com.projecthub.core.services.ui.theme;
+package com.projecthub.ui.services.theme;
 
 public final class ThemeConstants {
     public static final String THEME_KEY = "app_theme";

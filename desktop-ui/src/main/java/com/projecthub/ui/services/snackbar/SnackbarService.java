@@ -1,4 +1,4 @@
-package com.projecthub.core.services.ui.snackbar;
+package com.projecthub.ui.services.snackbar;
 
 import com.gluonhq.charm.glisten.control.Snackbar;
 import javafx.application.Platform;

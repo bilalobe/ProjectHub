@@ -1,4 +1,4 @@
-package com.projecthub.core.services.ui.locale;
+package com.projecthub.ui.services.locale;
 
 import java.util.Locale;
 
