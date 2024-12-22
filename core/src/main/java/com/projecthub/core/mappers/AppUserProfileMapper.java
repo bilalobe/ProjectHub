@@ -1,7 +1,8 @@
 package com.projecthub.core.mappers;
 
 import com.projecthub.core.dto.AppUserProfileDTO;
-import com.projecthub.core.models.AppUser;
+import com.projecthub.core.dto.UpdateUserRequestDTO;
+import com.projecthub.core.entities.AppUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
@@ -27,4 +28,12 @@ public interface AppUserProfileMapper {
      * @param user           the AppUser entity to update
      */
     void updateUserProfileFromDTO(AppUserProfileDTO userProfileDTO, @MappingTarget AppUser user);
+
+    /**
+     * Updates an existing AppUser entity from an UpdateUserRequestDTO.
+     *
+     * @param updateRequest the UpdateUserRequestDTO containing updated profile details
+     * @param existingUser  the AppUser entity to update
+     */
+    void updateUserFromRequest(UpdateUserRequestDTO updateRequest, AppUser existingUser);
 }
