@@ -1,7 +1,7 @@
 package com.projecthub.core.services.auth;
 
-import com.projecthub.core.models.AppUser;
-import com.projecthub.core.models.RememberMeToken;
+import com.projecthub.core.entities.AppUser;
+import com.projecthub.core.entities.RememberMeToken;
 import com.projecthub.core.repositories.RememberMeTokenRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

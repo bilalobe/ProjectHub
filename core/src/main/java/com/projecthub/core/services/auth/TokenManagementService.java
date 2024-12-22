@@ -1,6 +1,6 @@
 package com.projecthub.core.services.auth;
 
-import com.projecthub.core.models.AppUser;
+import com.projecthub.core.entities.AppUser;
 import com.projecthub.core.repositories.TokenRepository;
 import com.projecthub.core.utils.JwtUtil;
 import org.slf4j.Logger;

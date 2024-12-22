@@ -2,12 +2,12 @@ package com.projecthub.core.services.auth;
 
 import com.projecthub.core.dto.AuthenticationResult;
 import com.projecthub.core.dto.LoginRequestDTO;
+import com.projecthub.core.entities.AppUser;
+import com.projecthub.core.entities.RememberMeToken;
+import com.projecthub.core.enums.SecurityAuditAction;
 import com.projecthub.core.exceptions.AccountDisabledException;
 import com.projecthub.core.exceptions.AccountLockedException;
 import com.projecthub.core.exceptions.InvalidCredentialsException;
-import com.projecthub.core.models.AppUser;
-import com.projecthub.core.models.RememberMeToken;
-import com.projecthub.core.models.SecurityAuditAction;
 import com.projecthub.core.repositories.jpa.AppUserJpaRepository;
 import com.projecthub.core.services.audit.SecurityAuditService;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public class AuthenticationService {
             }
 
             auditService.logAuthenticationAttempt(user.getUsername(), true, loginRequest.getIpAddress());
-            return new AuthenticationResult(accessToken, user.getId());
+            return new AuthenticationResult();
 
         } catch (Exception e) {
             auditService.logAuthenticationAttempt(loginRequest.getUsername(), false, loginRequest.getIpAddress());
