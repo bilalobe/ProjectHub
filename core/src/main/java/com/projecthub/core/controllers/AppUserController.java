@@ -4,7 +4,9 @@ import com.projecthub.core.dto.AppUserDTO;
 import com.projecthub.core.dto.RegisterRequestDTO;
 import com.projecthub.core.dto.UpdateUserRequestDTO;
 import com.projecthub.core.exceptions.ResourceNotFoundException;
-import com.projecthub.core.services.AppUserService;
+import com.projecthub.core.services.user.AppUserManagementService;
+import com.projecthub.core.services.user.AppUserProfileService;
+import com.projecthub.core.services.user.AppUserRegistrationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -12,15 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -45,60 +39,49 @@ import java.util.UUID;
  *   <li>{@link #handleException(Exception)} - Handles general exceptions.</li>
  * </ul>
  *
- * @see AppUserService
+ * @see AppUserRegistrationService
+ * @see AppUserProfileService
+ * @see AppUserManagementService
  * @see AppUserDTO
  * @see ResourceNotFoundException
  */
-@Tag(name = "User API", description = "Operations pertaining to users in ProjectHub")
+@Tag(name = "User API", description = "Operations pertaining to user management in ProjectHub")
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class AppUserController {
 
     private static final Logger logger = LoggerFactory.getLogger(AppUserController.class);
 
-    private final AppUserService userService;
+    private final AppUserRegistrationService userRegistrationService;
+    private final AppUserManagementService userManagementService;
 
-    public AppUserController(AppUserService userService) {
-        this.userService = userService;
+    public AppUserController(AppUserRegistrationService userRegistrationService,
+                             AppUserManagementService userManagementService) {
+        this.userRegistrationService = userRegistrationService;
+        this.userManagementService = userManagementService;
     }
 
     @Operation(summary = "Get all users")
     @GetMapping
     public ResponseEntity<List<AppUserDTO>> getAllUsers() {
         logger.info("Retrieving all users");
-        List<AppUserDTO> users = userService.getAllUsers();
+        List<AppUserDTO> users = userManagementService.getAllUsers();
         return ResponseEntity.ok(users);
-    }
-
-    @Operation(summary = "Get user by ID")
-    @GetMapping("/{id}")
-    public ResponseEntity<AppUserDTO> getUserById(@PathVariable UUID id) {
-        logger.info("Retrieving user with ID {}", id);
-        AppUserDTO user = userService.getUserById(id);
-        return ResponseEntity.ok(user);
     }
 
     @Operation(summary = "Create a new user")
     @PostMapping
     public ResponseEntity<AppUserDTO> createUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
         logger.info("Creating a new user");
-        AppUserDTO createdUser = userService.createUser(registerRequest);
+        AppUserDTO createdUser = userRegistrationService.registerUser(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-    }
-
-    @Operation(summary = "Update a user")
-    @PutMapping("/{id}")
-    public ResponseEntity<AppUserDTO> updateUser(@PathVariable UUID id, @Valid @RequestBody UpdateUserRequestDTO updateUserRequest) {
-        logger.info("Updating user with ID {}", id);
-        AppUserDTO updatedUser = userService.updateUser(id, updateUserRequest);
-        return ResponseEntity.ok(updatedUser);
     }
 
     @Operation(summary = "Delete a user by ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         logger.info("Deleting user with ID {}", id);
-        userService.deleteUser(id);
+        userManagementService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 

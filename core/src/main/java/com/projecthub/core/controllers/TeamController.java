@@ -11,21 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Team API", description = "Operations pertaining to teams in ProjectHub")
 @RestController
-@RequestMapping("/teams")
+@RequestMapping("/api/v1/teams")  // Updated path
 public class TeamController {
 
     private static final Logger logger = LoggerFactory.getLogger(TeamController.class);
@@ -83,5 +76,12 @@ public class TeamController {
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
         logger.error("Resource not found", ex);
         return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex) {
+        logger.error("An error occurred", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An internal error occurred. Please try again later.");
     }
 }

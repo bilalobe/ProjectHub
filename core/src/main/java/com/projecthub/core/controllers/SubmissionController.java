@@ -10,21 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Submission API", description = "Operations pertaining to submissions in ProjectHub")
 @RestController
-@RequestMapping("/submissions")
+@RequestMapping("/api/v1/submissions")  // Updated path
 public class SubmissionController {
 
     private static final Logger logger = LoggerFactory.getLogger(SubmissionController.class);
@@ -44,25 +37,29 @@ public class SubmissionController {
     @Operation(summary = "Create a new submission")
     @PostMapping
     public ResponseEntity<SubmissionDTO> createSubmission(@Valid @RequestBody SubmissionDTO submissionDTO) {
-        try {
-            SubmissionDTO createdSubmission = submissionService.saveSubmission(submissionDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdSubmission);
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(null);
-        }
+        logger.info("Creating new submission");
+        SubmissionDTO createdSubmission = submissionService.saveSubmission(submissionDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdSubmission);
     }
 
     @Operation(summary = "Delete a submission")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteSubmission(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteSubmission(@PathVariable UUID id) {
         logger.info("Deleting submission with ID {}", id);
         submissionService.deleteSubmission(id);
-        return ResponseEntity.ok("Submission deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
         logger.error("Resource not found", ex);
         return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex) {
+        logger.error("An error occurred", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An internal error occurred. Please try again later.");
     }
 }

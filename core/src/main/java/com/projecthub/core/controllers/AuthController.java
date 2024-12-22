@@ -5,7 +5,7 @@ import com.projecthub.core.exceptions.AuthenticationFailedException;
 import com.projecthub.core.exceptions.InvalidCredentialsException;
 import com.projecthub.core.exceptions.UserAlreadyExistsException;
 import com.projecthub.core.services.auth.AuthenticationService;
-import com.projecthub.core.services.user.UserRegistrationService;
+import com.projecthub.core.services.user.AppUserRegistrationService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +22,16 @@ import java.util.List;
  * It provides endpoints for user registration and login.
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")  // Updated path
 public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     // Removed unused fields
-    private final UserRegistrationService userRegistrationService;
+    private final AppUserRegistrationService userRegistrationService;
     private final AuthenticationService authenticationService;
 
     public AuthController(
-            UserRegistrationService userRegistrationService,
+            AppUserRegistrationService userRegistrationService,
             AuthenticationService authenticationService) {
         this.userRegistrationService = userRegistrationService;
         this.authenticationService = authenticationService;

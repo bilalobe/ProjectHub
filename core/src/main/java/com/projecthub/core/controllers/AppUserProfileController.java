@@ -1,24 +1,31 @@
 package com.projecthub.core.controllers;
 
 import com.projecthub.core.dto.AppUserProfileDTO;
+import com.projecthub.core.dto.UpdateUserRequestDTO;
+import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.services.user.AppUserProfileService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller for handling user profile operations. Provides endpoints for
  * retrieving and updating user profiles.
  */
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/api/v1/users/{userId}/profile")
+@Tag(name = "User Profile API", description = "Operations for managing user profiles")
 public class AppUserProfileController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AppUserProfileController.class);
 
     private final AppUserProfileService userProfileService;
 
@@ -29,24 +36,75 @@ public class AppUserProfileController {
     /**
      * Retrieves a user profile by their UUID.
      *
-     * @param id the UUID of the user to retrieve
+     * @param userId the UUID of the user to retrieve
      * @return the UserProfileDTO of the retrieved user
      */
-    @GetMapping("/{id}")
-    public AppUserProfileDTO getUserProfile(@PathVariable UUID id) {
-        return userProfileService.getUserProfileById(id);
+    @Operation(summary = "Get user profile")
+    @GetMapping
+    public ResponseEntity<AppUserProfileDTO> getUserProfile(@PathVariable UUID userId) {
+        logger.info("Retrieving profile for user with ID: {}", userId);
+        AppUserProfileDTO profile = userProfileService.getUserProfileById(userId);
+        return ResponseEntity.ok(profile);
     }
 
     /**
      * Updates a user profile with the provided details.
      *
-     * @param id             the UUID of the user to update
-     * @param userProfileDTO the data transfer object containing updated profile
-     *                       details
+     * @param userId        the UUID of the user to update
+     * @param updateRequest the data transfer object containing updated profile
+     *                      details
      * @return the updated UserProfileDTO
      */
-    @PutMapping("/{id}")
-    public AppUserProfileDTO updateUserProfile(@PathVariable UUID id, @RequestBody AppUserProfileDTO userProfileDTO) {
-        return userProfileService.updateUserProfile(id, userProfileDTO);
+    @Operation(summary = "Update user profile")
+    @PutMapping
+    public ResponseEntity<AppUserProfileDTO> updateUserProfile(@PathVariable UUID userId,
+                                                               @Valid @RequestBody UpdateUserRequestDTO updateRequest) {
+        logger.info("Updating profile for user with ID: {}", userId);
+        AppUserProfileDTO updatedProfile = userProfileService.updateUserProfile(userId, updateRequest);
+        logger.info("Successfully updated profile for user with ID: {}", userId);
+        return ResponseEntity.ok(updatedProfile);
+    }
+
+    /**
+     * Updates the avatar of a user profile.
+     *
+     * @param userId the UUID of the user to update
+     * @param avatar the new avatar file
+     * @return a response entity indicating the result of the operation
+     */
+    @Operation(summary = "Update user avatar")
+    @PutMapping("/avatar")
+    public ResponseEntity<Void> updateAvatar(@PathVariable UUID userId, @RequestParam("avatar") MultipartFile avatar) {
+        logger.info("Updating avatar for user with ID: {}", userId);
+        userProfileService.updateAvatar(userId, avatar);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Updates the status of a user profile.
+     *
+     * @param userId the UUID of the user to update
+     * @param status the new status
+     * @return a response entity indicating the result of the operation
+     */
+    @Operation(summary = "Update user status")
+    @PutMapping("/status")
+    public ResponseEntity<Void> updateStatus(@PathVariable UUID userId, @RequestParam("status") String status) {
+        logger.info("Updating status for user with ID: {}", userId);
+        userProfileService.updateStatus(userId, status);
+        return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        logger.error("Resource not found", ex);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex) {
+        logger.error("An error occurred", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An internal error occurred. Please try again later.");
     }
 }

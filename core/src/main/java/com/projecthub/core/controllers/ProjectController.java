@@ -10,22 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Project API", description = "Operations pertaining to projects in ProjectHub")
 @RestController
-@RequestMapping("/api/projects")
+@RequestMapping("/api/v1/projects")  // Updated path
 public class ProjectController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);
@@ -48,13 +40,8 @@ public class ProjectController {
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable UUID id) {
         logger.info("Retrieving project with ID {}", id);
-        try {
-            ProjectDTO project = projectService.getProjectById(id);
-            return ResponseEntity.ok(project);
-        } catch (ResourceNotFoundException e) {
-            logger.error("Project not found with ID {}", id, e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        ProjectDTO project = projectService.getProjectById(id);
+        return ResponseEntity.ok(project);
     }
 
     @Operation(summary = "Create a new project")
@@ -108,6 +95,7 @@ public class ProjectController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
         logger.error("An error occurred", ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An internal error occurred. Please try again later.");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An internal error occurred. Please try again later.");
     }
 }

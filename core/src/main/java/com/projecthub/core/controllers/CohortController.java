@@ -1,6 +1,7 @@
 package com.projecthub.core.controllers;
 
 import com.projecthub.core.dto.CohortDTO;
+import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.services.school.CohortService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,14 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +20,7 @@ import java.util.UUID;
  */
 @Tag(name = "Cohort Controller", description = "Operations related to Cohorts")
 @RestController
-@RequestMapping("/api/cohorts")
+@RequestMapping("/api/v1/cohorts")  // Updated path
 public class CohortController {
 
     private static final Logger logger = LoggerFactory.getLogger(CohortController.class);
@@ -123,5 +117,18 @@ public class CohortController {
         logger.info("Deleting cohort with ID {}", id);
         cohortService.deleteCohort(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        logger.error("Resource not found", ex);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex) {
+        logger.error("An error occurred", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An internal error occurred. Please try again later.");
     }
 }

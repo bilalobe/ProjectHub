@@ -11,22 +11,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "School API", description = "Operations pertaining to schools in ProjectHub")
 @RestController
-@RequestMapping("/api/schools")
+@RequestMapping("/api/v1/schools")  // Updated path
 public class SchoolController {
 
     private static final Logger logger = LoggerFactory.getLogger(SchoolController.class);
@@ -71,10 +63,10 @@ public class SchoolController {
 
     @Operation(summary = "Delete a school by ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteSchool(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteSchool(@PathVariable UUID id) {
         logger.info("Deleting school with ID {}", id);
         schoolService.deleteSchool(id);
-        return ResponseEntity.ok("School deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -84,9 +76,10 @@ public class SchoolController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    @ExceptionHandler({Exception.class})
-    public ResponseEntity<String> handleExceptions(Exception ex) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex) {
         logger.error("An error occurred", ex);
-        return ResponseEntity.status(400).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An internal error occurred. Please try again later.");
     }
 }
