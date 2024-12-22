@@ -18,7 +18,7 @@ k8s/
 gradle.properties
 
 # Ignore bin directory
-app/bin/
+desktop-ui/bin/
 
 # Other common ignores
 *.class
@@ -35,3 +35,4 @@ out/
 node_modules/
 dist/
 coverage/
+bin/
