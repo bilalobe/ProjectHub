@@ -1,5 +1,6 @@
-package com.projecthub.core.exceptions;
+package com.projecthub.core.controllers.advice;
 
+import com.projecthub.core.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -79,6 +80,39 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler({
+            AuthenticationException.class,
+            AuthenticationFailedException.class,
+            InvalidTokenException.class
+    })
+    public ResponseEntity<ApiError> handleAuthenticationFailure(BaseException ex, Locale locale) {
+        return createErrorResponse(HttpStatus.UNAUTHORIZED,
+                getLocalizedMessage("error.authentication.failed", locale), ex);
+    }
+
+    @ExceptionHandler({
+            EmailSendingException.class
+    })
+    public ResponseEntity<ApiError> handleEmailError(EmailSendingException ex, Locale locale) {
+        return createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                getLocalizedMessage("error.email.sending", locale), ex);
+    }
+
+    @ExceptionHandler({
+            InvalidInputException.class,
+            PasswordValidationException.class
+    })
+    public ResponseEntity<ApiError> handleInputValidation(BaseException ex, Locale locale) {
+        return createErrorResponse(HttpStatus.BAD_REQUEST,
+                getLocalizedMessage("error.input.validation", locale), ex);
+    }
+
+    @ExceptionHandler(RegistrationFailedException.class)
+    public ResponseEntity<ApiError> handleRegistrationFailure(RegistrationFailedException ex, Locale locale) {
+        return createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                getLocalizedMessage("error.registration", locale), ex);
+    }
+
     // Resource conflict exceptions
     @ExceptionHandler({
             UserAlreadyExistsException.class,
@@ -111,6 +145,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ApiError> handleBindException(BindException ex, Locale locale) {
         return handleValidationErrors(ex, locale, "error.binding");
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ApiError> handleValidationException(ValidationException ex, Locale locale) {
+        return createErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                getLocalizedMessage("error.validation", locale),
+                ex
+        );
     }
 
     private ResponseEntity<ApiError> handleValidationErrors(Exception ex, Locale locale, String messageKey) {
@@ -159,7 +202,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({
             RepositoryException.class,
             IOException.class,
-            InternalServerException.class
+            InternalServerException.class,
+            SynchronizationException.class
     })
     public ResponseEntity<ApiError> handleInternalError(Exception ex, Locale locale) {
         return createErrorResponse(
@@ -167,6 +211,43 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 getLocalizedMessage("error.internal", locale),
                 ex
         );
+    }
+
+    @ExceptionHandler(SynchronizationException.class)
+    public ResponseEntity<ApiError> handleSynchronizationException(SynchronizationException ex, Locale locale) {
+        return createErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                getLocalizedMessage("error.synchronization", locale),
+                ex
+        );
+    }
+
+    // Profile update exception
+    @ExceptionHandler(ProfileUpdateException.class)
+    public ResponseEntity<ApiError> handleProfileUpdateException(ProfileUpdateException ex) {
+        LOG.error("Profile update error", ex);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiError.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .message("Failed to update profile")
+                        .debugMessage(ex.getMessage())
+                        .build());
+    }
+
+    // Storage exception
+    @ExceptionHandler(StorageException.class)
+    public ResponseEntity<ApiError> handleStorageException(StorageException ex) {
+        LOG.error("File storage error", ex);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiError.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .message("File storage error")
+                        .debugMessage(ex.getMessage())
+                        .build());
     }
 
     // Catch-all handler
