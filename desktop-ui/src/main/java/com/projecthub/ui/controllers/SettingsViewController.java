@@ -1,14 +1,14 @@
 package com.projecthub.ui.controllers;
 
-import com.projecthub.core.services.ThemeService;
-import com.projecthub.core.services.ui.locale.LanguageService;
+import com.projecthub.ui.services.locale.LanguageService;
+import com.projecthub.ui.services.theme.ThemeService;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
@@ -33,7 +33,7 @@ public class SettingsViewController {
     @FXML
     private Button cancelButton;
 
-    @Autowired
+
     public SettingsViewController(LanguageService languageService, ThemeService themeService) {
         this.languageService = languageService;
         this.themeService = themeService;
@@ -43,7 +43,7 @@ public class SettingsViewController {
     public void initialize() {
         // Initialize Theme ComboBox
         themeComboBox.getItems().addAll("Light", "Dark");
-        themeComboBox.setValue(themeService.getCurrentTheme());
+        themeComboBox.setValue(ThemeService.getCurrentTheme());
 
         // Initialize Language ComboBox
         languageComboBox.getItems().addAll("English", "Spanish", "Arabic");
@@ -88,7 +88,7 @@ public class SettingsViewController {
         // For example, clear selections or reset to previous values
 
         // Reload current settings if necessary
-        themeComboBox.setValue(themeService.getCurrentTheme());
+        themeComboBox.setValue(ThemeService.getCurrentTheme());
         languageComboBox.setValue(languageService.getCurrentLocale().getDisplayLanguage());
         emailNotificationsCheckBox.setSelected(true); // Reset to default or previous state
     }

@@ -3,7 +3,7 @@ package com.projecthub.ui.controllers;
 import com.gluonhq.charm.glisten.control.AppBar;
 import com.gluonhq.charm.glisten.control.NavigationDrawer;
 import com.gluonhq.charm.glisten.visual.MaterialDesignIcon;
-import com.projecthub.core.services.ui.locale.LanguageService;
+import com.projecthub.ui.services.locale.LanguageService;
 import com.projecthub.ui.viewmodels.MainViewViewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

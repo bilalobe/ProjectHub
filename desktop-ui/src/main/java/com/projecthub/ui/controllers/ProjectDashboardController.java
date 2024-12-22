@@ -3,6 +3,7 @@ package com.projecthub.ui.controllers;
 import com.projecthub.core.dto.ProjectDTO;
 import com.projecthub.core.services.project.ProjectService;
 import com.projecthub.core.services.project.TaskService;
+import com.projecthub.ui.services.navigation.NavigationService;
 import com.projecthub.ui.viewmodels.ProjectDashboardViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.util.StringConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -45,11 +45,16 @@ public class ProjectDashboardController implements Initializable {
 
     private ProjectDashboardViewModel viewModel;
 
-    @Autowired
-    private ProjectService projectService;
+    private final ProjectService projectService;
 
-    @Autowired
-    private TaskService taskService;
+    private final NavigationService navigationService;
+    private final TaskService taskService;
+
+    public ProjectDashboardController(ProjectService projectService, TaskService taskService, NavigationService navigationService) {
+        this.projectService = projectService;
+        this.taskService = taskService;
+        this.navigationService = navigationService;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -104,6 +109,6 @@ public class ProjectDashboardController implements Initializable {
 
     private void handleBackButton() {
         // Implement navigation back to the main dashboard
-        // For example: Navigator.navigateTo("MainDashboard");
+        navigationService.navigateTo("MainDashboard");
     }
 }

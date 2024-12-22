@@ -11,6 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import org.springframework.stereotype.Component;
 
+import static java.util.concurrent.CompletableFuture.runAsync;
+
 @Component
 public class LoginController extends BaseController {
 
@@ -122,9 +124,9 @@ public class LoginController extends BaseController {
         BooleanBinding loading = loginViewModel.loginInProgressProperty();
 
         // Disable all inputs during loading
-        usernameField.disableProperty().bind(loading);
-        passwordField.disableProperty().bind(loading);
-        loginButton.disableProperty().bind(loading);
+        usernameField.disableProperty().bind(null);
+        passwordField.disableProperty().bind(null);
+        loginButton.disableProperty().bind(null);
         passkeyButton.disableProperty().bind(
                 loading.or(loginViewModel.passkeyAvailableProperty().not())
         );
@@ -137,6 +139,10 @@ public class LoginController extends BaseController {
         loginButton.setAccessibleRoleDescription(getMessage("accessibility.login.button"));
         passkeyButton.setAccessibleRoleDescription(getMessage("accessibility.passkey.button"));
         githubLoginButton.setAccessibleRoleDescription(getMessage("accessibility.github.button"));
+    }
+
+    private String getMessage(String s) {
+        return s;
     }
 
     private void handleLogin() {

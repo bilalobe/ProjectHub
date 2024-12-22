@@ -1,6 +1,7 @@
 package com.projecthub.ui.controllers;
 
-import com.projecthub.ui.services.NavigationService;
+import com.projecthub.ui.services.navigation.NavigationService;
+import com.projecthub.ui.services.notification.NotificationService;
 import com.gluonhq.charm.glisten.control.NavigationDrawer;
 import javafx.fxml.FXML;
 
@@ -11,7 +12,7 @@ public class NavigationDrawerController {
 
     @FXML
     private void navigateHome() {
-        NavigationService.getInstance().navigateTo("/ui/views/HomeView.fxml");
+        NotificationService.getInstance().navigateTo("/ui/views/HomeView.fxml");
         navigationDrawer.close();
     }
 

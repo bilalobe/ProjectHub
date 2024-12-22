@@ -15,7 +15,7 @@ public abstract class BaseController {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     private final ResourceBundle resourceBundle;
 
-    public BaseController() {
+    protected BaseController() {
         // Load the resource bundle based on the default locale
         Locale locale = Locale.getDefault();
         resourceBundle = ResourceBundle.getBundle("messages", locale);
