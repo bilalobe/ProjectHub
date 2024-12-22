@@ -3,6 +3,7 @@ package com.projecthub.core.services.sync;
 import com.projecthub.core.exceptions.SynchronizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ public class SyncService {
     private final NetworkStatusChecker networkChecker;
     private final List<EntitySynchronizer<?>> synchronizers;
 
+    @Autowired
     public SyncService(
             SyncStatusTracker syncStatusTracker,
             NetworkStatusChecker networkChecker,
@@ -27,8 +29,16 @@ public class SyncService {
         this.synchronizers = synchronizers;
     }
 
-    public SyncService(DataSource dataSource) {
+    public SyncService(DataSource dataSource, SyncStatusTracker syncStatusTracker, NetworkStatusChecker networkChecker, List<EntitySynchronizer<?>> synchronizers) {
         //TODO Auto-generated constructor stub
+        this.syncStatusTracker = syncStatusTracker;
+        this.networkChecker = networkChecker;
+        this.synchronizers = synchronizers;
+    }
+
+    public SyncService(DataSource dataSource) {
+        // This constructor is not supported
+        throw new UnsupportedOperationException("Constructor with DataSource is not supported");
     }
 
     @Transactional
