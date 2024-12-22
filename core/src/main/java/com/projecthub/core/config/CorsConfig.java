@@ -19,14 +19,10 @@ public class CorsConfig {
 
     /**
      * Array of allowed origins for CORS requests.
-     * Defaults to http://localhost:4200 if not specified in properties.
+     * Defaults to <a href="http://localhost:4200">...</a> if not specified in properties.
      */
     @Value("${app.cors.allowed-origins:http://localhost:4200}")
-    private final String[] allowedOrigins;
-
-    public CorsConfig(String[] allowedOrigins) {
-        this.allowedOrigins = allowedOrigins;
-    }
+    private String[] allowedOrigins;
 
     /**
      * Configures CORS settings for the application.
