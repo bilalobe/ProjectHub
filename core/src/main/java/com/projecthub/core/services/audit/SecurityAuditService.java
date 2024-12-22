@@ -1,7 +1,7 @@
 package com.projecthub.core.services.audit;
 
-import com.projecthub.core.models.SecurityAuditAction;
-import com.projecthub.core.models.SecurityAuditLog;
+import com.projecthub.core.entities.SecurityAuditLog;
+import com.projecthub.core.enums.SecurityAuditAction;
 import com.projecthub.core.repositories.jpa.SecurityAuditLogRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
