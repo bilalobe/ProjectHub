@@ -1,6 +1,6 @@
 package com.projecthub.core.repositories;
 
-import com.projecthub.core.models.RememberMeToken;
+import com.projecthub.core.entities.RememberMeToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
