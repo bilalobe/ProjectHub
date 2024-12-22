@@ -1,6 +1,7 @@
 package com.projecthub.core.services.sync.impl;
 
-import com.projecthub.core.models.AppUser;
+import com.projecthub.core.entities.AppUser;
+import com.projecthub.core.services.sync.UpdateService;
 import com.projecthub.core.services.sync.LocalDataService;
 import com.projecthub.core.services.sync.RemoteDataService;
 import org.springframework.stereotype.Component;
@@ -9,8 +10,9 @@ import org.springframework.stereotype.Component;
 public class UserSynchronizer extends BaseSynchronizer<AppUser> {
 
     public UserSynchronizer(LocalDataService localDataService,
-                            RemoteDataService remoteDataService) {
-        super(localDataService, remoteDataService);
+                            RemoteDataService remoteDataService,
+                            UpdateService updateService) {
+        super(localDataService, remoteDataService, updateService);
     }
 
     @Override

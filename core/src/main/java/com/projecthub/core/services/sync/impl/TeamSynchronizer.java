@@ -1,17 +1,18 @@
 package com.projecthub.core.services.sync.impl;
 
-
 import com.projecthub.core.models.Team;
 import com.projecthub.core.services.sync.LocalDataService;
 import com.projecthub.core.services.sync.RemoteDataService;
+import com.projecthub.core.services.sync.UpdateService;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TeamSynchronizer extends BaseSynchronizer<Team> {
 
     public TeamSynchronizer(LocalDataService localDataService,
-                            RemoteDataService remoteDataService) {
-        super(localDataService, remoteDataService);
+                            RemoteDataService remoteDataService,
+                            UpdateService updateService) {
+        super(localDataService, remoteDataService, updateService);
     }
 
     @Override
@@ -23,8 +24,4 @@ public class TeamSynchronizer extends BaseSynchronizer<Team> {
     public String getEntityName() {
         return "teams";
     }
-}
-
-public class TeamSynchronizer {
-
 }

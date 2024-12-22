@@ -1,62 +1,106 @@
 package com.projecthub.core.services.sync.impl;
 
+import com.projecthub.core.entities.BaseEntity;
 import com.projecthub.core.exceptions.SynchronizationException;
-import com.projecthub.core.models.BaseEntity;
 import com.projecthub.core.services.sync.EntitySynchronizer;
 import com.projecthub.core.services.sync.LocalDataService;
 import com.projecthub.core.services.sync.RemoteDataService;
+import com.projecthub.core.services.sync.UpdateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 public abstract class BaseSynchronizer<T extends BaseEntity> implements EntitySynchronizer<T> {
     private static final Logger logger = LoggerFactory.getLogger(BaseSynchronizer.class);
+    private static final int MAX_RETRY_ATTEMPTS = 3;
 
     protected final LocalDataService localDataService;
     protected final RemoteDataService remoteDataService;
+    protected final UpdateService updateService;
 
-    protected BaseSynchronizer(LocalDataService localDataService, RemoteDataService remoteDataService) {
+    protected BaseSynchronizer(LocalDataService localDataService, RemoteDataService remoteDataService, UpdateService updateService) {
         this.localDataService = localDataService;
         this.remoteDataService = remoteDataService;
+        this.updateService = updateService;
     }
 
     @Override
+    @Transactional
+    @Retryable(
+            maxAttempts = MAX_RETRY_ATTEMPTS,
+            backoff = @Backoff(delay = 1000),
+            retryFor = {SynchronizationException.class}
+    )
     public void synchronize() {
         try {
-            List<T> localData = localDataService.getLocalData(getEntityType());
-            List<T> remoteData = remoteDataService.getRemoteData(getEntityType());
+            List<T> localData = fetchLocalData();
+            List<T> remoteData = fetchRemoteData();
             List<T> mergedData = merge(localData, remoteData);
-            updateBothStores(mergedData);
-            logger.debug("Synchronized {} entities", getEntityName());
+            updateService.updateBothStores(mergedData, getEntityType());
+            logSyncSuccess();
         } catch (Exception e) {
-            logger.error("Failed to sync {} entities", getEntityName(), e);
-            throw new SynchronizationException("Failed to sync " + getEntityName(), e);
+            handleSyncError(e);
         }
     }
 
-    protected void updateBothStores(List<T> mergedData) {
-        localDataService.saveLocalData(mergedData);
-        remoteDataService.saveRemoteData(mergedData);
+    private List<T> fetchLocalData() {
+        try {
+            return localDataService.getLocalData(getEntityType());
+        } catch (Exception e) {
+            throw new SynchronizationException("Failed to fetch local " + getEntityName(), e);
+        }
+    }
+
+    private List<T> fetchRemoteData() {
+        try {
+            return remoteDataService.getRemoteData(getEntityType());
+        } catch (Exception e) {
+            throw new SynchronizationException("Failed to fetch remote " + getEntityName(), e);
+        }
     }
 
     protected List<T> merge(List<T> local, List<T> remote) {
         Map<UUID, T> mergedMap = new HashMap<>();
+        Map<UUID, LocalDateTime> lastModifiedMap = new HashMap<>();
 
-        // Add all remote entries as base
-        remote.forEach(item -> mergedMap.put(item.getId(), item));
+        // Process remote entries first
+        remote.forEach(item -> {
+            mergedMap.put(item.getId(), item);
+            lastModifiedMap.put(item.getId(), item.getLastModifiedDate());
+        });
 
-        // Merge local entries, preferring newer versions based on lastModifiedDate
+        // Merge local entries with conflict resolution
         local.forEach(item -> {
             UUID id = item.getId();
-            T existingItem = mergedMap.get(id);
+            LocalDateTime localModified = item.getLastModifiedDate();
+            LocalDateTime remoteModified = lastModifiedMap.get(id);
 
-            if (existingItem == null || item.getLastModifiedDate().orElse(LocalDateTime.MIN).isAfter(existingItem.getLastModifiedDate().orElse(LocalDateTime.MIN))) {
+            if (shouldUseLocalVersion(localModified, remoteModified)) {
                 mergedMap.put(id, item);
             }
         });
 
         return new ArrayList<>(mergedMap.values());
+    }
+
+    private boolean shouldUseLocalVersion(LocalDateTime localModified, LocalDateTime remoteModified) {
+        if (localModified == null) return false;
+        if (remoteModified == null) return true;
+        return localModified.isAfter(remoteModified);
+    }
+
+    private void logSyncSuccess() {
+        logger.debug("Successfully synchronized {} entities", getEntityName());
+    }
+
+    private void handleSyncError(Exception e) {
+        String errorMessage = String.format("Failed to sync %s entities", getEntityName());
+        logger.error(errorMessage, e);
+        throw new SynchronizationException(errorMessage, e);
     }
 }

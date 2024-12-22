@@ -1,6 +1,6 @@
 package com.projecthub.core.services.sync.impl;
 
-import com.projecthub.core.models.SyncStatus;
+import com.projecthub.core.dto.SyncStatus;
 import com.projecthub.core.services.sync.SyncStatusTracker;
 import org.springframework.stereotype.Component;
 

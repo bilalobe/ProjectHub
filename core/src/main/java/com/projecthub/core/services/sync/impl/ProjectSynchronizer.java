@@ -1,14 +1,18 @@
 package com.projecthub.core.services.sync.impl;
 
 import com.projecthub.core.models.Project;
+import com.projecthub.core.services.sync.LocalDataService;
+import com.projecthub.core.services.sync.RemoteDataService;
+import com.projecthub.core.services.sync.UpdateService;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProjectSynchronizer extends BaseSynchronizer<Project> {
 
     public ProjectSynchronizer(LocalDataService localDataService,
-                               RemoteDataService remoteDataService) {
-        super(localDataService, remoteDataService);
+                               RemoteDataService remoteDataService,
+                               UpdateService updateService) {
+        super(localDataService, remoteDataService, updateService);
     }
 
     @Override
