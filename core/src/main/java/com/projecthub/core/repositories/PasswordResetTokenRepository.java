@@ -1,6 +1,6 @@
 package com.projecthub.core.repositories;
 
-import com.projecthub.core.models.PasswordResetToken;
+import com.projecthub.core.entities.PasswordResetToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
