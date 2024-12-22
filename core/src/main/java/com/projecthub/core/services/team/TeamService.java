@@ -7,7 +7,6 @@ import com.projecthub.core.exceptions.ResourceNotFoundException;
 import com.projecthub.core.mappers.AppUserMapper;
 import com.projecthub.core.mappers.ProjectMapper;
 import com.projecthub.core.mappers.TeamMapper;
-import com.projecthub.core.models.AppUser;
 import com.projecthub.core.models.Student;
 import com.projecthub.core.models.Team;
 import com.projecthub.core.repositories.jpa.AppUserJpaRepository;
@@ -147,9 +146,9 @@ public class TeamService {
     public TeamDTO addUserToTeam(UUID teamId, UUID userId) {
         logger.info("Adding user with ID: {} to team with ID: {}", userId, teamId);
         Team team = findTeamById(teamId);
-        AppUser user = appUserRepository.findById(userId)
+        appUserRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
-        Student student = new Student(user.getFirstName(), user.getEmail(), user.getLastName(), team);
+        Student student = new Student();
         team.getStudents().add(student);
         Team updatedTeam = teamRepository.save(team);
         logger.info("User added to team with ID: {}", updatedTeam.getId());
