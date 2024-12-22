@@ -31,7 +31,7 @@ public class StorageConfig {
     }
 
     /**
-     * Configures the DataSource for the 'web' profile using PostgreSQL.
+     * Configures the DataSource for the 'web' profile using PostgresSQL.
      *
      * @return configured DataSource
      */
