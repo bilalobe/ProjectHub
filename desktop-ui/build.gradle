@@ -1,6 +1,7 @@
 plugins {
     id 'application'
     alias(libs.plugins.gluonfxPlugin)
+    alias(libs.plugins.javafxPlugin)
     alias(libs.plugins.springBoot)
     alias(libs.plugins.springDependencyManagement)
     alias(libs.plugins.sonarqube)
@@ -20,30 +21,20 @@ repositories {
 dependencies {
     implementation project(':core')
     implementation libs.bundles.uiBase
-    implementation libs.bundles.gluon
     implementation libs.bundles.springBase
     implementation libs.bundles.springWeb
 
-    implementation libs.bundles.jjwt
-    implementation libs.modelMapper
-    implementation libs.openCsv
     implementation libs.owaspEncoder
-    implementation libs.mapstruct
 
     annotationProcessor libs.mapstructProcessor
     annotationProcessor libs.lombok
 
-    runtimeOnly libs.h2Database
-
     testImplementation libs.bundles.testing
 }
 
-sonarqube {
-    properties {
-        property "sonar.projectKey", "bilalobe_ProjectHub"
-        property "sonar.organization", "bilalobe"
-        property "sonar.host.url", "https://sonarcloud.io"
-    }
+javafx {
+    version = '23'
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.media', 'javafx.graphics']
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -51,13 +42,12 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 application {
-    mainClass = 'com.projecthub.MainApp'
+    mainClass = 'com.projecthub.ui.MainApp'
 }
 
 bootRun {
-    mainClass = 'com.projecthub.MainApp'
+    mainClass = 'com.projecthub.ui.MainApp'
     jvmArgs = [
-        '--module-path', configurations.runtimeClasspath.asPath,
         '--add-modules', 'javafx.controls,javafx.fxml,javafx.web,javafx.media,javafx.graphics'
     ]
 }
