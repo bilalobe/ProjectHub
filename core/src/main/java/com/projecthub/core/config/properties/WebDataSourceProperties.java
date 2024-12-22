@@ -2,9 +2,11 @@ package com.projecthub.core.config.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 @ConfigurationProperties(prefix = "spring.datasource.web")
 @Data
+@Component
 /*
  * Configuration properties for the web data source.
  */
@@ -13,3 +15,4 @@ public class WebDataSourceProperties {
     private String username;
     private String password;
 }
+
