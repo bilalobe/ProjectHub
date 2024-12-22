@@ -28,7 +28,7 @@ public class RepositoryConfig {
      */
     @Configuration
     @Profile("jpa")
-    @EnableJpaRepositories(basePackages = "com.projecthub.repository.jpa")
+    @EnableJpaRepositories(basePackages = "com.projecthub.core.repositories.jpa")
     @EnableTransactionManagement
     static class JpaRepositoryConfig {
         // Additional JPA configurations if needed
