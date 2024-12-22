@@ -1,9 +1,12 @@
 package com.projecthub.ui.controllers.main;
 
+import org.springframework.stereotype.Component;
+
 import com.projecthub.ui.utils.LoaderFactory;
 import com.projecthub.ui.utils.TreeCellFactory;
 import com.projecthub.ui.utils.TreeItemWrapper;
 import com.projecthub.ui.viewmodels.ProjectHubViewModel;
+
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -11,8 +14,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeItem.TreeModificationEvent;
 import javafx.scene.control.TreeView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Component
 public class ProjectHubFXController {
@@ -26,7 +27,6 @@ public class ProjectHubFXController {
     @FXML
     private TextField searchField;
 
-    @Autowired
     public ProjectHubFXController(ProjectHubViewModel viewModel, LoaderFactory loaderFactory) {
         this.viewModel = viewModel;
         this.loaderFactory = loaderFactory;
@@ -60,14 +60,15 @@ public class ProjectHubFXController {
         treeItem.setExpanded(false);
 
         // Lazy loading mechanism
-        treeItem.addEventHandler(TreeItem.branchExpandedEvent(), new EventHandler<TreeModificationEvent<TreeItemWrapper>>() {
-            @Override
-            public void handle(TreeModificationEvent<TreeItemWrapper> event) {
-                if (treeItem.getChildren().isEmpty()) {
-                    loadChildren(treeItem, wrapper);
-                }
-            }
-        });
+        treeItem.addEventHandler(TreeItem.branchExpandedEvent(),
+                new EventHandler<TreeModificationEvent<TreeItemWrapper>>() {
+                    @Override
+                    public void handle(TreeModificationEvent<TreeItemWrapper> event) {
+                        if (treeItem.getChildren().isEmpty()) {
+                            loadChildren(treeItem, wrapper);
+                        }
+                    }
+                });
 
         return treeItem;
     }
