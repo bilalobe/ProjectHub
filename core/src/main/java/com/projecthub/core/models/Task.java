@@ -1,18 +1,11 @@
 package com.projecthub.core.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-
+import com.projecthub.core.entities.AppUser;
+import com.projecthub.core.entities.BaseEntity;
+import com.projecthub.core.enums.TaskStatus;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
@@ -21,8 +14,22 @@ import java.util.Objects;
 /**
  * Represents a task within a {@link Project}.
  * <p>
- * Tasks are units of work assigned to users.
+ * Tasks are atomic units of work within a project that can be assigned to specific users.
+ * Each task has a status, optional due date, and can be assigned to a team member.
  * </p>
+ * <p>
+ * Business rules:
+ * <ul>
+ *   <li>Tasks must have a name and status</li>
+ *   <li>Due dates, if specified, must be in the future</li>
+ *   <li>Tasks must belong to exactly one project</li>
+ *   <li>Tasks can optionally be assigned to a user</li>
+ * </ul>
+ * </p>
+ *
+ * @see Project
+ * @see AppUser
+ * @see TaskStatus
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -33,6 +40,8 @@ import java.util.Objects;
 )
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = "project")
 public class Task extends BaseEntity {
 
     /**
@@ -45,50 +54,68 @@ public class Task extends BaseEntity {
 
     /**
      * The description of the task.
+     * <p>
+     * Optional field providing additional details about the task requirements,
+     * acceptance criteria, or other relevant information.
+     * </p>
      */
     private String description;
 
-    /**
-     * The status of the task.
-     */
-    @NotBlank(message = "Status is mandatory")
-    @Size(max = 50, message = "Status must be less than 50 characters")
+    @Min(1)
+    @Max(5)
     @Column(nullable = false)
-    private String status;
+    private Integer priority = 3;
+
+    @Min(0)
+    private Integer estimatedHours;
+
+    @Column(nullable = false)
+    private boolean isOverdue = false;
+
+    @Column(nullable = false)
+    private boolean isBlocked = false;
+
+    private String blockedReason;
+
+    /**
+     * The current status of the task.
+     * <p>
+     * Represents the task's progress state. Must be one of the predefined
+     * statuses in {@link TaskStatus}.
+     * </p>
+     */
+    @NotNull(message = "Status is mandatory")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private com.projecthub.core.enums.TaskStatus status;
 
     /**
      * The due date of the task.
      */
+    @Future(message = "Due date must be in the future")
     private LocalDate dueDate;
 
     /**
      * The user assigned to this task.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_user_id")
+    @JoinColumn
     private AppUser assignedUser;
 
     /**
      * The project to which this task belongs.
      */
+    @NotNull(message = "Project is mandatory")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     private Project project;
 
-    // Default constructor required by JPA
-    public Task() {
-    }
-
-    /**
-     * Constructs a new task with the specified fields.
-     */
-    public Task(String name, String description, String status, LocalDate dueDate, AppUser assignedUser, Project project) {
-        this.name = name;
-        this.description = description;
-        this.status = status;
-        this.dueDate = dueDate;
-        this.assignedUser = assignedUser;
-        this.project = project;
+    @PrePersist
+    @PreUpdate
+    protected void validateDates() {
+        if (dueDate != null && dueDate.isBefore(LocalDate.now())) {
+            throw new IllegalStateException("Due date cannot be in the past");
+        }
     }
 
     @Override

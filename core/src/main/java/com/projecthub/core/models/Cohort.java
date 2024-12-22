@@ -1,39 +1,81 @@
 package com.projecthub.core.models;
 
+import com.projecthub.core.entities.BaseEntity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a cohort within a {@link School}.
  * <p>
- * Cohorts contain multiple teams.
+ * A cohort is a group of teams that progress through the curriculum together.
+ * Cohorts are used to organize teams within a school and typically represent
+ * a specific time period or academic term.
  * </p>
+ * <p>
+ * Business rules:
+ * <ul>
+ *   <li>Each cohort must have a unique name within its school</li>
+ *   <li>Cohorts must belong to exactly one school</li>
+ *   <li>Cohorts can contain multiple teams</li>
+ *   <li>Cohort names are limited to 100 characters</li>
+ *   <li>Deleting a cohort will cascade to its teams</li>
+ * </ul>
+ * </p>
+ *
+ * @see School
+ * @see Team
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(
         indexes = {
-                @Index(name = "idx_cohort_name", columnList = "name")
+                @Index(name = "idx_cohort_name", columnList = "name"),
+                @Index(name = "idx_cohort_school_name", columnList = "school_id, name")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uc_school_name", columnNames = {"school_id", "name"})
         }
 )
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"teams", "school"})
 public class Cohort extends BaseEntity {
 
     /**
      * The name of the cohort.
+     * <p>
+     * The name must be unique within a school and serves as a business identifier
+     * for the cohort. Examples might include "Spring 2024" or "Fall Batch 2023".
+     * </p>
      */
     @NotBlank(message = "Cohort name is mandatory")
     @Size(max = 100, message = "Cohort name must be less than 100 characters")
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
+
+    @NotNull(message = "Start term is mandatory")
+    @Column(nullable = false)
+    private LocalDate startTerm;
+
+    @NotNull(message = "End term is mandatory")
+    @Column(nullable = false)
+    private LocalDate endTerm;
+
+    @Column(nullable = false)
+    private boolean isArchived = false;
+
+    @Column(nullable = false)
+    private boolean isActive = true;
 
     /**
      * The school to which this cohort belongs.
@@ -48,20 +90,17 @@ public class Cohort extends BaseEntity {
     @OneToMany(mappedBy = "cohort", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Team> teams;
 
-    /**
-     * Default constructor required by JPA.
-     */
-    public Cohort() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cohort cohort = (Cohort) o;
+        return Objects.equals(name, cohort.name) &&
+                Objects.equals(school, cohort.school);
     }
 
-    /**
-     * Constructs a new cohort with the specified fields.
-     *
-     * @param name   the name of the cohort
-     * @param school the school to which the cohort belongs
-     */
-    public Cohort(String name, School school) {
-        this.name = name;
-        this.school = school;
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, school);
     }
 }
