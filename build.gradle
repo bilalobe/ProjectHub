@@ -1,0 +1,47 @@
+plugins {
+    alias(libs.plugins.sonarqube)
+}
+
+allprojects {
+    group = 'com.projecthub'
+    version = '1.0.0'
+
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/milestone' }
+    }
+
+    ext {
+        springCloudVersion = libs.versions.springCloud.get()
+        prometheusVersion = "0.16.0"
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.annotationProcessorPath = configurations.annotationProcessor
+        options.compilerArgs += [
+            '-Amapstruct.defaultComponentModel=spring',
+            '-Amapstruct.suppressGeneratorTimestamp=true',
+            '-Amapstruct.suppressGeneratorVersionInfoComment=true'
+        ]
+    }
+
+    dependencies {
+        implementation libs.slf4jApi
+        testImplementation libs.junitJupiter
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
