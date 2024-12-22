@@ -1,6 +1,6 @@
 package com.projecthub.core.repositories.csv;
 
-import com.projecthub.core.models.AppUser;
+import com.projecthub.core.entities.AppUser;
 
 import java.util.Optional;
 
