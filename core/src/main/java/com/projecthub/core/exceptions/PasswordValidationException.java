@@ -1,11 +1,13 @@
 package com.projecthub.core.exceptions;
 
-public class PasswordValidationException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class PasswordValidationException extends BaseException {
     public PasswordValidationException(String message) {
-        super(message);
+        super(message, HttpStatus.BAD_REQUEST);
     }
 
-    public PasswordValidationException(String string, PasswordValidationException e) {
-        super(string, e);
+    public PasswordValidationException(String message, Throwable cause) {
+        super(message, cause, HttpStatus.BAD_REQUEST);
     }
 }

@@ -1,10 +1,9 @@
 package com.projecthub.core.exceptions;
 
-public class InvalidTokenException extends Exception {
+import org.springframework.http.HttpStatus;
 
-
+public class InvalidTokenException extends BaseException {
     public InvalidTokenException(String message) {
-        super(message);
+        super(message, HttpStatus.UNAUTHORIZED);
     }
-
 }

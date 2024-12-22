@@ -1,10 +1,13 @@
 package com.projecthub.core.exceptions;
 
-/**
- * Custom exception for email sending failures.
- */
-public class EmailSendingException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class EmailSendingException extends BaseException {
+    public EmailSendingException(String message) {
+        super(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     public EmailSendingException(String message, Throwable cause) {
-        super(message, cause);
+        super(message, cause, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

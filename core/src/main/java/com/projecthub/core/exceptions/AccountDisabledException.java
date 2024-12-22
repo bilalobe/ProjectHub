@@ -1,15 +1,13 @@
 package com.projecthub.core.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.FORBIDDEN)
-public class AccountDisabledException extends RuntimeException {
+public class AccountDisabledException extends BaseException {
     public AccountDisabledException(String message) {
-        super(message);
+        super(message, HttpStatus.FORBIDDEN);
     }
 
     public AccountDisabledException(String message, Throwable cause) {
-        super(message, cause);
+        super(message, cause, HttpStatus.FORBIDDEN);
     }
 }
