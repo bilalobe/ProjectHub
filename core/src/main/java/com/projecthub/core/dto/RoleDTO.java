@@ -1,5 +1,6 @@
 package com.projecthub.core.dto;
 
+import com.projecthub.core.enums.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,5 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RoleDTO {
     private UUID id;
-    private String name;
+    private RoleType name;
 }

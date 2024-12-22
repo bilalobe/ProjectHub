@@ -1,5 +1,6 @@
 package com.projecthub.core.dto;
 
+import com.projecthub.core.enums.SubmissionStatus;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -39,8 +40,8 @@ public class SubmissionDTO {
     @Max(value = 100, message = "Grade must be at most 100")
     private Integer grade;
 
-    @NotBlank(message = "Status is mandatory")
-    private String status;
+    @NotNull(message = "Status is mandatory")
+    private SubmissionStatus status;
 
     @NotNull(message = "SubmittedAt cannot be null")
     private LocalDateTime submittedAt;
@@ -51,5 +52,14 @@ public class SubmissionDTO {
 
     private String studentLastName;
 
+    public SubmissionStatus getStatus() {
+        return status;
+    }
 
+    public void setStatus(SubmissionStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Status cannot be null");
+        }
+        this.status = status;
+    }
 }

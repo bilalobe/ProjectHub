@@ -17,4 +17,7 @@ public class AuthenticationResult {
     private String token;
     private String rememberMeToken;
     private UUID userId;
+    public AuthenticationResult(String accessToken, UUID id, String tokenValue) {
+        //TODO Auto-generated constructor stub
+    }
 }

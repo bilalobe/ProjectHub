@@ -1,5 +1,6 @@
 package com.projecthub.core.dto;
 
+import com.projecthub.core.enums.TaskStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -38,11 +39,29 @@ public class TaskDTO {
     private String description;
 
     /**
-     * Enum representing the status of the task.
+     * Status of the task.
      */
-    public enum TaskStatus {
-        PENDING,
-        IN_PROGRESS,
-        COMPLETED
+    @NotNull(message = "Status is mandatory")
+    private TaskStatus status;
+
+    /**
+     * Gets the status of the task.
+     *
+     * @return the current status of the task
+     */
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the status of the task.
+     *
+     * @param status the new status of the task
+     */
+    public void setStatus(TaskStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Status cannot be null");
+        }
+        this.status = status;
     }
 }

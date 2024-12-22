@@ -10,9 +10,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorResponse {
-    private final int status;
-    private final String message;
-    private final List<String> errors;
+    private int status;
+    private String message;
+    private List<String> errors;
 
     public ErrorResponse(int status, String message, String error) {
         this.status = status;
