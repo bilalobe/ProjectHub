@@ -166,7 +166,7 @@ public class JwtUtil {
             String tokenUsername = getUsernameFromToken(token);
             return (tokenUsername.equals(username) && validateToken(token));
         } catch (Exception e) {
-            logger.error("Token validation failed for user: " + username, e);
+            logger.error("Token validation failed for user: {}", username, e);
             return false;
         }
     }
