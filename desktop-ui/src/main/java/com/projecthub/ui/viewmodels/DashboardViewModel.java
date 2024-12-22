@@ -64,27 +64,6 @@ public class DashboardViewModel {
         );
     }
 
-    public static class RecentActivity {
-        private final String timestamp;
-        private final String activity;
-        private final String user;
-
-        public RecentActivity(String timestamp, String activity, String user) {
-            this.timestamp = timestamp;
-            this.activity = activity;
-            this.user = user;
-        }
-
-        public String getTimestamp() {
-            return timestamp;
-        }
-
-        public String getActivity() {
-            return activity;
-        }
-
-        public String getUser() {
-            return user;
-        }
+    public record RecentActivity(String timestamp, String activity, String user) {
     }
 }

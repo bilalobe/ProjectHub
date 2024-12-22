@@ -68,7 +68,7 @@ public class ProjectHubViewModel {
 
     private void initialize() {
         loadProjects();
-        searchQuery.addListener((observable, oldValue, newValue) -> onSearchQueryChanged(observable, oldValue, newValue));
+        searchQuery.addListener(this::onSearchQueryChanged);
     }
 
     /**

@@ -165,4 +165,7 @@ public class LoginViewModel {
         // Implement message retrieval from ResourceBundle
         return key;
     }
+
+    public void authenticateWithPasskey() {
+    }
 }

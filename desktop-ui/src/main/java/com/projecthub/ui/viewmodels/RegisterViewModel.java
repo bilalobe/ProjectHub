@@ -8,7 +8,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,7 +28,7 @@ public class RegisterViewModel {
     private final BooleanProperty registrationInProgress = new SimpleBooleanProperty(false);
     private final ObservableList<String> availableRoles = FXCollections.observableArrayList();
 
-    @Autowired
+
     public RegisterViewModel(PasswordValidator passwordValidator, AppUserService appUserService) {
         this.passwordValidator = passwordValidator;
         this.appUserService = appUserService;
