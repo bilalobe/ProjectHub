@@ -23,6 +23,7 @@ dependencies {
     implementation libs.apacheCommonsNet
     implementation libs.thymeleafSpring5
 
+    implementation libs.h2Database
 
     annotationProcessor libs.querydslApt
     compileOnly libs.lombok
