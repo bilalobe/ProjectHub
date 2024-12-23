@@ -40,6 +40,9 @@ jakartaMail = "2.0.1"
 springRetry = "2.0.11"
 apacheCommonsNet = "3.9.0"
 springBatch = "5.0.2"
+passay = "1.6.3"
+webauthn4j = "0.18.0"  # Add this
+yubico = "1.13.0"  # Add this
 
 [libraries]
 # Spring Framework
@@ -92,9 +95,11 @@ springRetry = { group = "org.springframework.retry", name = "spring-retry", vers
 apacheCommonsNet = { group = "commons-net", name = "commons-net", version.ref = "apacheCommonsNet" }
 thymeleafSpring5 = { group = "org.thymeleaf", name = "thymeleaf-spring5", version.ref = "thymeleaf" }
 
-# Add the library definition for Spring Batch
 springBatchCore = { group = "org.springframework.batch", name = "spring-batch-core", version.ref = "springBatch" }
 springBatchInfrastructure = { group = "org.springframework.batch", name = "spring-batch-infrastructure", version.ref = "springBatch" }
+passay = { group = "org.passay", name = "passay", version.ref = "passay" }  # Add this
+webauthn4j = { group = "com.webauthn4j", name = "webauthn4j-core", version.ref = "webauthn4j" }  # Add this
+yubico = { group = "com.yubico", name = "yubico-webauthn-server-core", version.ref = "yubico" }  # Add this
 
 [plugins]
 springBoot = { id = "org.springframework.boot", version.ref = "springBoot" }

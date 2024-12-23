@@ -25,6 +25,10 @@ dependencies {
 
     implementation libs.h2Database
 
+    implementation libs.passay
+    implementation libs.webauthn4j
+    implementation libs.yubico
+
     annotationProcessor libs.querydslApt
     compileOnly libs.lombok
     annotationProcessor libs.lombok
