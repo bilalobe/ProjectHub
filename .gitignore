@@ -14,6 +14,9 @@ build/libs/
 # K8s playground
 k8s/
 
+# Experimental webapp
+frontend/
+
 # Ignore Gradle files
 gradle.properties
 
