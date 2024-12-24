@@ -23,7 +23,7 @@ pf4jSpring = "0.8.0"
 hikari = "5.0.1"
 h2 = "2.2.224"
 postgresql = "42.6.0"
-querydsl = "5.0.0"
+querydsl = "5.1.0"
 
 # Utility Versions
 jwt = "0.12.6"
