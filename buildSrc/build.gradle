@@ -1,0 +1,18 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'groovy'
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+}
+
+gradlePlugin {
+    plugins {
+        projectHub {
+            id = 'com.projecthub.gradle'
+            implementationClass = 'com.projecthub.gradle.ProjectHubPlugin'
+        }
+    }
+}
