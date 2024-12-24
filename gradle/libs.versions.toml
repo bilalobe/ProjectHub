@@ -20,7 +20,7 @@ pf4j = "3.9.0"
 pf4jSpring = "0.8.0"
 
 # Database/Cache Versions
-hikari = "5.0.1"
+hikari = "6.2.1"
 h2 = "2.2.224"
 postgresql = "42.6.0"
 querydsl = "5.0.0"
