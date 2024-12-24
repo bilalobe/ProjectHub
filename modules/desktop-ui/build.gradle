@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin'
+    id 'com.gluonhq.gluonfx-gradle-plugin'
+}
+
+apply from: "${rootProject.projectDir}/buildSrc/src/main/groovy/dependencies.gradle"
+
+dependencies {
+    
+    implementation project(":modules:core")
+
+    // JavaFX
+    implementation "org.openjfx:javafx-controls:${versions.javafx}"
+    implementation "org.controlsfx:controlsfx:${versions.controlsFx}"
+    
+    // Gluon
+    implementation "com.gluonhq:charm-glisten:${versions.gluonCharm}"
+    implementation "com.gluonhq:glisten-afterburner:${versions.gluonAfterburner}"
+    implementation "com.gluonhq:glisten2:${versions.gluonGlisten2}"
+}
+
+javafx {
+    version = '23'
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.media', 'javafx.graphics']
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+application {
+    mainClass = 'com.projecthub.ui.MainApp'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.projecthub.ui.MainApp'
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

@@ -1,0 +1,45 @@
+plugins {
+    id 'java-library'
+}
+
+apply from: "${rootProject.projectDir}/buildSrc/src/main/groovy/dependencies.gradle"
+
+dependencies {
+
+    // CSV Processing
+    implementation "com.opencsv:opencsv:${versions.openCsv}"
+    
+    // Spring Framework
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${versions.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-validation:${versions.springBoot}"
+
+    // Tools
+    compileOnly "org.projectlombok:lombok:${versions.lombok}"
+    annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+    implementation "io.micrometer:micrometer-core:${versions.micrometer}"
+
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+    manifest {
+        attributes(
+            'Plugin-Class': 'com.projecthub.plugins.csv.CsvPlugin',
+            'Plugin-Id': 'projecthub-csv-plugin',
+            'Plugin-Version': '1.0.0',
+            'Plugin-Provider': 'ProjectHub'
+        )
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
