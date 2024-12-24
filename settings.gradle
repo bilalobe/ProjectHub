@@ -32,4 +32,4 @@ rootProject.name = 'ProjectHub'
 
 include 'modules:core'
 include 'modules:desktop-ui'
-include 'plugins:projecthub-csv-plugin'
+include 'modules:plugins:projecthub-csv-plugin'
