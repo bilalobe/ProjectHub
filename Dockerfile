@@ -2,7 +2,7 @@
 #
 
 # Use an official Gradle image to build the project
-FROM gradle:8.11.1-jdk23-alpine AS build
+FROM gradle:8.12-jdk23-alpine AS build
 WORKDIR /app
 
 

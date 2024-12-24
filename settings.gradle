@@ -2,10 +2,34 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        maven { url 'https://nexus.gluonhq.com/nexus/content/repositories/releases/'}
     }
+    
+    plugins {
+        id 'org.openjfx.javafxplugin' version '0.1.0'
+        id 'com.gluonhq.gluonfx-gradle-plugin' version '1.0.24'
+        
+        id 'org.sonarqube' version '4.4.1.3373'
+        id 'com.diffplug.spotless' version '6.25.0'
+        
+        id 'java'
+        id 'java-gradle-plugin'
+        id 'groovy'
+        id 'application'
+    }
+}
 
-    includeBuild 'build-logic'
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven { url 'https://nexus.gluonhq.com/nexus/content/repositories/releases/'}
+        maven { url 'https://repo.spring.io/snapshot' }
+        maven { url 'https://repo.spring.io/milestone'}
+    }
 }
 
 rootProject.name = 'ProjectHub'
-include 'core', 'desktop-ui', 'plugins:projecthub-csv-plugin'
+
+include 'modules:core'
+include 'modules:desktop-ui'
+include 'plugins:projecthub-csv-plugin'
