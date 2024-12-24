@@ -21,7 +21,7 @@ pf4jSpring = "0.8.0"
 
 # Database/Cache Versions
 hikari = "5.0.1"
-h2 = "2.2.224"
+h2 = "2.3.232"
 postgresql = "42.6.0"
 querydsl = "5.0.0"
 
