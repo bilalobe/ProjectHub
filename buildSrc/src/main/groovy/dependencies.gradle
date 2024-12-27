@@ -13,6 +13,9 @@ ext {
         gluonAfterburner             : '2.1.0',
         gluonGlisten2                : '0.0.3',
 
+        // Android
+        compose                     :'1.5.1',
+
         // Tools
         sonarqube                    : '6.0.1.5171',
         lombok                       : '1.18.36',
@@ -26,6 +29,11 @@ ext {
         postgresql                  : '42.6.0',
         querydsl                    : '5.0.0',
 
+        // Thymeleaf
+        thymeleaf                  : '3.1.2.RELEASE',
+        thymeleafExtras            : '3.1.2.RELEASE',
+        thymeleafLayout            : '3.2.1',
+
         // Utilities
         jwt                         : '0.12.6',
         modelMapper                 : '3.2.2',
@@ -36,7 +44,6 @@ ext {
         mockito                     : '5.7.0',
         springdoc                   : '2.1.0',
         swagger                     : '2.2.23',
-        thymeleaf                    : '3.1.1.RELEASE',
         jakartaMail                 : '2.0.1',
         springRetry                 : '2.0.11',
         apacheCommonsNet            : '3.9.0',

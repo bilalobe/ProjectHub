@@ -11,6 +11,8 @@ class ProjectHubPlugin implements Plugin<Project> {
         project.dependencies {
             implementation "org.pf4j:pf4j:${versions.pf4j}"
             implementation "org.pf4j:pf4j-spring:${versions.pf4jSpring}"
+            testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}"
+            testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
         }
     }
 }
