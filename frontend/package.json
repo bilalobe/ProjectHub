@@ -14,12 +14,12 @@
     "@angular/animations": "^19.0.5",
     "@angular/common": "^19.0.5",
     "@angular/compiler": "^19.0.5",
-    "@angular/core": "^19.0.3",
+    "@angular/core": "^19.0.5",
     "@angular/forms": "^19.0.5",
     "@angular/platform-browser": "^19.0.3",
     "@angular/platform-browser-dynamic": "^19.0.5",
     "@angular/platform-server": "^19.0.5",
-    "@angular/router": "^19.0.3",
+    "@angular/router": "^19.0.5",
     "@angular/ssr": "^19.0.6",
     "@nguniversal/express-engine": "^16.2.0",
     "express": "^4.21.2",
@@ -28,7 +28,7 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^19.0.5",
+    "@angular-devkit/build-angular": "^19.0.6",
     "@angular/cli": "^19.0.6",
     "@angular/compiler-cli": "^19.0.5",
     "@types/express": "^5.0.0",
