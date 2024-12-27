@@ -1376,3 +1376,379 @@ graph LR
 
     %% Build Logic Application
     build-logic -->|Provides| Custom Plugins & Configurations
+
+%% Version Management Evolution Flowchart
+graph TD
+    A[Initial State] --> B[Security Enhancement]
+    B --> C[Version Management]
+    
+    subgraph "Security Phase"
+        B --> B1[JWT Implementation]
+        B --> B2[WebAuthn/Passkey]
+        B --> B3[Spring Security]
+    end
+    
+    subgraph "Version Management Phase"
+        C --> C1[libs.versions.toml]
+        C1 --> C2[dependencies.gradle]
+        C2 --> C3[gradle.properties]
+    end
+    
+    subgraph "BuildSrc Evolution"
+        D[ProjectHubPlugin.java] --> D1[Remove Version Logic]
+        D1 --> D2[Pure Configuration]
+        D2 --> D3[Test Setup]
+    end
+
+%% Dependency Resolution Flow
+flowchart LR
+    A[gradle.properties] --> B[settings.gradle]
+    B --> C[Plugin Versions]
+    
+    D[dependencies.gradle] --> E[Library Versions]
+    E --> F[Project Dependencies]
+    
+    subgraph "Version Resolution"
+        C --> G[BuildSrc Plugin]
+        F --> G
+    end
+    
+    G --> H[Subprojects]
+
+%% Build Configuration Architecture
+C4Context
+    title Build System Architecture
+    
+    Enterprise_Boundary(b0, "Gradle Build System") {
+        System(s1, "gradle.properties", "Plugin Versions")
+        System(s2, "settings.gradle", "Plugin Management")
+        System(s3, "dependencies.gradle", "Library Versions")
+        
+        System_Boundary(b1, "BuildSrc") {
+            Container(c1, "ProjectHubPlugin", "Configuration")
+        }
+    }
+    
+    Rel(s1, s2, "Provides versions")
+    Rel(s2, c1, "Configures plugins")
+    Rel(s3, c1, "Provides dependencies")
+
+%% System Context Diagram
+C4Context
+    title System Context Diagram for ProjectHub
+
+    Person(student, "Student", "A student user who submits projects and collaborates in teams")
+    Person(instructor, "Instructor", "An instructor who manages projects and evaluates submissions")
+    Person(admin, "Administrator", "System administrator who manages users and configurations")
+
+    System(projectHub, "ProjectHub System", "Core project management and evaluation platform")
+
+    System_Ext(db, "PostgreSQL Database", "Stores all project data, user information, and submissions")
+    System_Ext(authSystem, "Authentication Service", "Handles user authentication and authorization")
+    System_Ext(storageSystem, "File Storage Service", "Manages project files and submissions")
+    System_Ext(notificationSystem, "Notification Service", "Handles email and system notifications")
+    System_Ext(csvSystem, "CSV Import/Export", "Handles data import/export through CSV files")
+
+    Rel(student, projectHub, "Uses", "HTTPS/REST")
+    Rel(instructor, projectHub, "Manages", "HTTPS/REST")
+    Rel(admin, projectHub, "Administers", "HTTPS/REST")
+
+    Rel(projectHub, db, "Reads from and writes to", "JPA/JDBC")
+    Rel(projectHub, authSystem, "Authenticates users", "JWT/OAuth2")
+    Rel(projectHub, storageSystem, "Stores and retrieves files", "API")
+    Rel(projectHub, notificationSystem, "Sends notifications", "SMTP/API")
+    Rel(projectHub, csvSystem, "Imports/Exports data", "CSV Plugin")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+
+%% Container Diagram
+C4Container
+    title Container Diagram for ProjectHub
+
+    Person(student, "Student", "A student using the application")
+    Person(instructor, "Instructor", "An instructor managing projects")
+    Person(admin, "Administrator", "System administrator")
+
+    System_Boundary(projectHub, "ProjectHub Platform") {
+        Container(desktopUi, "Desktop UI", "JavaFX, Spring Boot", "Provides desktop interface for project management")
+        
+        Container(core, "Core Module", "Java, Spring Boot", "Handles business logic, data processing, and service coordination")
+        
+        Container(csvPlugin, "CSV Plugin", "Java, PF4J", "Manages data import/export through CSV files")
+        
+        ContainerDb(db, "Database", "PostgreSQL", "Stores project data, user information, and configurations")
+        
+        Container(auth, "Authentication", "Spring Security, JWT", "Handles user authentication and authorization")
+        
+        Container(fileStore, "File Storage", "Local/Network Storage", "Manages project files and attachments")
+    }
+
+    Rel(student, desktopUi, "Uses", "JavaFX UI")
+    Rel(instructor, desktopUi, "Uses", "JavaFX UI")
+    Rel(admin, desktopUi, "Administers", "JavaFX UI")
+
+    Rel(desktopUi, core, "API Calls", "Spring Boot")
+    Rel(desktopUi, auth, "Authenticates", "JWT")
+    
+    Rel(core, db, "Reads/Writes", "JPA")
+    Rel(core, fileStore, "Stores files", "File I/O")
+    Rel(core, csvPlugin, "Uses", "Plugin API")
+    
+    Rel(csvPlugin, db, "Reads/Writes", "JPA")
+    Rel(auth, db, "Validates", "JDBC")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+
+%% Component Diagram
+C4Component
+    title Component Diagram for ProjectHub
+
+    Container_Boundary(core, "Core Module") {
+        Component(controllers, "REST Controllers", "Spring MVC", "Handles HTTP requests and responses")
+        Component(services, "Service Layer", "Spring Services", "Implements business logic")
+        Component(repos, "Repositories", "Spring Data", "Data access layer")
+        Component(models, "Domain Models", "JPA Entities", "Business domain objects")
+        Component(dtos, "DTOs", "Data Transfer", "Objects for API responses")
+        Component(mappers, "Mappers", "MapStruct", "Entity-DTO conversion")
+    }
+
+    Container_Boundary(desktop, "Desktop UI Module") {
+        Component(fxml, "FXML Views", "JavaFX", "UI layout definitions")
+        Component(viewmodels, "ViewModels", "JavaFX Properties", "UI state and logic")
+        Component(controllers_ui, "UI Controllers", "JavaFX", "Handle user interactions")
+        Component(services_ui, "UI Services", "Spring", "Navigation, notifications")
+    }
+
+    Container_Boundary(data, "Data Access") {
+        ContainerDb(db, "PostgreSQL", "Stores application data")
+        ContainerDb(h2, "H2 Database", "Local development database")
+    }
+
+    Rel(controllers, services, "Uses")
+    Rel(services, repos, "Uses")
+    Rel(services, mappers, "Uses")
+    Rel(repos, models, "Manages")
+    Rel(mappers, dtos, "Creates")
+    Rel(mappers, models, "Maps from/to")
+    
+    Rel(controllers_ui, viewmodels, "Updates")
+    Rel(viewmodels, services, "Calls")
+    Rel(controllers_ui, fxml, "Controls")
+    Rel(controllers_ui, services_ui, "Uses")
+    
+    Rel(repos, db, "Reads/Writes")
+    Rel(repos, h2, "Reads/Writes (Dev)")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+
+%% Core Module Structure
+flowchart TD
+ subgraph subGraph0["Core Module Structure"]
+        Entities["entities"]
+        Domain["domain"]
+        Models["models"]
+        DTOs["dtos"]
+        Auth["auth"]
+        Services["services"]
+        User["user"]
+        Team["team"]
+        Rest["rest-api"]
+        Controllers["controllers"]
+  end
+ subgraph subGraph1["Build Configuration"]
+        Dependencies["dependencies.gradle"]
+        RootBuild["build.gradle"]
+        ProjectHubPlugin["ProjectHubPlugin.groovy"]
+        CoreBuild["build.gradle"]
+        Modulith["modulith.gradle"]
+  end
+    ProjectHub["ProjectHub Monorepo"] --> BuildSrc["buildSrc"] & Modules["modules"] & Settings["settings.gradle"] & RootBuild
+    BuildSrc --> Dependencies & Modulith & ProjectHubPlugin
+    Modules --> Core["core"]
+    Core --> Controllers & Domain & Services & CoreBuild
+    Domain --> Entities & Models & DTOs
+    Services --> Auth & User & Team
+    Controllers --> Rest
+    RootBuild -.-> Dependencies
+    CoreBuild -.-> ProjectHubPlugin
+    ProjectHubPlugin -.-> Modulith & Dependencies
+     BuildSrc:::buildConfig
+     Dependencies:::buildConfig
+     Modulith:::buildConfig
+     ProjectHubPlugin:::buildConfig
+     Core:::module
+     Controllers:::module
+     Domain:::module
+     Services:::module
+    classDef default fill:#f9f,stroke:#333,stroke-width:2px
+    classDef buildConfig fill:#bbf,stroke:#333,stroke-width:2px
+    classDef module fill:#bfb,stroke:#333,stroke-width:2px
+
+sequenceDiagram
+    actor User
+    participant Navigation
+    participant Dashboard
+    participant CohortList
+    participant CohortDetails
+    participant TeamList
+    participant Toast
+    participant Dialog
+    participant CohortViewModel
+    participant CohortService
+
+    %% Main Navigation Flow
+    User->>Navigation: Select "Cohorts"
+    Navigation->>CohortList: loadView("/cohorts")
+    Note right of CohortList: Initializes the Cohort List view
+    CohortList->>CohortList: initialize()
+    CohortList->>CohortList: loadCohorts()
+    Note right of CohortList: Fetches and displays all cohorts
+
+    %% Create Flow
+    User->>CohortList: clickAddCohort()
+    CohortList->>CohortDetails: showCohortDetails(null)
+    Note right of CohortDetails: Opens an empty form for new cohort
+    CohortDetails->>CohortDetails: initializeForm()
+    Note right of CohortDetails: Sets up form fields and bindings
+
+    alt Save New Cohort
+        User->>CohortDetails: fillForm()
+        Note right of CohortDetails: User enters cohort details
+        User->>CohortDetails: clickSave()
+        CohortDetails->>CohortDetails: validateInput()
+        Note right of CohortDetails: Validates form data
+        CohortDetails->>CohortViewModel: saveCohort(cohortDTO)
+        CohortViewModel->>CohortService: saveCohort()
+        Note right of CohortService: Persists new cohort to the database
+        CohortService-->>CohortViewModel: savedCohort
+        CohortViewModel-->>CohortDetails: updateUI()
+        Note right of CohortDetails: Updates the UI with the new cohort
+        CohortDetails->>Toast: showSuccess("Cohort saved")
+        Note right of Toast: Displays success message to the user
+        CohortDetails->>CohortList: refreshList()
+        Note right of CohortList: Reloads the cohort list to include the new cohort
+    else Cancel Creation
+        User->>CohortDetails: clickCancel()
+        CohortDetails->>Dialog: showConfirmation("Discard changes?")
+        Note right of Dialog: Asks user to confirm discarding changes
+        Dialog-->>CohortDetails: confirmed
+        CohortDetails->>CohortList: navigateBack()
+        Note right of CohortList: Returns to the Cohort List view without saving
+    end
+
+    %% Edit Flow
+    User->>CohortList: selectCohort(id)
+    Note right of CohortList: User selects a cohort to edit
+    CohortList->>CohortDetails: loadCohort(id)
+    CohortDetails->>CohortViewModel: loadCohort(id)
+    Note right of CohortViewModel: Retrieves cohort details from the service
+    CohortViewModel->>CohortService: getCohortById(id)
+    CohortService-->>CohortViewModel: cohortDTO
+    CohortViewModel-->>CohortDetails: updateUI()
+    Note right of CohortDetails: Populates the form with existing cohort data
+    CohortDetails->>TeamList: loadTeams(cohortId)
+    Note right of TeamList: Loads teams associated with the selected cohort
+
+    %% Delete Flow
+    User->>CohortDetails: clickDelete()
+    CohortDetails->>Dialog: showDeleteWarning()
+    Note right of Dialog: Confirms deletion action with the user
+    alt Confirm Delete
+        Dialog-->>CohortDetails: confirmed
+        CohortDetails->>CohortViewModel: deleteCohort(id)
+        CohortViewModel->>CohortService: deleteCohort()
+        Note right of CohortService: Deletes the cohort from the database
+        CohortService-->>CohortViewModel: success
+        CohortViewModel-->>CohortDetails: clear()
+        Note right of CohortDetails: Clears the form and related data
+        CohortDetails->>Toast: showSuccess("Deleted")
+        Note right of Toast: Displays deletion success message
+        CohortDetails->>CohortList: navigateBack()
+        Note right of CohortList: Returns to the updated Cohort List view
+    else Cancel Delete
+        Dialog-->>CohortDetails: cancelled
+        Note right of CohortDetails: Remains on Cohort Details view without deleting
+    end
+
+    %% Navigation Guards
+    User->>CohortDetails: clickBack()
+    CohortDetails->>CohortViewModel: hasUnsavedChanges()
+    Note right of CohortViewModel: Checks if there are unsaved changes in the form
+    alt Has Changes
+        CohortDetails->>Dialog: showDiscardWarning()
+        Note right of Dialog: Prompts user to discard unsaved changes
+        Dialog-->>CohortDetails: confirmed
+        CohortDetails->>CohortList: navigateBack()
+        Note right of CohortList: Returns to Cohort List view after discarding changes
+    else No Changes
+        CohortDetails->>CohortList: navigateBack()
+        Note right of CohortList: Returns to Cohort List view directly
+    end
+
+%% Mini sequence diagram CohortDetails
+sequenceDiagram
+    actor User
+    participant UI as User Interface
+    participant ViewModel as Cohort ViewModel
+    participant Service as Cohort Service
+    participant Database as Database
+    participant Notification as Notification System
+
+    %% Main Navigation
+    User->>UI: Navigate to Cohorts
+    UI->>ViewModel: Load Cohort List
+    ViewModel->>Service: Fetch Cohorts
+    Service->>Database: Retrieve Cohorts
+    Database-->>Service: Provide Cohort Data
+    Service-->>ViewModel: Return Cohorts
+    ViewModel-->>UI: Display Cohort List
+
+    %% Create Cohort
+    User->>UI: Add New Cohort
+    UI->>ViewModel: Initialize New Cohort Form
+    User->>UI: Enter Cohort Details
+    UI->>ViewModel: Submit New Cohort
+    ViewModel->>Service: Save Cohort
+    Service->>Database: Persist Cohort
+    Database-->>Service: Confirmation
+    Service-->>ViewModel: Cohort Saved
+    ViewModel-->>UI: Update Cohort List
+    UI->>Notification: Show Success Message
+
+    %% Edit Cohort
+    User->>UI: Select Cohort to Edit
+    UI->>ViewModel: Load Cohort Details
+    ViewModel->>Service: Fetch Cohort by ID
+    Service->>Database: Retrieve Cohort Data
+    Database-->>Service: Provide Cohort Details
+    Service-->>ViewModel: Return Cohort Data
+    ViewModel-->>UI: Populate Edit Form
+    User->>UI: Modify Cohort Details
+    UI->>ViewModel: Submit Changes
+    ViewModel->>Service: Update Cohort
+    Service->>Database: Update Cohort Record
+    Database-->>Service: Confirmation
+    Service-->>ViewModel: Cohort Updated
+    ViewModel-->>UI: Refresh Cohort List
+    UI->>Notification: Show Update Success
+
+    %% Delete Cohort
+    User->>UI: Delete Cohort
+    UI->>ViewModel: Confirm Deletion
+    ViewModel->>Service: Remove Cohort
+    Service->>Database: Delete Cohort Record
+    Database-->>Service: Confirmation
+    Service-->>ViewModel: Cohort Deleted
+    ViewModel-->>UI: Update Cohort List
+    UI->>Notification: Show Deletion Success
+
+    %% Navigation Guard
+    User->>UI: Attempt to Navigate Away
+    UI->>ViewModel: Check for Unsaved Changes
+    alt Unsaved Changes Present
+        ViewModel->>UI: Prompt to Save or Discard
+        User->>UI: Choose to Discard
+        UI->>ViewModel: Proceed with Navigation
+    else No Unsaved Changes
+        UI->>ViewModel: Proceed with Navigation
+    end
