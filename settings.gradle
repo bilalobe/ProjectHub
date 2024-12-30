@@ -3,11 +3,12 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         google()
-        maven { url 'https://nexus.gluonhq.com/nexus/content/repositories/releases/'}
+        maven { url = 'https://nexus.gluonhq.com/nexus/content/repositories/releases/'}
     }
     
     plugins {
-        
+        id 'org.beryx.jlink' version '3.0.1'
+
         id 'org.openjfx.javafxplugin' version '0.1.0'
         id 'com.gluonhq.gluonfx-gradle-plugin' version '1.0.24'
         
@@ -17,6 +18,9 @@ pluginManagement {
         id 'com.android.application' version '8.1.0'
         id 'org.jetbrains.kotlin.android' version '1.9.0'
         
+        id 'org.springframework.boot' version '3.4.1'
+        id 'io.spring.dependency-management' version '1.1.7'
+
         id 'java'
         id 'java-gradle-plugin'
         id 'groovy'
@@ -27,9 +31,9 @@ pluginManagement {
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
-        maven { url 'https://nexus.gluonhq.com/nexus/content/repositories/releases/'}
-        maven { url 'https://repo.spring.io/snapshot' }
-        maven { url 'https://repo.spring.io/milestone'}
+        maven { url = 'https://nexus.gluonhq.com/nexus/content/repositories/releases/'}
+        maven { url = 'https://repo.spring.io/snapshot' }
+        maven { url = 'https://repo.spring.io/milestone'}
     }
 }
 
