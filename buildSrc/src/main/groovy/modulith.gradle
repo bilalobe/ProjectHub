@@ -4,4 +4,5 @@ dependencies {
     
     // Optional - Documentation support
     testImplementation "org.springframework.modulith:spring-modulith-docs:${versions.springModulith}"
+    runtimeOnly "org.springframework.modulith:spring-modulith-runtime:${versions.springModulith}"
 }
