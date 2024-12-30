@@ -1,6 +1,6 @@
 # ProjectHub
 
-![Project Logo](desktop-ui/src/main/resources/images/logo.png)
+![Project Logo](modules\desktop-ui\src\main\resources\images\logo.png)
 
 **A comprehensive platform for managing student projects, component evaluations, and project distribution, built with JavaFX, Spring Boot, and PostgreSQL.**
 
