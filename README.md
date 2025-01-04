@@ -83,7 +83,7 @@ application.properties
 1. Navigate to the app directory:
 
    ```bash
-   cd core
+   cd base
    ```
 
 2. Build and run the application:
