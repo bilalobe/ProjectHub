@@ -1,8 +1,10 @@
 plugins {
-    id 'base'
+    id 'java'
+    id 'distribution'
 }
 
-description = 'ProjectHub - Modular Project Management Application'
+apply from: "buildSrc/src/main/groovy/dependencies.gradle"
+apply from: "buildSrc/src/main/groovy/projecthub.gradle"
 
 allprojects {
     group = 'com.projecthub'
