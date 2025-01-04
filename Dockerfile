@@ -56,7 +56,7 @@ USER $USERNAME
 
 
 # Copy jar from build stage
-COPY --from=build /app/build/libs/ProjectHub-0.1.0-SNAPSHOT.jar /app.jar
+COPY --from=build /modules/core/src/build/libs/ProjectHub-0.1.0-SNAPSHOT.jar /app.jar
 
 
 
