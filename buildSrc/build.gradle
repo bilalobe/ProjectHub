@@ -1,37 +1,33 @@
 plugins {
-    id 'java-gradle-plugin'
-    id 'groovy'
+    id 'groovy-gradle-plugin'
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(23)
-    }
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += '--enable-preview'
-    options.release = 23
-}
-
-tasks.withType(Test).configureEach {
-    jvmArgs += '--enable-preview'
-}
-
-tasks.withType(JavaExec).configureEach {
-    jvmArgs += '--enable-preview'
-}
+apply from: "${projectDir}/src/main/groovy/dependencies.gradle"
 
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
+    implementation 'org.springframework.boot:spring-boot-gradle-plugin:3.4.1'
 }
 
 gradlePlugin {
     plugins {
-        projectHub {
-            id = 'com.projecthub.gradle'
-            implementationClass = 'com.projecthub.gradle.ProjectHubPlugin'
+        projecthubCore {
+            id = 'com.projecthub.core'
+            implementationClass = 'com.projecthub.gradle.core.CorePlugin'
+        }
+        projecthubBase {
+            id = 'com.projecthub.base'
+            implementationClass = 'com.projecthub.gradle.convention.BaseConventionPlugin'
+        }
+        projecthubDist {
+            id = 'com.projecthub.distribution'
+            implementationClass = 'com.projecthub.gradle.plugins.distribution.DistributionPlugin'
         }
     }
 }

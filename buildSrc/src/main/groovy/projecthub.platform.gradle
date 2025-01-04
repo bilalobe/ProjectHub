@@ -1,0 +1,31 @@
+apply plugin: 'distribution'
+
+// Common manifest attributes for all JARs
+tasks.withType(Jar).configureEach {
+    manifest {
+        attributes(
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version,
+            'Created-By': "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})",
+            'Build-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+        )
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Unified distribution packaging
+distributions {
+    main {
+      contents {
+        from jar
+        into('lib') {
+          from configurations.runtimeClasspath
+        }
+      }
+    }
+}
+
+tasks.register('cleanDist', Delete) {
+    group = 'build'
+    delete fileTree(dir: "${buildDir}/distributions")
+}

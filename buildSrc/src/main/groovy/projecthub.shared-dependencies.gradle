@@ -1,0 +1,20 @@
+dependencies {
+    // Platform dependencies
+    implementation platform("org.springframework.boot:spring-boot-dependencies:${versions.springBoot}")
+
+    // Modulith
+    implementation "org.springframework.modulith:spring-modulith-starter-core:${versions.springModulith}"
+    implementation "org.springframework.modulith:spring-modulith-api:${versions.springModulith}"
+    implementation "org.springframework.modulith:spring-modulith-events-core:${versions.springModulith}"
+
+    // Testing
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${versions.springBoot}"
+    testImplementation "org.springframework.modulith:spring-modulith-test:${versions.springModulith}"
+    testImplementation "org.springframework.modulith:spring-modulith-docs:${versions.springModulith}"
+
+    // Common Tools
+    implementation "org.mapstruct:mapstruct:${versions.mapstruct}"
+    compileOnly "org.projectlombok:lombok:${versions.lombok}"
+    annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${versions.mapstruct}"
+}
