@@ -1752,3 +1752,63 @@ sequenceDiagram
     else No Unsaved Changes
         UI->>ViewModel: Proceed with Navigation
     end
+
+mindmap
+  root((🎯 ProjectHub Platform))
+    Architecture((🏗️ Architecture))
+      Hex[🔷 Hexagonal]
+        Ports[🔌 Ports and Adapters]
+      DDD[🧩 Domain-Driven Design]
+        Agg[📦 Aggregates]
+        BC[🎯 Bounded Contexts]
+      CQRS[⚡ CQRS]
+        Commands[📝 Commands]
+        Queries[🔍 Queries]
+      Events[📡 Event-Driven]
+        Async[🔄 Async Events]
+        Integration[🔗 Integration Events]
+
+    Domains((🏢 Core Domains))
+      School[🏫 School Management]
+        Classes[📚 Classes]
+        Teachers[👩‍🏫 Teachers]
+      Teams[👥 Team Management]
+        Projects[📋 Projects]
+        Tasks[✅ Tasks]
+      Users[👤 User Management]
+        Auth[🔐 Authentication]
+        Roles[👑 Authorization]
+      Cohorts[👨‍👩‍👧‍👦 Cohort Management]
+        Groups[🎓 Study Groups]
+        Progress[📈 Progress Tracking]
+
+    Principles((⚖️ Best Practices))
+      SOLID[💎 SOLID]
+        SRP[1️⃣ Single Responsibility]
+        OCP[2️⃣ Open-Closed]
+        LSP[3️⃣ Liskov Substitution]
+        ISP[4️⃣ Interface Segregation]
+        DIP[5️⃣ Dependency Inversion]
+      DRY[🎯 Don't Repeat Yourself]
+      KISS[💫 Keep It Simple]
+      YAGNI[⚡ You Ain't Gonna Need It]
+
+    Infrastructure((⚙️ Infrastructure))
+      Database[💾 Persistence]
+        SQL[📀 SQL Database]
+        Cache[⚡ Caching]
+      API[🔌 APIs]
+        REST[🌐 REST Endpoints]
+        GraphQL[⚡ GraphQL]
+      Testing[🧪 Testing]
+        Unit[🔬 Unit Tests]
+        Integration[🔗 Integration Tests]
+      CI_CD[🔄 CI/CD]
+        Pipeline[⚙️ Build Pipeline]
+        Deploy[🚀 Deployment]
+
+    CrossCutting((🔧 Cross-Cutting))
+      Logging[📝 Logging]
+      Security[🔒 Security]
+      Monitoring[📊 Monitoring]
+      Documentation[📚 Documentation]
