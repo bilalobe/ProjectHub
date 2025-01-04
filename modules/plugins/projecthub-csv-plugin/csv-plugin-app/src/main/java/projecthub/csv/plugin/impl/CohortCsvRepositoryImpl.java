@@ -83,8 +83,8 @@ public class CohortCsvRepositoryImpl implements CohortCsvRepository {
         try {
             List<Cohort> cohorts = readCohortsFromFile();
             return cohorts.stream()
-                    .filter(c -> Objects.equals(c.getId(), id))
-                    .findFirst();
+                .filter(c -> Objects.equals(c.getId(), id))
+                .findFirst();
         } catch (IOException e) {
             logger.error("Error reading cohorts from CSV", e);
             throw new RuntimeException("Error reading cohorts from CSV", e);
@@ -122,8 +122,8 @@ public class CohortCsvRepositoryImpl implements CohortCsvRepository {
         try {
             List<Cohort> cohorts = readCohortsFromFile();
             return cohorts.stream()
-                    .filter(c -> c.getSchool() != null && Objects.equals(c.getSchool().getId(), schoolId))
-                    .toList();
+                .filter(c -> c.getSchool() != null && Objects.equals(c.getSchool().getId(), schoolId))
+                .toList();
         } catch (IOException e) {
             logger.error("Error reading cohorts from CSV", e);
             throw new RuntimeException("Error reading cohorts from CSV", e);
@@ -172,8 +172,8 @@ public class CohortCsvRepositoryImpl implements CohortCsvRepository {
         try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getCohortsFilepath()))) {
             ColumnPositionMappingStrategy<Cohort> strategy = getMappingStrategy();
             StatefulBeanToCsv<Cohort> beanToCsv = new StatefulBeanToCsvBuilder<Cohort>(writer)
-                    .withMappingStrategy(strategy)
-                    .build();
+                .withMappingStrategy(strategy)
+                .build();
             beanToCsv.write(cohorts);
         }
     }
@@ -188,9 +188,9 @@ public class CohortCsvRepositoryImpl implements CohortCsvRepository {
         try (CSVReader reader = new CSVReader(new FileReader(csvProperties.getCohortsFilepath()))) {
             ColumnPositionMappingStrategy<Cohort> strategy = getMappingStrategy();
             return new CsvToBeanBuilder<Cohort>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+                .withMappingStrategy(strategy)
+                .build()
+                .parse();
         }
     }
 }

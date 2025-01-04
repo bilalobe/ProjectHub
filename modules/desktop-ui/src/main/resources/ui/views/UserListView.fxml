@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.gluonhq.charm.glisten.control.*?>
+<?import com.gluonhq.charm.glisten.control.AppBar?>
+<?import com.gluonhq.charm.glisten.control.ProgressBar?>
 <?import com.gluonhq.charm.glisten.mvc.View?>
-<?import com.gluonhq.charm.glisten.layout.*?>
-<?import com.gluonhq.charm.glisten.visual.*?>
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-
 <View xmlns:fx="http://javafx.com/fxml/1"
       xmlns="http://javafx.com/javafx/23.0.1"
       fx:controller="com.projecthub.ui.controllers.UserListController"
@@ -41,7 +37,7 @@
 
                     <tooltip>
                         <Tooltip
-                                text="%tooltip.userListRefresh"/>  <!-- tooltip with localized text using the component's property. Local tags must work consistently across all view / components  in a layout or any nested layouts / view properties-->
+                            text="%tooltip.userListRefresh"/>  <!-- tooltip with localized text using the component's property. Local tags must work consistently across all view / components  in a layout or any nested layouts / view properties-->
                     </tooltip>
                 </Button>
             </actionItems>
@@ -84,10 +80,11 @@
                 <Layer fx:id="formLayer"
                        visible="false">   <!-- Using a card to set form properties with default visual  layout properties for all UI  elements in this container / layouts and styles of layout / design consistency . Layout and rendering is always controlled by view and its controllers to create / remove/ update dynamically (via the API and the controllers of layout framework, during application render or at a component view transition ) -->
 
-                    <Form styleClass="form-area  card-item">   <!-- components using Material properties using  layout  that can adapt style and UI (as well all localized property, text using its component using local key/ properties , such as label / form input etc with tags and layout rules to all child  nodes / components for rendering UI with localized values  ) with layouts and design behaviour-->
+                    <Form
+                        styleClass="form-area  card-item">   <!-- components using Material properties using  layout  that can adapt style and UI (as well all localized property, text using its component using local key/ properties , such as label / form input etc with tags and layout rules to all child  nodes / components for rendering UI with localized values  ) with layouts and design behaviour-->
 
                         <GroupBox
-                                text="%user.basicInfo"> <!-- Component tag based text that's localized with default UI behaviour that we expect from those  group layouts   -->
+                            text="%user.basicInfo"> <!-- Component tag based text that's localized with default UI behaviour that we expect from those  group layouts   -->
                             <MaterialTextField fx:id="usernameField" floatText="%user.username"
                                                promptText="%user.usernamePlaceholder"
                                                required="true"/>   <!-- Material based properties from text with layout properties of a framework that will  provides an interaction (layout , or data updates etc) or rendering to that input box and text label  with translations that also sets the default text, from local data, and  is loaded when component properties are  set via view components)  and where layout and style all gets managed consistently using CSS rules / property for a  text / inputs or other components via this  form  with Glue's tags and using layout properties as needed for the  components-->
@@ -102,7 +99,7 @@
                         </GroupBox>
 
                         <GroupBox
-                                text="%user.access">   <!-- layouts that groups multiple component together via design layout tag property with styles that comes with a visual view/ properties with layout consistency. UI is  set up  to have those labels / or groups and  text is styled via design system  ( using layouts API for such components) that gives style properties based on selected layouts, when all data is bound to those layouts by controllers-->
+                            text="%user.access">   <!-- layouts that groups multiple component together via design layout tag property with styles that comes with a visual view/ properties with layout consistency. UI is  set up  to have those labels / or groups and  text is styled via design system  ( using layouts API for such components) that gives style properties based on selected layouts, when all data is bound to those layouts by controllers-->
                             <VBox spacing="10">
 
                                 <ComboBox fx:id="roleComboBox" styleClass="input"
@@ -120,7 +117,7 @@
                                 </graphic>
                                 <tooltip>
                                     <Tooltip
-                                            text="%action.save"/>  <!-- Action texts must have localized  property key, for setting those tooltips / button actions  via controller data. Tooltip also must layout /  render in right  direction using RTL settings via properties-->
+                                        text="%action.save"/>  <!-- Action texts must have localized  property key, for setting those tooltips / button actions  via controller data. Tooltip also must layout /  render in right  direction using RTL settings via properties-->
                                 </tooltip>
                             </Button>
 
@@ -130,7 +127,7 @@
                                 </graphic>
                                 <tooltip>
                                     <Tooltip
-                                            text="%action.delete"/> <!-- Layout property with all components /  layouts  using tags should correctly reflect for all action or layout views from component rendering lifecycle -->
+                                        text="%action.delete"/> <!-- Layout property with all components /  layouts  using tags should correctly reflect for all action or layout views from component rendering lifecycle -->
                                 </tooltip>
                             </Button>
 
@@ -140,7 +137,7 @@
                                 </graphic>
                                 <tooltip>
                                     <Tooltip
-                                            text="%action.clear"/>   <!-- UI Text or layouts , or even the  visual components of layouts using properties must have consistent style from a local/custom component or from layout properties from gluon / or any UI API / framework via style tags   ( using a property-based view system with UI controllers that sets these up from APIs via binding). ( if not then the developer must ensure all style, data consistency via component using a style from custom tags with properties, using CSS) -->
+                                        text="%action.clear"/>   <!-- UI Text or layouts , or even the  visual components of layouts using properties must have consistent style from a local/custom component or from layout properties from gluon / or any UI API / framework via style tags   ( using a property-based view system with UI controllers that sets these up from APIs via binding). ( if not then the developer must ensure all style, data consistency via component using a style from custom tags with properties, using CSS) -->
                                 </tooltip>
                             </Button>
                         </HBox>
@@ -174,13 +171,14 @@
 
 
     <SnackBar
-            fx:id="notificationBar"/>   <!-- snackbar that responds with a localized text for a notification using the layouts component with style property / values for messages , as view also uses model objects or data when components are initialized for data ( or state changes ). Any layout/ text/properties should also respond via controller (with java component) with proper property updates or transitions)   -->
+        fx:id="notificationBar"/>   <!-- snackbar that responds with a localized text for a notification using the layouts component with style property / values for messages , as view also uses model objects or data when components are initialized for data ( or state changes ). Any layout/ text/properties should also respond via controller (with java component) with proper property updates or transitions)   -->
 
 
     <stylesheets>
         <URL value="@../css/styles.css"/>
         <URL value="@../css/user.css"/>   <!-- local stylesheet for custom changes-->
-        <URL value="@../css/material.css"/>   <!-- Glue default  stylesheet   for all view / subview component behaviours ( if no local change is needed  , the components can rely on a Material based UI styles using their corresponding style system/API with layouts ) -->
+        <URL
+            value="@../css/material.css"/>   <!-- Glue default  stylesheet   for all view / subview component behaviours ( if no local change is needed  , the components can rely on a Material based UI styles using their corresponding style system/API with layouts ) -->
 
     </stylesheets>
 </View>

@@ -4,35 +4,28 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-
-<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" styleClass="project-detail-container"
             xmlns="http://javafx.com/javafx/23.0.1"
-            fx:controller="com.projecthub.ui.controllers.ProjectDetailController"
-            styleClass="project-detail-container">
+            fx:controller="com.projecthub.ui.controllers.ProjectDetailController">
 
     <!-- Header Section -->
     <top>
         <VBox styleClass="header-container">
-            <HBox styleClass="project-header" alignment="CENTER_LEFT" spacing="15">
-                <Button fx:id="backToProjectsButton"
-                        styleClass="button-flat"
-                        text="%project.backButton"
-                        accessibleText="%accessibility.backToProjects">
+            <HBox alignment="CENTER_LEFT" spacing="15" styleClass="project-header">
+                <Button fx:id="backToProjectsButton" accessibleText="%accessibility.backToProjects"
+                        styleClass="button-flat" text="%project.backButton">
                     <tooltip>
                         <Tooltip text="%tooltip.backToProjectList"/>
                     </tooltip>
                 </Button>
 
-                <Label text="%project.title"
-                       styleClass="heading-large, text-strong"
-                       accessibleText="%accessibility.projectTitle"/>
+                <Label accessibleText="%accessibility.projectTitle" styleClass="heading-large, text-strong"
+                       text="%project.title"/>
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <ComboBox fx:id="projectSelector"
-                          styleClass="input, project-select"
-                          promptText="%project.select"
-                          accessibleText="%accessibility.projectSelector"/>
+                <ComboBox fx:id="projectSelector" accessibleText="%accessibility.projectSelector"
+                          promptText="%project.select" styleClass="input, project-select"/>
             </HBox>
             <Separator/>
         </VBox>
@@ -40,9 +33,7 @@
 
     <!-- Main Content Area -->
     <center>
-        <ScrollPane fitToWidth="true"
-                    fitToHeight="true"
-                    styleClass="project-scroll">
+        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="project-scroll">
             <VBox spacing="20" styleClass="project-content">
                 <padding>
                     <Insets bottom="20" left="20" right="20" top="20"/>
@@ -52,42 +43,31 @@
                 <HBox spacing="20" styleClass="project-summary-container, content-item">
                     <VBox styleClass="card-item, project-info-card">
                         <HBox alignment="CENTER_LEFT" spacing="10">
-                            <Label text="%project.name"
-                                   styleClass="text-muted"
-                                   accessibleText="%accessibility.projectName"/>
-                            <Label fx:id="projectNameLabel"
-                                   styleClass="title-label, text-strong"/>
+                            <Label accessibleText="%accessibility.projectName" styleClass="text-muted"
+                                   text="%project.name"/>
+                            <Label fx:id="projectNameLabel" styleClass="title-label, text-strong"/>
                         </HBox>
 
-                        <HBox spacing="10" alignment="CENTER_LEFT">
-                            <Label text="%project.team"
-                                   styleClass="text-muted"
-                                   accessibleText="%accessibility.projectTeam"/>
-                            <Label fx:id="projectTeamLabel"
-                                   styleClass="subtitle-label, text-muted"/>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label accessibleText="%accessibility.projectTeam" styleClass="text-muted"
+                                   text="%project.team"/>
+                            <Label fx:id="projectTeamLabel" styleClass="subtitle-label, text-muted"/>
                         </HBox>
 
-                        <HBox spacing="10" alignment="CENTER_LEFT">
-                            <Label text="%project.status"
-                                   styleClass="text-muted"
-                                   accessibleText="%accessibility.projectStatus"/>
-                            <Label fx:id="projectStatusLabel"
-                                   styleClass="subtitle-label, text-muted"/>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label accessibleText="%accessibility.projectStatus" styleClass="text-muted"
+                                   text="%project.status"/>
+                            <Label fx:id="projectStatusLabel" styleClass="subtitle-label, text-muted"/>
                         </HBox>
                     </VBox>
 
                     <VBox styleClass="card-item, project-progress-card">
-                        <Label text="%project.progressTitle"
-                               styleClass="text-muted"
-                               accessibleText="%accessibility.progressTitle"/>
-                        <ProgressBar fx:id="projectProgressBar"
-                                     styleClass="progress-bar"
-                                     prefHeight="25"
-                                     progress="0.0"/>
+                        <Label accessibleText="%accessibility.progressTitle" styleClass="text-muted"
+                               text="%project.progressTitle"/>
+                        <ProgressBar fx:id="projectProgressBar" prefHeight="25" progress="0.63"
+                                     styleClass="progress-bar"/>
                         <HBox alignment="CENTER_RIGHT">
-                            <Label fx:id="projectProgressLabel"
-                                   styleClass="text-small, text-muted"
-                                   text="0%"/>
+                            <Label fx:id="projectProgressLabel" styleClass="text-small, text-muted" text="0%"/>
                         </HBox>
                     </VBox>
                 </HBox>
@@ -97,48 +77,35 @@
                     <!-- Tasks Section -->
                     <VBox spacing="10" styleClass="tasks-card, data-card" HBox.hgrow="ALWAYS">
                         <HBox alignment="CENTER_LEFT" styleClass="component-header">
-                            <Label text="%project.taskList"
+                            <Label accessibleText="%accessibility.taskList"
                                    styleClass="section-header, heading-medium, text-secondary"
-                                   accessibleText="%accessibility.taskList"/>
+                                   text="%project.taskList"/>
                             <Region HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="addTaskButton"
-                                    styleClass="button-flat"
-                                    text="%project.addTask"
-                                    accessibleText="%accessibility.addTask">
+                            <Button fx:id="addTaskButton" accessibleText="%accessibility.addTask"
+                                    styleClass="button-flat" text="%project.addTask">
                                 <tooltip>
                                     <Tooltip text="%tooltip.addTask"/>
                                 </tooltip>
                             </Button>
                         </HBox>
 
-                        <TableView fx:id="tasksTable"
-                                   VBox.vgrow="ALWAYS"
-                                   styleClass="tasks-table, data-table">
+                        <TableView fx:id="tasksTable" prefHeight="210.0" prefWidth="402.0"
+                                   styleClass="tasks-table, data-table" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="taskNameColumn"
-                                             text="%tasks.name"
-                                             styleClass="text-small"/>
-                                <TableColumn fx:id="taskStatusColumn"
-                                             text="%tasks.status"
-                                             styleClass="text-small"/>
-                                <TableColumn fx:id="taskAssigneeColumn"
-                                             text="%tasks.assignee"
-                                             styleClass="text-small"/>
-                                <TableColumn fx:id="taskDeadlineColumn"
-                                             text="%tasks.deadline"
-                                             styleClass="text-small"/>
-                                <TableColumn fx:id="taskActionColumn"
-                                             text="%tasks.actions"
-                                             styleClass="action-column"/>
+                                <TableColumn fx:id="taskNameColumn" styleClass="text-small" text="%tasks.name"/>
+                                <TableColumn fx:id="taskStatusColumn" styleClass="text-small" text="%tasks.status"/>
+                                <TableColumn fx:id="taskAssigneeColumn" styleClass="text-small" text="%tasks.assignee"/>
+                                <TableColumn fx:id="taskDeadlineColumn" styleClass="text-small" text="%tasks.deadline"/>
+                                <TableColumn fx:id="taskActionColumn" styleClass="action-column" text="%tasks.actions"/>
                             </columns>
                             <placeholder>
-                                <Label text="%tasks.empty" styleClass="text-muted"/>
+                                <Label styleClass="text-muted" text="%tasks.empty"/>
                             </placeholder>
                             <contextMenu>
                                 <ContextMenu>
                                     <items>
-                                        <MenuItem text="%action.edit" onAction="#handleEditTask"/>
-                                        <MenuItem text="%action.delete" onAction="#handleDeleteTask"/>
+                                        <MenuItem onAction="#handleEditTask" text="%action.edit"/>
+                                        <MenuItem onAction="#handleDeleteTask" text="%action.delete"/>
                                     </items>
                                 </ContextMenu>
                             </contextMenu>
@@ -146,47 +113,36 @@
                     </VBox>
 
                     <!-- Files Section -->
-                    <VBox styleClass="files-card, data-card" spacing="10" HBox.hgrow="ALWAYS">
+                    <VBox spacing="10" styleClass="files-card, data-card" HBox.hgrow="ALWAYS">
                         <HBox alignment="CENTER_LEFT" styleClass="component-header">
-                            <Label text="%project.filesTitle"
+                            <Label accessibleText="%accessibility.filesTitle"
                                    styleClass="section-header, heading-medium, text-secondary"
-                                   accessibleText="%accessibility.filesTitle"/>
+                                   text="%project.filesTitle"/>
                             <Region HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="addFilesButton"
-                                    styleClass="button-flat"
-                                    text="%project.addFile"
-                                    accessibleText="%accessibility.addFile">
+                            <Button fx:id="addFilesButton" accessibleText="%accessibility.addFile"
+                                    styleClass="button-flat" text="%project.addFile">
                                 <tooltip>
                                     <Tooltip text="%tooltip.addFile"/>
                                 </tooltip>
                             </Button>
                         </HBox>
 
-                        <TableView fx:id="filesTable"
-                                   VBox.vgrow="ALWAYS"
-                                   styleClass="files-table, data-table">
+                        <TableView fx:id="filesTable" prefHeight="220.0" prefWidth="322.0"
+                                   styleClass="files-table, data-table" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="fileNameColumn"
-                                             text="%files.name"
-                                             styleClass="text-small"/>
-                                <TableColumn fx:id="fileTypeColumn"
-                                             text="%files.type"
-                                             styleClass="text-small"/>
-                                <TableColumn fx:id="fileSizeColumn"
-                                             text="%files.size"
-                                             styleClass="text-small"/>
-                                <TableColumn fx:id="fileActionColumn"
-                                             text="%files.actions"
-                                             styleClass="action-column"/>
+                                <TableColumn fx:id="fileNameColumn" styleClass="text-small" text="%files.name"/>
+                                <TableColumn fx:id="fileTypeColumn" styleClass="text-small" text="%files.type"/>
+                                <TableColumn fx:id="fileSizeColumn" styleClass="text-small" text="%files.size"/>
+                                <TableColumn fx:id="fileActionColumn" styleClass="action-column" text="%files.actions"/>
                             </columns>
                             <placeholder>
-                                <Label text="%files.empty" styleClass="text-muted"/>
+                                <Label styleClass="text-muted" text="%files.empty"/>
                             </placeholder>
                             <contextMenu>
                                 <ContextMenu>
                                     <items>
-                                        <MenuItem text="%action.download" onAction="#handleDownloadFile"/>
-                                        <MenuItem text="%action.delete" onAction="#handleDeleteFile"/>
+                                        <MenuItem onAction="#handleDownloadFile" text="%action.download"/>
+                                        <MenuItem onAction="#handleDeleteFile" text="%action.delete"/>
                                     </items>
                                 </ContextMenu>
                             </contextMenu>
@@ -195,47 +151,37 @@
                 </HBox>
 
                 <!-- Resources Section -->
-                <VBox styleClass="resources-card, content-item" spacing="10">
+                <VBox spacing="10" styleClass="resources-card, content-item">
                     <HBox alignment="CENTER_LEFT" styleClass="component-header">
-                        <Label text="%project.resourceTitle"
+                        <Label accessibleText="%accessibility.resourceTitle"
                                styleClass="section-header, heading-medium, text-secondary"
-                               accessibleText="%accessibility.resourceTitle"/>
+                               text="%project.resourceTitle"/>
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="addResourceButton"
-                                styleClass="button-flat"
-                                text="%project.addResource"
-                                accessibleText="%accessibility.addResource">
+                        <Button fx:id="addResourceButton" accessibleText="%accessibility.addResource"
+                                styleClass="button-flat" text="%project.addResource">
                             <tooltip>
                                 <Tooltip text="%tooltip.addResource"/>
                             </tooltip>
                         </Button>
                     </HBox>
 
-                    <TableView fx:id="resourcesTable"
-                               VBox.vgrow="ALWAYS"
-                               styleClass="resources-table, data-table">
+                    <TableView fx:id="resourcesTable" prefHeight="212.0" prefWidth="744.0"
+                               styleClass="resources-table, data-table" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="resourceNameColumn"
-                                         text="%resource.name"
-                                         styleClass="text-small"/>
-                            <TableColumn fx:id="resourceTypeColumn"
-                                         text="%resource.type"
-                                         styleClass="text-small"/>
-                            <TableColumn fx:id="resourceAmountColumn"
-                                         text="%resource.amount"
-                                         styleClass="text-small"/>
-                            <TableColumn fx:id="resourceActionColumn"
-                                         text="%resource.actions"
-                                         styleClass="action-column"/>
+                            <TableColumn fx:id="resourceNameColumn" styleClass="text-small" text="%resource.name"/>
+                            <TableColumn fx:id="resourceTypeColumn" styleClass="text-small" text="%resource.type"/>
+                            <TableColumn fx:id="resourceAmountColumn" styleClass="text-small" text="%resource.amount"/>
+                            <TableColumn fx:id="resourceActionColumn" styleClass="action-column"
+                                         text="%resource.actions"/>
                         </columns>
                         <placeholder>
-                            <Label text="%resource.empty" styleClass="text-muted"/>
+                            <Label styleClass="text-muted" text="%resource.empty"/>
                         </placeholder>
                         <contextMenu>
                             <ContextMenu>
                                 <items>
-                                    <MenuItem text="%action.edit" onAction="#handleEditResource"/>
-                                    <MenuItem text="%action.delete" onAction="#handleDeleteResource"/>
+                                    <MenuItem onAction="#handleEditResource" text="%action.edit"/>
+                                    <MenuItem onAction="#handleDeleteResource" text="%action.delete"/>
                                 </items>
                             </ContextMenu>
                         </contextMenu>
@@ -249,14 +195,11 @@
     <bottom>
         <HBox spacing="10" styleClass="status-bar, footer">
             <padding>
-                <Insets top="5" right="10" bottom="5" left="10"/>
+                <Insets bottom="5" left="10" right="10" top="5"/>
             </padding>
-            <Label fx:id="statusLabel"
-                   styleClass="status-message, text-muted"
-                   text="%status.ready"/>
+            <Label fx:id="statusLabel" styleClass="status-message, text-muted" text="%status.ready"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="projectIdLabel"
-                   styleClass="text-small, text-muted"/>
+            <Label fx:id="projectIdLabel" styleClass="text-small, text-muted"/>
         </HBox>
     </bottom>
 

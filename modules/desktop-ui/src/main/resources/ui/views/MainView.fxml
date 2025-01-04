@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import com.gluonhq.charm.glisten.mvc.View?>
-<?import com.gluonhq.charm.glisten.control.AppBar?>
-<?import com.gluonhq.charm.glisten.control.NavigationDrawer?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-<?import java.net.URL?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import java.net.URL?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:id="mainLayout"
             xmlns="http://javafx.com/javafx"

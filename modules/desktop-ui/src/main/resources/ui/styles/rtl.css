@@ -1,27 +1,27 @@
 .rtl {
-    -fx-node-orientation: right-to-left;
+  -fx-node-orientation: right-to-left;
 }
 
 .rtl .text-field {
-    -fx-alignment: CENTER_RIGHT;
+  -fx-alignment: CENTER_RIGHT;
 }
 
 .rtl .label {
-    -fx-alignment: CENTER_RIGHT;
+  -fx-alignment: CENTER_RIGHT;
 }
 
 .rtl .button {
-    -fx-alignment: CENTER_RIGHT;
+  -fx-alignment: CENTER_RIGHT;
 }
 
 .rtl .tooltip {
-    -fx-text-alignment: RIGHT;
+  -fx-text-alignment: RIGHT;
 }
 
 .rtl .validation-tooltip {
-    -fx-text-alignment: RIGHT;
+  -fx-text-alignment: RIGHT;
 }
 
 .rtl .strength-indicator {
-    -fx-translate-x: -100%;
+  -fx-translate-x: -100%;
 }

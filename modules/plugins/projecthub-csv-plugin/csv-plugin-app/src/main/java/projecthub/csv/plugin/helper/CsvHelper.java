@@ -22,18 +22,19 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
  */
 public class CsvHelper {
 
-    private CsvHelper() {}
-
     private static final Logger logger = LoggerFactory.getLogger(CsvHelper.class);
 
+    private CsvHelper() {
+    }
+
     public static <T> void writeBeansToCsv(String filepath, Class<T> type, List<T> beans, String[] columns)
-            throws Exception {
+        throws Exception {
         try (CSVWriter writer = new CSVWriter(new FileWriter(filepath))) {
             ColumnPositionMappingStrategy<T> strategy = new ColumnPositionMappingStrategy<>();
             strategy.setType(type);
             strategy.setColumnMapping(columns);
             StatefulBeanToCsv<T> beanToCsv = new StatefulBeanToCsvBuilder<T>(writer).withMappingStrategy(strategy)
-                    .build();
+                .build();
             beanToCsv.write(beans);
             logger.info("{} records written to CSV file: {}", beans.size(), filepath);
         }

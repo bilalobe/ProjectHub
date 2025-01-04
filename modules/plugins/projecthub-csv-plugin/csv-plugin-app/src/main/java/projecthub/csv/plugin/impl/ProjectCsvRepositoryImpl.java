@@ -69,9 +69,9 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
             String[] memberFieldsToBindTo = {"id", "name", "description", "teamId", "deadline", "startDate", "endDate", "status"};
             strategy.setColumnMapping(memberFieldsToBindTo);
             return new CsvToBeanBuilder<Project>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+                .withMappingStrategy(strategy)
+                .build()
+                .parse();
         } catch (IOException e) {
             logger.error("Error reading projects from CSV", e);
             throw new RuntimeException("Error reading projects from CSV", e);
@@ -87,8 +87,8 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
     @Override
     public Optional<Project> findById(UUID id) {
         return findAll().stream()
-                .filter(p -> Objects.equals(p.getId(), id))
-                .findFirst();
+            .filter(p -> Objects.equals(p.getId(), id))
+            .findFirst();
     }
 
     /**
@@ -109,8 +109,8 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
                 String[] memberFieldsToBindTo = {"id", "name", "description", "teamId", "deadline", "startDate", "endDate", "status"};
                 strategy.setColumnMapping(memberFieldsToBindTo);
                 StatefulBeanToCsv<Project> beanToCsv = new StatefulBeanToCsvBuilder<Project>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
+                    .withMappingStrategy(strategy)
+                    .build();
                 beanToCsv.write(projects);
             }
             logger.info("Project deleted successfully: {}", id);
@@ -130,7 +130,7 @@ public class ProjectCsvRepositoryImpl implements ProjectCsvRepository {
     @Override
     public List<Project> findAllByTeamId(UUID teamId) {
         return findAll().stream()
-                .filter(p -> p.getTeam() != null && Objects.equals(p.getTeam().getId(), teamId))
-                .toList();
+            .filter(p -> p.getTeam() != null && Objects.equals(p.getTeam().getId(), teamId))
+            .toList();
     }
 }

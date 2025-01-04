@@ -9,7 +9,6 @@ apply from: "${rootProject.projectDir}/buildSrc/src/main/groovy/dependencies.gra
 
 dependencies {
     
-    implementation project(":modules:core")
 
     // JavaFX
     implementation "org.openjfx:javafx-controls:${versions.javafx}"
@@ -38,5 +37,4 @@ jar {
     manifest {
         attributes 'Main-Class': 'com.projecthub.ui.MainApp'
     }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

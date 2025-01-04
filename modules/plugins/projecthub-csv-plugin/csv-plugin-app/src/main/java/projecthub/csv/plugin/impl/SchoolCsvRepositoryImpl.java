@@ -8,8 +8,8 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import projecthub.csv.plugin.config.CsvProperties;
 import projecthub.csv.plugin.helper.CsvHelper;
-import com.projecthub.core.models.School;
-import com.projecthub.core.repositories.csv.SchoolCsvRepository;
+import com.projecthub.base.models.School;
+import com.projecthub.base.repositories.csv.SchoolCsvRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
@@ -107,9 +107,9 @@ public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
             String[] memberFieldsToBindTo = {"id", "name"};
             strategy.setColumnMapping(memberFieldsToBindTo);
             return new CsvToBeanBuilder<School>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+                .withMappingStrategy(strategy)
+                .build()
+                .parse();
         } catch (IOException e) {
             logger.error("Error reading schools from CSV", e);
             throw new RuntimeException("Error reading schools from CSV", e);
@@ -125,8 +125,8 @@ public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
     @Override
     public Optional<School> findById(UUID id) {
         return findAll().stream()
-                .filter(s -> Objects.equals(s.getId(), id))
-                .findFirst();
+            .filter(s -> Objects.equals(s.getId(), id))
+            .findFirst();
     }
 
     /**
@@ -147,8 +147,8 @@ public class SchoolCsvRepositoryImpl implements SchoolCsvRepository {
                 String[] memberFieldsToBindTo = {"id", "name"};
                 strategy.setColumnMapping(memberFieldsToBindTo);
                 StatefulBeanToCsv<School> beanToCsv = new StatefulBeanToCsvBuilder<School>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
+                    .withMappingStrategy(strategy)
+                    .build();
                 beanToCsv.write(schools);
             }
             logger.info("School deleted successfully: {}", id);

@@ -11,8 +11,8 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import projecthub.csv.plugin.config.CsvProperties;
 import projecthub.csv.plugin.helper.CsvFileHelper;
 import projecthub.csv.plugin.helper.CsvHelper;
-import com.projecthub.core.models.Task;
-import com.projecthub.core.repositories.csv.TaskCsvRepository;
+import com.projecthub.base.models.Task;
+import com.projecthub.base.repositories.csv.TaskCsvRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
@@ -79,9 +79,9 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
             strategy.setColumnMapping(memberFieldsToBindTo);
 
             return new CsvToBeanBuilder<Task>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+                .withMappingStrategy(strategy)
+                .build()
+                .parse();
         } catch (IOException e) {
             logger.error("Error reading tasks from CSV", e);
             throw new RuntimeException("Error reading tasks from CSV", e);
@@ -91,8 +91,8 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
     @Override
     public Optional<Task> findById(UUID id) {
         return findAll().stream()
-                .filter(t -> Objects.equals(t.getId(), id))
-                .findFirst();
+            .filter(t -> Objects.equals(t.getId(), id))
+            .findFirst();
     }
 
     @Override
@@ -109,8 +109,8 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
                 strategy.setColumnMapping(memberFieldsToBindTo);
 
                 StatefulBeanToCsv<Task> beanToCsv = new StatefulBeanToCsvBuilder<Task>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
+                    .withMappingStrategy(strategy)
+                    .build();
 
                 beanToCsv.write(tasks);
             }
@@ -125,7 +125,7 @@ public class TaskCsvRepositoryImpl implements TaskCsvRepository {
     @Override
     public List<Task> findByProjectId(UUID projectId) {
         return findAll().stream()
-                .filter(t -> t.getProject() != null && Objects.equals(t.getProject().getId(), projectId))
-                .toList();
+            .filter(t -> t.getProject() != null && Objects.equals(t.getProject().getId(), projectId))
+            .toList();
     }
 }

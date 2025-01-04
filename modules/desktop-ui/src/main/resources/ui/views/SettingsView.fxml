@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.net.URL?>
-
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             styleClass="settings-container"
             xmlns="http://javafx.com/javafx/23.0.1"

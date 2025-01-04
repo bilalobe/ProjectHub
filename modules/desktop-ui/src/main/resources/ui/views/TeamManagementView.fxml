@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import com.gluonhq.charm.glisten.control.*?>
-<?import com.gluonhq.charm.glisten.visual.*?>
-
+<?import java.net.URL?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="rootPane"
             styleClass="team-management-container"
             xmlns="http://javafx.com/javafx/23.0.1"

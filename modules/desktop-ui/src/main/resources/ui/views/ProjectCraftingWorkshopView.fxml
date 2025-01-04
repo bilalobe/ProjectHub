@@ -3,11 +3,9 @@
 <?import com.gluonhq.charm.glisten.control.*?>
 <?import com.gluonhq.charm.glisten.mvc.View?>
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-
 <View xmlns:fx="http://javafx.com/fxml/1"
       xmlns="http://javafx.com/javafx/23.0.1"
       fx:controller="com.projecthub.ui.controllers.WorkshopController"

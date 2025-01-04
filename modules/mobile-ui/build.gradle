@@ -1,0 +1,62 @@
+plugins {
+  id 'com.android.application'
+  id 'org.jetbrains.kotlin.android'
+  id 'org.jetbrains.kotlin.plugin.compose'
+}
+
+apply from: "${rootProject.projectDir}/buildSrc/src/main/groovy/dependencies.gradle"
+
+android {
+  namespace = 'com.projecthub.mobile'
+  compileSdk = 34
+
+  defaultConfig {
+    applicationId = "com.projecthub.mobile"
+    minSdk = 24
+    targetSdk = 34
+    versionCode = 1
+    versionName = project.version.toString()
+  }
+
+  buildFeatures {
+    compose = true
+    buildConfig = true
+  }
+
+  composeOptions {
+    kotlinCompilerExtensionVersion = versions.compose
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+  }
+
+  kotlinOptions {
+    jvmTarget = '17'
+  }
+}
+
+dependencies {
+  implementation project(':modules:foundation')
+
+  // Compose
+  implementation platform('androidx.compose:compose-bom:2024.01.00')
+  implementation 'androidx.compose.ui:ui'
+  implementation 'androidx.compose.material3:material3'
+  implementation 'androidx.compose.ui:ui-tooling-preview'
+  debugImplementation 'androidx.compose.ui:ui-tooling'
+  implementation 'androidx.compose.material:material-icons-base'
+  implementation 'androidx.compose.material:material-icons-extended'
+  androidTestImplementation 'androidx.compose.ui:ui-test-manifest'
+
+  // Navigation
+  implementation 'androidx.navigation:navigation-compose:2.7.7'
+}

@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" spacing="20"
       styleClass="register-container"
       nodeOrientation="${controller.isRTL ? 'RIGHT_TO_LEFT' : 'LEFT_TO_RIGHT'}"

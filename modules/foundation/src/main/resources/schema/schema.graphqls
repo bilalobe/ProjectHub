@@ -1,0 +1,54 @@
+type Query {
+    school(id: ID!): School
+    schools(page: Int, size: Int): SchoolConnection!
+    searchSchools(criteria: SchoolSearchInput!, page: Int, size: Int): SchoolConnection!
+    activeSchools(page: Int, size: Int): SchoolConnection!
+    archivedSchools(page: Int, size: Int): SchoolConnection!
+}
+
+type School {
+    id: ID!
+    name: String!
+    address: SchoolAddress!
+    contact: SchoolContact!
+    archived: Boolean!
+}
+
+type SchoolAddress {
+    street: String!
+    city: String!
+    state: String!
+    postalCode: String!
+    country: String
+}
+
+type SchoolContact {
+    email: String!
+    phone: String!
+    website: String
+}
+
+type SchoolConnection {
+    edges: [SchoolEdge!]!
+    pageInfo: PageInfo!
+    totalCount: Int!
+}
+
+type SchoolEdge {
+    node: School!
+    cursor: String!
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String
+    endCursor: String
+}
+
+input SchoolSearchInput {
+    name: String
+    city: String
+    state: String
+    archived: Boolean
+}

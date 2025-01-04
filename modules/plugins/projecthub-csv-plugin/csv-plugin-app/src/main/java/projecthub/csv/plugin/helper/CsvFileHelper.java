@@ -10,9 +10,10 @@ import org.slf4j.LoggerFactory;
 
 public class CsvFileHelper {
 
-    private CsvFileHelper() {    }
-
     private static final Logger logger = LoggerFactory.getLogger(CsvFileHelper.class);
+
+    private CsvFileHelper() {
+    }
 
     /**
      * Creates a backup of the CSV file.

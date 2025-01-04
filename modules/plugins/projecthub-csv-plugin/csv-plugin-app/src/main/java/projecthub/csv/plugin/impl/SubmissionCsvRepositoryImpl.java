@@ -9,8 +9,8 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import projecthub.csv.plugin.config.CsvProperties;
 import projecthub.csv.plugin.helper.CsvFileHelper;
 import projecthub.csv.plugin.helper.CsvHelper;
-import com.projecthub.core.models.Submission;
-import com.projecthub.core.repositories.csv.SubmissionCsvRepository;
+import com.projecthub.base.models.Submission;
+import com.projecthub.base.repositories.csv.SubmissionCsvRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
@@ -92,9 +92,9 @@ public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
             String[] memberFieldsToBindTo = {"id", "projectId", "studentId", "content", "timestamp", "grade"};
             strategy.setColumnMapping(memberFieldsToBindTo);
             return new CsvToBeanBuilder<Submission>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+                .withMappingStrategy(strategy)
+                .build()
+                .parse();
         } catch (IOException e) {
             logger.error("Error reading submissions from CSV", e);
             throw new RuntimeException("Error reading submissions from CSV", e);
@@ -110,8 +110,8 @@ public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
     @Override
     public Optional<Submission> findById(UUID id) {
         return findAll().stream()
-                .filter(s -> Objects.equals(s.getId(), id))
-                .findFirst();
+            .filter(s -> Objects.equals(s.getId(), id))
+            .findFirst();
     }
 
     /**
@@ -132,8 +132,8 @@ public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
                 String[] memberFieldsToBindTo = {"id", "projectId", "studentId", "content", "timestamp", "grade"};
                 strategy.setColumnMapping(memberFieldsToBindTo);
                 StatefulBeanToCsv<Submission> beanToCsv = new StatefulBeanToCsvBuilder<Submission>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
+                    .withMappingStrategy(strategy)
+                    .build();
                 beanToCsv.write(submissions);
             }
             logger.info("Submission deleted successfully: {}", id);
@@ -153,8 +153,8 @@ public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
     @Override
     public List<Submission> findByStudentId(UUID studentId) {
         return findAll().stream()
-                .filter(s -> s.getStudent() != null && Objects.equals(s.getStudent().getId(), studentId))
-                .toList();
+            .filter(s -> s.getStudent() != null && Objects.equals(s.getStudent().getId(), studentId))
+            .toList();
     }
 
     /**
@@ -166,7 +166,7 @@ public class SubmissionCsvRepositoryImpl implements SubmissionCsvRepository {
     @Override
     public List<Submission> findByProjectId(UUID projectId) {
         return findAll().stream()
-                .filter(s -> s.getProject() != null && Objects.equals(s.getProject().getId(), projectId))
-                .toList();
+            .filter(s -> s.getProject() != null && Objects.equals(s.getProject().getId(), projectId))
+            .toList();
     }
 }

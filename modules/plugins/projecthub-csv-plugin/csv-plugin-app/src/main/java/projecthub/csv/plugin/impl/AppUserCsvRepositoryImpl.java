@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import com.projecthub.core.models.AppUser;
+import com.projecthub.base.models.AppUser;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -85,9 +85,9 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
             strategy.setType(AppUser.class);
             strategy.setColumnMapping(COLUMNS);
             return new CsvToBeanBuilder<AppUser>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+                .withMappingStrategy(strategy)
+                .build()
+                .parse();
         } catch (IOException e) {
             logger.error("Error reading users from CSV", e);
             throw new CsvDataAccessException("Error reading users from CSV", e);
@@ -103,8 +103,8 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
     @Override
     public Optional<AppUser> findById(UUID id) {
         return findAll().stream()
-                .filter(u -> Objects.equals(u.getId(), id))
-                .findFirst();
+            .filter(u -> Objects.equals(u.getId(), id))
+            .findFirst();
     }
 
     /**
@@ -123,8 +123,8 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
                 strategy.setType(AppUser.class);
                 strategy.setColumnMapping(COLUMNS);
                 StatefulBeanToCsv<AppUser> beanToCsv = new StatefulBeanToCsvBuilder<AppUser>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
+                    .withMappingStrategy(strategy)
+                    .build();
                 beanToCsv.write(users);
             }
             logger.info("User deleted successfully: {}", id);
@@ -149,7 +149,7 @@ public class AppUserCsvRepositoryImpl implements AppUserCsvRepository {
     @Override
     public Optional<AppUser> findByUsername(String username) {
         return findAll().stream()
-                .filter(u -> u.getUsername().equals(username))
-                .findFirst();
+            .filter(u -> u.getUsername().equals(username))
+            .findFirst();
     }
 }

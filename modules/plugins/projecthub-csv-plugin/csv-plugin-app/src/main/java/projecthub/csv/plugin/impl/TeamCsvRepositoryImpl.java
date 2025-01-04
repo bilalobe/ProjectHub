@@ -4,8 +4,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBeanBuilder;
 import projecthub.csv.plugin.config.CsvProperties;
-import com.projecthub.core.models.Team;
-import com.projecthub.core.repositories.csv.TeamCsvRepository;
+import com.projecthub.base.models.Team;
+import com.projecthub.base.repositories.csv.TeamCsvRepository;
 import projecthub.csv.plugin.helper.CsvFileHelper;
 import projecthub.csv.plugin.helper.CsvHelper;
 import jakarta.validation.ConstraintViolation;
@@ -88,9 +88,9 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
             String[] memberFieldsToBindTo = {"id", "name"};
             strategy.setColumnMapping(memberFieldsToBindTo);
             return new CsvToBeanBuilder<Team>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+                .withMappingStrategy(strategy)
+                .build()
+                .parse();
         } catch (IOException e) {
             logger.error("Error reading teams from CSV", e);
             throw new RuntimeException("Error reading teams from CSV", e);
@@ -106,8 +106,8 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
     @Override
     public Optional<Team> findById(UUID id) {
         return findAll().stream()
-                .filter(t -> Objects.equals(t.getId(), id))
-                .findFirst();
+            .filter(t -> Objects.equals(t.getId(), id))
+            .findFirst();
     }
 
     /**
@@ -140,7 +140,7 @@ public class TeamCsvRepositoryImpl implements TeamCsvRepository {
     @Override
     public List<Team> findByCohortId(UUID cohortId) {
         return findAll().stream()
-                .filter(t -> t.getCohort() != null && Objects.equals(t.getCohort().getId(), cohortId))
-                .toList();
+            .filter(t -> t.getCohort() != null && Objects.equals(t.getCohort().getId(), cohortId))
+            .toList();
     }
 }

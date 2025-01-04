@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.validation.Validator;
 import javax.validation.ConstraintViolation;
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.UUID;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
@@ -92,9 +94,9 @@ public class ComponentCsvRepositoryImpl implements ComponentCsvRepository {
             String[] memberFieldsToBindTo = {"id", "name", "description", "projectId"};
             strategy.setColumnMapping(memberFieldsToBindTo);
             return new CsvToBeanBuilder<Component>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+                .withMappingStrategy(strategy)
+                .build()
+                .parse();
         } catch (IOException e) {
             logger.error("Error reading components from CSV", e);
             throw new RuntimeException("Error reading components from CSV", e);
@@ -112,8 +114,8 @@ public class ComponentCsvRepositoryImpl implements ComponentCsvRepository {
         try {
             List<Component> components = readComponentsFromFile();
             return components.stream()
-                    .filter(c -> Objects.equals(c.getId(), id))
-                    .findFirst();
+                .filter(c -> Objects.equals(c.getId(), id))
+                .findFirst();
         } catch (IOException e) {
             logger.error("Error reading components from CSV", e);
             throw new RuntimeException("Error reading components from CSV", e);
@@ -151,8 +153,8 @@ public class ComponentCsvRepositoryImpl implements ComponentCsvRepository {
         try {
             List<Component> components = readComponentsFromFile();
             return components.stream()
-                    .filter(c -> c.getProject() != null && Objects.equals(c.getProject().getId(), projectId))
-                    .toList();
+                .filter(c -> c.getProject() != null && Objects.equals(c.getProject().getId(), projectId))
+                .toList();
         } catch (IOException e) {
             logger.error("Error reading components from CSV", e);
             throw new RuntimeException("Error reading components from CSV", e);
@@ -184,8 +186,8 @@ public class ComponentCsvRepositoryImpl implements ComponentCsvRepository {
         try (CSVWriter writer = new CSVWriter(new FileWriter(csvProperties.getComponentsFilepath()))) {
             ColumnPositionMappingStrategy<Component> strategy = getMappingStrategy();
             StatefulBeanToCsv<Component> beanToCsv = new StatefulBeanToCsvBuilder<Component>(writer)
-                    .withMappingStrategy(strategy)
-                    .build();
+                .withMappingStrategy(strategy)
+                .build();
             beanToCsv.write(components);
         }
     }
@@ -200,9 +202,9 @@ public class ComponentCsvRepositoryImpl implements ComponentCsvRepository {
         try (CSVReader reader = new CSVReader(new FileReader(csvProperties.getComponentsFilepath()))) {
             ColumnPositionMappingStrategy<Component> strategy = getMappingStrategy();
             return new CsvToBeanBuilder<Component>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+                .withMappingStrategy(strategy)
+                .build()
+                .parse();
         }
     }
 }

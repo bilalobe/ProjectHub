@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
@@ -134,7 +130,8 @@
               styleClass="status-bar  footer">  <!-- Layout to show current status and is consistent across app via styles -->
             <Label fx:id="statusLabel" styleClass="status-message text-muted"
                    text="%status.ready"/> <!-- styled text labels via tag names with specific text sizes  /properties for this layout with data that comes via java controller and from external  /local properties via UI API/design / framework system  -->
-            <Region HBox.hgrow="ALWAYS"/>  <!-- a space using tags (with component property ) if extra layout space is needed  (for right and left component alignment in horizontal layout like  status view or other sections in footer -->
+            <Region
+                HBox.hgrow="ALWAYS"/>  <!-- a space using tags (with component property ) if extra layout space is needed  (for right and left component alignment in horizontal layout like  status view or other sections in footer -->
 
             <Label fx:id="lastUpdatedLabel"
                    styleClass="text-small text-muted"/>   <!-- a localized text  that must comes with localized value or API if any local /view state or UI changes need an updated values -->

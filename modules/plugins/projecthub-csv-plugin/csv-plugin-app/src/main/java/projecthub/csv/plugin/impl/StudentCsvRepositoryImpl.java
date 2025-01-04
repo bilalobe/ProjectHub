@@ -69,9 +69,9 @@ public class StudentCsvRepositoryImpl implements StudentCsvRepository {
             String[] memberFieldsToBindTo = {"id", "name", "teamId"};
             strategy.setColumnMapping(memberFieldsToBindTo);
             return new CsvToBeanBuilder<Student>(reader)
-                    .withMappingStrategy(strategy)
-                    .build()
-                    .parse();
+                .withMappingStrategy(strategy)
+                .build()
+                .parse();
         } catch (IOException e) {
             logger.error("Error reading students from CSV", e);
             throw new RuntimeException("Error reading students from CSV", e);
@@ -87,8 +87,8 @@ public class StudentCsvRepositoryImpl implements StudentCsvRepository {
     @Override
     public Optional<Student> findById(UUID id) {
         return findAll().stream()
-                .filter(s -> Objects.equals(s.getId(), id))
-                .findFirst();
+            .filter(s -> Objects.equals(s.getId(), id))
+            .findFirst();
     }
 
     /**
@@ -109,8 +109,8 @@ public class StudentCsvRepositoryImpl implements StudentCsvRepository {
                 String[] memberFieldsToBindTo = {"id", "name", "teamId"};
                 strategy.setColumnMapping(memberFieldsToBindTo);
                 StatefulBeanToCsv<Student> beanToCsv = new StatefulBeanToCsvBuilder<Student>(writer)
-                        .withMappingStrategy(strategy)
-                        .build();
+                    .withMappingStrategy(strategy)
+                    .build();
                 beanToCsv.write(students);
             }
             logger.info("Student deleted successfully: {}", id);
@@ -130,7 +130,7 @@ public class StudentCsvRepositoryImpl implements StudentCsvRepository {
     @Override
     public List<Student> findByTeamId(UUID teamId) {
         return findAll().stream()
-                .filter(s -> s.getTeam() != null && Objects.equals(s.getTeam().getId(), teamId))
-                .toList();
+            .filter(s -> s.getTeam() != null && Objects.equals(s.getTeam().getId(), teamId))
+            .toList();
     }
 }

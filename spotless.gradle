@@ -1,0 +1,23 @@
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        cleanthat()
+        googleJavaFormat()
+    }
+    groovy {
+        greclipse()
+    }
+    kotlin {
+        target 'src/*/kotlin/**/*.kt'
+        ktlint()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format 'misc', {
+        target '*.gradle', '*.md', '.gitignore'
+        trimTrailingWhitespace()
+        indentWithSpaces(4)
+        endWithNewline()
+    }
+}
