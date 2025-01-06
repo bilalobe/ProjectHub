@@ -7,7 +7,7 @@ ext {
         springModulith               : '1.1.0',
 
         // UI
-        controlsFx                   : '11.1.1',
+        controlsFx                   : '11.2.1',
         gluonPlugin                  : '1.0.24',
         gluonCharm                   : '6.2.3',
         gluonAfterburner             : '2.1.0',
