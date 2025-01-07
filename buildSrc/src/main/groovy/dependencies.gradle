@@ -5,6 +5,8 @@ ext {
         springDependencyManagement   : '1.1.7',
         springCloud                  : '2023.0.0',
         springModulith               : '1.1.0',
+        springAmqp                   : '3.1.2',
+        springSecurity               : '6.4.2',
 
         // UI
         controlsFx                   : '11.1.1',
@@ -36,7 +38,6 @@ ext {
         thymeleafLayout            : '3.2.1',
 
         // Utilities
-        springAmqp                   : '3.1.2',
         jwt                         : '0.12.6',
         modelMapper                 : '3.2.2',
         openCsv                     : '5.5.2',
@@ -55,7 +56,6 @@ ext {
         dgs                         : '10.0.1',
         dgsSpring                   :'9.2.2',
         dgsCodegen                  : '6.1.0',
-
-        spotlessPlugin           : '6.25.0'
+    spotlessPlugin                 : '6.25.0'
     ]
 }
