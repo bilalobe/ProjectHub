@@ -11,7 +11,7 @@ pluginManagement {
         id 'org.openjfx.javafxplugin' version '0.1.0'
         id 'com.gluonhq.gluonfx-gradle-plugin' version '1.0.24'
         id 'org.sonarqube' version '6.0.1.5171'
-        id 'com.diffplug.spotless' version '6.25.0'
+        id 'com.diffplug.spotless' version '7.0.1'
         id 'com.netflix.dgs.codegen' version '7.0.3'
         id 'com.android.application' version '8.7.3'
         id 'org.jetbrains.kotlin.android' version '2.1.0'
