@@ -20,7 +20,7 @@ ext {
 
         // Tools
         sonarqube                    : '6.0.1.5171',
-        lombok                       : '1.18.30',
+        lombok                       : '1.18.36',
         mapstruct                    : '1.6.3',
         jmolecules                   : '1.9.0',
         pf4j                        : '3.9.0',
