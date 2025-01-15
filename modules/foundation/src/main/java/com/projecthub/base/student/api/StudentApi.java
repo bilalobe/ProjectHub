@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 class StudentApiController {
     private final StudentApplicationService service;
 
-    public StudentApiController(StudentApplicationService service) {
+    public StudentApiController(final StudentApplicationService service) {
         this.service = service;
     }
 
     @PostMapping
-    ResponseEntity<StudentDTO> create(@Valid @RequestBody StudentCommand.Create command) {
-        return ResponseEntity.ok(service.handle(command));
+    ResponseEntity<StudentDTO> create(@Valid @RequestBody final StudentCommand.Create command) {
+        return ResponseEntity.ok(this.service.handle(command));
     }
 
 }

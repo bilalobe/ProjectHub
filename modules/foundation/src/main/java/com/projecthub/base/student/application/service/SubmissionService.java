@@ -3,9 +3,10 @@ package com.projecthub.base.student.application.service;
 
 import com.projecthub.base.shared.exception.ResourceNotFoundException;
 import com.projecthub.base.student.api.dto.SubmissionDTO;
-import com.projecthub.base.student.api.mapper.SubmissionMapper;
 import com.projecthub.base.student.domain.entity.Submission;
 import com.projecthub.base.student.domain.repository.SubmissionJpaRepository;
+import com.projecthub.base.submission.api.SubmissionMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public class SubmissionService {
     private final SubmissionJpaRepository submissionRepository;
     private final SubmissionMapper submissionMapper;
 
-    public SubmissionService(SubmissionJpaRepository submissionRepository, SubmissionMapper submissionMapper) {
+    public SubmissionService(final SubmissionJpaRepository submissionRepository, final SubmissionMapper submissionMapper) {
         this.submissionRepository = submissionRepository;
         this.submissionMapper = submissionMapper;
     }
@@ -40,13 +41,13 @@ public class SubmissionService {
      * @throws IllegalArgumentException if submissionDTO is null
      */
     @Transactional
-    public SubmissionDTO saveSubmission(SubmissionDTO submissionDTO) {
-        logger.info("Saving submission");
-        validateSubmissionDTO(submissionDTO);
-        Submission submission = submissionMapper.toEntity(submissionDTO);
-        Submission savedSubmission = submissionRepository.save(submission);
-        logger.info("Submission saved with ID: {}", savedSubmission.getId());
-        return submissionMapper.toDto(savedSubmission);
+    public SubmissionDTO saveSubmission(final SubmissionDTO submissionDTO) {
+        SubmissionService.logger.info("Saving submission");
+        this.validateSubmissionDTO(submissionDTO);
+        final Submission submission = this.submissionMapper.toEntity(submissionDTO);
+        final Submission savedSubmission = this.submissionRepository.save(submission);
+        SubmissionService.logger.info("Submission saved with ID: {}", savedSubmission.getId());
+        return this.submissionMapper.toDto(savedSubmission);
     }
 
     /**
@@ -56,13 +57,13 @@ public class SubmissionService {
      * @throws ResourceNotFoundException if the submission is not found
      */
     @Transactional
-    public void deleteSubmission(UUID id) {
-        logger.info("Deleting submission with ID: {}", id);
-        if (!submissionRepository.existsById(id)) {
+    public void deleteSubmission(final UUID id) {
+        SubmissionService.logger.info("Deleting submission with ID: {}", id);
+        if (!this.submissionRepository.existsById(id)) {
             throw new ResourceNotFoundException("Submission not found with ID: " + id);
         }
-        submissionRepository.deleteById(id);
-        logger.info("Submission deleted with ID: {}", id);
+        this.submissionRepository.deleteById(id);
+        SubmissionService.logger.info("Submission deleted with ID: {}", id);
     }
 
     /**
@@ -72,10 +73,10 @@ public class SubmissionService {
      * @return the submission DTO
      * @throws ResourceNotFoundException if the submission is not found
      */
-    public SubmissionDTO getSubmissionById(UUID id) {
-        logger.info("Retrieving submission with ID: {}", id);
-        Submission submission = findSubmissionById(id);
-        return submissionMapper.toDto(submission);
+    public SubmissionDTO getSubmissionById(final UUID id) {
+        SubmissionService.logger.info("Retrieving submission with ID: {}", id);
+        final Submission submission = this.findSubmissionById(id);
+        return this.submissionMapper.toDto(submission);
     }
 
     /**
@@ -84,9 +85,9 @@ public class SubmissionService {
      * @return a list of submission DTOs
      */
     public List<SubmissionDTO> getAllSubmissions() {
-        logger.info("Retrieving all submissions");
-        return submissionRepository.findAll().stream()
-            .map(submissionMapper::toDto)
+        SubmissionService.logger.info("Retrieving all submissions");
+        return this.submissionRepository.findAll().stream()
+            .map(this.submissionMapper::toDto)
             .toList();
     }
 
@@ -96,10 +97,10 @@ public class SubmissionService {
      * @param studentId the ID of the student
      * @return a list of submission DTOs
      */
-    public List<SubmissionDTO> getSubmissionsByStudentId(UUID studentId) {
-        logger.info("Retrieving submissions for student ID: {}", studentId);
-        return submissionRepository.findByStudentId(studentId).stream()
-            .map(submissionMapper::toDto)
+    public List<SubmissionDTO> getSubmissionsByStudentId(final UUID studentId) {
+        SubmissionService.logger.info("Retrieving submissions for student ID: {}", studentId);
+        return this.submissionRepository.findByStudentId(studentId).stream()
+            .map(this.submissionMapper::toDto)
             .toList();
     }
 
@@ -113,14 +114,14 @@ public class SubmissionService {
      * @throws IllegalArgumentException  if submissionDTO is null
      */
     @Transactional
-    public SubmissionDTO updateSubmission(UUID id, SubmissionDTO submissionDTO) {
-        logger.info("Updating submission with ID: {}", id);
-        validateSubmissionDTO(submissionDTO);
-        Submission existingSubmission = findSubmissionById(id);
-        submissionMapper.updateEntityFromDto(submissionDTO, existingSubmission);
-        Submission updatedSubmission = submissionRepository.save(existingSubmission);
-        logger.info("Submission updated with ID: {}", updatedSubmission.getId());
-        return submissionMapper.toDto(updatedSubmission);
+    public SubmissionDTO updateSubmission(final UUID id, final SubmissionDTO submissionDTO) {
+        SubmissionService.logger.info("Updating submission with ID: {}", id);
+        this.validateSubmissionDTO(submissionDTO);
+        final Submission existingSubmission = this.findSubmissionById(id);
+        this.submissionMapper.updateEntityFromDto(submissionDTO, existingSubmission);
+        final Submission updatedSubmission = this.submissionRepository.save(existingSubmission);
+        SubmissionService.logger.info("Submission updated with ID: {}", updatedSubmission.getId());
+        return this.submissionMapper.toDto(updatedSubmission);
     }
 
     /**
@@ -131,13 +132,13 @@ public class SubmissionService {
      * @throws IllegalArgumentException if submissionDTO is null
      */
     @Transactional
-    public SubmissionDTO createSubmission(SubmissionDTO submissionDTO) {
-        logger.info("Creating a new submission");
-        validateSubmissionDTO(submissionDTO);
-        Submission submission = submissionMapper.toEntity(submissionDTO);
-        Submission savedSubmission = submissionRepository.save(submission);
-        logger.info("Submission created with ID: {}", savedSubmission.getId());
-        return submissionMapper.toDto(savedSubmission);
+    public SubmissionDTO createSubmission(final SubmissionDTO submissionDTO) {
+        SubmissionService.logger.info("Creating a new submission");
+        this.validateSubmissionDTO(submissionDTO);
+        final Submission submission = this.submissionMapper.toEntity(submissionDTO);
+        final Submission savedSubmission = this.submissionRepository.save(submission);
+        SubmissionService.logger.info("Submission created with ID: {}", savedSubmission.getId());
+        return this.submissionMapper.toDto(savedSubmission);
     }
 
     /**
@@ -146,11 +147,11 @@ public class SubmissionService {
      * @param pageable the pagination information
      * @return a page of submission DTOs
      */
-    public Page<SubmissionDTO> getSubmissionsPage(Pageable pageable) {
-        logger.info("Retrieving submissions page {} of size {}",
+    public Page<SubmissionDTO> getSubmissionsPage(final Pageable pageable) {
+        SubmissionService.logger.info("Retrieving submissions page {} of size {}",
             pageable.getPageNumber(), pageable.getPageSize());
-        return submissionRepository.findAll(pageable)
-            .map(submissionMapper::toDto);
+        return this.submissionRepository.findAll(pageable)
+            .map(this.submissionMapper::toDto);
     }
 
     /**
@@ -160,22 +161,22 @@ public class SubmissionService {
      * @return the processed submission DTO
      */
     @Transactional
-    public SubmissionDTO processSubmission(SubmissionDTO submissionDTO) {
-        validateSubmissionDTO(submissionDTO);
+    public SubmissionDTO processSubmission(final SubmissionDTO submissionDTO) {
+        this.validateSubmissionDTO(submissionDTO);
 
         // Add status and timestamp
-        return saveSubmission(submissionDTO);
+        return this.saveSubmission(submissionDTO);
     }
 
-    private void validateSubmissionDTO(SubmissionDTO submissionDTO) {
-        if (submissionDTO == null) {
+    private void validateSubmissionDTO(final SubmissionDTO submissionDTO) {
+        if (null == submissionDTO) {
             throw new IllegalArgumentException("SubmissionDTO cannot be null");
         }
         // Additional validation logic can be added here
     }
 
-    private Submission findSubmissionById(UUID id) {
-        return submissionRepository.findById(id)
+    private Submission findSubmissionById(final UUID id) {
+        return this.submissionRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Submission not found with ID: " + id));
     }
 }

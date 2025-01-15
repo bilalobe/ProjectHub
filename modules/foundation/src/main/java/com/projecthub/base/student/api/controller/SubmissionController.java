@@ -25,7 +25,7 @@ public class SubmissionController implements SubmissionApi {
 
     private final SubmissionService submissionService;
 
-    public SubmissionController(SubmissionService submissionService) {
+    public SubmissionController(final SubmissionService submissionService) {
         this.submissionService = submissionService;
     }
 
@@ -35,24 +35,24 @@ public class SubmissionController implements SubmissionApi {
     }
 
     @Override
-    public ResponseEntity<SubmissionDTO> getById(UUID id) { // No changes needed here
+    public ResponseEntity<SubmissionDTO> getById(final UUID id) { // No changes needed here
         // Implementation
         return null;
     }
 
 
     @Override
-    public ResponseEntity<SubmissionDTO> submitWork(@Valid @RequestBody SubmissionDTO submission) {
+    public ResponseEntity<SubmissionDTO> submitWork(@Valid @RequestBody final SubmissionDTO submission) {
         // Ensure timestamp, status, and submittedAt are set here or clarify responsibility in SubmissionService
         submission.setTimestamp(LocalDateTime.now()); // Example, consider timezone handling
         submission.setStatus(SubmissionStatus.SUBMITTED); // Example status
         submission.setSubmittedAt(LocalDateTime.now());
-        return ResponseEntity.ok(submissionService.submitWork(submission));
+        return ResponseEntity.ok(this.submissionService.submitWork(submission));
     }
 
 
     @Override
-    public ResponseEntity<SubmissionDTO> update(UUID id, @Valid @RequestBody SubmissionDTO submissionDTO) {
+    public ResponseEntity<SubmissionDTO> update(final UUID id, @Valid @RequestBody final SubmissionDTO submissionDTO) {
         // Check what fields are actually set in submissionDTO
         // Call setTimestamp, setStatus, and setSubmittedAt here if needed (similar as in submitWork)
         // Call correct method to update submission in service
@@ -61,7 +61,7 @@ public class SubmissionController implements SubmissionApi {
 
 
     @Override
-    public ResponseEntity<SubmissionDTO> create(@Valid @RequestBody SubmissionDTO submissionDTO) {
+    public ResponseEntity<SubmissionDTO> create(@Valid @RequestBody final SubmissionDTO submissionDTO) {
         // Check what fields are actually set in submissionDTO
         // Call setTimestamp, setStatus, and setSubmittedAt here if needed (similar as in submitWork)
         // Call correct method to create submission in service
@@ -71,21 +71,21 @@ public class SubmissionController implements SubmissionApi {
 
 
     @Override
-    public ResponseEntity<Void> deleteById(UUID id) { // No changes needed here
+    public ResponseEntity<Void> deleteById(final UUID id) { // No changes needed here
         // Implementation
         return null;
     }
 
 
     @Override
-    public ResponseEntity<List<SubmissionDTO>> getSubmissionsByProject(UUID projectId) {
+    public ResponseEntity<List<SubmissionDTO>> getSubmissionsByProject(final UUID projectId) {
         // Implementation
         return null;
     }
 
 
     @Override
-    public ResponseEntity<SubmissionDTO> gradeSubmission(@PathVariable UUID submissionId, @RequestBody Integer grade) {
+    public ResponseEntity<SubmissionDTO> gradeSubmission(@PathVariable final UUID submissionId, @RequestBody final Integer grade) {
         // Implementation
         return null;
     }

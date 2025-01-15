@@ -15,25 +15,25 @@ class StudentPersistenceAdapter implements StudentPort {
     private final StudentJpaRepository repository;
     private final StudentMapper mapper;
 
-    public StudentPersistenceAdapter(StudentJpaRepository repository, StudentMapper mapper) {
+    public StudentPersistenceAdapter(final StudentJpaRepository repository, final StudentMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
 
     @Override
-    public StudentDTO save(StudentDTO dto) {
-        var entity = mapper.toEntity(dto);
-        return mapper.toDto(repository.save(entity));
+    public StudentDTO save(final StudentDTO dto) {
+        final var entity = this.mapper.toEntity(dto);
+        return this.mapper.toDto(this.repository.save(entity));
     }
 
     @Override
-    public Optional<StudentDTO> findById(UUID id) {
+    public Optional<StudentDTO> findById(final UUID id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findById'");
     }
 
     @Override
-    public void delete(UUID id) {
+    public void delete(final UUID id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'delete'");
     }
