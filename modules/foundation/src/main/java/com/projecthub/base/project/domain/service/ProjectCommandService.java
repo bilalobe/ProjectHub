@@ -28,52 +28,52 @@ public class ProjectCommandService {
     private final ProjectEventPublisher eventPublisher;
     private final ProjectMapper projectMapper;
 
-    public ProjectDTO handleCreate(CreateProjectCommand command) {
-        log.debug("Creating project from command: {}", command);
-        Project project = projectMapper.fromCreateCommand(command);
+    public ProjectDTO handleCreate(final CreateProjectCommand command) {
+        ProjectCommandService.log.debug("Creating project from command: {}", command);
+        final Project project = this.projectMapper.fromCreateCommand(command);
 
         try {
-            validator.validateCreate(project);
-            Project savedProject = projectStorage.save(project);
-            eventPublisher.publishCreated(savedProject, command.getInitiatorId());
-            return projectMapper.toDto(savedProject);
-        } catch (Exception e) {
-            log.error("Failed to create project", e);
+            this.validator.validateCreate(project);
+            final Project savedProject = this.projectStorage.save(project);
+            this.eventPublisher.publishCreated(savedProject, command.getInitiatorId());
+            return this.projectMapper.toDto(savedProject);
+        } catch (final Exception e) {
+            ProjectCommandService.log.error("Failed to create project", e);
             throw new ValidationException("Failed to create project: " + e.getMessage());
         }
     }
 
-    public ProjectDTO handleUpdate(UpdateProjectCommand command) {
-        log.debug("Updating project with ID: {}", command.getProjectId());
-        Project project = findProjectById(command.getProjectId());
+    public ProjectDTO handleUpdate(final UpdateProjectCommand command) {
+        ProjectCommandService.log.debug("Updating project with ID: {}", command.getProjectId());
+        final Project project = this.findProjectById(command.getProjectId());
 
         try {
-            projectMapper.updateFromCommand(command, project);
-            validator.validateUpdate(project);
-            Project savedProject = projectStorage.save(project);
-            eventPublisher.publishUpdated(savedProject, command.getInitiatorId());
-            return projectMapper.toDto(savedProject);
-        } catch (Exception e) {
-            log.error("Failed to update project with ID: {}", command.getProjectId(), e);
+            this.projectMapper.updateFromCommand(command, project);
+            this.validator.validateUpdate(project);
+            final Project savedProject = this.projectStorage.save(project);
+            this.eventPublisher.publishUpdated(savedProject, command.getInitiatorId());
+            return this.projectMapper.toDto(savedProject);
+        } catch (final Exception e) {
+            ProjectCommandService.log.error("Failed to update project with ID: {}", command.getProjectId(), e);
             throw new ValidationException("Failed to update project: " + e.getMessage());
         }
     }
 
-    public void handleDelete(DeleteProjectCommand command) {
-        log.debug("Deleting project with ID: {}", command.getProjectId());
-        Project project = findProjectById(command.getProjectId());
+    public void handleDelete(final DeleteProjectCommand command) {
+        ProjectCommandService.log.debug("Deleting project with ID: {}", command.getProjectId());
+        final Project project = this.findProjectById(command.getProjectId());
 
         try {
-            projectStorage.delete(project);
-            eventPublisher.publishDeleted(command.getProjectId(), command.getInitiatorId());
-        } catch (Exception e) {
-            log.error("Failed to delete project with ID: {}", command.getProjectId(), e);
+            this.projectStorage.delete(project);
+            this.eventPublisher.publishDeleted(command.getProjectId(), command.getInitiatorId());
+        } catch (final Exception e) {
+            ProjectCommandService.log.error("Failed to delete project with ID: {}", command.getProjectId(), e);
             throw new ValidationException("Failed to delete project: " + e.getMessage());
         }
     }
 
-    private Project findProjectById(UUID id) {
-        return projectStorage.findById(id)
+    private Project findProjectById(final UUID id) {
+        return this.projectStorage.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + id));
     }
 }

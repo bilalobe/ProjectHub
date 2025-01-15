@@ -22,28 +22,28 @@ public record ProjectTeam(
     }
 
     public boolean hasCapacity() {
-        return currentCapacity < capacity;
+        return this.currentCapacity < this.capacity;
     }
 
     public int remainingCapacity() {
-        return capacity - currentCapacity;
+        return this.capacity - this.currentCapacity;
     }
 
     public boolean isAtCapacity() {
-        return currentCapacity == capacity;
+        return this.currentCapacity == this.capacity;
     }
 
     public ProjectTeam withIncreasedCapacity() {
-        if (isAtCapacity()) {
+        if (this.isAtCapacity()) {
             throw new IllegalStateException("Team is at maximum capacity");
         }
-        return new ProjectTeam(teamId, capacity, currentCapacity + 1);
+        return new ProjectTeam(this.teamId, this.capacity, this.currentCapacity + 1);
     }
 
     public ProjectTeam withDecreasedCapacity() {
-        if (currentCapacity == 0) {
+        if (0 == currentCapacity) {
             throw new IllegalStateException("Team is at minimum capacity");
         }
-        return new ProjectTeam(teamId, capacity, currentCapacity - 1);
+        return new ProjectTeam(this.teamId, this.capacity, this.currentCapacity - 1);
     }
 }

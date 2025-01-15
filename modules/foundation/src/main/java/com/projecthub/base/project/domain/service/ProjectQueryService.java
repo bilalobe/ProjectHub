@@ -16,15 +16,15 @@ public class ProjectQueryService {
     private final ProjectStoragePort projectStorage;
     private final ProjectMapper projectMapper;
 
-    public ProjectDTO findById(UUID id) {
-        return projectStorage.findById(id)
-            .map(projectMapper::toDto)
+    public ProjectDTO findById(final UUID id) {
+        return this.projectStorage.findById(id)
+            .map(this.projectMapper::toDto)
             .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
     }
 
     public List<ProjectDTO> findAll() {
-        return projectStorage.findAll().stream()
-            .map(projectMapper::toDto)
+        return this.projectStorage.findAll().stream()
+            .map(this.projectMapper::toDto)
             .toList();
     }
 }

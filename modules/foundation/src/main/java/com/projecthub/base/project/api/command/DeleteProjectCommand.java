@@ -11,7 +11,7 @@ public final class DeleteProjectCommand extends ProjectCommand {
     private final UUID projectId;
     private final String reason;
 
-    public DeleteProjectCommand(UUID initiatorId, UUID projectId, String reason) {
+    public DeleteProjectCommand(final UUID initiatorId, final UUID projectId, final String reason) {
         super(initiatorId);
         this.projectId = projectId;
         this.reason = reason;

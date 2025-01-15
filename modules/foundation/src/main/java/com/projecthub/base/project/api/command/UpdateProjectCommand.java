@@ -18,9 +18,9 @@ public final class UpdateProjectCommand extends ProjectCommand {
     private final String repositoryUrl;
 
 
-    public UpdateProjectCommand(UUID initiatorId, UUID projectId, String name,
-                                String description, LocalDate deadline, Integer priority,
-                                String acceptanceCriteria, String repositoryUrl) {
+    public UpdateProjectCommand(final UUID initiatorId, final UUID projectId, final String name,
+                                final String description, final LocalDate deadline, final Integer priority,
+                                final String acceptanceCriteria, final String repositoryUrl) {
         super(initiatorId);
         this.projectId = projectId;
         this.name = name;

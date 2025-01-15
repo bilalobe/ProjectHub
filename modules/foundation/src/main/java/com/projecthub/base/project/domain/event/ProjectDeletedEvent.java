@@ -11,7 +11,7 @@ public record ProjectDeletedEvent(
     UUID initiatorId
 ) implements ProjectEvent {
 
-    public ProjectDeletedEvent(UUID projectId, UUID initiatorId) {
+    public ProjectDeletedEvent(final UUID projectId, final UUID initiatorId) {
         this(
             UUID.randomUUID(),
             projectId,
@@ -22,16 +22,16 @@ public record ProjectDeletedEvent(
 
     @Override
     public UUID getEventId() {
-        return eventId;
+        return this.eventId;
     }
 
     @Override
     public UUID getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     @Override
     public Instant getOccurredOn() {
-        return timestamp;
+        return this.timestamp;
     }
 }

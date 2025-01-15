@@ -13,7 +13,7 @@ public record ProjectUpdatedEvent(
     UUID initiatorId
 ) implements ProjectEvent {
 
-    public ProjectUpdatedEvent(Project project, UUID initiatorId) {
+    public ProjectUpdatedEvent(final Project project, final UUID initiatorId) {
         this(
             UUID.randomUUID(),
             project.getId(),
@@ -25,16 +25,16 @@ public record ProjectUpdatedEvent(
 
     @Override
     public UUID getEventId() {
-        return eventId;
+        return this.eventId;
     }
 
     @Override
     public UUID getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     @Override
     public Instant getOccurredOn() {
-        return timestamp;
+        return this.timestamp;
     }
 }

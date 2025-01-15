@@ -24,9 +24,9 @@ public final class CreateProjectCommand extends ProjectCommand {
     private final String repositoryUrl;
 
 
-    public CreateProjectCommand(UUID initiatorId, String name, String description,
-                                LocalDate deadline, UUID teamId, Integer priority, boolean isTemplate,
-                                String acceptanceCriteria, String repositoryUrl) {
+    public CreateProjectCommand(final UUID initiatorId, final String name, final String description,
+                                final LocalDate deadline, final UUID teamId, final Integer priority, final boolean isTemplate,
+                                final String acceptanceCriteria, final String repositoryUrl) {
         super(initiatorId);
         this.name = name;
         this.description = description;

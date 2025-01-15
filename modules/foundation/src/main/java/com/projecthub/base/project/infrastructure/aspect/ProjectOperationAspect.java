@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProjectOperationAspect {
     @Around("execution(* com.projecthub.base.project.application.service.*.*(..))")
-    public Object logOperation(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object logOperation(final ProceedingJoinPoint joinPoint) throws Throwable {
         // Logging, metrics, etc.
         return joinPoint.proceed();
     }

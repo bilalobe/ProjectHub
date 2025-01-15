@@ -33,6 +33,6 @@ public interface ProjectJpaRepository extends JpaRepository<Project, UUID> {
      * @return an {@code Optional} containing the project with its components if found
      */
     @NonNull
-    @EntityGraph(attributePaths = {"components"})
+    @EntityGraph(attributePaths = "components")
     Optional<Project> findById(@NonNull UUID projectId);
 }

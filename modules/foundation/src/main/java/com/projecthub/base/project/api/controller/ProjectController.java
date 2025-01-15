@@ -20,38 +20,38 @@ public class ProjectController implements ProjectApi {
     private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);
     private final ProjectService projectService;
 
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(final ProjectService projectService) {
         this.projectService = projectService;
     }
 
     @Override
     public ResponseEntity<List<ProjectDTO>> getAllProjects() {
-        logger.info("Retrieving all projects");
-        return ResponseEntity.ok(projectService.getAllProjects());
+        ProjectController.logger.info("Retrieving all projects");
+        return ResponseEntity.ok(this.projectService.getAllProjects());
     }
 
     @Override
-    public ResponseEntity<ProjectDTO> getById(UUID id) {
-        logger.info("Retrieving project with ID {}", id);
-        return ResponseEntity.ok(projectService.getProjectById(id));
+    public ResponseEntity<ProjectDTO> getById(final UUID id) {
+        ProjectController.logger.info("Retrieving project with ID {}", id);
+        return ResponseEntity.ok(this.projectService.getProjectById(id));
     }
 
     @Override
-    public ResponseEntity<ProjectDTO> createProject(@Valid @RequestBody ProjectDTO project) {
-        logger.info("Creating new project");
-        return ResponseEntity.ok(projectService.saveProject(project));
+    public ResponseEntity<ProjectDTO> createProject(@Valid @RequestBody final ProjectDTO project) {
+        ProjectController.logger.info("Creating new project");
+        return ResponseEntity.ok(this.projectService.saveProject(project));
     }
 
     @Override
-    public ResponseEntity<ProjectDTO> updateProject(UUID id, @Valid @RequestBody ProjectDTO project) {
-        logger.info("Updating project with ID {}", id);
-        return ResponseEntity.ok(projectService.updateProject(id, project));
+    public ResponseEntity<ProjectDTO> updateProject(final UUID id, @Valid @RequestBody final ProjectDTO project) {
+        ProjectController.logger.info("Updating project with ID {}", id);
+        return ResponseEntity.ok(this.projectService.updateProject(id, project));
     }
 
     @Override
-    public ResponseEntity<Void> deleteById(UUID id) {
-        logger.info("Deleting project with ID {}", id);
-        projectService.deleteProject(id);
+    public ResponseEntity<Void> deleteById(final UUID id) {
+        ProjectController.logger.info("Deleting project with ID {}", id);
+        this.projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
     }
 }

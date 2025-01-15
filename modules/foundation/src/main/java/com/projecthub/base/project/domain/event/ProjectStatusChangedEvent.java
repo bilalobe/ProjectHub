@@ -17,7 +17,7 @@ public record ProjectStatusChangedEvent(
     UUID initiatorId
 ) implements ProjectEvent, DomainEvent {
 
-    public ProjectStatusChangedEvent(Project project, ProjectStatus oldStatus, UUID initiatorId) {
+    public ProjectStatusChangedEvent(final Project project, final ProjectStatus oldStatus, final UUID initiatorId) {
         this(
             UUID.randomUUID(),
             project.getId(),
@@ -31,16 +31,16 @@ public record ProjectStatusChangedEvent(
 
     @Override
     public UUID getEventId() {
-        return eventId;
+        return this.eventId;
     }
 
     @Override
     public UUID getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     @Override
     public Instant getOccurredOn() {
-        return timestamp;
+        return this.timestamp;
     }
 }

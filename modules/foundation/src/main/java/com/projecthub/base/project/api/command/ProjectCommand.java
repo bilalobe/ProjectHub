@@ -8,21 +8,21 @@ public abstract class ProjectCommand {
     private final Instant timestamp;
     private final UUID initiatorId;
 
-    protected ProjectCommand(UUID initiatorId) {
-        this.commandId = UUID.randomUUID();
-        this.timestamp = Instant.now();
+    protected ProjectCommand(final UUID initiatorId) {
+        commandId = UUID.randomUUID();
+        timestamp = Instant.now();
         this.initiatorId = initiatorId;
     }
 
     public UUID getCommandId() {
-        return commandId;
+        return this.commandId;
     }
 
     public Instant getTimestamp() {
-        return timestamp;
+        return this.timestamp;
     }
 
     public UUID getInitiatorId() {
-        return initiatorId;
+        return this.initiatorId;
     }
 }

@@ -19,16 +19,16 @@ public class ProjectStatusService {
     private final ProjectValidator validator;
     private final ProjectEventPublisher eventPublisher;
 
-    public void updateStatus(UUID projectId, ProjectStatus newStatus) {
-        var project = projectStorage.findById(projectId)
+    public void updateStatus(final UUID projectId, final ProjectStatus newStatus) {
+        var project = this.projectStorage.findById(projectId)
             .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
-        var oldStatus = project.getStatus();
-        validator.validateStatusTransition(project, newStatus);
+        final var oldStatus = project.getStatus();
+        this.validator.validateStatusTransition(project, newStatus);
 
         project.setStatus(newStatus);
-        project = projectStorage.save(project);
+        project = this.projectStorage.save(project);
 
-        eventPublisher.publishStatusChanged(project, oldStatus);
+        this.eventPublisher.publishStatusChanged(project, oldStatus);
     }
 }

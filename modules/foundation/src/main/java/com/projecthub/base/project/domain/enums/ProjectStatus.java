@@ -13,19 +13,19 @@ public enum ProjectStatus {
 
     private final String displayName;
 
-    ProjectStatus(String displayName) {
+    ProjectStatus(final String displayName) {
         this.displayName = displayName;
     }
 
     public String getDisplayName() {
-        return displayName;
+        return this.displayName;
     }
 
     public boolean isTerminal() {
-        return this == COMPLETED || this == CANCELLED;
+        return COMPLETED == this || CANCELLED == this;
     }
 
     public boolean isActive() {
-        return this == ACTIVE;
+        return ACTIVE == this;
     }
 }

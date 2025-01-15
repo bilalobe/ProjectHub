@@ -15,28 +15,28 @@ import java.util.UUID;
 public class ProjectEventPublisher {
     private final ApplicationEventPublisher publisher;
 
-    public void publishCreated(Project project, UUID initiatorId) {
-        var event = new ProjectCreatedEvent(project, initiatorId);
-        log.debug("Publishing project created event for project: {}", project.getId());
-        publisher.publishEvent(event);
+    public void publishCreated(final Project project, final UUID initiatorId) {
+        final var event = new ProjectCreatedEvent(project, initiatorId);
+        ProjectEventPublisher.log.debug("Publishing project created event for project: {}", project.getId());
+        this.publisher.publishEvent(event);
     }
 
-    public void publishUpdated(Project project, UUID initiatorId) {
-        var event = new ProjectUpdatedEvent(project, initiatorId);
-        log.debug("Publishing project updated event for project: {}", project.getId());
-        publisher.publishEvent(event);
+    public void publishUpdated(final Project project, final UUID initiatorId) {
+        final var event = new ProjectUpdatedEvent(project, initiatorId);
+        ProjectEventPublisher.log.debug("Publishing project updated event for project: {}", project.getId());
+        this.publisher.publishEvent(event);
     }
 
-    public void publishDeleted(UUID projectId, UUID initiatorId) {
-        var event = new ProjectDeletedEvent(projectId, initiatorId);
-        log.debug("Publishing project deleted event for project: {}", projectId);
-        publisher.publishEvent(event);
+    public void publishDeleted(final UUID projectId, final UUID initiatorId) {
+        final var event = new ProjectDeletedEvent(projectId, initiatorId);
+        ProjectEventPublisher.log.debug("Publishing project deleted event for project: {}", projectId);
+        this.publisher.publishEvent(event);
     }
 
-    public void publishStatusChanged(Project project, ProjectStatus oldStatus, UUID initiatorId) {
-        var event = new ProjectStatusChangedEvent(project, oldStatus, initiatorId);
-        log.debug("Publishing project status changed event for project: {} from {} to {}",
+    public void publishStatusChanged(final Project project, final ProjectStatus oldStatus, final UUID initiatorId) {
+        final var event = new ProjectStatusChangedEvent(project, oldStatus, initiatorId);
+        ProjectEventPublisher.log.debug("Publishing project status changed event for project: {} from {} to {}",
             project.getId(), oldStatus, project.getStatus());
-        publisher.publishEvent(event);
+        this.publisher.publishEvent(event);
     }
 }

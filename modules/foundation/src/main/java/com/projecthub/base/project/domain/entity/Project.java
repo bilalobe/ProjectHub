@@ -57,65 +57,65 @@ public class Project extends BaseEntity {
     private Long version;
 
     public void start() {
-        if (status != ProjectStatus.DRAFT) {
+        if (ProjectStatus.DRAFT != status) {
             throw new IllegalStateException("Only draft projects can be started");
         }
-        if (team == null) {
+        if (null == team) {
             throw new IllegalStateException("Cannot start project without team");
         }
-        status = ProjectStatus.ACTIVE;
-        progress = new ProjectProgress(LocalDate.now(), null, 0, tasks.size());
+        this.status = ProjectStatus.ACTIVE;
+        this.progress = new ProjectProgress(LocalDate.now(), null, 0, this.tasks.size());
     }
 
     public void complete() {
-        if (status != ProjectStatus.ACTIVE) {
+        if (ProjectStatus.ACTIVE != status) {
             throw new IllegalStateException("Only active projects can be completed");
         }
-        if (hasIncompleteTasks()) {
+        if (this.hasIncompleteTasks()) {
             throw new IllegalStateException("Cannot complete project with incomplete tasks");
         }
-        status = ProjectStatus.COMPLETED;
-        progress = new ProjectProgress(progress.startDate(), LocalDate.now(), progress.completedTasks(), tasks.size());
+        this.status = ProjectStatus.COMPLETED;
+        this.progress = new ProjectProgress(this.progress.startDate(), LocalDate.now(), this.progress.completedTasks(), this.tasks.size());
     }
 
     public void cancel() {
-        if (status == ProjectStatus.COMPLETED) {
+        if (ProjectStatus.COMPLETED == status) {
             throw new IllegalStateException("Cannot cancel completed project");
         }
-        status = ProjectStatus.CANCELLED;
-        progress = new ProjectProgress(progress.startDate(), LocalDate.now(), progress.completedTasks(), tasks.size());
+        this.status = ProjectStatus.CANCELLED;
+        this.progress = new ProjectProgress(this.progress.startDate(), LocalDate.now(), this.progress.completedTasks(), this.tasks.size());
     }
 
-    public void addTask(Task task) {
+    public void addTask(final Task task) {
         task.setProject(this);
-        tasks.add(task);
+        this.tasks.add(task);
     }
 
-    public void addMilestone(Milestone milestone) {
+    public void addMilestone(final Milestone milestone) {
         milestone.setProject(this);
-        milestones.add(milestone);
+        this.milestones.add(milestone);
     }
 
     public boolean hasIncompleteTasks() {
-        return tasks.stream().anyMatch(task -> !task.isCompleted());
+        return this.tasks.stream().anyMatch(task -> !task.isCompleted());
     }
 
     public int calculateProgress() {
-        if (tasks.isEmpty()) return 0;
-        return (int) (tasks.stream()
+        if (this.tasks.isEmpty()) return 0;
+        return (int) (this.tasks.stream()
             .filter(Task::isCompleted)
-            .count() * 100.0 / tasks.size());
+            .count() * 100.0 / this.tasks.size());
     }
 
     public boolean isActive() {
-        return status == ProjectStatus.ACTIVE;
+        return ProjectStatus.ACTIVE == status;
     }
 
     public boolean isOverdue() {
-        return !isCompleted() && LocalDate.now().isAfter(details.deadline());
+        return !this.isCompleted() && LocalDate.now().isAfter(this.details.deadline());
     }
 
     public boolean isCompleted() {
-        return status == ProjectStatus.COMPLETED;
+        return ProjectStatus.COMPLETED == status;
     }
 }

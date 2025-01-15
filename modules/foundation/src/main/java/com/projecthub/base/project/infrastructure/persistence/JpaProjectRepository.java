@@ -14,17 +14,17 @@ import java.util.UUID;
 public class JpaProjectRepository implements ProjectStoragePort {
     private final ProjectJpaRepository jpaRepository;
 
-    public JpaProjectRepository(ProjectJpaRepository jpaRepository) {
+    public JpaProjectRepository(final ProjectJpaRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
     }
 
     @Override
-    public Project save(Project project) {
-        return jpaRepository.save(project);
+    public Project save(final Project project) {
+        return this.jpaRepository.save(project);
     }
 
     @Override
-    public Optional<Project> findById(UUID id) {
-        return jpaRepository.findById(id);
+    public Optional<Project> findById(final UUID id) {
+        return this.jpaRepository.findById(id);
     }
 }

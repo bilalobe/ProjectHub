@@ -50,15 +50,15 @@ public interface ProjectMapper {
     @Mapping(target = "version", ignore = true)
     void updateFromCommand(UpdateProjectCommand command, @MappingTarget Project project);
 
-    default Set<UUID> mapMilestoneIds(List<Milestone> milestones) {
-        if (milestones == null) return new HashSet<>();
+    default Set<UUID> mapMilestoneIds(final List<Milestone> milestones) {
+        if (null == milestones) return new HashSet<>();
         return milestones.stream()
             .map(BaseEntity::getId)
             .collect(Collectors.toSet());
     }
 
-    default Set<UUID> mapTaskIds(List<Task> tasks) {
-        if (tasks == null) return new HashSet<>();
+    default Set<UUID> mapTaskIds(final List<Task> tasks) {
+        if (null == tasks) return new HashSet<>();
         return tasks.stream()
             .map(BaseEntity::getId)
             .collect(Collectors.toSet());
