@@ -1,6 +1,5 @@
 package com.projecthub.base.milestone.api.graphql.input;
 
-import com.projecthub.base.milestone.domain.enums.MilestoneStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

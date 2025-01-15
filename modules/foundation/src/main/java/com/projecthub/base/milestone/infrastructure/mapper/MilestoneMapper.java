@@ -28,8 +28,8 @@ public interface MilestoneMapper {
     void updateEntityFromDto(MilestoneDTO dto, @MappingTarget Milestone milestone);
 
     @Named("mapDependencyIds")
-    default Set<UUID> mapDependencies(Set<Milestone> dependencies) {
-        if (dependencies == null) return new HashSet<>();
+    default Set<UUID> mapDependencies(final Set<Milestone> dependencies) {
+        if (null == dependencies) return new HashSet<>();
         return dependencies.stream()
             .map(Milestone::getId)
             .collect(Collectors.toSet());

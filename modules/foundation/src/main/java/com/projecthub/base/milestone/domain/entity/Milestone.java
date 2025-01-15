@@ -91,84 +91,84 @@ public class Milestone extends BaseEntity {
     private MilestoneStatus targetStatus;
 
     public boolean isOverdue() {
-        return status != MilestoneStatus.COMPLETED && dueDate.isBefore(LocalDate.now());
+        return MilestoneStatus.COMPLETED != status && this.dueDate.isBefore(LocalDate.now());
     }
 
-    public void updateProgress(int newProgress) {
-        if (newProgress < 0 || newProgress > 100) {
+    public void updateProgress(final int newProgress) {
+        if (0 > newProgress || 100 < newProgress) {
             throw new IllegalArgumentException("Progress must be between 0 and 100");
         }
-        this.progress = newProgress;
-        if (newProgress == 100) {
-            this.status = MilestoneStatus.COMPLETED;
+        progress = newProgress;
+        if (100 == newProgress) {
+            status = MilestoneStatus.COMPLETED;
         }
     }
 
-    public void addDependency(Milestone dependency) {
+    public void addDependency(final Milestone dependency) {
         if (dependency.equals(this)) {
             throw new IllegalArgumentException("Milestone cannot depend on itself");
         }
-        dependencies.add(dependency);
+        this.dependencies.add(dependency);
     }
 
     public boolean canStart() {
-        return dependencies.stream()
-            .allMatch(m -> m.status == MilestoneStatus.COMPLETED || m.status == MilestoneStatus.CANCELLED);
+        return this.dependencies.stream()
+            .allMatch(m -> MilestoneStatus.COMPLETED == m.status || MilestoneStatus.CANCELLED == m.status);
     }
 
     public void start() {
-        if (!canStart()) {
+        if (!this.canStart()) {
             throw new IllegalStateException("Dependencies not met");
         }
-        if (status != MilestoneStatus.PENDING) {
+        if (MilestoneStatus.PENDING != status) {
             throw new IllegalStateException("Can only start pending milestones");
         }
-        status = MilestoneStatus.IN_PROGRESS;
+        this.status = MilestoneStatus.IN_PROGRESS;
     }
 
     public boolean isBlocked() {
-        return status == MilestoneStatus.BLOCKED;
+        return MilestoneStatus.BLOCKED == status;
     }
 
     public void complete() {
-        if (!tasks.isEmpty() && tasks.stream().anyMatch(t -> !t.isCompleted())) {
+        if (!this.tasks.isEmpty() && this.tasks.stream().anyMatch(t -> !t.isCompleted())) {
             throw new IllegalStateException("Cannot complete milestone with incomplete tasks");
         }
-        status = MilestoneStatus.COMPLETED;
-        progress = 100;
+        this.status = MilestoneStatus.COMPLETED;
+        this.progress = 100;
     }
 
     public void block() {
-        if (status == MilestoneStatus.COMPLETED || status == MilestoneStatus.CANCELLED) {
+        if (MilestoneStatus.COMPLETED == status || MilestoneStatus.CANCELLED == status) {
             throw new IllegalStateException("Cannot block completed or cancelled milestone");
         }
-        status = MilestoneStatus.BLOCKED;
+        this.status = MilestoneStatus.BLOCKED;
     }
 
     public void cancel() {
-        if (status == MilestoneStatus.COMPLETED) {
+        if (MilestoneStatus.COMPLETED == status) {
             throw new IllegalStateException("Cannot cancel completed milestone");
         }
-        status = MilestoneStatus.CANCELLED;
+        this.status = MilestoneStatus.CANCELLED;
     }
 
     public boolean isActive() {
-        return status == MilestoneStatus.IN_PROGRESS;
+        return MilestoneStatus.IN_PROGRESS == status;
     }
 
     public boolean hasIncompleteTasks() {
-        return tasks.stream().anyMatch(task -> !task.isCompleted());
+        return this.tasks.stream().anyMatch(task -> !task.isCompleted());
     }
 
     public boolean hasCyclicDependencies() {
-        Set<Milestone> visited = new HashSet<>();
-        Set<Milestone> recursionStack = new HashSet<>();
-        return checkCyclicDependencies(this, visited, recursionStack);
+        final Set<Milestone> visited = new HashSet<>();
+        final Set<Milestone> recursionStack = new HashSet<>();
+        return this.checkCyclicDependencies(this, visited, recursionStack);
     }
 
-    private boolean checkCyclicDependencies(Milestone milestone,
-                                            Set<Milestone> visited,
-                                            Set<Milestone> recursionStack) {
+    private boolean checkCyclicDependencies(final Milestone milestone,
+                                            final Set<Milestone> visited,
+                                            final Set<Milestone> recursionStack) {
         if (recursionStack.contains(milestone)) {
             return true;
         }
@@ -179,22 +179,22 @@ public class Milestone extends BaseEntity {
         visited.add(milestone);
         recursionStack.add(milestone);
 
-        boolean hasCycle = milestone.dependencies.stream()
-            .anyMatch(dep -> checkCyclicDependencies(dep, visited, recursionStack));
+        final boolean hasCycle = milestone.dependencies.stream()
+            .anyMatch(dep -> this.checkCyclicDependencies(dep, visited, recursionStack));
 
         recursionStack.remove(milestone);
         return hasCycle;
     }
 
     public boolean isCompleted() {
-        return status == MilestoneStatus.COMPLETED;
+        return MilestoneStatus.COMPLETED == status;
     }
 
     public MilestoneStatus getTargetStatus() {
-        return targetStatus;
+        return this.targetStatus;
     }
 
-    public void setTargetStatus(MilestoneStatus status) {
-        this.targetStatus = status;
+    public void setTargetStatus(final MilestoneStatus status) {
+        targetStatus = status;
     }
 }

@@ -4,12 +4,12 @@ public class MilestoneDeadLetterHandler {
 
     @RabbitListener(queues = MilestoneRabbitMQConfig.MILESTONE_DLQ)
     public void handleDeadLetter(
-            Message failedMessage,
-            @Header(AmqpHeaders.DEATH_REASON) String reason,
-            @Header("x-first-death-exchange") String exchange,
-            @Header("x-first-death-queue") String queue,
-            @Header("x-first-death-reason") String firstReason) {
-        
+        final Message failedMessage,
+        @Header(AmqpHeaders.DEATH_REASON) final String reason,
+        @Header("x-first-death-exchange") final String exchange,
+        @Header("x-first-death-queue") final String queue,
+        @Header("x-first-death-reason") final String firstReason) {
+
         log.error("Handling dead letter message from queue: {}", queue);
         log.error("Original exchange: {}", exchange);
         log.error("Death reason: {}", reason);

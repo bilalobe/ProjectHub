@@ -2,6 +2,7 @@ package com.projecthub.base.milestone.domain.command;
 
 import com.projecthub.base.milestone.domain.value.MilestoneValue;
 import jakarta.validation.constraints.NotNull;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,22 +27,23 @@ public record CreateMilestoneCommand(
         private UUID projectId;
         private UUID initiatorId;
 
-        public CreateMilestoneCommandBuilder milestoneDetails(MilestoneValue milestoneDetails) {
+        public CreateMilestoneCommandBuilder milestoneDetails(final MilestoneValue milestoneDetails) {
             this.milestoneDetails = milestoneDetails;
             return this;
         }
 
-        public CreateMilestoneCommandBuilder projectId(UUID projectId) {
+        public CreateMilestoneCommandBuilder projectId(final UUID projectId) {
             this.projectId = projectId;
             return this;
         }
-        public CreateMilestoneCommandBuilder initiatorId(UUID initiatorId) {
+
+        public CreateMilestoneCommandBuilder initiatorId(final UUID initiatorId) {
             this.initiatorId = initiatorId;
             return this;
         }
 
         public CreateMilestoneCommand build() {
-            return new CreateMilestoneCommand(milestoneDetails, projectId, initiatorId);
+            return new CreateMilestoneCommand(this.milestoneDetails, this.projectId, this.initiatorId);
         }
     }
 }

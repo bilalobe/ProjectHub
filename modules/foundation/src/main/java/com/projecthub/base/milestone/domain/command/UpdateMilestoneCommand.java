@@ -3,6 +3,7 @@ package com.projecthub.base.milestone.domain.command;
 import com.projecthub.base.milestone.domain.enums.MilestoneStatus;
 import com.projecthub.base.milestone.domain.value.MilestoneValue;
 import jakarta.validation.constraints.NotNull;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,28 +30,29 @@ public record UpdateMilestoneCommand(
         private MilestoneValue milestoneDetails;
         private MilestoneStatus targetStatus;
         private UUID initiatorId;
-        public UpdateMilestoneCommandBuilder id(UUID id) {
+
+        public UpdateMilestoneCommandBuilder id(final UUID id) {
             this.id = id;
             return this;
         }
 
-        public UpdateMilestoneCommandBuilder milestoneDetails(MilestoneValue milestoneDetails) {
+        public UpdateMilestoneCommandBuilder milestoneDetails(final MilestoneValue milestoneDetails) {
             this.milestoneDetails = milestoneDetails;
             return this;
         }
 
-        public UpdateMilestoneCommandBuilder targetStatus(MilestoneStatus targetStatus) {
+        public UpdateMilestoneCommandBuilder targetStatus(final MilestoneStatus targetStatus) {
             this.targetStatus = targetStatus;
             return this;
         }
 
-        public UpdateMilestoneCommandBuilder initiatorId(UUID initiatorId) {
+        public UpdateMilestoneCommandBuilder initiatorId(final UUID initiatorId) {
             this.initiatorId = initiatorId;
             return this;
         }
 
         public UpdateMilestoneCommand build() {
-            return new UpdateMilestoneCommand(id, milestoneDetails, targetStatus, initiatorId);
+            return new UpdateMilestoneCommand(this.id, this.milestoneDetails, this.targetStatus, this.initiatorId);
         }
     }
 }

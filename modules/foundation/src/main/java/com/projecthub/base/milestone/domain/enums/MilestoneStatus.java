@@ -25,19 +25,19 @@ public enum MilestoneStatus {
 
     private final String displayName;
 
-    MilestoneStatus(String displayName) {
+    MilestoneStatus(final String displayName) {
         this.displayName = displayName;
     }
 
     public String getDisplayName() {
-        return displayName;
+        return this.displayName;
     }
 
     public boolean isTerminal() {
-        return this == COMPLETED || this == CANCELLED;
+        return COMPLETED == this || CANCELLED == this;
     }
 
     public boolean isActive() {
-        return this == IN_PROGRESS || this == PENDING;
+        return IN_PROGRESS == this || PENDING == this;
     }
 }

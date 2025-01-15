@@ -9,17 +9,15 @@ import com.projecthub.base.milestone.application.port.in.LoadMilestoneUseCase;
 import com.projecthub.base.milestone.application.port.in.UpdateMilestoneUseCase;
 import com.projecthub.base.milestone.domain.command.CreateMilestoneCommand;
 import com.projecthub.base.milestone.domain.command.UpdateMilestoneCommand;
-import com.projecthub.base.milestone.domain.value.MilestoneValue;
 import com.projecthub.base.milestone.infrastructure.mapper.MilestoneMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,48 +36,51 @@ public class MilestoneController implements MilestoneApi {
 
     @Override
     public ResponseEntity<List<MilestoneDTO>> getAllMilestones() {
-        log.info("Getting all milestones");
-        return ResponseEntity.ok(loadMilestoneUseCase.getAllMilestones());
+        MilestoneController.log.info("Getting all milestones");
+        return ResponseEntity.ok(this.loadMilestoneUseCase.getAllMilestones());
     }
-    @Override
-    public ResponseEntity<MilestoneDTO> getMilestoneById(UUID id) {
-        log.info("Get milestone with ID {}", id);
-        return ResponseEntity.ok(loadMilestoneUseCase.getMilestoneById(id));
-    }
-    @Override
-    public ResponseEntity<List<MilestoneDTO>> getMilestonesByProject(UUID projectId) {
-        log.info("Get milestones for project with ID {}", projectId);
-        return ResponseEntity.ok(loadMilestoneUseCase.getMilestonesByProject(projectId));
-    }
-    @Override
-    public ResponseEntity<MilestoneDTO> createMilestone(@Valid @RequestBody MilestoneDTO milestone) {
-        log.info("Creating a new milestone: {}", milestone);
 
-        CreateMilestoneCommand command = CreateMilestoneCommand.builder()
-            .milestoneDetails(mapper.toValue(milestone))
-            .initiatorId(getInitiatorId())
+    @Override
+    public ResponseEntity<MilestoneDTO> getMilestoneById(final UUID id) {
+        MilestoneController.log.info("Get milestone with ID {}", id);
+        return ResponseEntity.ok(this.loadMilestoneUseCase.getMilestoneById(id));
+    }
+
+    @Override
+    public ResponseEntity<List<MilestoneDTO>> getMilestonesByProject(final UUID projectId) {
+        MilestoneController.log.info("Get milestones for project with ID {}", projectId);
+        return ResponseEntity.ok(this.loadMilestoneUseCase.getMilestonesByProject(projectId));
+    }
+
+    @Override
+    public ResponseEntity<MilestoneDTO> createMilestone(@Valid @RequestBody final MilestoneDTO milestone) {
+        MilestoneController.log.info("Creating a new milestone: {}", milestone);
+
+        final CreateMilestoneCommand command = CreateMilestoneCommand.builder()
+            .milestoneDetails(this.mapper.toValue(milestone))
+            .initiatorId(this.getInitiatorId())
             .projectId(milestone.projectId())
             .build();
-        return ResponseEntity.ok(createMilestoneUseCase.createMilestone(command));
+        return ResponseEntity.ok(this.createMilestoneUseCase.createMilestone(command));
     }
 
     @Override
-    public ResponseEntity<MilestoneDTO> updateMilestone(UUID id, @Valid @RequestBody MilestoneDTO milestone) {
-        log.info("Updating milestone with id {}:", id);
+    public ResponseEntity<MilestoneDTO> updateMilestone(final UUID id, @Valid @RequestBody final MilestoneDTO milestone) {
+        MilestoneController.log.info("Updating milestone with id {}:", id);
 
-        UpdateMilestoneCommand command = UpdateMilestoneCommand.builder()
+        final UpdateMilestoneCommand command = UpdateMilestoneCommand.builder()
             .id(id)
-            .milestoneDetails(mapper.toValue(milestone))
-            .initiatorId(getInitiatorId())
+            .milestoneDetails(this.mapper.toValue(milestone))
+            .initiatorId(this.getInitiatorId())
             .targetStatus(milestone.status())
             .build();
-        return ResponseEntity.ok(updateMilestoneUseCase.updateMilestone(command));
+        return ResponseEntity.ok(this.updateMilestoneUseCase.updateMilestone(command));
     }
 
     @Override
-    public ResponseEntity<Void> deleteMilestone(@PathVariable UUID id) {
-        log.info("Deleting milestone with ID {}:", id);
-        deleteMilestoneUseCase.deleteMilestone(id, getInitiatorId());
+    public ResponseEntity<Void> deleteMilestone(@PathVariable final UUID id) {
+        MilestoneController.log.info("Deleting milestone with ID {}:", id);
+        this.deleteMilestoneUseCase.deleteMilestone(id, this.getInitiatorId());
         return ResponseEntity.noContent().build();
     }
 

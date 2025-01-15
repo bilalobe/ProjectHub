@@ -3,13 +3,11 @@ package com.projecthub.base.milestone.api.rest;
 import com.projecthub.base.milestone.api.dto.MilestoneDTO;
 import com.projecthub.base.shared.api.rest.BaseApi;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.UUID;
 

@@ -18,50 +18,50 @@ import org.springframework.stereotype.Component;
 @Component("asyncMilestoneEventAdapter")
 @RequiredArgsConstructor
 public class AsyncMilestoneEventAdapter implements MilestoneEventAdapter {
-    private final RabbitTemplate rabbitTemplate;
     private static final String EXCHANGE = MilestoneRabbitMQConfig.MILESTONE_EXCHANGE;
+    private final RabbitTemplate rabbitTemplate;
 
     @Async("milestoneEventExecutor")
     @Override
-    public void publish(MilestoneDomainEvent event) {
+    public void publish(final MilestoneDomainEvent event) {
         try {
-            log.debug("Publishing milestone event: {}", event);
-            
-            MessagePostProcessor messagePostProcessor = message -> {
-                MessageProperties props = message.getMessageProperties();
+            AsyncMilestoneEventAdapter.log.debug("Publishing milestone event: {}", event);
+
+            final MessagePostProcessor messagePostProcessor = message -> {
+                final MessageProperties props = message.getMessageProperties();
                 props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
                 props.setContentType(MessageProperties.CONTENT_TYPE_JSON);
                 return message;
             };
 
-            rabbitTemplate.convertAndSend(
-                EXCHANGE,
-                getRoutingKey(event),
+            this.rabbitTemplate.convertAndSend(
+                AsyncMilestoneEventAdapter.EXCHANGE,
+                this.getRoutingKey(event),
                 event,
                 messagePostProcessor
             );
 
-            log.debug("Successfully published milestone event: {}", event);
-        } catch (AmqpException e) {
-            log.error("Failed to publish milestone event: {}", event, e);
+            AsyncMilestoneEventAdapter.log.debug("Successfully published milestone event: {}", event);
+        } catch (final AmqpException e) {
+            AsyncMilestoneEventAdapter.log.error("Failed to publish milestone event: {}", event, e);
             // Consider implementing retry logic or storing failed events
             throw new MessagePublishException("Failed to publish milestone event", e);
         }
     }
 
     @Override
-    public String getRoutingKey(MilestoneDomainEvent event) {
+    public String getRoutingKey(final MilestoneDomainEvent event) {
         return switch (event) {
-            case MilestoneDomainEvent.Created e ->  MilestoneRabbitMQConfig.MILESTONE_CREATED_KEY;
-            case MilestoneDomainEvent.Updated e ->  MilestoneRabbitMQConfig.MILESTONE_UPDATED_KEY;
-            case MilestoneDomainEvent.Deleted e ->  MilestoneRabbitMQConfig.MILESTONE_DELETED_KEY;
-            case MilestoneDomainEvent.Completed e ->  MilestoneRabbitMQConfig.MILESTONE_COMPLETED_KEY;
+            case final MilestoneDomainEvent.Created e -> MilestoneRabbitMQConfig.MILESTONE_CREATED_KEY;
+            case final MilestoneDomainEvent.Updated e -> MilestoneRabbitMQConfig.MILESTONE_UPDATED_KEY;
+            case final MilestoneDomainEvent.Deleted e -> MilestoneRabbitMQConfig.MILESTONE_DELETED_KEY;
+            case final MilestoneDomainEvent.Completed e -> MilestoneRabbitMQConfig.MILESTONE_COMPLETED_KEY;
             default -> throw new IllegalArgumentException("Unknown event type: " + event.getClass().getSimpleName());
         };
     }
 
     @Override
     public String getExchange() {
-        return EXCHANGE;
+        return AsyncMilestoneEventAdapter.EXCHANGE;
     }
 }

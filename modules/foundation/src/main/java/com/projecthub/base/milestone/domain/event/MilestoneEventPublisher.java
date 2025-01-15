@@ -8,8 +8,8 @@ import java.util.UUID;
 public interface MilestoneEventPublisher {
     void publish(MilestoneDomainEvent event);
 
-    default void publishCreated(Milestone milestone, UUID initiatorId) {
-        publish(new MilestoneDomainEvent.Created(
+    default void publishCreated(final Milestone milestone, final UUID initiatorId) {
+        this.publish(new MilestoneDomainEvent.Created(
             UUID.randomUUID(),
             milestone.getId(),
             initiatorId,
@@ -17,8 +17,8 @@ public interface MilestoneEventPublisher {
         ));
     }
 
-    default void publishUpdated(Milestone milestone, UUID initiatorId) {
-        publish(new MilestoneDomainEvent.Updated(
+    default void publishUpdated(final Milestone milestone, final UUID initiatorId) {
+        this.publish(new MilestoneDomainEvent.Updated(
             UUID.randomUUID(),
             milestone.getId(),
             initiatorId,
@@ -26,8 +26,8 @@ public interface MilestoneEventPublisher {
         ));
     }
 
-    default void publishDeleted(UUID milestoneId, UUID initiatorId) {
-        publish(new MilestoneDomainEvent.Deleted(
+    default void publishDeleted(final UUID milestoneId, final UUID initiatorId) {
+        this.publish(new MilestoneDomainEvent.Deleted(
             UUID.randomUUID(),
             milestoneId,
             initiatorId,

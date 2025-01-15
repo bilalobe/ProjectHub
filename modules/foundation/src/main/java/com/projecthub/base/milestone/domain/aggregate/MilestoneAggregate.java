@@ -20,38 +20,38 @@ public class MilestoneAggregate {
     private final MilestoneEventPublisher eventPublisher;
     private final UUID initiatorId;
 
-    private MilestoneAggregate(Milestone root, MilestoneEventPublisher eventPublisher, UUID initiatorId) {
+    private MilestoneAggregate(final Milestone root, final MilestoneEventPublisher eventPublisher, final UUID initiatorId) {
         this.root = root;
         this.eventPublisher = eventPublisher;
         this.initiatorId = initiatorId;
-        this.events = new ArrayList<>();
+        events = new ArrayList<>();
     }
 
-    public static MilestoneAggregate create(CreateMilestoneCommand command, MilestoneEventPublisher eventPublisher) {
-        Milestone milestone = new Milestone(command.getName(), command.getDueDate());
-        MilestoneAggregate aggregate = new MilestoneAggregate(milestone, eventPublisher, command.getInitiatorId());
+    public static MilestoneAggregate create(final CreateMilestoneCommand command, final MilestoneEventPublisher eventPublisher) {
+        final Milestone milestone = new Milestone(command.getName(), command.getDueDate());
+        final MilestoneAggregate aggregate = new MilestoneAggregate(milestone, eventPublisher, command.getInitiatorId());
         aggregate.registerCreated();
         return aggregate;
     }
 
     private void registerCreated() {
-        eventPublisher.publishCreated(root, initiatorId);
+        this.eventPublisher.publishCreated(this.root, this.initiatorId);
     }
 
-    public void update(UpdateMilestoneCommand command) {
-        root.update(command.getName(), command.getDueDate());
-        eventPublisher.publishUpdated(root, initiatorId);
+    public void update(final UpdateMilestoneCommand command) {
+        this.root.update(command.getName(), command.getDueDate());
+        this.eventPublisher.publishUpdated(this.root, this.initiatorId);
     }
 
     public void delete() {
-        eventPublisher.publishDeleted(root.getId(), initiatorId);
+        this.eventPublisher.publishDeleted(this.root.getId(), this.initiatorId);
     }
 
     public List<MilestoneDomainEvent> getDomainEvents() {
-        return List.copyOf(events);
+        return List.copyOf(this.events);
     }
 
     public void clearDomainEvents() {
-        events.clear();
+        this.events.clear();
     }
 }
