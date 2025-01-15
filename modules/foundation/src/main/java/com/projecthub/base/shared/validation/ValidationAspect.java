@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ValidationAspect {
     @Before("@annotation(Validated)")
-    public void validate(JoinPoint jp) {
+    public void validate(final JoinPoint jp) {
         // Validation logic
     }
 }

@@ -52,8 +52,8 @@ public class ApiError {
      * @param message the error message
      * @return a new ApiError instance
      */
-    public static ApiError of(HttpStatus status, String message) {
-        return ApiError.builder()
+    public static ApiError of(final HttpStatus status, final String message) {
+        return builder()
             .timestamp(LocalDateTime.now())
             .status(status)
             .message(message)
@@ -68,8 +68,8 @@ public class ApiError {
      * @param debugMessage the detailed debug message
      * @return a new ApiError instance
      */
-    public static ApiError of(HttpStatus status, String message, String debugMessage) {
-        return ApiError.builder()
+    public static ApiError of(final HttpStatus status, final String message, final String debugMessage) {
+        return builder()
             .timestamp(LocalDateTime.now())
             .status(status)
             .message(message)

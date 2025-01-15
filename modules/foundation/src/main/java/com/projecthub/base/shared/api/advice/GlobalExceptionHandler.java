@@ -33,26 +33,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private final MessageSource messageSource;
 
-    public GlobalExceptionHandler(MessageSource messageSource) {
+    public GlobalExceptionHandler(final MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
-    private ResponseEntity<ApiError> createErrorResponse(HttpStatus status, String message, Exception ex) {
-        ApiError apiError = ApiError.builder()
+    private ResponseEntity<ApiError> createErrorResponse(final HttpStatus status, final String message, final Exception ex) {
+        final ApiError apiError = ApiError.builder()
             .timestamp(LocalDateTime.now())
             .status(status)
             .message(message)
             .debugMessage(ex.getLocalizedMessage())
             .build();
 
-        LOG.error("Error occurred: {}", message, ex);
+        GlobalExceptionHandler.LOG.error("Error occurred: {}", message, ex);
         return new ResponseEntity<>(apiError, status);
     }
 
     // Base exception handler
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<ApiError> handleBaseException(BaseException ex, Locale locale) {
-        return createErrorResponse(ex.getStatus(), getLocalizedMessage(ex.getMessage(), locale), ex);
+    public ResponseEntity<ApiError> handleBaseException(final BaseException ex, final Locale locale) {
+        return this.createErrorResponse(ex.getStatus(), this.getLocalizedMessage(ex.getMessage(), locale), ex);
     }
 
     // Authentication and Authorization exceptions
@@ -63,8 +63,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         AccountDisabledException.class,
         TokenExpiredException.class
     })
-    public ResponseEntity<ApiError> handleAuthException(Exception ex, Locale locale) {
-        HttpStatus status;
+    public ResponseEntity<ApiError> handleAuthException(final Exception ex, final Locale locale) {
+        final HttpStatus status;
         if (ex instanceof AccessDeniedException || ex instanceof AccountDisabledException) {
             status = HttpStatus.FORBIDDEN;
         } else if (ex instanceof UnauthorizedAccessException ||
@@ -75,9 +75,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             status = HttpStatus.UNAUTHORIZED;
         }
 
-        return createErrorResponse(
+        return this.createErrorResponse(
             status,
-            getLocalizedMessage("error.authentication", locale),
+            this.getLocalizedMessage("error.authentication", locale),
             ex
         );
     }
@@ -87,32 +87,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         AuthenticationFailedException.class,
         InvalidTokenException.class
     })
-    public ResponseEntity<ApiError> handleAuthenticationFailure(BaseException ex, Locale locale) {
-        return createErrorResponse(HttpStatus.UNAUTHORIZED,
-            getLocalizedMessage("error.authentication.failed", locale), ex);
+    public ResponseEntity<ApiError> handleAuthenticationFailure(final BaseException ex, final Locale locale) {
+        return this.createErrorResponse(HttpStatus.UNAUTHORIZED,
+            this.getLocalizedMessage("error.authentication.failed", locale), ex);
     }
 
-    @ExceptionHandler({
-        EmailSendingException.class
-    })
-    public ResponseEntity<ApiError> handleEmailError(EmailSendingException ex, Locale locale) {
-        return createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-            getLocalizedMessage("error.email.sending", locale), ex);
+    @ExceptionHandler(EmailSendingException.class)
+    public ResponseEntity<ApiError> handleEmailError(final EmailSendingException ex, final Locale locale) {
+        return this.createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+            this.getLocalizedMessage("error.email.sending", locale), ex);
     }
 
     @ExceptionHandler({
         InvalidInputException.class,
         PasswordValidationException.class
     })
-    public ResponseEntity<ApiError> handleInputValidation(BaseException ex, Locale locale) {
-        return createErrorResponse(HttpStatus.BAD_REQUEST,
-            getLocalizedMessage("error.input.validation", locale), ex);
+    public ResponseEntity<ApiError> handleInputValidation(final BaseException ex, final Locale locale) {
+        return this.createErrorResponse(HttpStatus.BAD_REQUEST,
+            this.getLocalizedMessage("error.input.validation", locale), ex);
     }
 
     @ExceptionHandler(RegistrationFailedException.class)
-    public ResponseEntity<ApiError> handleRegistrationFailure(RegistrationFailedException ex, Locale locale) {
-        return createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-            getLocalizedMessage("error.registration", locale), ex);
+    public ResponseEntity<ApiError> handleRegistrationFailure(final RegistrationFailedException ex, final Locale locale) {
+        return this.createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+            this.getLocalizedMessage("error.registration", locale), ex);
     }
 
     // Resource conflict exceptions
@@ -124,10 +122,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         UserCreationException.class,
         UserUpdateException.class
     })
-    public ResponseEntity<ApiError> handleConflictException(RuntimeException ex, Locale locale) {
-        return createErrorResponse(
+    public ResponseEntity<ApiError> handleConflictException(final RuntimeException ex, final Locale locale) {
+        return this.createErrorResponse(
             HttpStatus.CONFLICT,
-            getLocalizedMessage("error.conflict", locale),
+            this.getLocalizedMessage("error.conflict", locale),
             ex
         );
     }
@@ -135,55 +133,55 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     // Validation exceptions
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-        @NonNull MethodArgumentNotValidException ex,
-        @NonNull HttpHeaders headers,
-        @NonNull HttpStatusCode status,
-        @NonNull WebRequest request
+        @NonNull final MethodArgumentNotValidException ex,
+        @NonNull final HttpHeaders headers,
+        @NonNull final HttpStatusCode status,
+        @NonNull final WebRequest request
     ) {
-        ApiError error = handleValidationErrors(ex, LocaleContextHolder.getLocale(), "error.validation").getBody();
+        final ApiError error = this.handleValidationErrors(ex, LocaleContextHolder.getLocale(), "error.validation").getBody();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<ApiError> handleBindException(BindException ex, Locale locale) {
-        return handleValidationErrors(ex, locale, "error.binding");
+    public ResponseEntity<ApiError> handleBindException(final BindException ex, final Locale locale) {
+        return this.handleValidationErrors(ex, locale, "error.binding");
     }
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ApiError> handleValidationException(ValidationException ex, Locale locale) {
-        return createErrorResponse(
+    public ResponseEntity<ApiError> handleValidationException(final ValidationException ex, final Locale locale) {
+        return this.createErrorResponse(
             HttpStatus.BAD_REQUEST,
-            getLocalizedMessage("error.validation", locale),
+            this.getLocalizedMessage("error.validation", locale),
             ex
         );
     }
 
-    private ResponseEntity<ApiError> handleValidationErrors(Exception ex, Locale locale, String messageKey) {
-        List<ApiSubError> subErrors = new ArrayList<>();
-        BindingResult bindingResult = switch (ex) {
-            case MethodArgumentNotValidException methodEx -> methodEx.getBindingResult();
-            case BindException bindEx -> bindEx.getBindingResult();
+    private ResponseEntity<ApiError> handleValidationErrors(final Exception ex, final Locale locale, final String messageKey) {
+        final List<ApiSubError> subErrors = new ArrayList<>();
+        final BindingResult bindingResult = switch (ex) {
+            case final MethodArgumentNotValidException methodEx -> methodEx.getBindingResult();
+            case final BindException bindEx -> bindEx.getBindingResult();
             default -> null;
         };
 
-        if (bindingResult != null) {
+        if (null != bindingResult) {
             bindingResult.getFieldErrors().forEach(error ->
                 subErrors.add(new ApiValidationError(
                     error.getField(),
                     error.getRejectedValue(),
-                    messageSource.getMessage(error, locale)
+                    this.messageSource.getMessage(error, locale)
                 ))
             );
         }
 
-        ApiError apiError = ApiError.builder()
+        final ApiError apiError = ApiError.builder()
             .timestamp(LocalDateTime.now())
             .status(HttpStatus.BAD_REQUEST)
-            .message(getLocalizedMessage(messageKey, locale))
+            .message(this.getLocalizedMessage(messageKey, locale))
             .subErrors(subErrors)
             .build();
 
-        LOG.error("Validation error: {}", messageKey, ex);
+        GlobalExceptionHandler.LOG.error("Validation error: {}", messageKey, ex);
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
@@ -192,10 +190,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ResourceNotFoundException.class,
         UserNotFoundException.class
     })
-    public ResponseEntity<ApiError> handleNotFoundException(RuntimeException ex, Locale locale) {
-        return createErrorResponse(
+    public ResponseEntity<ApiError> handleNotFoundException(final RuntimeException ex, final Locale locale) {
+        return this.createErrorResponse(
             HttpStatus.NOT_FOUND,
-            getLocalizedMessage("error.not.found", locale),
+            this.getLocalizedMessage("error.not.found", locale),
             ex
         );
     }
@@ -207,27 +205,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         InternalServerException.class,
         SynchronizationException.class
     })
-    public ResponseEntity<ApiError> handleInternalError(Exception ex, Locale locale) {
-        return createErrorResponse(
+    public ResponseEntity<ApiError> handleInternalError(final Exception ex, final Locale locale) {
+        return this.createErrorResponse(
             HttpStatus.INTERNAL_SERVER_ERROR,
-            getLocalizedMessage("error.internal", locale),
+            this.getLocalizedMessage("error.internal", locale),
             ex
         );
     }
 
     @ExceptionHandler(SynchronizationException.class)
-    public ResponseEntity<ApiError> handleSynchronizationException(SynchronizationException ex, Locale locale) {
-        return createErrorResponse(
+    public ResponseEntity<ApiError> handleSynchronizationException(final SynchronizationException ex, final Locale locale) {
+        return this.createErrorResponse(
             HttpStatus.INTERNAL_SERVER_ERROR,
-            getLocalizedMessage("error.synchronization", locale),
+            this.getLocalizedMessage("error.synchronization", locale),
             ex
         );
     }
 
     // Profile update exception
     @ExceptionHandler(ProfileUpdateException.class)
-    public ResponseEntity<ApiError> handleProfileUpdateException(ProfileUpdateException ex) {
-        LOG.error("Profile update error", ex);
+    public ResponseEntity<ApiError> handleProfileUpdateException(final ProfileUpdateException ex) {
+        GlobalExceptionHandler.LOG.error("Profile update error", ex);
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ApiError.builder()
@@ -240,8 +238,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     // Storage exception
     @ExceptionHandler(StorageException.class)
-    public ResponseEntity<ApiError> handleStorageException(StorageException ex) {
-        LOG.error("File storage error", ex);
+    public ResponseEntity<ApiError> handleStorageException(final StorageException ex) {
+        GlobalExceptionHandler.LOG.error("File storage error", ex);
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ApiError.builder()
@@ -254,18 +252,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     // Catch-all handler
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleException(Exception ex, Locale locale) {
-        return createErrorResponse(
+    public ResponseEntity<ApiError> handleException(final Exception ex, final Locale locale) {
+        return this.createErrorResponse(
             HttpStatus.INTERNAL_SERVER_ERROR,
-            getLocalizedMessage("error.unexpected", locale),
+            this.getLocalizedMessage("error.unexpected", locale),
             ex
         );
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleAllOtherExceptions(
-        Exception ex, WebRequest request) {
-        LOG.error("Unexpected error occurred", ex);
+        final Exception ex, final WebRequest request) {
+        GlobalExceptionHandler.LOG.error("Unexpected error occurred", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ApiError.builder()
                 .timestamp(LocalDateTime.now())
@@ -275,7 +273,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build());
     }
 
-    private String getLocalizedMessage(String key, Locale locale) {
-        return messageSource.getMessage(key, null, key, locale);
+    private String getLocalizedMessage(final String key, final Locale locale) {
+        return this.messageSource.getMessage(key, null, key, locale);
     }
 }

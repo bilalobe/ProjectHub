@@ -10,7 +10,7 @@ public class InternationalizationConfig {
 
     @Bean
     public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource
+        final ReloadableResourceBundleMessageSource messageSource
             = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages/messages");
         messageSource.setDefaultEncoding("UTF-8");

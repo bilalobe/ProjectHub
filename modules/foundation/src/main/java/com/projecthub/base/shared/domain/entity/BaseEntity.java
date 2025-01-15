@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -22,6 +21,7 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity implements Auditable {
 
+    @SuperBuilder.Default
     @Getter
     @Transient
     private final List<Object> domainEvents = new ArrayList<>();
@@ -34,25 +34,27 @@ public abstract class BaseEntity implements Auditable {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime lastModifiedDate;
-    @Setter
-    @Column(nullable = false)
-    private boolean active;
 
     @Override
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(final LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
     @Override
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    public void setLastModifiedDate(final LocalDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    protected void registerEvent(Object event) {
-        domainEvents.add(event);
+    protected void registerEvent(final Object event) {
+        this.domainEvents.add(event);
     }
 
     public void clearDomainEvents() {
-        domainEvents.clear();
+        this.domainEvents.clear();
+    }
+
+    protected static abstract class BaseEntityBuilder<C extends BaseEntity, B extends BaseEntityBuilder<C, B>> {
+        @Builder.Default
+        protected List<Object> domainEvents = new ArrayList<>();
     }
 }

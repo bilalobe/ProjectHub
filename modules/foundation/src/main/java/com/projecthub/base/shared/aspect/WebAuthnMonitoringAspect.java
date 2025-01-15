@@ -18,18 +18,18 @@ public class WebAuthnMonitoringAspect {
     }
 
     @Around("webAuthnOperations()")
-    public Object monitorWebAuthn(ProceedingJoinPoint joinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
-        String operation = joinPoint.getSignature().toShortString();
+    public Object monitorWebAuthn(final ProceedingJoinPoint joinPoint) throws Throwable {
+        final long startTime = System.currentTimeMillis();
+        final String operation = joinPoint.getSignature().toShortString();
 
         try {
-            Object result = joinPoint.proceed();
-            long duration = System.currentTimeMillis() - startTime;
-            logger.info("WebAuthn operation: {} completed in {}ms", operation, duration);
+            final Object result = joinPoint.proceed();
+            final long duration = System.currentTimeMillis() - startTime;
+            WebAuthnMonitoringAspect.logger.info("WebAuthn operation: {} completed in {}ms", operation, duration);
             return result;
-        } catch (Exception e) {
-            long duration = System.currentTimeMillis() - startTime;
-            logger.error("WebAuthn operation: {} failed after {}ms: {}",
+        } catch (final Exception e) {
+            final long duration = System.currentTimeMillis() - startTime;
+            WebAuthnMonitoringAspect.logger.error("WebAuthn operation: {} failed after {}ms: {}",
                 operation, duration, e.getMessage(), e);
             throw e;
         }

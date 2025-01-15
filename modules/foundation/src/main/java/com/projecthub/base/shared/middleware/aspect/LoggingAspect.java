@@ -16,33 +16,33 @@ public class LoggingAspect {
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
     @Before("execution(* com.projecthub.service.*.*(..))")
-    public void logBeforeMethodExecution(JoinPoint joinPoint) {
-        if (logger.isInfoEnabled()) {
-            logger.info("Entering method: {} with arguments: {}", joinPoint.getSignature().toShortString(), formatArgs(joinPoint.getArgs()));
+    public void logBeforeMethodExecution(final JoinPoint joinPoint) {
+        if (LoggingAspect.logger.isInfoEnabled()) {
+            LoggingAspect.logger.info("Entering method: {} with arguments: {}", joinPoint.getSignature().toShortString(), this.formatArgs(joinPoint.getArgs()));
         }
     }
 
     @AfterReturning(pointcut = "execution(* com.projecthub.service.*.*(..))", returning = "result")
-    public void logAfterMethodExecution(JoinPoint joinPoint, Object result) {
-        if (logger.isInfoEnabled()) {
-            logger.info("Exiting method: {} with result: {}", joinPoint.getSignature().toShortString(), result != null ? result : "null");
+    public void logAfterMethodExecution(final JoinPoint joinPoint, final Object result) {
+        if (LoggingAspect.logger.isInfoEnabled()) {
+            LoggingAspect.logger.info("Exiting method: {} with result: {}", joinPoint.getSignature().toShortString(), null != result ? result : "null");
         }
     }
 
     @AfterThrowing(pointcut = "execution(* com.projecthub.service.*.*(..))", throwing = "exception")
-    public void logAfterMethodException(JoinPoint joinPoint, Throwable exception) {
-        if (logger.isErrorEnabled()) {
-            logger.error("Exception in method: {} with message: {}", joinPoint.getSignature().toShortString(), exception.getMessage(), exception);
+    public void logAfterMethodException(final JoinPoint joinPoint, final Throwable exception) {
+        if (LoggingAspect.logger.isErrorEnabled()) {
+            LoggingAspect.logger.error("Exception in method: {} with message: {}", joinPoint.getSignature().toShortString(), exception.getMessage(), exception);
         }
     }
 
-    private String formatArgs(Object[] args) {
-        if (args == null || args.length == 0) {
+    private String formatArgs(final Object[] args) {
+        if (null == args || 0 == args.length) {
             return "none";
         }
-        StringBuilder formattedArgs = new StringBuilder();
-        for (Object arg : args) {
-            formattedArgs.append(arg != null ? arg.toString() : "null").append(", ");
+        final StringBuilder formattedArgs = new StringBuilder();
+        for (final Object arg : args) {
+            formattedArgs.append(null != arg ? arg.toString() : "null").append(", ");
         }
         return formattedArgs.substring(0, formattedArgs.length() - 2);
     }

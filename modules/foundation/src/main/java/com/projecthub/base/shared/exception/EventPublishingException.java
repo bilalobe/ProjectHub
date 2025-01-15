@@ -4,19 +4,19 @@ public class EventPublishingException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public EventPublishingException(String message) {
+    public EventPublishingException(final String message) {
         super(message);
     }
 
-    public EventPublishingException(String message, Throwable cause) {
+    public EventPublishingException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public EventPublishingException(Throwable cause) {
+    public EventPublishingException(final Throwable cause) {
         super(cause);
     }
 
-    public EventPublishingException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public EventPublishingException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

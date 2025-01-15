@@ -62,22 +62,22 @@ class PasswordValidator {
     private final org.passay.PasswordValidator passayValidator;
 
     public PasswordValidator() {
-        this.passayValidator = new org.passay.PasswordValidator(Arrays.asList(
+        passayValidator = new org.passay.PasswordValidator(Arrays.asList(
             new LengthRule(12, 128),
             new CharacterRule(EnglishCharacterData.Digit, 2),
             new CharacterRule(EnglishCharacterData.LowerCase, 2),
             new CharacterRule(EnglishCharacterData.UpperCase, 2),
             new CharacterRule(EnglishCharacterData.Special, 2),
             new WhitespaceRule(),
-            new DictionaryRule(new WordListDictionary(FORBIDDEN_WORDS)),
+            new DictionaryRule(new WordListDictionary(PasswordValidator.FORBIDDEN_WORDS)),
             new UsernameRule(true, true),
             new IllegalSequenceRule(EnglishSequenceData.Alphabetical, 5, false),
             new IllegalSequenceRule(EnglishSequenceData.Numerical, 5, false),
             new IllegalSequenceRule(EnglishSequenceData.USQwerty, 5, false),
-            new RepeatCharacterRegexRule(MAX_SEQUENCE_LENGTH), // Limit repeating chars
+            new RepeatCharacterRegexRule(PasswordValidator.MAX_SEQUENCE_LENGTH), // Limit repeating chars
             new AllowedRegexRule("^[^\\s]*$"), // No whitespace (Keep this rule)
-            new IllegalRegexRule("(.)\\1{" + (MAX_SEQUENCE_LENGTH - 1) + ",}"), // No char repeated MAX_SEQUENCE_LENGTH times or more (More Dynamic)
-            new CharacterCharacteristicsRule(MIN_UNIQUE_CHARS, // At least MIN_UNIQUE_CHARS
+            new IllegalRegexRule("(.)\\1{" + (PasswordValidator.MAX_SEQUENCE_LENGTH - 1) + ",}"), // No char repeated MAX_SEQUENCE_LENGTH times or more (More Dynamic)
+            new CharacterCharacteristicsRule(PasswordValidator.MIN_UNIQUE_CHARS, // At least MIN_UNIQUE_CHARS
                 new CharacterRule(EnglishCharacterData.Digit, 1), // At least 1 digit
                 new CharacterRule(EnglishCharacterData.LowerCase, 1), // At least 1 lowercase
                 new CharacterRule(EnglishCharacterData.UpperCase, 1),// At least 1 uppercase
@@ -87,40 +87,40 @@ class PasswordValidator {
         ));
     }
 
-    public boolean isStrongEnough(String password) {
-        if (password == null) {
+    public boolean isStrongEnough(final String password) {
+        if (null == password) {
             throw new IllegalArgumentException("Password cannot be null");
         }
 
-        RuleResult result = passayValidator.validate(new PasswordData(password));
+        final RuleResult result = this.passayValidator.validate(new PasswordData(password));
         if (result.isValid()) {
             return true;
         }
-        logger.debug("Password is not strong enough. See errors: {}", passayValidator.getMessages(result));
+        PasswordValidator.logger.debug("Password is not strong enough. See errors: {}", this.passayValidator.getMessages(result));
         return false;
     }
 
-    public List<String> validatePassword(String password) {
-        if (password == null) {
+    public List<String> validatePassword(final String password) {
+        if (null == password) {
             throw new IllegalArgumentException("Password cannot be null");
         }
 
-        RuleResult result = passayValidator.validate(new PasswordData(password));
+        final RuleResult result = this.passayValidator.validate(new PasswordData(password));
         if (!result.isValid()) {
-            return passayValidator.getMessages(result);
+            return this.passayValidator.getMessages(result);
         }
         return Collections.emptyList();
     }
 
-    public List<String> getDetailedValidationErrors(String password) {
-        RuleResult result = passayValidator.validate(new PasswordData(password));
+    public List<String> getDetailedValidationErrors(final String password) {
+        final RuleResult result = this.passayValidator.validate(new PasswordData(password));
         return result.isValid() ? Collections.emptyList() :
-            passayValidator.getMessages(result).stream()
+            this.passayValidator.getMessages(result).stream()
                 .map(this::formatValidationMessage)
                 .toList();
     }
 
-    private String formatValidationMessage(String message) {
+    private String formatValidationMessage(final String message) {
         return message.replaceAll("\\{\\d+}", "")
             .replaceAll("\\s+", " ")
             .trim();

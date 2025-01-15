@@ -24,33 +24,33 @@ public class MonitoringAspect {
     }
 
     @Around("coreComponentsPointcut() || restEndpointsPointcut()")
-    public Object monitorPerformance(ProceedingJoinPoint joinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
-        String methodName = joinPoint.getSignature().toShortString();
+    public Object monitorPerformance(final ProceedingJoinPoint joinPoint) throws Throwable {
+        final long startTime = System.currentTimeMillis();
+        final String methodName = joinPoint.getSignature().toShortString();
 
         try {
-            Object result = joinPoint.proceed();
-            long executionTime = System.currentTimeMillis() - startTime;
-            logMethodExecution(methodName, executionTime, null);
-            return filterSensitiveData(result);
-        } catch (Exception e) {
-            long executionTime = System.currentTimeMillis() - startTime;
-            logMethodExecution(methodName, executionTime, e);
+            final Object result = joinPoint.proceed();
+            final long executionTime = System.currentTimeMillis() - startTime;
+            this.logMethodExecution(methodName, executionTime, null);
+            return this.filterSensitiveData(result);
+        } catch (final Exception e) {
+            final long executionTime = System.currentTimeMillis() - startTime;
+            this.logMethodExecution(methodName, executionTime, e);
             throw e;
         }
     }
 
-    private void logMethodExecution(String methodName, long executionTime, Exception error) {
-        String logMessage = String.format("Method: %s | Duration: %dms | Status: %s",
-            methodName, executionTime, error == null ? "SUCCESS" : "ERROR");
-        if (error == null) {
-            logger.info(logMessage);
+    private void logMethodExecution(final String methodName, final long executionTime, final Exception error) {
+        final String logMessage = String.format("Method: %s | Duration: %dms | Status: %s",
+            methodName, executionTime, null == error ? "SUCCESS" : "ERROR");
+        if (null == error) {
+            MonitoringAspect.logger.info(logMessage);
         } else {
-            logger.error("{} | Error: {}", logMessage, error.getMessage());
+            MonitoringAspect.logger.error("{} | Error: {}", logMessage, error.getMessage());
         }
     }
 
-    private Object filterSensitiveData(Object result) {
+    private Object filterSensitiveData(final Object result) {
         // Implement security filtering logic here
         // For example, remove passwords, tokens, or other sensitive data
         return result;

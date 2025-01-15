@@ -9,18 +9,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EntityReflectionUtils {
+public enum EntityReflectionUtils {
+    ;
     private static final Logger log = LoggerFactory.getLogger(EntityReflectionUtils.class);
 
-    private EntityReflectionUtils() {
-        // Private constructor to prevent instantiation
-    }
-
-    public static List<Field> getEntityFields(Class<?> entityClass) {
-        List<Field> fields = new ArrayList<>();
+    public static List<Field> getEntityFields(final Class<?> entityClass) {
+        final List<Field> fields = new ArrayList<>();
         Class<?> currentClass = entityClass;
 
-        while (currentClass != null && currentClass != Object.class) {
+        while (null != currentClass && Object.class != currentClass) {
             fields.addAll(Arrays.asList(currentClass.getDeclaredFields()));
             currentClass = currentClass.getSuperclass();
         }
@@ -30,11 +27,11 @@ public class EntityReflectionUtils {
             .toList();
     }
 
-    public static Object getFieldValue(Object entity, Field field) {
+    public static Object getFieldValue(final Object entity, final Field field) {
         try {
             return field.get(entity);
-        } catch (IllegalAccessException e) {
-            log.error("Error accessing field: {}", field.getName(), e);
+        } catch (final IllegalAccessException e) {
+            EntityReflectionUtils.log.error("Error accessing field: {}", field.getName(), e);
             return null;
         }
     }

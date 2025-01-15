@@ -42,8 +42,8 @@ public class SyncConfig {
 
     @Bean(name = "localDataSource")
     public DataSource localDataSource() {
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:h2:file:" + localDbPath);
+        final HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:h2:file:" + this.localDbPath);
         config.setDriverClassName("org.h2.Driver");
         config.setMaximumPoolSize(5);
         config.setMinimumIdle(1);
@@ -52,10 +52,10 @@ public class SyncConfig {
 
     @Bean(name = "remoteDataSource")
     public DataSource remoteDataSource() {
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(remoteUrl);
-        config.setUsername(remoteUsername);
-        config.setPassword(remotePassword);
+        final HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(this.remoteUrl);
+        config.setUsername(this.remoteUsername);
+        config.setPassword(this.remotePassword);
         config.setDriverClassName("org.postgresql.Driver");
         config.setMaximumPoolSize(3);
         config.setMinimumIdle(0);
@@ -74,12 +74,12 @@ public class SyncConfig {
     }
 
     @Bean
-    public LocalDataService localDataService(@Qualifier("localDataSource") DataSource localDataSource) {
+    public LocalDataService localDataService(@Qualifier("localDataSource") final DataSource localDataSource) {
         return new H2LocalDataService(localDataSource);
     }
 
     @Bean
-    public RemoteDataService remoteDataService(@Qualifier("remoteDataSource") DataSource remoteDataSource) {
+    public RemoteDataService remoteDataService(@Qualifier("remoteDataSource") final DataSource remoteDataSource) {
         return new PostgresRemoteDataService(remoteDataSource);
     }
 }

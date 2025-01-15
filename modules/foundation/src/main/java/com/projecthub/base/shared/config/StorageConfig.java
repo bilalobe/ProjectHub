@@ -25,7 +25,7 @@ public class StorageConfig {
     private final DesktopDataSourceProperties desktopProperties;
 
 
-    public StorageConfig(WebDataSourceProperties webProperties, DesktopDataSourceProperties desktopProperties) {
+    public StorageConfig(final WebDataSourceProperties webProperties, final DesktopDataSourceProperties desktopProperties) {
         this.webProperties = webProperties;
         this.desktopProperties = desktopProperties;
     }
@@ -38,12 +38,12 @@ public class StorageConfig {
     @Profile("web")
     @Bean
     public DataSource webDataSource() {
-        logger.info("Initializing web DataSource with URL: {}", webProperties.getUrl());
+        StorageConfig.logger.info("Initializing web DataSource with URL: {}", this.webProperties.getUrl());
         return DataSourceBuilder.create()
             .driverClassName("org.postgresql.Driver")
-            .url(webProperties.getUrl())
-            .username(webProperties.getUsername())
-            .password(webProperties.getPassword())
+            .url(this.webProperties.getUrl())
+            .username(this.webProperties.getUsername())
+            .password(this.webProperties.getPassword())
             .build();
     }
 
@@ -55,10 +55,10 @@ public class StorageConfig {
     @Profile("desktop")
     @Bean
     public DataSource desktopDataSource() {
-        logger.info("Initializing desktop DataSource with URL: {}", desktopProperties.getUrl());
+        StorageConfig.logger.info("Initializing desktop DataSource with URL: {}", this.desktopProperties.getUrl());
         return DataSourceBuilder.create()
             .driverClassName("org.h2.Driver")
-            .url(desktopProperties.getUrl())
+            .url(this.desktopProperties.getUrl())
             .username("sa")
             .password("")
             .build();
@@ -71,8 +71,8 @@ public class StorageConfig {
      * @return a new instance of SyncService
      */
     @Bean
-    public SyncService syncService(DataSource dataSource) {
-        logger.info("Initializing SyncService with DataSource: {}", dataSource.getClass().getSimpleName());
+    public SyncService syncService(final DataSource dataSource) {
+        StorageConfig.logger.info("Initializing SyncService with DataSource: {}", dataSource.getClass().getSimpleName());
         return new SyncService(dataSource);
     }
 }

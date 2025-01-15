@@ -11,7 +11,7 @@ public class ResourceAlreadyExistsException extends BaseException {
      * This exception should be handled by the controller layer and return a 409 status code.
      */
 
-    public ResourceAlreadyExistsException(String message) {
+    public ResourceAlreadyExistsException(final String message) {
         super(message, HttpStatus.CONFLICT);
     }
 }

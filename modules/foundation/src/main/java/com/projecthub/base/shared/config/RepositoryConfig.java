@@ -41,8 +41,8 @@ public class RepositoryConfig {
          */
         @Bean
         public Jackson2RepositoryPopulatorFactoryBean repositoryPopulator() throws FileNotFoundException {
-            Jackson2RepositoryPopulatorFactoryBean factory = new Jackson2RepositoryPopulatorFactoryBean();
-            ClassPathResource dataResource = new ClassPathResource("data.json");
+            final Jackson2RepositoryPopulatorFactoryBean factory = new Jackson2RepositoryPopulatorFactoryBean();
+            final ClassPathResource dataResource = new ClassPathResource("data.json");
             if (!dataResource.exists()) {
                 throw new IllegalStateException("Initial data file 'data.json' not found");
             }

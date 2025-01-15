@@ -3,11 +3,11 @@ package com.projecthub.base.shared.exception;
 import org.springframework.http.HttpStatus;
 
 public class PasswordValidationException extends BaseException {
-    public PasswordValidationException(String message) {
+    public PasswordValidationException(final String message) {
         super(message, HttpStatus.BAD_REQUEST);
     }
 
-    public PasswordValidationException(String message, Throwable cause) {
+    public PasswordValidationException(final String message, final Throwable cause) {
         super(message, cause, HttpStatus.BAD_REQUEST);
     }
 }

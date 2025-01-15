@@ -25,8 +25,8 @@ public class ModuleConfiguration {
             readOnlyTransaction = true,
             propagation = Propagation.REQUIRED
         )
-        public void onApplicationEvent(ApplicationEvent event) {
-            log.info("Processing event: {}", event.getClass().getSimpleName());
+        public void onApplicationEvent(final ApplicationEvent event) {
+            ModuleConfiguration.log.info("Processing event: {}", event.getClass().getSimpleName());
         }
     }
 }

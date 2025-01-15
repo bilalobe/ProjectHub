@@ -20,28 +20,28 @@ public class WebAuthnConfig {
     private static final String DEFAULT_ORIGIN = "http://localhost:8080";
     private static final long DEFAULT_TIMEOUT = 60000L;
 
-    @Value("${webauthn.rp.id:" + DEFAULT_RP_ID + "}")
+    @Value("${webauthn.rp.id:" + WebAuthnConfig.DEFAULT_RP_ID + "}")
     private String rpId;
 
-    @Value("${webauthn.rp.name:" + DEFAULT_RP_NAME + "}")
+    @Value("${webauthn.rp.name:" + WebAuthnConfig.DEFAULT_RP_NAME + "}")
     private String rpName;
 
-    @Value("${webauthn.rp.origin:" + DEFAULT_ORIGIN + "}")
+    @Value("${webauthn.rp.origin:" + WebAuthnConfig.DEFAULT_ORIGIN + "}")
     private String rpOrigin;
 
-    @Value("${webauthn.timeout:" + DEFAULT_TIMEOUT + "}")
+    @Value("${webauthn.timeout:" + WebAuthnConfig.DEFAULT_TIMEOUT + "}")
     private Long timeout;
 
-    public RelyingParty relyingParty(CredentialRepository credentialRepository) {
-        var rpIdentity = RelyingPartyIdentity.builder()
-            .id(rpId)
-            .name(rpName)
+    public RelyingParty relyingParty(final CredentialRepository credentialRepository) {
+        final var rpIdentity = RelyingPartyIdentity.builder()
+            .id(this.rpId)
+            .name(this.rpName)
             .build();
 
         return RelyingParty.builder()
             .identity(rpIdentity)
             .credentialRepository(credentialRepository)
-            .origins(Set.of(rpOrigin))
+            .origins(Set.of(this.rpOrigin))
             .attestationConveyancePreference(AttestationConveyancePreference.DIRECT)
             .build();
     }
@@ -49,7 +49,7 @@ public class WebAuthnConfig {
     @Bean
     public StartAssertionOptions assertionOptions() {
         return StartAssertionOptions.builder()
-            .timeout(Optional.of(timeout))
+            .timeout(Optional.of(this.timeout))
             .userVerification(UserVerificationRequirement.PREFERRED)
             .build();
     }

@@ -13,7 +13,7 @@ public class AsyncConfig {
 
     @Bean(name = "schoolEventExecutor")
     public Executor schoolEventExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(50);
@@ -24,7 +24,7 @@ public class AsyncConfig {
 
     @Bean(name = "projectEventExecutor")
     public Executor projectEventExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(50);

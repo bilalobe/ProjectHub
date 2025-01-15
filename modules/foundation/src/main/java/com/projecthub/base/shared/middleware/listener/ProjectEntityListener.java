@@ -8,7 +8,7 @@ public class ProjectEntityListener {
 
     @PrePersist
     @PreUpdate
-    public void beforeSave(Project project) {
+    public void beforeSave(final Project project) {
         // Custom logic before saving the project
         System.out.println("Before saving project: " + project.getName());
     }

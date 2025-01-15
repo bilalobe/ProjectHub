@@ -42,7 +42,7 @@ public class JwtUtil {
      * @return the signing key.
      */
     private Key getSigningKey() {
-        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
+        final byte[] keyBytes = this.secret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -52,9 +52,9 @@ public class JwtUtil {
      * @param username the username for which to generate the token.
      * @return the generated JWT token.
      */
-    public String generateToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, username);
+    public String generateToken(final String username) {
+        final Map<String, Object> claims = new HashMap<>();
+        return this.doGenerateToken(claims, username);
     }
 
     /**
@@ -64,12 +64,12 @@ public class JwtUtil {
      * @param subject the subject (username) of the token.
      * @return the generated JWT token.
      */
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
-        Key key = getSigningKey();
+    private String doGenerateToken(final Map<String, Object> claims, final String subject) {
+        final Key key = this.getSigningKey();
         return Jwts.builder()
             .subject(subject)
             .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + expiration * 1000))
+            .expiration(new Date(System.currentTimeMillis() + this.expiration * 1000))
             .claims().add(claims).and()
             .signWith(key)
             .compact();
@@ -81,8 +81,8 @@ public class JwtUtil {
      * @param token the JWT token.
      * @return the username extracted from the token.
      */
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
+    public String getUsernameFromToken(final String token) {
+        return this.getClaimFromToken(token, Claims::getSubject);
     }
 
     /**
@@ -91,8 +91,8 @@ public class JwtUtil {
      * @param token the JWT token.
      * @return the expiration date of the token.
      */
-    public Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
+    public Date getExpirationDateFromToken(final String token) {
+        return this.getClaimFromToken(token, Claims::getExpiration);
     }
 
     /**
@@ -103,8 +103,8 @@ public class JwtUtil {
      * @param claimsResolver a function to extract the desired claim.
      * @return the extracted claim.
      */
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        Claims claims = getAllClaimsFromToken(token);
+    public <T> T getClaimFromToken(final String token, final Function<Claims, T> claimsResolver) {
+        final Claims claims = this.getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
@@ -114,8 +114,8 @@ public class JwtUtil {
      * @param token the JWT token.
      * @return the claims extracted from the token.
      */
-    private Claims getAllClaimsFromToken(String token) {
-        Key key = getSigningKey();
+    private Claims getAllClaimsFromToken(final String token) {
+        final Key key = this.getSigningKey();
         return Jwts.parser()
             .verifyWith((SecretKey) key)
             .build()
@@ -126,14 +126,14 @@ public class JwtUtil {
     /**
      * Enhanced token validation with multiple checks.
      */
-    public boolean validateToken(String token) {
+    public boolean validateToken(final String token) {
         try {
-            if (token == null || token.isEmpty()) {
+            if (null == token || token.isEmpty()) {
                 return false;
             }
 
-            SecretKey key = (SecretKey) getSigningKey();
-            Claims claims = Jwts.parser()
+            final SecretKey key = (SecretKey) this.getSigningKey();
+            final Claims claims = Jwts.parser()
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
@@ -141,19 +141,19 @@ public class JwtUtil {
 
             // Check if token is expired
             if (claims.getExpiration().before(new Date())) {
-                logger.debug("Token is expired");
+                JwtUtil.logger.debug("Token is expired");
                 return false;
             }
 
             // Check if token was issued in the future
             if (claims.getIssuedAt().after(new Date())) {
-                logger.debug("Token was issued in the future");
+                JwtUtil.logger.debug("Token was issued in the future");
                 return false;
             }
 
             return true;
-        } catch (Exception e) {
-            logger.error("Token validation failed", e);
+        } catch (final Exception e) {
+            JwtUtil.logger.error("Token validation failed", e);
             return false;
         }
     }
@@ -161,12 +161,12 @@ public class JwtUtil {
     /**
      * Validate token for a specific username.
      */
-    public boolean validateToken(String token, String username) {
+    public boolean validateToken(final String token, final String username) {
         try {
-            String tokenUsername = getUsernameFromToken(token);
-            return (tokenUsername.equals(username) && validateToken(token));
-        } catch (Exception e) {
-            logger.error("Token validation failed for user: {}", username, e);
+            final String tokenUsername = this.getUsernameFromToken(token);
+            return (tokenUsername.equals(username) && this.validateToken(token));
+        } catch (final Exception e) {
+            JwtUtil.logger.error("Token validation failed for user: {}", username, e);
             return false;
         }
     }

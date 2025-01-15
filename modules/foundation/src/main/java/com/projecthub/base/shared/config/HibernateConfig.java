@@ -21,15 +21,15 @@ import java.sql.SQLException;
 public class HibernateConfig {
 
     @Bean
-    public JpaTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
+    public JpaTransactionManager transactionManager(final LocalContainerEntityManagerFactoryBean entityManagerFactory) {
+        final JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory.getObject());
         transactionManager.setJpaDialect(new HibernateJpaDialect() {
 
             @Override
-            public @NonNull Object beginTransaction(@NonNull EntityManager entityManager, @NonNull TransactionDefinition definition) throws TransactionException, SQLException {
-                Object transaction = super.beginTransaction(entityManager, definition);
-                Session session = entityManager.unwrap(Session.class);
+            public @NonNull Object beginTransaction(@NonNull final EntityManager entityManager, @NonNull final TransactionDefinition definition) throws TransactionException, SQLException {
+                final Object transaction = super.beginTransaction(entityManager, definition);
+                final Session session = entityManager.unwrap(Session.class);
                 session.enableFilter("deletedFilter").setParameter("isDeleted", false);
                 return transaction;
             }

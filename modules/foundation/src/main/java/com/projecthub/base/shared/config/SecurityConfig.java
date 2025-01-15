@@ -33,7 +33,7 @@ public class SecurityConfig {
 
     private final Environment env;
 
-    public SecurityConfig(Environment env) {
+    public SecurityConfig(final Environment env) {
         this.env = env;
     }
 
@@ -55,11 +55,11 @@ public class SecurityConfig {
      */
     @Bean
     public UserDetailsService userDetailsService() {
-        String username = env.getProperty("APP_USER_NAME", "admin");
-        String rawPassword = env.getProperty("APP_USER_PASSWORD", "password");
-        String encodedPassword = passwordEncoder().encode(rawPassword);
+        final String username = this.env.getProperty("APP_USER_NAME", "admin");
+        final String rawPassword = this.env.getProperty("APP_USER_PASSWORD", "password");
+        final String encodedPassword = this.passwordEncoder().encode(rawPassword);
 
-        UserDetails user = User.withUsername(username)
+        final UserDetails user = User.withUsername(username)
             .password(encodedPassword)
             .roles("USER", "ADMIN")
             .build();
@@ -76,7 +76,7 @@ public class SecurityConfig {
      * @throws Exception if security configuration fails
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf
                 .csrfTokenRepository(new CookieCsrfTokenRepository())
@@ -103,7 +103,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(final AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }

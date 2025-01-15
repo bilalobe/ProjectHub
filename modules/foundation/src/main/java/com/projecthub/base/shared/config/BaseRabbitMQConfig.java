@@ -15,29 +15,29 @@ public class BaseRabbitMQConfig {
 
     private final RabbitMQProperties rabbitMQProperties;
 
-    public BaseRabbitMQConfig(RabbitMQProperties rabbitMQProperties) {
+    public BaseRabbitMQConfig(final RabbitMQProperties rabbitMQProperties) {
         this.rabbitMQProperties = rabbitMQProperties;
     }
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory factory = new CachingConnectionFactory();
-        factory.setHost(rabbitMQProperties.getHost());
-        factory.setPort(rabbitMQProperties.getPort());
-        factory.setUsername(rabbitMQProperties.getUsername());
-        factory.setPassword(rabbitMQProperties.getPassword());
+        final CachingConnectionFactory factory = new CachingConnectionFactory();
+        factory.setHost(this.rabbitMQProperties.getHost());
+        factory.setPort(this.rabbitMQProperties.getPort());
+        factory.setUsername(this.rabbitMQProperties.getUsername());
+        factory.setPassword(this.rabbitMQProperties.getPassword());
         return factory;
     }
 
     @Bean
-    public MessageConverter messageConverter(ObjectMapper objectMapper) {
+    public MessageConverter messageConverter(final ObjectMapper objectMapper) {
         return new Jackson2JsonMessageConverter(objectMapper);
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
-                                         MessageConverter messageConverter) {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+    public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory,
+                                         final MessageConverter messageConverter) {
+        final RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(messageConverter);
         template.setRetryTemplate(RetryTemplate.builder()
             .maxAttempts(3)

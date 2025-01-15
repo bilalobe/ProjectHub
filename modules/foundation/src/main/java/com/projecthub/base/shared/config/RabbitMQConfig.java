@@ -38,95 +38,95 @@ public class RabbitMQConfig {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory factory = new CachingConnectionFactory();
-        factory.setHost(host);
-        factory.setPort(port);
-        factory.setUsername(username);
-        factory.setPassword(password);
+        final CachingConnectionFactory factory = new CachingConnectionFactory();
+        factory.setHost(this.host);
+        factory.setPort(this.port);
+        factory.setUsername(this.username);
+        factory.setPassword(this.password);
         return factory;
     }
 
     @Bean
     public Queue schoolQueue() {
-        Map<String, Object> args = new HashMap<>();
+        final Map<String, Object> args = new HashMap<>();
         args.put("x-message-ttl", 86400000); // 24 hours
         args.put("x-dead-letter-exchange", "school.dlx");
-        return QueueBuilder.durable(SCHOOL_QUEUE)
+        return QueueBuilder.durable(RabbitMQConfig.SCHOOL_QUEUE)
             .withArguments(args)
             .build();
     }
 
     @Bean
     public TopicExchange schoolExchange() {
-        return ExchangeBuilder.topicExchange(SCHOOL_EXCHANGE)
+        return ExchangeBuilder.topicExchange(RabbitMQConfig.SCHOOL_EXCHANGE)
             .durable(true)
             .build();
     }
 
     @Bean
-    public Binding schoolBinding(Queue schoolQueue, TopicExchange schoolExchange) {
+    public Binding schoolBinding(final Queue schoolQueue, final TopicExchange schoolExchange) {
         return BindingBuilder.bind(schoolQueue)
             .to(schoolExchange)
-            .with(SCHOOL_ROUTING_KEY);
+            .with(RabbitMQConfig.SCHOOL_ROUTING_KEY);
     }
 
     @Bean
     public Queue authQueue() {
-        Map<String, Object> args = new HashMap<>();
+        final Map<String, Object> args = new HashMap<>();
         args.put("x-message-ttl", 86400000);
         args.put("x-dead-letter-exchange", "auth.dlx");
-        return QueueBuilder.durable(AUTH_QUEUE)
+        return QueueBuilder.durable(RabbitMQConfig.AUTH_QUEUE)
             .withArguments(args)
             .build();
     }
 
     @Bean
     public TopicExchange authExchange() {
-        return ExchangeBuilder.topicExchange(AUTH_EXCHANGE)
+        return ExchangeBuilder.topicExchange(RabbitMQConfig.AUTH_EXCHANGE)
             .durable(true)
             .build();
     }
 
     @Bean
-    public Binding authBinding(Queue authQueue, TopicExchange authExchange) {
+    public Binding authBinding(final Queue authQueue, final TopicExchange authExchange) {
         return BindingBuilder.bind(authQueue)
             .to(authExchange)
-            .with(AUTH_ROUTING_KEY);
+            .with(RabbitMQConfig.AUTH_ROUTING_KEY);
     }
 
     @Bean
     public Queue taskQueue() {
-        Map<String, Object> args = new HashMap<>();
+        final Map<String, Object> args = new HashMap<>();
         args.put("x-message-ttl", 86400000);
         args.put("x-dead-letter-exchange", "task.dlx");
-        return QueueBuilder.durable(TASK_QUEUE)
+        return QueueBuilder.durable(RabbitMQConfig.TASK_QUEUE)
             .withArguments(args)
             .build();
     }
 
     @Bean
     public TopicExchange taskExchange() {
-        return ExchangeBuilder.topicExchange(TASK_EXCHANGE)
+        return ExchangeBuilder.topicExchange(RabbitMQConfig.TASK_EXCHANGE)
             .durable(true)
             .build();
     }
 
     @Bean
-    public Binding taskBinding(Queue taskQueue, TopicExchange taskExchange) {
+    public Binding taskBinding(final Queue taskQueue, final TopicExchange taskExchange) {
         return BindingBuilder.bind(taskQueue)
             .to(taskExchange)
-            .with(TASK_ROUTING_KEY);
+            .with(RabbitMQConfig.TASK_ROUTING_KEY);
     }
 
     @Bean
-    public MessageConverter messageConverter(ObjectMapper objectMapper) {
+    public MessageConverter messageConverter(final ObjectMapper objectMapper) {
         return new Jackson2JsonMessageConverter(objectMapper);
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
-                                         MessageConverter messageConverter) {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+    public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory,
+                                         final MessageConverter messageConverter) {
+        final RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(messageConverter);
         template.setRetryTemplate(RetryTemplate.builder()
             .maxAttempts(3)

@@ -11,15 +11,15 @@ import java.util.UUID;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class ResourceNotFoundException extends RuntimeException {
 
-    public ResourceNotFoundException(String message) {
+    public ResourceNotFoundException(final String message) {
         super(message);
     }
 
-    public ResourceNotFoundException(String message, Throwable cause) {
+    public ResourceNotFoundException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public ResourceNotFoundException(String string, UUID id) {
+    public ResourceNotFoundException(final String string, final UUID id) {
         super(String.format(string, id));
     }
 }
