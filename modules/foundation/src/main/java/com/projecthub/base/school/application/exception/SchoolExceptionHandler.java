@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class SchoolExceptionHandler {
     @ExceptionHandler(SchoolNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleSchoolNotFound(SchoolNotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleSchoolNotFound(final SchoolNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(new ErrorResponse(0, ex.getMessage(), null));
     }

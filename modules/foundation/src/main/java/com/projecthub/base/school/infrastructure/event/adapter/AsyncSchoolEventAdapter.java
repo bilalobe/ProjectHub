@@ -16,23 +16,23 @@ public class AsyncSchoolEventAdapter implements SchoolEventAdapter {
 
     @Async("schoolEventExecutor")
     @Override
-    public void publish(SchoolDomainEvent event) {
-        log.debug("Publishing async event: {}", event);
-        rabbitTemplate.convertAndSend(
-            getExchange(),
-            getRoutingKey(event),
+    public void publish(final SchoolDomainEvent event) {
+        AsyncSchoolEventAdapter.log.debug("Publishing async event: {}", event);
+        this.rabbitTemplate.convertAndSend(
+            EXCHANGE,
+            this.getRoutingKey(event),
             event
         );
     }
 
     @Override
-    public String getRoutingKey(SchoolDomainEvent event) {
+    public String getRoutingKey(final SchoolDomainEvent event) {
         return switch (event) {
-            case SchoolDomainEvent.Created e -> "school.created";
-            case SchoolDomainEvent.Updated e -> "school.updated";
-            case SchoolDomainEvent.Deleted e -> "school.deleted";
-            case SchoolDomainEvent.Archived e -> "school.archived";
-            case SchoolDomainEvent.CohortAdded e -> "school.cohort.added";
+            case final SchoolDomainEvent.Created e -> "school.created";
+            case final SchoolDomainEvent.Updated e -> "school.updated";
+            case final SchoolDomainEvent.Deleted e -> "school.deleted";
+            case final SchoolDomainEvent.Archived e -> "school.archived";
+            case final SchoolDomainEvent.CohortAdded e -> "school.cohort.added";
             default -> throw new IllegalArgumentException("Unknown event type: " + event.getClass().getSimpleName());
         };
     }
@@ -40,6 +40,6 @@ public class AsyncSchoolEventAdapter implements SchoolEventAdapter {
 
     @Override
     public String getExchange() {
-        return EXCHANGE;
+        return AsyncSchoolEventAdapter.EXCHANGE;
     }
 }

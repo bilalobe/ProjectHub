@@ -11,7 +11,7 @@ public record SchoolContact(
     String website
 ) {
 
-    public static SchoolContact from(SchoolContact other) {
+    public static SchoolContact from(final SchoolContact other) {
         return new SchoolContact(
             other.email(),
             other.phone(),
@@ -19,7 +19,7 @@ public record SchoolContact(
         );
     }
 
-    public static SchoolContact of(String email, String phone, String website) {
+    public static SchoolContact of(final String email, final String phone, final String website) {
         return new SchoolContact(email, phone, website);
     }
 }

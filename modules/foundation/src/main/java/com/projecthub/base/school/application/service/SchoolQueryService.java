@@ -29,57 +29,57 @@ public class SchoolQueryService implements SchoolQuery {
     private final SchoolMapper mapper;
 
     @Override
-    public SchoolDTO getSchoolById(UUID id) {
+    public SchoolDTO getSchoolById(final UUID id) {
         Objects.requireNonNull(id, "School ID cannot be null");
-        log.debug("Fetching school: {}", id);
+        SchoolQueryService.log.debug("Fetching school: {}", id);
 
-        return repository.findById(id)
-            .map(mapper::toDto)
+        return this.repository.findById(id)
+            .map(this.mapper::toDto)
             .orElseThrow(() -> new SchoolNotFoundException(id));
     }
 
     @Override
-    public Page<SchoolDTO> searchSchools(SchoolSearchCriteria criteria, Pageable pageable) {
-        Objects.requireNonNull(pageable, PAGEABLE_CANNOT_BE_NULL);
-        log.debug("Searching schools with criteria: {}", criteria);
+    public Page<SchoolDTO> searchSchools(final SchoolSearchCriteria criteria, final Pageable pageable) {
+        Objects.requireNonNull(pageable, SchoolQueryService.PAGEABLE_CANNOT_BE_NULL);
+        SchoolQueryService.log.debug("Searching schools with criteria: {}", criteria);
 
-        return repository.findAll(
+        return this.repository.findAll(
             SchoolSpecification.withCriteria(criteria),
-            pageable).map(mapper::toDto);
+            pageable).map(this.mapper::toDto);
     }
 
     @Override
-    public Page<SchoolDTO> getAllSchools(PageRequest pageRequest) {
+    public Page<SchoolDTO> getAllSchools(final PageRequest pageRequest) {
         Objects.requireNonNull(pageRequest, "Page request cannot be null");
-        log.debug("Fetching all schools with pagination: {}", pageRequest);
+        SchoolQueryService.log.debug("Fetching all schools with pagination: {}", pageRequest);
 
-        return repository.findAll(pageRequest)
-            .map(mapper::toDto);
+        return this.repository.findAll(pageRequest)
+            .map(this.mapper::toDto);
     }
 
     @Override
-    public Page<SchoolDTO> getActiveSchools(Pageable pageable) {
-        Objects.requireNonNull(pageable, PAGEABLE_CANNOT_BE_NULL);
-        log.debug("Fetching active schools");
+    public Page<SchoolDTO> getActiveSchools(final Pageable pageable) {
+        Objects.requireNonNull(pageable, SchoolQueryService.PAGEABLE_CANNOT_BE_NULL);
+        SchoolQueryService.log.debug("Fetching active schools");
 
-        return repository.findByArchivedFalse(pageable)
-            .map(mapper::toDto);
+        return this.repository.findByArchivedFalse(pageable)
+            .map(this.mapper::toDto);
     }
 
     @Override
-    public Page<SchoolDTO> getArchivedSchools(Pageable pageable) {
-        Objects.requireNonNull(pageable, PAGEABLE_CANNOT_BE_NULL);
-        log.debug("Fetching archived schools");
+    public Page<SchoolDTO> getArchivedSchools(final Pageable pageable) {
+        Objects.requireNonNull(pageable, SchoolQueryService.PAGEABLE_CANNOT_BE_NULL);
+        SchoolQueryService.log.debug("Fetching archived schools");
 
-        return repository.findByArchivedTrue(pageable)
-            .map(mapper::toDto);
+        return this.repository.findByArchivedTrue(pageable)
+            .map(this.mapper::toDto);
     }
 
-    public School findActiveSchoolById(UUID id) {
+    public School findActiveSchoolById(final UUID id) {
         Objects.requireNonNull(id, "School ID cannot be null");
-        log.debug("Fetching active school: {}", id);
+        SchoolQueryService.log.debug("Fetching active school: {}", id);
 
-        return repository.findByIdAndArchivedFalse(id)
+        return this.repository.findByIdAndArchivedFalse(id)
             .orElseThrow(() -> new SchoolNotFoundException(id));
     }
 }

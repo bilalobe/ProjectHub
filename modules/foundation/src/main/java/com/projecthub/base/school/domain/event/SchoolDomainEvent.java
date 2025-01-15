@@ -23,22 +23,22 @@ public sealed interface SchoolDomainEvent {
 
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getSchoolId() {
-            return schoolId;
+            return this.schoolId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 
@@ -51,22 +51,22 @@ public sealed interface SchoolDomainEvent {
 
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getSchoolId() {
-            return schoolId;
+            return this.schoolId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 
@@ -79,22 +79,22 @@ public sealed interface SchoolDomainEvent {
 
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getSchoolId() {
-            return schoolId;
+            return this.schoolId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 
@@ -108,22 +108,22 @@ public sealed interface SchoolDomainEvent {
 
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getSchoolId() {
-            return schoolId;
+            return this.schoolId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 
@@ -137,22 +137,22 @@ public sealed interface SchoolDomainEvent {
 
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getSchoolId() {
-            return schoolId;
+            return this.schoolId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 
@@ -166,22 +166,22 @@ public sealed interface SchoolDomainEvent {
     ) implements SchoolDomainEvent {
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getSchoolId() {
-            return schoolId;
+            return this.schoolId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 
@@ -195,22 +195,22 @@ public sealed interface SchoolDomainEvent {
     ) implements SchoolDomainEvent {
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getSchoolId() {
-            return schoolId;
+            return this.schoolId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 }

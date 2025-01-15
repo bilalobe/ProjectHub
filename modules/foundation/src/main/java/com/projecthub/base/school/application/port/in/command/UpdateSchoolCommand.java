@@ -42,33 +42,33 @@ public record UpdateSchoolCommand(
         private SchoolContact contact;
         private UUID initiatorId;
 
-        public UpdateSchoolCommandBuilder id(UUID id) {
+        public UpdateSchoolCommandBuilder id(final UUID id) {
             this.id = id;
             return this;
         }
 
-        public UpdateSchoolCommandBuilder name(String name) {
+        public UpdateSchoolCommandBuilder name(final String name) {
             this.name = name;
             return this;
         }
 
-        public UpdateSchoolCommandBuilder address(SchoolAddress address) {
+        public UpdateSchoolCommandBuilder address(final SchoolAddress address) {
             this.address = address;
             return this;
         }
 
-        public UpdateSchoolCommandBuilder contact(SchoolContact contact) {
+        public UpdateSchoolCommandBuilder contact(final SchoolContact contact) {
             this.contact = contact;
             return this;
         }
 
-        public UpdateSchoolCommandBuilder initiatorId(UUID initiatorId) {
+        public UpdateSchoolCommandBuilder initiatorId(final UUID initiatorId) {
             this.initiatorId = initiatorId;
             return this;
         }
 
         public UpdateSchoolCommand build() {
-            return new UpdateSchoolCommand(id, name, address, contact, initiatorId);
+            return new UpdateSchoolCommand(this.id, this.name, this.address, this.contact, this.initiatorId);
         }
     }
 }

@@ -36,29 +36,29 @@ public record CreateSchoolCommand(
         private SchoolContact contact;
         private UUID initiatorId;  // Add this
 
-        public CreateSchoolCommandBuilder name(String name) {
+        public CreateSchoolCommandBuilder name(final String name) {
             this.name = name;
             return this;
         }
 
-        public CreateSchoolCommandBuilder address(SchoolAddress address) {
+        public CreateSchoolCommandBuilder address(final SchoolAddress address) {
             this.address = address;
             return this;
         }
 
-        public CreateSchoolCommandBuilder contact(SchoolContact contact) {
+        public CreateSchoolCommandBuilder contact(final SchoolContact contact) {
             this.contact = contact;
             return this;
         }
 
         // Add this method
-        public CreateSchoolCommandBuilder initiatorId(UUID initiatorId) {
+        public CreateSchoolCommandBuilder initiatorId(final UUID initiatorId) {
             this.initiatorId = initiatorId;
             return this;
         }
 
         public CreateSchoolCommand build() {
-            return new CreateSchoolCommand(name, address, contact, initiatorId); // Include initiatorId
+            return new CreateSchoolCommand(this.name, this.address, this.contact, this.initiatorId); // Include initiatorId
         }
     }
 }

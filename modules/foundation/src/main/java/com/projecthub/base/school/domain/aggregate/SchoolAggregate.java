@@ -21,21 +21,22 @@ public class SchoolAggregate {
 
     private static final int MAX_COHORTS = 20;
 
+    @Getter
     private final School root;
     private final List<SchoolDomainEvent> events = new ArrayList<>();
     private final SchoolEventPublisher eventPublisher;
     private final UUID initiatorId;
     private final List<Cohort> cohorts;
 
-    private SchoolAggregate(School root, SchoolEventPublisher eventPublisher, UUID initiatorId) {
+    private SchoolAggregate(final School root, final SchoolEventPublisher eventPublisher, final UUID initiatorId) {
         this.root = root;
         this.eventPublisher = eventPublisher;
         this.initiatorId = initiatorId;
-        this.cohorts = new ArrayList<>();
+        cohorts = new ArrayList<>();
     }
 
-    public static SchoolAggregate create(CreateSchoolCommand command, SchoolEventPublisher eventPublisher) {
-        SchoolAddress address = SchoolAddress.of(
+    public static SchoolAggregate create(final CreateSchoolCommand command, final SchoolEventPublisher eventPublisher) {
+        final SchoolAddress address = SchoolAddress.of(
             command.address().street(),
             command.address().city(),
             command.address().state(),
@@ -43,20 +44,20 @@ public class SchoolAggregate {
             command.address().country()
         );
 
-        SchoolContact contact = SchoolContact.of(
+        final SchoolContact contact = SchoolContact.of(
             command.contact().email(),
             command.contact().phone(),
             command.contact().website()
         );
 
-        School school = School.builder()
+        final School school = School.builder()
             .name(command.name())
             .address(address)
             .contact(contact)
             .build();
 
         // Assume command.getInitiatorId() is the correct accessor
-        SchoolAggregate aggregate = new SchoolAggregate(school, eventPublisher, command.initiatorId());
+        final SchoolAggregate aggregate = new SchoolAggregate(school, eventPublisher, command.initiatorId());
         aggregate.registerCreated();
         return aggregate;
     }
@@ -66,114 +67,110 @@ public class SchoolAggregate {
     }
 
     private void registerCreated() {
-        registerEvent(new SchoolDomainEvent.Created(
+        this.registerEvent(new SchoolDomainEvent.Created(
             UUID.randomUUID(),
-            root.getId(),
-            initiatorId,
+            this.root.getId(),
+            this.initiatorId,
             Instant.now()
         ));
     }
 
     public List<SchoolDomainEvent> getDomainEvents() {
-        return List.copyOf(events);
+        return List.copyOf(this.events);
     }
 
     public void clearDomainEvents() {
-        events.clear();
+        this.events.clear();
     }
 
-    public void addCohort(Cohort cohort) {
-        validateCohortInvariant(cohort);
-        cohorts.add(cohort);
-        registerEvent(new SchoolDomainEvent.CohortAdded(
+    public void addCohort(final Cohort cohort) {
+        this.validateCohortInvariant(cohort);
+        this.cohorts.add(cohort);
+        this.registerEvent(new SchoolDomainEvent.CohortAdded(
             UUID.randomUUID(),
-            root.getId(),
+            this.root.getId(),
             cohort.getId(),
-            initiatorId,
+            this.initiatorId,
             Instant.now()
         ));
     }
 
-    private void validateCohortInvariant(Cohort cohort) {
-        if (cohort == null) {
+    private void validateCohortInvariant(final Cohort cohort) {
+        if (null == cohort) {
             throw new SchoolDomainException("Cohort cannot be null");
         }
-        if (cohorts.stream().anyMatch(c -> c.getName().equals(cohort.getName()))) {
+        if (this.cohorts.stream().anyMatch(c -> c.getName().equals(cohort.getName()))) {
             throw new SchoolDomainException("Cohort name must be unique within school");
         }
-        if (cohorts.size() >= MAX_COHORTS) {
+        if (MAX_COHORTS <= cohorts.size()) {
             throw new SchoolDomainException("Maximum number of cohorts reached");
         }
     }
 
 
-    public void archive(String reason) {
-        if (root.isArchived()) {
+    public void archive(final String reason) {
+        if (this.root.isArchived()) {
             throw new SchoolDomainException("School is already archived");
         }
-        root.archive();
-        registerEvent(new SchoolDomainEvent.Archived(
+        this.root.archive();
+        this.registerEvent(new SchoolDomainEvent.Archived(
             UUID.randomUUID(),
-            root.getId(),
-            initiatorId,
+            this.root.getId(),
+            this.initiatorId,
             reason,
             Instant.now()
         ));
     }
 
     public void delete() {
-        registerEvent(new SchoolDomainEvent.Deleted(
+        this.registerEvent(new SchoolDomainEvent.Deleted(
             UUID.randomUUID(),
-            root.getId(),
-            initiatorId,
+            this.root.getId(),
+            this.initiatorId,
             Instant.now()
         ));
     }
 
     public void update() {
-        registerEvent(new SchoolDomainEvent.Updated(
+        this.registerEvent(new SchoolDomainEvent.Updated(
             UUID.randomUUID(),
-            root.getId(),
-            initiatorId,
+            this.root.getId(),
+            this.initiatorId,
             Instant.now()
         ));
     }
 
-    public void updateSchoolDetails(UpdateSchoolCommand command) {
-        validateStateForUpdate();
-        String oldName = root.getName();
+    public void updateSchoolDetails(final UpdateSchoolCommand command) {
+        this.validateStateForUpdate();
+        final String oldName = this.root.getName();
 
-        root.update(command);
+        this.root.update(command);
 
-        if (!oldName.equals(root.getName())) {
-            registerEvent(new SchoolDomainEvent.NameUpdated(
+        if (!oldName.equals(this.root.getName())) {
+            this.registerEvent(new SchoolDomainEvent.NameUpdated(
                 UUID.randomUUID(),
-                root.getId(),
+                this.root.getId(),
                 oldName,
-                root.getName(),
-                initiatorId,
+                this.root.getName(),
+                this.initiatorId,
                 Instant.now()
             ));
         }
     }
 
     private void validateStateForUpdate() {
-        if (root.isArchived()) {
+        if (this.root.isArchived()) {
             throw new SchoolDomainException("Cannot update archived school");
         }
     }
 
     public List<SchoolDomainEvent> getEvents() {
-        return new ArrayList<>(events);
+        return new ArrayList<>(this.events);
     }
 
-    public School getRoot() {
-        return root;
-    }
-
-    private void registerEvent(SchoolDomainEvent event) {
-        events.add(event);
-        eventPublisher.publish(event);
+    private void registerEvent(final SchoolDomainEvent event) {
+        this.events.add(event);
+        this.eventPublisher.publish(event);
     }
 
     public static class SchoolAggregateBuilder {
@@ -181,23 +178,23 @@ public class SchoolAggregate {
         private SchoolEventPublisher eventPublisher;
         private UUID initiatorId;
 
-        public SchoolAggregateBuilder root(School root) {
+        public SchoolAggregateBuilder root(final School root) {
             this.root = root;
             return this;
         }
 
-        public SchoolAggregateBuilder eventPublisher(SchoolEventPublisher eventPublisher) {
+        public SchoolAggregateBuilder eventPublisher(final SchoolEventPublisher eventPublisher) {
             this.eventPublisher = eventPublisher;
             return this;
         }
 
-        public SchoolAggregateBuilder initiatorId(UUID initiatorId) {
+        public SchoolAggregateBuilder initiatorId(final UUID initiatorId) {
             this.initiatorId = initiatorId;
             return this;
         }
 
         public SchoolAggregate build() {
-            return new SchoolAggregate(root, eventPublisher, initiatorId);
+            return new SchoolAggregate(this.root, this.eventPublisher, this.initiatorId);
         }
     }
 }

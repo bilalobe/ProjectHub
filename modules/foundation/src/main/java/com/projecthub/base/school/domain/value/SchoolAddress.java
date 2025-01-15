@@ -12,7 +12,7 @@ public record SchoolAddress(
     String country
 ) {
 
-    public static SchoolAddress from(SchoolAddress other) {
+    public static SchoolAddress from(final SchoolAddress other) {
         return new SchoolAddress(
             other.street(),
             other.city(),
@@ -22,11 +22,11 @@ public record SchoolAddress(
         );
     }
 
-    public static SchoolAddress of(String street, String city, String state, String postalCode, String country) {
+    public static SchoolAddress of(final String street, final String city, final String state, final String postalCode, final String country) {
         return new SchoolAddress(street, city, state, postalCode, country);
     }
 
     public String formatted() {
-        return String.format("%s, %s, %s %s", street, city, state, postalCode);
+        return String.format("%s, %s, %s %s", this.street, this.city, this.state, this.postalCode);
     }
 }

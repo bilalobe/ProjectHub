@@ -23,18 +23,18 @@ public record DeleteSchoolCommand(
         private UUID id;
         private UUID initiatorId;
 
-        public DeleteSchoolCommandBuilder id(UUID id) {
+        public DeleteSchoolCommandBuilder id(final UUID id) {
             this.id = id;
             return this;
         }
 
-        public DeleteSchoolCommandBuilder initiatorId(UUID initiatorId) {
+        public DeleteSchoolCommandBuilder initiatorId(final UUID initiatorId) {
             this.initiatorId = initiatorId;
             return this;
         }
 
         public DeleteSchoolCommand build() {
-            return new DeleteSchoolCommand(id, initiatorId);
+            return new DeleteSchoolCommand(this.id, this.initiatorId);
         }
     }
 }

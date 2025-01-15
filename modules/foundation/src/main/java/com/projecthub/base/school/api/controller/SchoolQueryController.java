@@ -19,32 +19,32 @@ import java.util.UUID;
 public class SchoolQueryController {
     private final SchoolQuery schoolQuery;
 
-    public SchoolQueryController(SchoolQuery schoolQuery) {
+    public SchoolQueryController(final SchoolQuery schoolQuery) {
         this.schoolQuery = schoolQuery;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SchoolDTO> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(schoolQuery.getSchoolById(id));
+    public ResponseEntity<SchoolDTO> getById(@PathVariable final UUID id) {
+        return ResponseEntity.ok(this.schoolQuery.getSchoolById(id));
     }
 
     @GetMapping
-    public ResponseEntity<Page<SchoolDTO>> getAll(Pageable pageable) {
-        return ResponseEntity.ok(schoolQuery.getAllSchools(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())));
+    public ResponseEntity<Page<SchoolDTO>> getAll(final Pageable pageable) {
+        return ResponseEntity.ok(this.schoolQuery.getAllSchools(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<SchoolDTO>> searchSchools(SchoolSearchCriteria criteria, Pageable pageable) {
-        return ResponseEntity.ok(schoolQuery.searchSchools(criteria, pageable));
+    public ResponseEntity<Page<SchoolDTO>> searchSchools(final SchoolSearchCriteria criteria, final Pageable pageable) {
+        return ResponseEntity.ok(this.schoolQuery.searchSchools(criteria, pageable));
     }
 
     @GetMapping("/active")
-    public ResponseEntity<Page<SchoolDTO>> getActiveSchools(Pageable pageable) {
-        return ResponseEntity.ok(schoolQuery.getActiveSchools(pageable));
+    public ResponseEntity<Page<SchoolDTO>> getActiveSchools(final Pageable pageable) {
+        return ResponseEntity.ok(this.schoolQuery.getActiveSchools(pageable));
     }
 
     @GetMapping("/archived")
-    public ResponseEntity<Page<SchoolDTO>> getArchivedSchools(Pageable pageable) {
-        return ResponseEntity.ok(schoolQuery.getArchivedSchools(pageable));
+    public ResponseEntity<Page<SchoolDTO>> getArchivedSchools(final Pageable pageable) {
+        return ResponseEntity.ok(this.schoolQuery.getArchivedSchools(pageable));
     }
 }

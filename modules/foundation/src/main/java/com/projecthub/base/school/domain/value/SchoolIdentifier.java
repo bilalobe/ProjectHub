@@ -17,11 +17,11 @@ public record SchoolIdentifier(
     @Column(nullable = false)
     String district
 ) {
-    public static SchoolIdentifier of(String code, SchoolType type, String district) {
+    public static SchoolIdentifier of(final String code, final SchoolType type, final String district) {
         return new SchoolIdentifier(code, type, district);
     }
 
     public String formatted() {
-        return String.format("%s-%s-%s", code, type, code);
+        return String.format("%s-%s-%s", this.code, this.type, this.code);
     }
 }

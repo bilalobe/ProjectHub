@@ -2,11 +2,11 @@ package com.projecthub.base.school.domain.exception;
 
 public class SchoolDomainException extends RuntimeException {
 
-    public SchoolDomainException(String message) {
+    public SchoolDomainException(final String message) {
         super(message);
     }
 
-    public SchoolDomainException(String message, Throwable cause) {
+    public SchoolDomainException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

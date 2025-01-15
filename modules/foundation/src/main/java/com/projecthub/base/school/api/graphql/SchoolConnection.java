@@ -16,8 +16,8 @@ public class SchoolConnection {
     private long totalElements;
     private int totalPages;
 
-    public static SchoolConnection from(Page<SchoolDTO> page) {
-        return SchoolConnection.builder()
+    public static SchoolConnection from(final Page<SchoolDTO> page) {
+        return builder()
             .content(page.getContent())
             .pageNumber(page.getNumber())
             .pageSize(page.getSize())

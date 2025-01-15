@@ -5,7 +5,7 @@ import com.projecthub.base.shared.exception.ResourceNotFoundException;
 import java.util.UUID;
 
 public class SchoolNotFoundException extends ResourceNotFoundException {
-    public SchoolNotFoundException(UUID id) {
+    public SchoolNotFoundException(final UUID id) {
         super("School", id);
     }
 }

@@ -38,88 +38,88 @@ public class SchoolCommandService implements SchoolCommand {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleSchoolEvent(SchoolDomainEvent event) {
-        eventPublisher.publish(event);
+    public void handleSchoolEvent(final SchoolDomainEvent event) {
+        this.eventPublisher.publish(event);
     }
 
     @Override
-    public UUID createSchool(CreateSchoolCommand command) {
-        log.debug("Creating school with name: {}", command.name());
+    public UUID createSchool(final CreateSchoolCommand command) {
+        SchoolCommandService.log.debug("Creating school with name: {}", command.name());
 
-        SchoolAggregate schoolAggregate = SchoolAggregate.create(command, eventPublisher);
+        final SchoolAggregate schoolAggregate = SchoolAggregate.create(command, this.eventPublisher);
 
-        validator.validateCreate(schoolAggregate.getRoot());
-        School saved = repository.save(schoolAggregate.getRoot());
+        this.validator.validateCreate(schoolAggregate.getRoot());
+        final School saved = this.repository.save(schoolAggregate.getRoot());
 
         // Instead of direct publishing, send to Spring's event system first
-        applicationEventPublisher.publishEvent(new SchoolDomainEvent.Created(
+        this.applicationEventPublisher.publishEvent(new SchoolDomainEvent.Created(
             UUID.randomUUID(),
             saved.getId(),
             command.initiatorId(),
             Instant.now()
         ));
 
-        log.info("Created school with ID: {}", saved.getId());
+        SchoolCommandService.log.info("Created school with ID: {}", saved.getId());
         return saved.getId();
     }
 
     @Override
-    public void updateSchool(UpdateSchoolCommand command) {
-        log.debug("Updating school: {}", command.id());
+    public void updateSchool(final UpdateSchoolCommand command) {
+        SchoolCommandService.log.debug("Updating school: {}", command.id());
 
         try {
-            School school = queryService.findActiveSchoolById(command.id());
-            validator.validateUpdate(school);
+            final School school = this.queryService.findActiveSchoolById(command.id());
+            this.validator.validateUpdate(school);
 
             school.update(command);
-            School saved = repository.save(school);
-            applicationEventPublisher.publishEvent(new SchoolDomainEvent.Updated(
+            final School saved = this.repository.save(school);
+            this.applicationEventPublisher.publishEvent(new SchoolDomainEvent.Updated(
                 UUID.randomUUID(),
                 saved.getId(),
                 command.initiatorId(),
                 Instant.now()
             ));
 
-            log.info("Updated school: {}", command.id());
-        } catch (SchoolUpdateException e) {
-            log.warn("Cannot update archived school: {}", command.id());
+            SchoolCommandService.log.info("Updated school: {}", command.id());
+        } catch (final SchoolUpdateException e) {
+            SchoolCommandService.log.warn("Cannot update archived school: {}", command.id());
             throw e;
-        } catch (Exception e) {
-            log.error("Error updating school: {}", command.id(), e);
+        } catch (final Exception e) {
+            SchoolCommandService.log.error("Error updating school: {}", command.id(), e);
             throw new SchoolUpdateException("Failed to update school: " + e.getMessage());
         }
     }
 
     @Override
-    public void deleteSchool(DeleteSchoolCommand command) {
-        log.debug("Deleting school: {}", command.id());
+    public void deleteSchool(final DeleteSchoolCommand command) {
+        SchoolCommandService.log.debug("Deleting school: {}", command.id());
 
-        School school = queryService.findActiveSchoolById(command.id());
-        validator.validateDelete(school);
+        final School school = this.queryService.findActiveSchoolById(command.id());
+        this.validator.validateDelete(school);
 
-        repository.delete(school);
-        applicationEventPublisher.publishEvent(new SchoolDomainEvent.Deleted(
+        this.repository.delete(school);
+        this.applicationEventPublisher.publishEvent(new SchoolDomainEvent.Deleted(
             UUID.randomUUID(),
             command.id(),
             command.initiatorId(),
             Instant.now()
         ));
 
-        log.info("Deleted school: {}", command.id());
+        SchoolCommandService.log.info("Deleted school: {}", command.id());
     }
 
     @Override
-    public void archiveSchool(ArchiveSchoolCommand command) {
+    public void archiveSchool(final ArchiveSchoolCommand command) {
         Objects.requireNonNull(command, "Archive command cannot be null");
-        log.debug("Processing archive request for school: {}", command.id());
+        SchoolCommandService.log.debug("Processing archive request for school: {}", command.id());
 
         try {
-            School school = queryService.findActiveSchoolById(command.id());
-            validator.validateArchive(school);
+            final School school = this.queryService.findActiveSchoolById(command.id());
+            this.validator.validateArchive(school);
 
             school.archive();
-            School saved = repository.save(school);
-            applicationEventPublisher.publishEvent(new SchoolDomainEvent.Archived(
+            final School saved = this.repository.save(school);
+            this.applicationEventPublisher.publishEvent(new SchoolDomainEvent.Archived(
                 UUID.randomUUID(),
                 saved.getId(),
                 command.initiatorId(),
@@ -127,11 +127,11 @@ public class SchoolCommandService implements SchoolCommand {
                 Instant.now()
             ));
 
-            log.info("Successfully archived school: {} with reason: {}",
+            SchoolCommandService.log.info("Successfully archived school: {} with reason: {}",
                 saved.getId(), command.reason());
 
-        } catch (Exception e) {
-            log.error("Failed to archive school: {} - {}",
+        } catch (final Exception e) {
+            SchoolCommandService.log.error("Failed to archive school: {} - {}",
                 command.id(), e.getMessage());
             throw new SchoolArchiveException(
                 "Could not archive school: " + command.id(), e);

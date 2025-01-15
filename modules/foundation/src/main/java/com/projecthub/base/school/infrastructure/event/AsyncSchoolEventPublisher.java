@@ -16,9 +16,9 @@ public class AsyncSchoolEventPublisher implements SchoolEventPublisher {
     private final SyncSchoolEventAdapter syncAdapter;
 
     @Override
-    public void publish(SchoolDomainEvent event) {
+    public void publish(final SchoolDomainEvent event) {
         // Publish to both async and sync channels
-        asyncAdapter.publish(event);
-        syncAdapter.publish(event);
+        this.asyncAdapter.publish(event);
+        this.syncAdapter.publish(event);
     }
 }

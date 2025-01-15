@@ -1,7 +1,7 @@
 package com.projecthub.base.school.domain.exception;
 
 public class SchoolArchiveException extends RuntimeException {
-    public SchoolArchiveException(String message, Throwable cause) {
+    public SchoolArchiveException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

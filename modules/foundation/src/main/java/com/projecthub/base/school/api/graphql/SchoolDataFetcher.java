@@ -19,44 +19,44 @@ public class SchoolDataFetcher {
     private final SchoolQuery schoolQuery;
 
     @DgsQuery
-    public SchoolDTO school(@InputArgument String id) {
-        return schoolQuery.getSchoolById(UUID.fromString(id));
+    public SchoolDTO school(@InputArgument final String id) {
+        return this.schoolQuery.getSchoolById(UUID.fromString(id));
     }
 
     @DgsQuery
-    public SchoolConnection schools(@InputArgument Integer page, @InputArgument Integer size) {
-        Page<SchoolDTO> schoolPage = schoolQuery.getAllSchools(
-            PageRequest.of(page != null ? page : 0, size != null ? size : 10)
+    public SchoolConnection schools(@InputArgument final Integer page, @InputArgument final Integer size) {
+        final Page<SchoolDTO> schoolPage = this.schoolQuery.getAllSchools(
+            PageRequest.of(null != page ? page : 0, null != size ? size : 10)
         );
         return SchoolConnection.from(schoolPage);
     }
 
     @DgsQuery
     public SchoolConnection searchSchools(
-        @InputArgument SchoolSearchInput criteria,
-        @InputArgument Integer page,
-        @InputArgument Integer size) {
-        return SchoolConnection.from(schoolQuery.searchSchools(
-            toSearchCriteria(criteria),
-            PageRequest.of(page != null ? page : 0, size != null ? size : 10)
+        @InputArgument final SchoolSearchInput criteria,
+        @InputArgument final Integer page,
+        @InputArgument final Integer size) {
+        return SchoolConnection.from(this.schoolQuery.searchSchools(
+            this.toSearchCriteria(criteria),
+            PageRequest.of(null != page ? page : 0, null != size ? size : 10)
         ));
     }
 
     @DgsQuery
-    public SchoolConnection activeSchools(@InputArgument Integer page, @InputArgument Integer size) {
-        return SchoolConnection.from(schoolQuery.getActiveSchools(
-            PageRequest.of(page != null ? page : 0, size != null ? size : 10)
+    public SchoolConnection activeSchools(@InputArgument final Integer page, @InputArgument final Integer size) {
+        return SchoolConnection.from(this.schoolQuery.getActiveSchools(
+            PageRequest.of(null != page ? page : 0, null != size ? size : 10)
         ));
     }
 
     @DgsQuery
-    public SchoolConnection archivedSchools(@InputArgument Integer page, @InputArgument Integer size) {
-        return SchoolConnection.from(schoolQuery.getArchivedSchools(
-            PageRequest.of(page != null ? page : 0, size != null ? size : 10)
+    public SchoolConnection archivedSchools(@InputArgument final Integer page, @InputArgument final Integer size) {
+        return SchoolConnection.from(this.schoolQuery.getArchivedSchools(
+            PageRequest.of(null != page ? page : 0, null != size ? size : 10)
         ));
     }
 
-    private SchoolSearchCriteria toSearchCriteria(SchoolSearchInput input) {
+    private SchoolSearchCriteria toSearchCriteria(final SchoolSearchInput input) {
         return SchoolSearchCriteria.builder()
             .name(input.getName())
             .city(input.getCity())

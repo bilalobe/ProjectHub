@@ -29,23 +29,23 @@ public record ArchiveSchoolCommand(
         private String reason;
         private UUID initiatorId;
 
-        public ArchiveSchoolCommandBuilder id(UUID id) {
+        public ArchiveSchoolCommandBuilder id(final UUID id) {
             this.id = id;
             return this;
         }
 
-        public ArchiveSchoolCommandBuilder reason(String reason) {
+        public ArchiveSchoolCommandBuilder reason(final String reason) {
             this.reason = reason;
             return this;
         }
 
-        public ArchiveSchoolCommandBuilder initiatorId(UUID initiatorId) {
+        public ArchiveSchoolCommandBuilder initiatorId(final UUID initiatorId) {
             this.initiatorId = initiatorId;
             return this;
         }
 
         public ArchiveSchoolCommand build() {
-            return new ArchiveSchoolCommand(id, reason, initiatorId);
+            return new ArchiveSchoolCommand(this.id, this.reason, this.initiatorId);
         }
     }
 }

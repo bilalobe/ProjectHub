@@ -14,29 +14,29 @@ public class SyncSchoolEventAdapter implements SchoolEventAdapter {
     private final RabbitTemplate rabbitTemplate;
 
     @Override
-    public void publish(SchoolDomainEvent event) {
-        log.debug("Publishing sync event: {}", event);
-        rabbitTemplate.convertAndSend(
-            getExchange(),
-            getRoutingKey(event),
+    public void publish(final SchoolDomainEvent event) {
+        SyncSchoolEventAdapter.log.debug("Publishing sync event: {}", event);
+        this.rabbitTemplate.convertAndSend(
+            EXCHANGE,
+            this.getRoutingKey(event),
             event
         );
     }
 
     @Override
-    public String getRoutingKey(SchoolDomainEvent event) {
+    public String getRoutingKey(final SchoolDomainEvent event) {
         return switch (event) {
-            case SchoolDomainEvent.Created e -> "school.sync.created";
-            case SchoolDomainEvent.Updated e -> "school.sync.updated";
-            case SchoolDomainEvent.Deleted e -> "school.sync.deleted";
-            case SchoolDomainEvent.Archived e -> "school.sync.archived";
-            case SchoolDomainEvent.CohortAdded e -> "school.sync.cohort.added";
+            case final SchoolDomainEvent.Created e -> "school.sync.created";
+            case final SchoolDomainEvent.Updated e -> "school.sync.updated";
+            case final SchoolDomainEvent.Deleted e -> "school.sync.deleted";
+            case final SchoolDomainEvent.Archived e -> "school.sync.archived";
+            case final SchoolDomainEvent.CohortAdded e -> "school.sync.cohort.added";
             default -> "school.sync.unknown";
         };
     }
 
     @Override
     public String getExchange() {
-        return EXCHANGE;
+        return SyncSchoolEventAdapter.EXCHANGE;
     }
 }

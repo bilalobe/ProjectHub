@@ -59,49 +59,49 @@ public class School extends BaseEntity {
     private boolean active = true;
 
     @Column(nullable = false)
-    private boolean archived = false;
+    private boolean archived;
 
     // Domain methods
-    public void update(UpdateSchoolCommand command) {
-        validateStateForUpdate();
+    public void update(final UpdateSchoolCommand command) {
+        this.validateStateForUpdate();
         Objects.requireNonNull(command, "Update command cannot be null");
 
-        if (!command.name().equals(this.name)) {
-            this.name = command.name();
+        if (!command.name().equals(name)) {
+            name = command.name();
         }
 
-        if (!command.address().equals(this.address)) {
-            this.address = SchoolAddress.from(command.address());
+        if (!command.address().equals(address)) {
+            address = SchoolAddress.from(command.address());
         }
 
-        if (!command.contact().equals(this.contact)) {
-            this.contact = SchoolContact.from(command.contact());
+        if (!command.contact().equals(contact)) {
+            contact = SchoolContact.from(command.contact());
         }
     }
 
     private void validateStateForUpdate() {
-        if (this.archived) {
+        if (archived) {
             throw new SchoolUpdateException("Cannot update archived school");
         }
     }
 
     public void archive() {
-        if (this.archived) {
+        if (archived) {
             throw new IllegalStateException("School is already archived");
         }
-        this.active = false;
-        this.archived = true;
+        active = false;
+        archived = true;
     }
 
-    public void addCohort(Cohort cohort) {
-        if (cohorts.size() >= MAX_COHORTS_PER_SCHOOL) {
+    public void addCohort(final Cohort cohort) {
+        if (MAX_COHORTS_PER_SCHOOL <= cohorts.size()) {
             throw new ValidationException("Maximum cohorts reached");
         }
-        cohorts.add(cohort);
+        this.cohorts.add(cohort);
     }
 
     public boolean hasActiveCohorts() {
-        return cohorts.stream()
+        return this.cohorts.stream()
             .anyMatch(c -> !c.isCompleted());
     }
 }

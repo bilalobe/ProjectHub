@@ -18,92 +18,92 @@ public class SchoolPersistenceAdapter implements SchoolRepository {
     private final SchoolJpaRepository jpaRepository;
 
     @Override
-    public School save(School school) {
-        return jpaRepository.save(school);
+    public School save(final School school) {
+        return this.jpaRepository.save(school);
     }
 
     @Override
-    public Optional<School> findById(UUID id) {
-        return jpaRepository.findById(id);
+    public Optional<School> findById(final UUID id) {
+        return this.jpaRepository.findById(id);
     }
 
     @Override
-    public Optional<School> findByIdAndArchivedFalse(UUID id) {
-        return jpaRepository.findByIdAndArchivedFalse(id);
+    public Optional<School> findByIdAndArchivedFalse(final UUID id) {
+        return this.jpaRepository.findByIdAndArchivedFalse(id);
     }
 
     @Override
-    public Page<School> findAll(Pageable pageable) {
-        return jpaRepository.findAll(pageable);
+    public Page<School> findAll(final Pageable pageable) {
+        return this.jpaRepository.findAll(pageable);
     }
 
     @Override
-    public Page<School> findAll(Specification<School> spec, Pageable pageable) {
-        return jpaRepository.findAll(spec, pageable);
+    public Page<School> findAll(final Specification<School> spec, final Pageable pageable) {
+        return this.jpaRepository.findAll(spec, pageable);
     }
 
     @Override
-    public Page<School> findByArchivedFalse(Pageable pageable) {
-        return jpaRepository.findByArchivedFalse(pageable);
+    public Page<School> findByArchivedFalse(final Pageable pageable) {
+        return this.jpaRepository.findByArchivedFalse(pageable);
     }
 
     @Override
-    public Page<School> findByArchivedTrue(Pageable pageable) {
-        return jpaRepository.findByArchivedTrue(pageable);
+    public Page<School> findByArchivedTrue(final Pageable pageable) {
+        return this.jpaRepository.findByArchivedTrue(pageable);
     }
 
     @Override
-    public Page<School> searchActiveSchools(String search, Pageable pageable) {
-        return jpaRepository.searchActiveSchools(search, pageable);
+    public Page<School> searchActiveSchools(final String search, final Pageable pageable) {
+        return this.jpaRepository.searchActiveSchools(search, pageable);
     }
 
     @Override
-    public void delete(School school) {
-        jpaRepository.delete(school);
+    public void delete(final School school) {
+        this.jpaRepository.delete(school);
     }
 
     @Override
-    public boolean existsByCode(String code) {
-        return jpaRepository.existsByCode(code);
+    public boolean existsByCode(final String code) {
+        return this.jpaRepository.existsByCode(code);
     }
 
     @Override
     public long count() {
-        return jpaRepository.count();
+        return this.jpaRepository.count();
     }
 
     @Override
-    public void deleteById(UUID id) {
-        jpaRepository.deleteById(id);
+    public void deleteById(final UUID id) {
+        this.jpaRepository.deleteById(id);
     }
 
     @Override
     public void deleteAll() {
-        jpaRepository.deleteAll();
+        this.jpaRepository.deleteAll();
     }
 
     @Override
-    public void deleteAll(Iterable<? extends School> schools) {
-        jpaRepository.deleteAll(schools);
+    public void deleteAll(final Iterable<? extends School> schools) {
+        this.jpaRepository.deleteAll(schools);
     }
 
     @Override
-    public void deleteAllById(Iterable<? extends UUID> ids) {
-        jpaRepository.deleteAllById(ids);
+    public void deleteAllById(final Iterable<? extends UUID> ids) {
+        this.jpaRepository.deleteAllById(ids);
     }
 
     @Override
-    public boolean existsById(UUID id) {
-        return jpaRepository.existsById(id);
+    public boolean existsById(final UUID id) {
+        return this.jpaRepository.existsById(id);
     }
 
     @Override
     public Iterable<School> findAll() {
-        return jpaRepository.findAll();
+        return this.jpaRepository.findAll();
     }
 
     @Override
-    public Iterable<School> findAllById(Iterable<UUID> ids) {
-        return jpaRepository.findAllById(ids);
+    public Iterable<School> findAllById(final Iterable<UUID> ids) {
+        return this.jpaRepository.findAllById(ids);
     }
 }
