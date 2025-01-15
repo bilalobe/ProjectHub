@@ -22,7 +22,7 @@ public class AppUserRoleServiceImpl implements AppUserRoleService {
 
     private final RoleJpaRepository roleRepository;
 
-    public AppUserRoleServiceImpl(RoleJpaRepository roleRepository) {
+    public AppUserRoleServiceImpl(final RoleJpaRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
@@ -30,22 +30,22 @@ public class AppUserRoleServiceImpl implements AppUserRoleService {
     @Cacheable("roles")
     @Transactional(readOnly = true)
     public List<Role> getAllRoles() {
-        logger.info("Retrieving all roles");
-        return roleRepository.findAll();
+        AppUserRoleServiceImpl.logger.info("Retrieving all roles");
+        return this.roleRepository.findAll();
     }
 
     @Override
     @Cacheable(value = "roles", key = "#name")
     @Transactional(readOnly = true)
-    public Role getRoleByName(String name) {
-        logger.info("Retrieving role by name: {}", name);
-        return roleRepository.findByNameIgnoreCase(name)
+    public Role getRoleByName(final String name) {
+        AppUserRoleServiceImpl.logger.info("Retrieving role by name: {}", name);
+        return this.roleRepository.findByNameIgnoreCase(name)
             .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: " + name));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Set<Role> getRolesByNames(Set<String> roleNames) {
+    public Set<Role> getRolesByNames(final Set<String> roleNames) {
         return roleNames.stream()
             .map(this::getRoleByName)
             .collect(Collectors.toSet());
@@ -53,13 +53,13 @@ public class AppUserRoleServiceImpl implements AppUserRoleService {
 
     @Transactional(readOnly = true)
     public Role getDefaultRole() {
-        return getRoleByName(DEFAULT_ROLE);
+        return this.getRoleByName(AppUserRoleServiceImpl.DEFAULT_ROLE);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Set<Role> getRolesByType(RoleType roleType) {
-        logger.info("Retrieving roles by type: {}", roleType);
-        return new HashSet<Role>(roleRepository.findByRoleType(roleType));
+    public Set<Role> getRolesByType(final RoleType roleType) {
+        AppUserRoleServiceImpl.logger.info("Retrieving roles by type: {}", roleType);
+        return new HashSet<Role>(this.roleRepository.findByRoleType(roleType));
     }
 }

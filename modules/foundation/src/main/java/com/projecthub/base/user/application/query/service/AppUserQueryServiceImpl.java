@@ -20,25 +20,25 @@ public class AppUserQueryServiceImpl implements AppUserQueryService {
     private final AppUserJpaRepository appUserRepository;
     private final AppUserMapper userMapper;
 
-    public AppUserQueryServiceImpl(AppUserJpaRepository appUserRepository, AppUserMapper userMapper) {
+    public AppUserQueryServiceImpl(final AppUserJpaRepository appUserRepository, final AppUserMapper userMapper) {
         this.appUserRepository = appUserRepository;
         this.userMapper = userMapper;
     }
 
     @Override
     public List<AppUserDTO> getAlluser() {
-        logger.info("Retrieving all user");
-        return appUserRepository.findAll().stream()
-            .map(userMapper::toDto)
+        AppUserQueryServiceImpl.logger.info("Retrieving all user");
+        return this.appUserRepository.findAll().stream()
+            .map(this.userMapper::toDto)
             .toList();
     }
 
     @Override
-    public AppUserDTO getUserById(UUID id) {
-        logger.info("Retrieving user with ID: {}", id);
-        AppUser user = appUserRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND + id));
-        return userMapper.toDto(user);
+    public AppUserDTO getUserById(final UUID id) {
+        AppUserQueryServiceImpl.logger.info("Retrieving user with ID: {}", id);
+        final AppUser user = this.appUserRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(AppUserQueryServiceImpl.USER_NOT_FOUND + id));
+        return this.userMapper.toDto(user);
     }
 
     @Override

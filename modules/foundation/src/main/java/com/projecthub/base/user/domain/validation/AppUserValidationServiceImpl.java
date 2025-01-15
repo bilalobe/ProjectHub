@@ -17,55 +17,55 @@ public class AppUserValidationServiceImpl implements AppUserValidationService {
     private final Validator validator;
     private final AppUserJpaRepository userRepository;
 
-    public AppUserValidationServiceImpl(Validator validator, AppUserJpaRepository userRepository) {
+    public AppUserValidationServiceImpl(final Validator validator, final AppUserJpaRepository userRepository) {
         this.validator = validator;
         this.userRepository = userRepository;
     }
 
     @Override
-    public void validateRegistration(RegisterRequestDTO request) {
-        logger.info("Validating registration request for username: {}", request.username());
-        validateConstraints(request);
-        validateUniqueUsername(request.username());
-        validateUniqueEmail(request.email());
+    public void validateRegistration(final RegisterRequestDTO request) {
+        AppUserValidationServiceImpl.logger.info("Validating registration request for username: {}", request.username());
+        this.validateConstraints(request);
+        this.validateUniqueUsername(request.username());
+        this.validateUniqueEmail(request.email());
     }
 
     @Override
-    public void validateUpdate(UpdateUserRequestDTO request, String currentUsername, String currentEmail) {
-        logger.info("Validating update request for username: {}", request.username());
-        validateConstraints(request);
+    public void validateUpdate(final UpdateUserRequestDTO request, final String currentUsername, final String currentEmail) {
+        AppUserValidationServiceImpl.logger.info("Validating update request for username: {}", request.username());
+        this.validateConstraints(request);
         if (!request.username().equals(currentUsername)) {
-            validateUniqueUsername(request.username());
+            this.validateUniqueUsername(request.username());
         }
         if (!request.email().equals(currentEmail)) {
-            validateUniqueEmail(request.email());
+            this.validateUniqueEmail(request.email());
         }
     }
 
     @Override
-    public void validateUniqueUsername(String username) {
-        if (userRepository.existsByUsername(username)) {
-            logger.warn("Username already exists: {}", username);
+    public void validateUniqueUsername(final String username) {
+        if (this.userRepository.existsByUsername(username)) {
+            AppUserValidationServiceImpl.logger.warn("Username already exists: {}", username);
             throw new ValidationException("Username already exists: " + username);
         }
     }
 
     @Override
-    public void validateUniqueEmail(String email) {
-        if (userRepository.existsByEmail(email)) {
-            logger.warn("Email already exists: {}", email);
+    public void validateUniqueEmail(final String email) {
+        if (this.userRepository.existsByEmail(email)) {
+            AppUserValidationServiceImpl.logger.warn("Email already exists: {}", email);
             throw new ValidationException("Email already exists: " + email);
         }
     }
 
-    private void validateConstraints(Object request) {
-        var violations = validator.validate(request);
+    private void validateConstraints(final Object request) {
+        final var violations = this.validator.validate(request);
         if (!violations.isEmpty()) {
-            String errors = violations.stream()
+            final String errors = violations.stream()
                 .map(v -> v.getPropertyPath() + ": " + v.getMessage())
                 .reduce((a, b) -> a + "; " + b)
                 .orElse("");
-            logger.error("Validation failed: {}", errors);
+            AppUserValidationServiceImpl.logger.error("Validation failed: {}", errors);
             throw new ValidationException("Validation failed: " + errors);
         }
     }

@@ -15,45 +15,45 @@ public class AppUserProfileValidationServiceImpl implements AppUserProfileValida
     private static final long MAX_AVATAR_SIZE = 5 * 1024 * 1024; // 5MB
 
     @Override
-    public void validateStatus(String status) {
+    public void validateStatus(final String status) {
         try {
-            logger.debug("Validating status update: {}", status);
+            AppUserProfileValidationServiceImpl.logger.debug("Validating status update: {}", status);
             if (!StringUtils.hasText(status)) {
                 throw new ValidationException("Status cannot be empty");
             }
-            if (status.length() > MAX_STATUS_LENGTH) {
-                throw new ValidationException("Status message cannot exceed " + MAX_STATUS_LENGTH + " characters");
+            if (MAX_STATUS_LENGTH < status.length()) {
+                throw new ValidationException("Status message cannot exceed " + AppUserProfileValidationServiceImpl.MAX_STATUS_LENGTH + " characters");
             }
-        } catch (IllegalArgumentException ex) {
-            logger.error("Status validation failed", ex);
+        } catch (final IllegalArgumentException ex) {
+            AppUserProfileValidationServiceImpl.logger.error("Status validation failed", ex);
             throw new ValidationException("Invalid status format: " + ex.getMessage(), ex);
         }
     }
 
     @Override
-    public void validateAvatarFile(MultipartFile avatar) {
+    public void validateAvatarFile(final MultipartFile avatar) {
         try {
-            logger.debug("Validating avatar file: {}", avatar.getOriginalFilename());
-            if (avatar == null || avatar.isEmpty()) {
+            AppUserProfileValidationServiceImpl.logger.debug("Validating avatar file: {}", avatar.getOriginalFilename());
+            if (null == avatar || avatar.isEmpty()) {
                 throw new ValidationException("Avatar file cannot be empty");
             }
-            if (avatar.getSize() > MAX_AVATAR_SIZE) {
+            if (MAX_AVATAR_SIZE < avatar.getSize()) {
                 throw new ValidationException("Avatar file size cannot exceed 5MB");
             }
-            String contentType = avatar.getContentType();
-            if (contentType == null || !contentType.startsWith("image/")) {
+            final String contentType = avatar.getContentType();
+            if (null == contentType || !contentType.startsWith("image/")) {
                 throw new ValidationException("Invalid image file format");
             }
-        } catch (IllegalArgumentException ex) {
-            logger.error("Avatar validation failed", ex);
+        } catch (final IllegalArgumentException ex) {
+            AppUserProfileValidationServiceImpl.logger.error("Avatar validation failed", ex);
             throw new ValidationException("Invalid avatar file: " + ex.getMessage(), ex);
         }
     }
 
     @Override
-    public void validateProfileUpdate(String firstName, String lastName, String email) {
+    public void validateProfileUpdate(final String firstName, final String lastName, final String email) {
         try {
-            logger.debug("Validating profile update for firstName: {}, lastName: {}, email: {}",
+            AppUserProfileValidationServiceImpl.logger.debug("Validating profile update for firstName: {}, lastName: {}, email: {}",
                 firstName, lastName, email);
 
             if (!StringUtils.hasText(firstName)) {
@@ -65,16 +65,16 @@ public class AppUserProfileValidationServiceImpl implements AppUserProfileValida
             if (!StringUtils.hasText(email)) {
                 throw new ValidationException("Email cannot be empty");
             }
-            if (!isValidEmail(email)) {
+            if (!this.isValidEmail(email)) {
                 throw new ValidationException("Invalid email format");
             }
-        } catch (IllegalArgumentException ex) {
-            logger.error("Profile update validation failed", ex);
+        } catch (final IllegalArgumentException ex) {
+            AppUserProfileValidationServiceImpl.logger.error("Profile update validation failed", ex);
             throw new ValidationException("Invalid profile data: " + ex.getMessage(), ex);
         }
     }
 
-    private boolean isValidEmail(String email) {
-        return email != null && email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
+    private boolean isValidEmail(final String email) {
+        return null != email && email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
     }
 }

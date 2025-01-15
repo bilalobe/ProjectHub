@@ -32,10 +32,10 @@ public class AppUserManagementService {
     private final PasswordEncoder passwordEncoder;
 
     public AppUserManagementService(
-        AppUserJpaRepository appUserRepository,
-        AppUserMapper userMapper,
-        AppUserRegistrationService registrationService,
-        PasswordEncoder passwordEncoder) {
+        final AppUserJpaRepository appUserRepository,
+        final AppUserMapper userMapper,
+        final AppUserRegistrationService registrationService,
+        final PasswordEncoder passwordEncoder) {
         this.appUserRepository = appUserRepository;
         this.userMapper = userMapper;
         this.registrationService = registrationService;
@@ -48,9 +48,9 @@ public class AppUserManagementService {
      * @return a list of user DTOs
      */
     public List<AppUserDTO> getAlluser() {
-        logger.info("Retrieving all user");
-        return appUserRepository.findAll().stream()
-            .map(userMapper::toDto)
+        AppUserManagementService.logger.info("Retrieving all user");
+        return this.appUserRepository.findAll().stream()
+            .map(this.userMapper::toDto)
             .toList();
     }
 
@@ -61,11 +61,11 @@ public class AppUserManagementService {
      * @return the user DTO
      * @throws ResourceNotFoundException if the user is not found
      */
-    public AppUserDTO getUserById(UUID id) {
-        logger.info("Retrieving user with ID: {}", id);
-        AppUser user = appUserRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND + id));
-        return userMapper.toDto(user);
+    public AppUserDTO getUserById(final UUID id) {
+        AppUserManagementService.logger.info("Retrieving user with ID: {}", id);
+        final AppUser user = this.appUserRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(AppUserManagementService.USER_NOT_FOUND + id));
+        return this.userMapper.toDto(user);
     }
 
     /**
@@ -75,22 +75,22 @@ public class AppUserManagementService {
      * @return the saved user DTO
      */
     @Transactional
-    public AppUserDTO saveUser(AppUserDTO userDTO) {
-        logger.info("Saving new user");
+    public AppUserDTO saveUser(final AppUserDTO userDTO) {
+        AppUserManagementService.logger.info("Saving new user");
 
         // Encode the password using Spring Security's PasswordEncoder
-        String encodedPassword = passwordEncoder.encode(userDTO.password());
+        final String encodedPassword = this.passwordEncoder.encode(userDTO.password());
 
-        var credentials = new AppUserCredentialsDTO(userDTO.username(), encodedPassword);
-        var registerRequest = new RegisterRequestDTO(
+        final var credentials = new AppUserCredentialsDTO(userDTO.username(), encodedPassword);
+        final var registerRequest = new RegisterRequestDTO(
             credentials,
             userDTO.email(),
             userDTO.username()
         );
 
-        AppUser user = userMapper.toEntity(registerRequest, userDTO.username());
-        AppUser savedUser = appUserRepository.save(user);
-        return userMapper.toDto(savedUser);
+        final AppUser user = this.userMapper.toEntity(registerRequest, userDTO.username());
+        final AppUser savedUser = this.appUserRepository.save(user);
+        return this.userMapper.toDto(savedUser);
     }
 
     /**
@@ -102,14 +102,14 @@ public class AppUserManagementService {
      * @throws ResourceNotFoundException if the user is not found
      */
     @Transactional
-    public AppUserDTO updateUser(UUID id, AppUserDTO userDTO) {
-        logger.info("Updating user with ID: {}", id);
-        AppUser existingUser = appUserRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND + id));
+    public AppUserDTO updateUser(final UUID id, final AppUserDTO userDTO) {
+        AppUserManagementService.logger.info("Updating user with ID: {}", id);
+        final AppUser existingUser = this.appUserRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(AppUserManagementService.USER_NOT_FOUND + id));
 
-        AppUser updatedUser = updateUserFields(existingUser, userDTO);
-        updatedUser = appUserRepository.save(updatedUser);
-        return userMapper.toDto(updatedUser);
+        AppUser updatedUser = this.updateUserFields(existingUser, userDTO);
+        updatedUser = this.appUserRepository.save(updatedUser);
+        return this.userMapper.toDto(updatedUser);
     }
 
     /**
@@ -119,12 +119,12 @@ public class AppUserManagementService {
      * @throws ResourceNotFoundException if the user is not found
      */
     @Transactional
-    public void deleteUser(UUID id) {
-        logger.info("Deleting user with ID: {}", id);
-        AppUser user = appUserRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND + id));
-        appUserRepository.delete(user);
-        logger.info("User deleted with ID: {}", id);
+    public void deleteUser(final UUID id) {
+        AppUserManagementService.logger.info("Deleting user with ID: {}", id);
+        final AppUser user = this.appUserRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(AppUserManagementService.USER_NOT_FOUND + id));
+        this.appUserRepository.delete(user);
+        AppUserManagementService.logger.info("User deleted with ID: {}", id);
     }
 
     /**
@@ -134,12 +134,12 @@ public class AppUserManagementService {
      * @return the created user DTO
      */
     @Transactional
-    public AppUserDTO createUser(RegisterRequestDTO registerRequest) {
-        logger.info("Creating new user via registration");
-        return registrationService.registerUser(registerRequest);
+    public AppUserDTO createUser(final RegisterRequestDTO registerRequest) {
+        AppUserManagementService.logger.info("Creating new user via registration");
+        return this.registrationService.registerUser(registerRequest);
     }
 
-    private AppUser updateUserFields(AppUser user, AppUserDTO userDTO) {
+    private AppUser updateUserFields(final AppUser user, final AppUserDTO userDTO) {
         return user.toBuilder()
             .firstName(userDTO.firstName())
             .lastName(userDTO.lastName())

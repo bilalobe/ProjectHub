@@ -20,35 +20,35 @@ public class AppUserStatusServiceImpl implements AppUserStatusService {
     private final AppUserProfileValidationService validationService;
 
     public AppUserStatusServiceImpl(
-        AppUserJpaRepository appUserRepository,
-        AppUserProfileValidationService validationService) {
+        final AppUserJpaRepository appUserRepository,
+        final AppUserProfileValidationService validationService) {
         this.appUserRepository = appUserRepository;
         this.validationService = validationService;
     }
 
     @Override
     @Transactional
-    public void updateStatus(UUID userId, String status) {
+    public void updateStatus(final UUID userId, final String status) {
         try {
-            logger.info("Updating status for user with ID: {}", userId);
-            validationService.validateStatus(status);
+            AppUserStatusServiceImpl.logger.info("Updating status for user with ID: {}", userId);
+            this.validationService.validateStatus(status);
 
-            AppUser user = findUserById(userId);
+            final AppUser user = this.findUserById(userId);
             user.setStatusMessage(status.trim());
-            appUserRepository.save(user);
+            this.appUserRepository.save(user);
 
-            logger.info("Status updated successfully for user ID: {}", userId);
-        } catch (IllegalArgumentException ex) {
-            logger.warn("Invalid status update attempt for user ID: {}", userId, ex);
+            AppUserStatusServiceImpl.logger.info("Status updated successfully for user ID: {}", userId);
+        } catch (final IllegalArgumentException ex) {
+            AppUserStatusServiceImpl.logger.warn("Invalid status update attempt for user ID: {}", userId, ex);
             throw ex;
-        } catch (Exception ex) {
-            logger.error("Error updating status for user ID: {}", userId, ex);
+        } catch (final Exception ex) {
+            AppUserStatusServiceImpl.logger.error("Error updating status for user ID: {}", userId, ex);
             throw new ProfileUpdateException("Failed to update user status", ex);
         }
     }
 
-    private AppUser findUserById(UUID id) {
-        return appUserRepository.findById(id)
+    private AppUser findUserById(final UUID id) {
+        return this.appUserRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
     }
 }

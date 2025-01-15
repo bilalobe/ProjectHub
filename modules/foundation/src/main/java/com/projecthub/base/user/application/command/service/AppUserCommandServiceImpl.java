@@ -28,10 +28,10 @@ public class AppUserCommandServiceImpl implements AppUserCommandService {
     private final AppUserRegistrationService registrationService;
 
     public AppUserCommandServiceImpl(
-        AppUserJpaRepository appUserRepository,
-        AppUserMapper userMapper,
-        AppUserValidator validation,
-        AppUserRegistrationService registrationService) {
+        final AppUserJpaRepository appUserRepository,
+        final AppUserMapper userMapper,
+        final AppUserValidator validation,
+        final AppUserRegistrationService registrationService) {
         this.appUserRepository = appUserRepository;
         this.userMapper = userMapper;
         this.validation = validation;
@@ -40,45 +40,45 @@ public class AppUserCommandServiceImpl implements AppUserCommandService {
 
     @Override
     @Transactional
-    public AppUserDTO createUser(CreateUserDTO createUserDTO) {
-        logger.info("Creating new user with username: {}", createUserDTO.username());
-        validation.validateForCreation(createUserDTO);
-        RegisterRequestDTO registerRequest = convertToRegisterRequest(createUserDTO);
-        return registrationService.registerUser(registerRequest);
+    public AppUserDTO createUser(final CreateUserDTO createUserDTO) {
+        AppUserCommandServiceImpl.logger.info("Creating new user with username: {}", createUserDTO.username());
+        this.validation.validateForCreation(createUserDTO);
+        final RegisterRequestDTO registerRequest = this.convertToRegisterRequest(createUserDTO);
+        return this.registrationService.registerUser(registerRequest);
     }
 
     @Override
     @Transactional
-    public AppUserDTO updateUser(UUID id, AppUserDTO userDTO) {
-        logger.info("Updating user with ID: {}", id);
-        validation.validateForUpdate(userDTO);
+    public AppUserDTO updateUser(final UUID id, final AppUserDTO userDTO) {
+        AppUserCommandServiceImpl.logger.info("Updating user with ID: {}", id);
+        this.validation.validateForUpdate(userDTO);
 
-        AppUser existingUser = appUserRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND + id));
+        final AppUser existingUser = this.appUserRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(AppUserCommandServiceImpl.USER_NOT_FOUND + id));
 
-        AppUser updatedUser = updateUserFields(existingUser, userDTO);
-        updatedUser = appUserRepository.save(updatedUser);
-        return userMapper.toDto(updatedUser);
+        AppUser updatedUser = this.updateUserFields(existingUser, userDTO);
+        updatedUser = this.appUserRepository.save(updatedUser);
+        return this.userMapper.toDto(updatedUser);
     }
 
     @Override
     @Transactional
-    public void deleteUser(UUID id) {
-        logger.info("Deleting user with ID: {}", id);
-        AppUser user = appUserRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND + id));
-        appUserRepository.delete(user);
-        logger.info("User deleted with ID: {}", id);
+    public void deleteUser(final UUID id) {
+        AppUserCommandServiceImpl.logger.info("Deleting user with ID: {}", id);
+        final AppUser user = this.appUserRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(AppUserCommandServiceImpl.USER_NOT_FOUND + id));
+        this.appUserRepository.delete(user);
+        AppUserCommandServiceImpl.logger.info("User deleted with ID: {}", id);
     }
 
-    private RegisterRequestDTO convertToRegisterRequest(CreateUserDTO userDTO) {
+    private RegisterRequestDTO convertToRegisterRequest(final CreateUserDTO userDTO) {
         return new RegisterRequestDTO(
             new AppUserCredentialsDTO(userDTO.username(), userDTO.password()),
             userDTO.email(),
             userDTO.username());
     }
 
-    private AppUser updateUserFields(AppUser user, AppUserDTO userDTO) {
+    private AppUser updateUserFields(final AppUser user, final AppUserDTO userDTO) {
         return user.toBuilder()
             .firstName(userDTO.firstName())
             .lastName(userDTO.lastName())

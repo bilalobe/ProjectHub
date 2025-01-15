@@ -15,33 +15,33 @@ public class AppUserValidator {
 
     private final Validator validator;
 
-    public AppUserValidator(Validator validator) {
+    public AppUserValidator(final Validator validator) {
         this.validator = validator;
     }
 
-    public void validateRegisterRequest(RegisterRequestDTO request) {
-        validate(request);
+    public void validateRegisterRequest(final RegisterRequestDTO request) {
+        this.validate(request);
     }
 
-    public void validateUpdateRequest(UpdateUserRequestDTO request) {
-        validate(request);
+    public void validateUpdateRequest(final UpdateUserRequestDTO request) {
+        this.validate(request);
     }
 
-    private <T> void validate(T request) {
-        Set<ConstraintViolation<T>> violations = validator.validate(request);
+    private <T> void validate(final T request) {
+        final Set<ConstraintViolation<T>> violations = this.validator.validate(request);
         if (!violations.isEmpty()) {
-            throw new ValidationException(formatViolations(violations));
+            throw new ValidationException(this.formatViolations(violations));
         }
     }
 
 
-    private String formatViolations(Set<? extends ConstraintViolation<?>> violations) {
+    private String formatViolations(final Set<? extends ConstraintViolation<?>> violations) {
         return violations.stream()
             .map(this::formatViolation)
             .collect(Collectors.joining(", "));
     }
 
-    private String formatViolation(ConstraintViolation<?> violation) {
+    private String formatViolation(final ConstraintViolation<?> violation) {
         return String.format("%s: %s", violation.getPropertyPath(), violation.getMessage());
     }
 }

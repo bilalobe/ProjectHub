@@ -25,45 +25,45 @@ public class AppUserProfileServiceImpl implements AppUserProfileService {
     private final AppUserProfileValidationService validationService;
 
     public AppUserProfileServiceImpl(
-        AppUserJpaRepository appUserRepository,
-        AppUserProfileMapper userProfileMapper,
-        AppUserProfileValidationService validationService) {
+        final AppUserJpaRepository appUserRepository,
+        final AppUserProfileMapper userProfileMapper,
+        final AppUserProfileValidationService validationService) {
         this.appUserRepository = appUserRepository;
         this.userProfileMapper = userProfileMapper;
         this.validationService = validationService;
     }
 
     @Override
-    public AppUserProfileDTO getUserProfileById(UUID id) {
-        logger.info("Retrieving user profile with ID: {}", id);
-        AppUser user = findUserById(id);
-        return userProfileMapper.toDto(user);
+    public AppUserProfileDTO getUserProfileById(final UUID id) {
+        AppUserProfileServiceImpl.logger.info("Retrieving user profile with ID: {}", id);
+        final AppUser user = this.findUserById(id);
+        return this.userProfileMapper.toDto(user);
     }
 
     @Override
     @Transactional
-    public AppUserProfileDTO updateUserProfile(UUID id, UpdateUserRequestDTO updateRequest) {
+    public AppUserProfileDTO updateUserProfile(final UUID id, final UpdateUserRequestDTO updateRequest) {
         try {
-            logger.info("Updating user profile with ID: {}", id);
-            AppUser existingUser = findUserById(id);
-            validationService.validateUpdateRequest(updateRequest);
+            AppUserProfileServiceImpl.logger.info("Updating user profile with ID: {}", id);
+            final AppUser existingUser = this.findUserById(id);
+            this.validationService.validateUpdateRequest(updateRequest);
 
-            userProfileMapper.updateEntityFromRequest(updateRequest, existingUser);
-            AppUser updatedUser = appUserRepository.save(existingUser);
+            this.userProfileMapper.updateEntityFromRequest(updateRequest, existingUser);
+            final AppUser updatedUser = this.appUserRepository.save(existingUser);
 
-            logger.info("User profile updated with ID: {}", updatedUser.getId());
-            return userProfileMapper.toDto(updatedUser);
-        } catch (ResourceNotFoundException ex) {
-            logger.error("Failed to find user with ID: {}", id, ex);
+            AppUserProfileServiceImpl.logger.info("User profile updated with ID: {}", updatedUser.getId());
+            return this.userProfileMapper.toDto(updatedUser);
+        } catch (final ResourceNotFoundException ex) {
+            AppUserProfileServiceImpl.logger.error("Failed to find user with ID: {}", id, ex);
             throw ex;
-        } catch (Exception ex) {
-            logger.error("Error updating profile for user ID: {}", id, ex);
+        } catch (final Exception ex) {
+            AppUserProfileServiceImpl.logger.error("Error updating profile for user ID: {}", id, ex);
             throw new ProfileUpdateException("Failed to update user profile", ex);
         }
     }
 
-    private AppUser findUserById(UUID id) {
-        return appUserRepository.findById(id)
+    private AppUser findUserById(final UUID id) {
+        return this.appUserRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
     }
 }

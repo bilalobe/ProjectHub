@@ -9,19 +9,19 @@ import java.util.Set;
 
 @Component
 public class AppUserRoleValidationService {
-    public boolean hasAdminRole(Set<Role> roles) {
-        return hasRole(roles, RoleType.ADMIN);
+    public boolean hasAdminRole(final Set<Role> roles) {
+        return this.hasRole(roles, RoleType.ADMIN);
     }
 
-    public boolean hasModeratorRole(Set<Role> roles) {
-        return hasRole(roles, RoleType.MODERATOR);
+    public boolean hasModeratorRole(final Set<Role> roles) {
+        return this.hasRole(roles, RoleType.MODERATOR);
     }
 
-    public boolean hasGuestRole(Set<Role> roles) {
-        return hasRole(roles, RoleType.GUEST);
+    public boolean hasGuestRole(final Set<Role> roles) {
+        return this.hasRole(roles, RoleType.GUEST);
     }
 
-    private boolean hasRole(Set<Role> roles, RoleType roleType) {
+    private boolean hasRole(final Set<Role> roles, final RoleType roleType) {
         return roles.stream()
             .anyMatch(role -> role.getRoleType() == roleType);
     }

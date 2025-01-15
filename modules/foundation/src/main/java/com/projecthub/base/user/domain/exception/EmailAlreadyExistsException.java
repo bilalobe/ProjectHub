@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(HttpStatus.CONFLICT)
 public class EmailAlreadyExistsException extends RuntimeException {
-    public EmailAlreadyExistsException(String message) {
+    public EmailAlreadyExistsException(final String message) {
         super(message);
     }
 
-    public EmailAlreadyExistsException(String message, Throwable cause) {
+    public EmailAlreadyExistsException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

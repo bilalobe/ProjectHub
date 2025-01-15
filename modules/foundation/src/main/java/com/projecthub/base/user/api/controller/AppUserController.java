@@ -22,44 +22,44 @@ public class AppUserController implements AppUserApi {
     private static final Logger logger = LoggerFactory.getLogger(AppUserController.class);
     private final AppUserManagementService appUserService;
 
-    public AppUserController(AppUserManagementService appUserService) {
+    public AppUserController(final AppUserManagementService appUserService) {
         this.appUserService = appUserService;
     }
 
     @Override
     public ResponseEntity<?> getAllUsers() {
-        logger.info("Retrieving all users");
-        return ResponseEntity.ok(appUserService.getAllUsers());
+        AppUserController.logger.info("Retrieving all users");
+        return ResponseEntity.ok(this.appUserService.getAllUsers());
     }
 
     @Override
-    public ResponseEntity<AppUserDTO> getById(@PathVariable UUID id) {
-        logger.info("Retrieving user with ID {}", id);
-        return ResponseEntity.ok(appUserService.getUserById(id));
+    public ResponseEntity<AppUserDTO> getById(@PathVariable final UUID id) {
+        AppUserController.logger.info("Retrieving user with ID {}", id);
+        return ResponseEntity.ok(this.appUserService.getUserById(id));
     }
 
     @Override
-    public ResponseEntity<AppUserDTO> save(@Valid @RequestBody AppUserDTO user) {
-        logger.info("Creating new user");
-        return ResponseEntity.ok(appUserService.saveUser(user));
+    public ResponseEntity<AppUserDTO> save(@Valid @RequestBody final AppUserDTO user) {
+        AppUserController.logger.info("Creating new user");
+        return ResponseEntity.ok(this.appUserService.saveUser(user));
     }
 
     @Override
-    public ResponseEntity<AppUserDTO> update(@PathVariable UUID id, @Valid @RequestBody AppUserDTO user) {
-        logger.info("Updating user with ID {}", id);
-        return ResponseEntity.ok(appUserService.updateUser(id, user));
+    public ResponseEntity<AppUserDTO> update(@PathVariable final UUID id, @Valid @RequestBody final AppUserDTO user) {
+        AppUserController.logger.info("Updating user with ID {}", id);
+        return ResponseEntity.ok(this.appUserService.updateUser(id, user));
     }
 
     @Override
-    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
-        logger.info("Deleting user with ID {}", id);
-        appUserService.deleteUser(id);
+    public ResponseEntity<Void> deleteById(@PathVariable final UUID id) {
+        AppUserController.logger.info("Deleting user with ID {}", id);
+        this.appUserService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<AppUserDTO> createUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
-        logger.info("Registering new user");
-        return ResponseEntity.ok(appUserService.createUser(registerRequest));
+    public ResponseEntity<AppUserDTO> createUser(@Valid @RequestBody final RegisterRequestDTO registerRequest) {
+        AppUserController.logger.info("Registering new user");
+        return ResponseEntity.ok(this.appUserService.createUser(registerRequest));
     }
 }

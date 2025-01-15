@@ -28,68 +28,68 @@ public class AppUserAvatarServiceImpl implements AppUserAvatarService {
     private final Path fileStorageLocation;
 
     public AppUserAvatarServiceImpl(
-        AppUserJpaRepository appUserRepository,
-        AppUserProfileValidationService validationService,
-        @Value("${app.file-storage-location}") String fileStorageLocation) {
+        final AppUserJpaRepository appUserRepository,
+        final AppUserProfileValidationService validationService,
+        @Value("${app.file-storage-location}") final String fileStorageLocation) {
         this.appUserRepository = appUserRepository;
         this.validationService = validationService;
-        this.fileStorageLocation = Path.of(fileStorageLocation).resolve(AVATAR_DIRECTORY);
-        createAvatarDirectory();
+        this.fileStorageLocation = Path.of(fileStorageLocation).resolve(AppUserAvatarServiceImpl.AVATAR_DIRECTORY);
+        this.createAvatarDirectory();
     }
 
     @Override
     @Transactional
-    public void updateAvatar(UUID userId, MultipartFile avatar) {
+    public void updateAvatar(final UUID userId, final MultipartFile avatar) {
         try {
-            logger.info("Updating avatar for user with ID: {}", userId);
-            validationService.validateAvatarFile(avatar);
+            AppUserAvatarServiceImpl.logger.info("Updating avatar for user with ID: {}", userId);
+            this.validationService.validateAvatarFile(avatar);
 
-            AppUser user = findUserById(userId);
-            String filename = generateAvatarFilename(userId, avatar);
-            saveAvatarFile(avatar, filename);
-            updateUserAvatar(user, filename);
+            final AppUser user = this.findUserById(userId);
+            final String filename = this.generateAvatarFilename(userId, avatar);
+            this.saveAvatarFile(avatar, filename);
+            this.updateUserAvatar(user, filename);
 
-            logger.info("Avatar updated successfully for user ID: {}", userId);
-        } catch (IOException ex) {
-            logger.error("Failed to store avatar file for user ID: {}", userId, ex);
+            AppUserAvatarServiceImpl.logger.info("Avatar updated successfully for user ID: {}", userId);
+        } catch (final IOException ex) {
+            AppUserAvatarServiceImpl.logger.error("Failed to store avatar file for user ID: {}", userId, ex);
             throw new StorageException("Failed to store avatar file", ex);
         }
     }
 
     private void createAvatarDirectory() {
         try {
-            Files.createDirectories(fileStorageLocation);
-        } catch (IOException ex) {
-            String errorMessage = "Could not create avatar directory at location: " + fileStorageLocation;
-            logger.error(errorMessage, ex);
+            Files.createDirectories(this.fileStorageLocation);
+        } catch (final IOException ex) {
+            final String errorMessage = "Could not create avatar directory at location: " + this.fileStorageLocation;
+            AppUserAvatarServiceImpl.logger.error(errorMessage, ex);
             throw new StorageException(errorMessage, ex);
         }
     }
 
-    private String generateAvatarFilename(UUID userId, MultipartFile avatar) {
-        String extension = getFileExtension(avatar.getOriginalFilename());
+    private String generateAvatarFilename(final UUID userId, final MultipartFile avatar) {
+        final String extension = this.getFileExtension(avatar.getOriginalFilename());
         return userId + "_" + System.currentTimeMillis() + extension;
     }
 
-    private void saveAvatarFile(MultipartFile avatar, String filename) throws IOException {
-        Path targetLocation = fileStorageLocation.resolve(filename);
+    private void saveAvatarFile(final MultipartFile avatar, final String filename) throws IOException {
+        final Path targetLocation = this.fileStorageLocation.resolve(filename);
         Files.copy(avatar.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
     }
 
-    private void updateUserAvatar(AppUser user, String filename) {
+    private void updateUserAvatar(final AppUser user, final String filename) {
         user.setAvatarUrl("/avatars/" + filename);
-        appUserRepository.save(user);
+        this.appUserRepository.save(user);
     }
 
-    private String getFileExtension(String filename) {
-        if (filename == null)
+    private String getFileExtension(final String filename) {
+        if (null == filename)
             return ".jpg";
-        int lastDot = filename.lastIndexOf('.');
-        return (lastDot > -1) ? filename.substring(lastDot) : ".jpg";
+        final int lastDot = filename.lastIndexOf('.');
+        return (-1 < lastDot) ? filename.substring(lastDot) : ".jpg";
     }
 
-    private AppUser findUserById(UUID id) {
-        return appUserRepository.findById(id)
+    private AppUser findUserById(final UUID id) {
+        return this.appUserRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
     }
 }

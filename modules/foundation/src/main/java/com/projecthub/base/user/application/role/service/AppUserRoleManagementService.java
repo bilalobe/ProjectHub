@@ -20,53 +20,53 @@ public class AppUserRoleManagementService {
 
     private final RoleJpaRepository roleRepository;
 
-    public AppUserRoleManagementService(RoleJpaRepository roleRepository) {
+    public AppUserRoleManagementService(final RoleJpaRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
     @Transactional(readOnly = true)
     public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+        return this.roleRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Role getRoleById(UUID id) {
-        return roleRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND + id));
+    public Role getRoleById(final UUID id) {
+        return this.roleRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(AppUserRoleManagementService.ROLE_NOT_FOUND + id));
     }
 
     @Transactional
-    public Role createRole(Role role) throws ResourceAlreadyExistsException {
-        if (roleRepository.existsByNameIgnoreCase(role.getName())) {
+    public Role createRole(final Role role) throws ResourceAlreadyExistsException {
+        if (this.roleRepository.existsByNameIgnoreCase(role.getName())) {
             throw new ResourceAlreadyExistsException("Role already exists with name: " + role.getName());
         }
-        logger.info("Creating new role: {}", role.getName());
-        return roleRepository.save(role);
+        AppUserRoleManagementService.logger.info("Creating new role: {}", role.getName());
+        return this.roleRepository.save(role);
     }
 
     @Transactional
-    public Role updateRole(UUID id, Role roleDetails) throws ResourceAlreadyExistsException {
-        Role existingRole = roleRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND + id));
+    public Role updateRole(final UUID id, final Role roleDetails) throws ResourceAlreadyExistsException {
+        final Role existingRole = this.roleRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(AppUserRoleManagementService.ROLE_NOT_FOUND + id));
 
-        if (existingRole.getName() != null && roleDetails.getName() != null
+        if (null != existingRole.getName() && null != roleDetails.getName()
             && !existingRole.getName().toString().equalsIgnoreCase(roleDetails.getName().toString())
-            && roleRepository.existsByNameIgnoreCase(roleDetails.getName())) {
+            && this.roleRepository.existsByNameIgnoreCase(roleDetails.getName())) {
             throw new ResourceAlreadyExistsException("Role already exists with name: " + roleDetails.getName());
         }
 
         existingRole.setName(roleDetails.getName());
         existingRole.setDescription(roleDetails.getDescription());
 
-        logger.info("Updating role with ID: {}", id);
-        return roleRepository.save(existingRole);
+        AppUserRoleManagementService.logger.info("Updating role with ID: {}", id);
+        return this.roleRepository.save(existingRole);
     }
 
     @Transactional
-    public void deleteRole(UUID id) {
-        Role role = roleRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND + id));
-        logger.info("Deleting role: {}", role.getName());
-        roleRepository.delete(role);
+    public void deleteRole(final UUID id) {
+        final Role role = this.roleRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(AppUserRoleManagementService.ROLE_NOT_FOUND + id));
+        AppUserRoleManagementService.logger.info("Deleting role: {}", role.getName());
+        this.roleRepository.delete(role);
     }
 }

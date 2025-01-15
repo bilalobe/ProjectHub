@@ -4,11 +4,11 @@ import com.projecthub.base.shared.exception.BaseException;
 import org.springframework.http.HttpStatus;
 
 public class AccountLockedException extends BaseException {
-    public AccountLockedException(String message) {
+    public AccountLockedException(final String message) {
         super(message, HttpStatus.FORBIDDEN);
     }
 
-    public AccountLockedException(String message, Throwable cause) {
+    public AccountLockedException(final String message, final Throwable cause) {
         super(message, cause, HttpStatus.FORBIDDEN);
     }
 }

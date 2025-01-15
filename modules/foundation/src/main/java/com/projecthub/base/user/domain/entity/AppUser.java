@@ -55,8 +55,8 @@ import java.util.stream.Collectors;
         @Index(name = "idx_user_verification_token", columnList = "verificationToken")
     },
     uniqueConstraints = {
-        @UniqueConstraint(name = "uc_user_username", columnNames = {"username"}),
-        @UniqueConstraint(name = "uc_user_email", columnNames = {"email"})
+        @UniqueConstraint(name = "uc_user_username", columnNames = "username"),
+        @UniqueConstraint(name = "uc_user_email", columnNames = "email")
     }
 )
 @ToString(exclude = {"password", "roles"})
@@ -102,26 +102,26 @@ public class AppUser extends BaseEntity implements UserDetails {
 
     // region Statistics Fields
     @Builder.Default
-    int postCount = 0;
+    int postCount;
 
     @Builder.Default
-    int followerCount = 0;
+    int followerCount;
 
     @Builder.Default
-    int followingCount = 0;
+    int followingCount;
     // endregion
 
     // region Security Fields
     @Builder.Default
     @Setter
-    boolean enabled = false;
+    boolean enabled;
 
     @Builder.Default
     @Setter
     boolean accountNonLocked = true;
 
     @Builder.Default
-    int failedAttempts = 0;
+    int failedAttempts;
 
     LocalDateTime lastLoginAttempt;
     // endregion
@@ -135,7 +135,7 @@ public class AppUser extends BaseEntity implements UserDetails {
 
     @Builder.Default
     @Setter
-    boolean verified = false;
+    boolean verified;
     // endregion
 
     @Builder.Default
@@ -157,8 +157,8 @@ public class AppUser extends BaseEntity implements UserDetails {
      * @param lastName  User's last name.
      * @param email     Unique and validated email address.
      */
-    public AppUser(String username, String password, String firstName, String lastName, String email) {
-        validateFields(username, password, firstName, lastName, email);
+    public AppUser(final String username, final String password, final String firstName, final String lastName, final String email) {
+        this.validateFields(username, password, firstName, lastName, email);
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -175,20 +175,20 @@ public class AppUser extends BaseEntity implements UserDetails {
      * @param lastName  Last name to validate.
      * @param email     Email to validate.
      */
-    private void validateFields(String username, String password, String firstName, String lastName, String email) {
-        if (username == null || username.isEmpty()) {
+    private void validateFields(final String username, final String password, final String firstName, final String lastName, final String email) {
+        if (null == username || username.isEmpty()) {
             throw new IllegalArgumentException("Username is mandatory");
         }
-        if (password == null || password.isEmpty()) {
+        if (null == password || password.isEmpty()) {
             throw new IllegalArgumentException("Password is mandatory");
         }
-        if (firstName == null || firstName.isEmpty()) {
+        if (null == firstName || firstName.isEmpty()) {
             throw new IllegalArgumentException("First name is mandatory");
         }
-        if (lastName == null || lastName.isEmpty()) {
+        if (null == lastName || lastName.isEmpty()) {
             throw new IllegalArgumentException("Last name is mandatory");
         }
-        if (email == null || email.isEmpty()) {
+        if (null == email || email.isEmpty()) {
             throw new IllegalArgumentException("Email is mandatory");
         }
     }
@@ -200,7 +200,7 @@ public class AppUser extends BaseEntity implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
+        return this.roles.stream()
             .map(role -> (GrantedAuthority) () -> "ROLE_" + role.getName())
             .collect(Collectors.toSet());
     }
@@ -222,7 +222,7 @@ public class AppUser extends BaseEntity implements UserDetails {
      */
     @Override
     public boolean isAccountNonLocked() {
-        return accountNonLocked;
+        return this.accountNonLocked;
     }
 
     /**
@@ -242,29 +242,29 @@ public class AppUser extends BaseEntity implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return this.enabled;
     }
 
     /**
      * Increments the post count by one.
      */
     void incrementPostCount() {
-        this.postCount++;
+        postCount++;
     }
 
     /**
      * Increments the follower count by one.
      */
     void incrementFollowerCount() {
-        this.followerCount++;
+        followerCount++;
     }
 
     /**
      * Decrements the follower count by one if greater than zero.
      */
     void decrementFollowerCount() {
-        if (this.followerCount > 0) {
-            this.followerCount--;
+        if (0 < this.followerCount) {
+            followerCount--;
         }
     }
 
@@ -272,15 +272,15 @@ public class AppUser extends BaseEntity implements UserDetails {
      * Increments the following count by one.
      */
     void incrementFollowingCount() {
-        this.followingCount++;
+        followingCount++;
     }
 
     /**
      * Decrements the following count by one if greater than zero.
      */
     void decrementFollowingCount() {
-        if (this.followingCount > 0) {
-            this.followingCount--;
+        if (0 < this.followingCount) {
+            followingCount--;
         }
     }
 
@@ -288,7 +288,7 @@ public class AppUser extends BaseEntity implements UserDetails {
      * Updates the last login attempt time to the current time.
      */
     void updateLastLoginAttempt() {
-        this.lastLoginAttempt = LocalDateTime.now();
+        lastLoginAttempt = LocalDateTime.now();
     }
 
     /**
@@ -296,8 +296,8 @@ public class AppUser extends BaseEntity implements UserDetails {
      *
      * @param locked true to lock the account, false to unlock.
      */
-    public void setLocked(boolean locked) {
-        this.accountNonLocked = !locked;
+    public void setLocked(final boolean locked) {
+        accountNonLocked = !locked;
     }
 
     /**
@@ -306,14 +306,15 @@ public class AppUser extends BaseEntity implements UserDetails {
      * @return the updated number of failed attempts.
      */
     public int incrementFailedAttempts() {
-        return ++this.failedAttempts;
+        ++failedAttempts;
+        return failedAttempts;
     }
 
     /**
      * Resets the number of failed login attempts to zero.
      */
     public void resetFailedAttempts() {
-        this.failedAttempts = 0;
+        failedAttempts = 0;
     }
 
     /**
@@ -322,14 +323,14 @@ public class AppUser extends BaseEntity implements UserDetails {
      * @param attempts the number of failed attempts to set.
      * @throws IllegalArgumentException if attempts is negative.
      */
-    public void setFailedAttempts(int attempts) {
-        if (attempts < 0) {
+    public void setFailedAttempts(final int attempts) {
+        if (0 > attempts) {
             throw new IllegalArgumentException("Failed attempts cannot be negative");
         }
-        this.failedAttempts = attempts;
+        failedAttempts = attempts;
 
-        if (attempts >= 5) {
-            setLocked(true);
+        if (5 <= attempts) {
+            this.setLocked(true);
         }
     }
 }
