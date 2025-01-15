@@ -5,71 +5,61 @@
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" spacing="20" xmlns="http://javafx.com/javafx/23.0.1"
-      fx:controller="com.projecthub.ui.controllers.SubmissionDetailsController"
-      fx:resources="ui/strings">
-    <padding>
+      fx:controller="com.projecthub.ui.modules.submission.SubmissionDetailsController" styleClass="submission-details">    <padding>
         <Insets bottom="20" left="20" right="20" top="20"/>
     </padding>
 
-    <!-- Header Info Card -->
-    <VBox spacing="10" styleClass="info-card">
-        <HBox alignment="CENTER_LEFT" spacing="20">
-            <VBox spacing="5">
-                <Label styleClass="label-caption" text="Student"/>
-                <Label fx:id="studentNameLabel" styleClass="title-label"/>
-            </VBox>
-            <Separator orientation="VERTICAL"/>
-            <VBox spacing="5">
-                <Label styleClass="label-caption" text="Project"/>
-                <Label fx:id="projectNameLabel" styleClass="title-label"/>
-            </VBox>
-            <Region HBox.hgrow="ALWAYS"/>
-            <VBox alignment="CENTER_RIGHT" spacing="5">
-                <Label styleClass="label-caption" text="Submitted"/>
-                <Label fx:id="timestampLabel" styleClass="subtitle-label"/>
-            </VBox>
-        </HBox>
-    </VBox>
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label styleClass="title" text="Submission Details"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="saveButton" text="Save" styleClass="button-primary"/>
+        <Button fx:id="deleteButton" text="Delete" styleClass="button-danger"/>
+    </HBox>
 
-    <!-- Submission Content -->
-    <VBox spacing="10" styleClass="content-card" VBox.vgrow="ALWAYS">
-        <Label styleClass="section-header" text="Submission Content"/>
-        <TextArea fx:id="contentArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS"/>
+    <!-- Student & Project Info -->
+    <GridPane hgap="10" vgap="10" styleClass="info-section">
+        <Label text="Student:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Label fx:id="studentNameLabel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        
+        <Label text="Project:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Label fx:id="projectNameLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        
+        <Label text="Submission Date:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <Label fx:id="timestampLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        
+        <Label text="Status:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <Label fx:id="statusLabel" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    </GridPane>
+
+    <!-- Content -->
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <Label text="Content"/>
+        <TextArea fx:id="contentArea" wrapText="true" VBox.vgrow="ALWAYS"/>
     </VBox>
 
     <!-- Grading Section -->
-    <GridPane hgap="10" styleClass="grading-card" vgap="10">
-        <padding>
-            <Insets/>
-        </padding>
-        <Label text="%grade.label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <TextField fx:id="gradeField" maxWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+    <VBox spacing="10" styleClass="grading-section">
+        <Label text="Grading"/>
+        <GridPane hgap="10" vgap="10">
+            <Label text="Grade:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="gradeField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            
+            <Label text="Feedback:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextArea fx:id="feedbackArea" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        </GridPane>
+    </VBox>
 
-        <Label text="%feedback.label" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="TOP"/>
-        <TextArea fx:id="feedbackArea" prefRowCount="3" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-        <columnConstraints>
-            <ColumnConstraints/>
-            <ColumnConstraints/>
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints/>
-            <RowConstraints/>
-        </rowConstraints>
-    </GridPane>
-
-    <!-- Action Buttons -->
-    <HBox alignment="CENTER_RIGHT" spacing="10">
-        <Button fx:id="saveButton" styleClass="button-primary" text="Save"/>
-        <Button fx:id="deleteButton" styleClass="button-danger" text="Delete"/>
-        <Button fx:id="clearButton" styleClass="button-secondary" text="Clear"/>
-    </HBox>
-
-    <!-- Status Bar -->
-    <HBox spacing="10" styleClass="status-bar">
-        <Label fx:id="statusLabel" text="Ready"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Label fx:id="submissionIdLabel" styleClass="text-muted"/>
-    </HBox>
+    <!-- File Attachments -->
+    <VBox spacing="10" styleClass="attachments-section">
+        <Label text="Attachments"/>
+        <HBox spacing="10">
+            <TextField fx:id="filePathField" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="browseButton" text="Browse"/>
+            <Button fx:id="uploadButton" text="Upload"/>
+        </HBox>
+        <ListView fx:id="attachmentsList"/>
+    </VBox>
 
     <stylesheets>
         <URL value="@../css/styles.css"/>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" styleClass="submission-list" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.projecthub.ui.modules.submission.SubmissionListController">
+    
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label styleClass="title" text="Submissions" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button fx:id="newSubmissionButton" styleClass="button-primary" text="New Submission" />
+        <Button fx:id="refreshButton" text="Refresh" />
+    </HBox>
+
+    <!-- Filters -->
+    <HBox spacing="10" styleClass="filters">
+        <ComboBox fx:id="statusFilter" promptText="Status" />
+        <ComboBox fx:id="projectFilter" promptText="Project" />
+        <TextField fx:id="searchField" promptText="Search..." HBox.hgrow="ALWAYS" />
+    </HBox>
+
+    <!-- Submissions Table -->
+    <TableView fx:id="submissionsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" />
+            <TableColumn fx:id="studentColumn" text="Student" />
+            <TableColumn fx:id="projectColumn" text="Project" />
+            <TableColumn fx:id="dateColumn" text="Date" />
+            <TableColumn fx:id="statusColumn" text="Status" />
+            <TableColumn fx:id="gradeColumn" text="Grade" />
+        </columns>
+        <placeholder>
+            <Label text="No submissions found" />
+        </placeholder>
+    </TableView>
+
+    <!-- Submissions List -->
+    <ListView fx:id="submissionsList" VBox.vgrow="ALWAYS" />
+
+    <!-- Pagination -->
+    <HBox alignment="CENTER">
+        <Pagination fx:id="submissionPagination" />
+    </HBox>
+</VBox>
