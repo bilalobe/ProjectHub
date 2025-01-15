@@ -10,6 +10,17 @@
 [![Dependabot Updates](https://github.com/bilalobe/ProjectHub/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/bilalobe/ProjectHub/actions/workflows/dependabot/dependabot-updates)
 [![Qodana](https://github.com/bilalobe/ProjectHub/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/bilalobe/ProjectHub/actions/workflows/qodana_code_quality.yml)
 [![CodeQL Advanced](https://github.com/bilalobe/ProjectHub/actions/workflows/codeql.yml/badge.svg)](https://github.com/bilalobe/ProjectHub/actions/workflows/codeql.yml)
+[![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3.9-orange.svg)](https://www.rabbitmq.com/)
+[![GraphQL](https://img.shields.io/badge/GraphQL-15-blue.svg)](https://graphql.org/)
+
+
+<!-- New Badges Added Below -->
+
+[![Issues](https://img.shields.io/github/issues/bilalobe/ProjectHub.svg)](https://github.com/bilalobe/ProjectHub/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/bilalobe/ProjectHub.svg)](https://github.com/bilalobe/ProjectHub/pulls)
+[![Stars](https://img.shields.io/github/stars/bilalobe/ProjectHub.svg)](https://github.com/bilalobe/ProjectHub/stargazers)
+[![Forks](https://img.shields.io/github/forks/bilalobe/ProjectHub.svg)](https://github.com/bilalobe/ProjectHub/network/members)
+
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
@@ -24,6 +35,14 @@ ProjectHub is a powerful and intuitive platform designed to streamline the manag
 - **Secure Authentication**: Robust user authentication mechanisms to protect data and ensure secure access.
 - **Plugin Support**: Extend functionality with plugins, such as the CSV plugin for data import/export.
 - **Cross-Platform Availability**: Access ProjectHub via the desktop client or the web interface.
+- **Domain-Driven Design**: Built using DDD principles with clear bounded contexts
+- **Event-Driven Architecture**: Async event processing via RabbitMQ
+- **Spring Modulith**: Modular monolith architecture
+- **Secure by Design**: Role-based access control with Spring Security
+- **Rich Desktop Client**: JavaFX-based UI with reactive bindings
+- **GraphQL API**: Netflix DGS framework for flexible data queries
+- **Validation Chains**: Comprehensive input validation and error handling
+- **Event Sourcing**: Track all changes with versioned events
 
 ## Architecture
 
@@ -34,6 +53,46 @@ ProjectHub follows a modular architecture to promote scalability and maintainabi
 - **Desktop Client**: Implemented using JavaFX for a rich desktop experience.
 - **Database**: Utilizes PostgreSQL for reliable and efficient data storage.
 - **Plugins**: Supports plugins to enhance and extend core functionalities.
+
+ProjectHub implements a modular monolith using Spring Modulith:
+
+```mermaid
+graph TD
+    subgraph Core[Core Module]
+        direction TB
+        Domain[Domain Layer]
+        App[Application Layer]
+        Infra[Infrastructure Layer]
+    end
+
+    subgraph Domain
+        direction LR
+        Entities
+        Events[Domain Events]
+        ValueObjects[Value Objects]
+    end
+
+    subgraph App
+        direction LR
+        Services
+        Ports
+        UseCases[Use Cases]
+    end
+
+    subgraph Infra
+        direction LR
+        Repos[Repositories]
+        Persist[Persistence]
+        Publishers[Event Publishers]
+    end
+
+    Domain --> App
+    App --> Infra
+    Infra --> Domain
+
+    classDef module fill:#EEE,stroke:#333,stroke-width:1px
+    class Core,Domain,App,Infra module
+```
 
 ## Getting Started
 
@@ -153,4 +212,4 @@ ProjectHub is licensed under the MIT License.
 For questions, support, or further information, please contact:
 
 - **Email**: [support@projecthub.com](mailto:support@projecthub.com)
-- **Project Repository**: [GitHub - ProjectHub](https://github.com/yourusername/ProjectHub)
+- **Project Repository**: [GitHub - ProjectHub](https://github.com/bilalobe/ProjectHub)
