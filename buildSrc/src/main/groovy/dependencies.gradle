@@ -43,7 +43,7 @@ ext {
         openCsv                     : '5.5.2',
         owaspEncoder                : '1.3.1',
         slf4j                       : '2.0.16',
-        junit                       : '5.11.3',
+        junit                       : '5.11.4',
         mockito                     : '5.7.0',
         springdoc                   : '2.1.0',
         swagger                     : '2.2.23',
