@@ -3,7 +3,6 @@ package com.projecthub.base.cohort.infrastructure.persistence;
 import com.projecthub.base.cohort.application.port.out.LoadCohortPort;
 import com.projecthub.base.cohort.application.port.out.SaveCohortPort;
 import com.projecthub.base.cohort.domain.entity.Cohort;
-import com.projecthub.base.school.cohort.application.port.out.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,27 +17,27 @@ class CohortPersistenceAdapter implements LoadCohortPort, SaveCohortPort {
     private final CohortRepository cohortRepository;
 
     @Override
-    public Optional<Cohort> loadCohortById(UUID id) {
-        return cohortRepository.findById(id);
+    public Optional<Cohort> loadCohortById(final UUID id) {
+        return this.cohortRepository.findById(id);
     }
 
     @Override
-    public Page<Cohort> loadAllCohorts(Pageable pageable) {
-        return cohortRepository.findAll(pageable);
+    public Page<Cohort> loadAllCohorts(final Pageable pageable) {
+        return this.cohortRepository.findAll(pageable);
     }
 
     @Override
-    public Page<Cohort> loadCohortsBySchool(UUID schoolId, Pageable pageable) {
-        return cohortRepository.findBySchoolId(schoolId, pageable);
+    public Page<Cohort> loadCohortsBySchool(final UUID schoolId, final Pageable pageable) {
+        return this.cohortRepository.findBySchoolId(schoolId, pageable);
     }
 
     @Override
-    public Cohort save(Cohort cohort) {
-        return cohortRepository.save(cohort);
+    public Cohort save(final Cohort cohort) {
+        return this.cohortRepository.save(cohort);
     }
 
     @Override
-    public void delete(Cohort cohort) {
-        cohortRepository.deleteById(UUID);
+    public void delete(final Cohort cohort) {
+        this.cohortRepository.deleteById(UUID);
     }
 }

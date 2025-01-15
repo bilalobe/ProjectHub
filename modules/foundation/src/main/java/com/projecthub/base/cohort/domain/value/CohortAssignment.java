@@ -30,15 +30,15 @@ public record CohortAssignment(
     int maxTeams
 ) {
     public CohortAssignment {
-        if (maxStudents <= 0 || maxStudents > 50) {
+        if (0 >= maxStudents || 50 < maxStudents) {
             throw new ValidationException("Cohort size must be between 1 and 50 students");
         }
-        if (cohortId == null || year == null || level == null) {
+        if (null == cohortId || null == year || null == level) {
             throw new ValidationException("Cohort assignment requires all fields");
         }
     }
 
-    public static CohortAssignment create(UUID cohortId, SchoolYear year, GradeLevel level, int maxStudents, int maxTeams) {
+    public static CohortAssignment create(final UUID cohortId, final SchoolYear year, final GradeLevel level, final int maxStudents, final int maxTeams) {
         return new CohortAssignment(cohortId, year, level, maxStudents, maxTeams);
     }
 }

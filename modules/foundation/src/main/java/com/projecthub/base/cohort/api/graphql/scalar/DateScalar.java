@@ -20,35 +20,34 @@ public class DateScalar implements Coercing<LocalDate, String> {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
     @Override
-    public String serialize(Object dataFetcherResult, GraphQLContext context, Locale locale)
+    public String serialize(final Object dataFetcherResult, final GraphQLContext context, final Locale locale)
         throws CoercingSerializeException {
-        if (dataFetcherResult instanceof LocalDate localDate) {
-            return localDate.format(formatter);
+        if (dataFetcherResult instanceof final LocalDate localDate) {
+            return localDate.format(DateScalar.formatter);
         }
         throw new CoercingSerializeException("Expected LocalDate object");
     }
 
     @Override
-    public LocalDate parseValue(Object input, GraphQLContext context, Locale locale)
+    public LocalDate parseValue(final Object input, final GraphQLContext context, final Locale locale)
         throws CoercingParseValueException {
         try {
-            return LocalDate.parse(input.toString(), formatter);
-        } catch (Exception e) {
+            return LocalDate.parse(input.toString(), DateScalar.formatter);
+        } catch (final Exception e) {
             throw new CoercingParseValueException("Invalid date format");
         }
     }
 
     @Override
-    public LocalDate parseLiteral(Value<?> input, CoercedVariables variables, GraphQLContext context, Locale locale)
+    public LocalDate parseLiteral(final Value<?> input, final CoercedVariables variables, final GraphQLContext context, final Locale locale)
         throws CoercingParseLiteralException {
-        if (!(input instanceof StringValue)) {
+        if (!(input instanceof StringValue stringValue)) {
             throw new CoercingParseLiteralException("Expected StringValue");
         } else {
-            StringValue stringValue = (StringValue) input;
 
             try {
-                return LocalDate.parse(((StringValue) input).getValue(), formatter);
-            } catch (Exception e) {
+                return LocalDate.parse(((StringValue) input).getValue(), DateScalar.formatter);
+            } catch (final Exception e) {
                 throw new CoercingParseLiteralException("Invalid date format");
             }
         }

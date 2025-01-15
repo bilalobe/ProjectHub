@@ -6,7 +6,7 @@ import lombok.Value;
 public class CohortEdge {
     CohortDTO node;
 
-    public CohortEdge(CohortDTO node) {
+    public CohortEdge(final CohortDTO node) {
         this.node = node;
     }
 }

@@ -11,8 +11,8 @@ public class CohortConnection {
     PageInfo pageInfo;
     long totalCount;
 
-    public static CohortConnection of(Page<CohortDTO> page) {
-        List<CohortEdge> edges = page.getContent().stream()
+    public static CohortConnection of(final Page<CohortDTO> page) {
+        final List<CohortEdge> edges = page.getContent().stream()
             .map(CohortEdge::new)
             .toList();
 

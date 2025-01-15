@@ -23,22 +23,22 @@ public sealed interface CohortDomainEvent {
     ) implements CohortDomainEvent {
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getCohortId() {
-            return cohortId;
+            return this.cohortId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 
@@ -52,22 +52,22 @@ public sealed interface CohortDomainEvent {
     ) implements CohortDomainEvent {
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getCohortId() {
-            return cohortId;
+            return this.cohortId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 
@@ -80,22 +80,22 @@ public sealed interface CohortDomainEvent {
     ) implements CohortDomainEvent {
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getCohortId() {
-            return cohortId;
+            return this.cohortId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 
@@ -107,22 +107,22 @@ public sealed interface CohortDomainEvent {
     ) implements CohortDomainEvent {
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getCohortId() {
-            return cohortId;
+            return this.cohortId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 
@@ -135,22 +135,22 @@ public sealed interface CohortDomainEvent {
     ) implements CohortDomainEvent {
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getCohortId() {
-            return cohortId;
+            return this.cohortId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 
@@ -164,22 +164,22 @@ public sealed interface CohortDomainEvent {
     ) implements CohortDomainEvent {
         @Override
         public UUID getEventId() {
-            return eventId;
+            return this.eventId;
         }
 
         @Override
         public UUID getCohortId() {
-            return cohortId;
+            return this.cohortId;
         }
 
         @Override
         public UUID getInitiatorId() {
-            return initiatorId;
+            return this.initiatorId;
         }
 
         @Override
         public Instant getOccurredOn() {
-            return occurredOn;
+            return this.occurredOn;
         }
     }
 }

@@ -17,22 +17,22 @@ public class CohortQueryResolver {
     private final CohortQueryService queryService;
 
     @DgsQuery(field = "cohort")
-    public CohortDTO getCohort(@InputArgument String id) {
-        return queryService.findById(UUID.fromString(id));
+    public CohortDTO getCohort(@InputArgument final String id) {
+        return this.queryService.findById(UUID.fromString(id));
     }
 
     @DgsQuery(field = "cohorts")
     public CohortConnection getCohorts(
-        @InputArgument Integer first,
-        @InputArgument String after,
-        @InputArgument Integer last,
-        @InputArgument String before
+        @InputArgument final Integer first,
+        @InputArgument final String after,
+        @InputArgument final Integer last,
+        @InputArgument final String before
     ) {
-        return queryService.findAll(first, after, last, before);
+        return this.queryService.findAll(first, after, last, before);
     }
 
     @DgsQuery(field = "cohortsBySchool")
-    public List<CohortDTO> getCohortsBySchool(@InputArgument String schoolId) {
-        return queryService.findBySchoolId(UUID.fromString(schoolId));
+    public List<CohortDTO> getCohortsBySchool(@InputArgument final String schoolId) {
+        return this.queryService.findBySchoolId(UUID.fromString(schoolId));
     }
 }

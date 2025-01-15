@@ -21,14 +21,14 @@ public class CohortDataFetcher {
     private final DataLoader<UUID, List<TeamDTO>> teamsDataLoader;
 
     @DgsData(parentType = "Cohort", field = "school")
-    public CompletableFuture<SchoolDTO> school(DgsDataFetchingEnvironment dfe) {
-        CohortDTO cohort = dfe.getSource();
-        return schoolDataLoader.load(cohort.getSchoolId());
+    public CompletableFuture<SchoolDTO> school(final DgsDataFetchingEnvironment dfe) {
+        final CohortDTO cohort = dfe.getSource();
+        return this.schoolDataLoader.load(cohort.getSchoolId());
     }
 
     @DgsData(parentType = "Cohort", field = "teams")
-    public CompletableFuture<List<TeamDTO>> teams(DgsDataFetchingEnvironment dfe) {
-        CohortDTO cohort = dfe.getSource();
-        return teamsDataLoader.load(cohort.getId());
+    public CompletableFuture<List<TeamDTO>> teams(final DgsDataFetchingEnvironment dfe) {
+        final CohortDTO cohort = dfe.getSource();
+        return this.teamsDataLoader.load(cohort.getId());
     }
 }

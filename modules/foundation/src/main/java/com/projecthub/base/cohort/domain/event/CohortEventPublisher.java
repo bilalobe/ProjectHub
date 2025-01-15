@@ -14,42 +14,42 @@ import java.util.UUID;
 public class CohortEventPublisher {
     private final CohortEventAdapter eventAdapter;
 
-    public void publishCreated(Cohort cohort) {
-        log.debug("Publishing cohort created event for cohort: {}", cohort.getId());
-        CohortDomainEvent event = new CohortDomainEvent.Created(
+    public void publishCreated(final Cohort cohort) {
+        CohortEventPublisher.log.debug("Publishing cohort created event for cohort: {}", cohort.getId());
+        final CohortDomainEvent event = new CohortDomainEvent.Created(
             UUID.randomUUID(),
             cohort.getId(),
             cohort.getSchool().getId(),
             cohort.getName(),
             cohort.getAssignment().maxStudents(),
-            getCurrentUserId(),
+            this.getCurrentUserId(),
             Instant.now()
         );
-        eventAdapter.publish(event);
+        this.eventAdapter.publish(event);
     }
 
-    public void publishUpdated(Cohort cohort) {
-        log.debug("Publishing cohort updated event for cohort: {}", cohort.getId());
-        CohortDomainEvent event = new CohortDomainEvent.Updated(
+    public void publishUpdated(final Cohort cohort) {
+        CohortEventPublisher.log.debug("Publishing cohort updated event for cohort: {}", cohort.getId());
+        final CohortDomainEvent event = new CohortDomainEvent.Updated(
             UUID.randomUUID(),
             cohort.getId(),
             cohort.getName(),
             cohort.getAssignment().maxStudents(),
-            getCurrentUserId(),
+            this.getCurrentUserId(),
             Instant.now()
         );
-        eventAdapter.publish(event);
+        this.eventAdapter.publish(event);
     }
 
-    public void publishDeleted(UUID cohortId) {
-        log.debug("Publishing cohort deleted event for cohort: {}", cohortId);
-        CohortDomainEvent event = new CohortDomainEvent.Deleted(
+    public void publishDeleted(final UUID cohortId) {
+        CohortEventPublisher.log.debug("Publishing cohort deleted event for cohort: {}", cohortId);
+        final CohortDomainEvent event = new CohortDomainEvent.Deleted(
             UUID.randomUUID(),
             cohortId,
-            getCurrentUserId(),
+            this.getCurrentUserId(),
             Instant.now()
         );
-        eventAdapter.publish(event);
+        this.eventAdapter.publish(event);
     }
 
     private UUID getCurrentUserId() {

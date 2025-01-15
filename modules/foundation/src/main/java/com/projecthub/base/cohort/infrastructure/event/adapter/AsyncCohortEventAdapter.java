@@ -18,30 +18,30 @@ public class AsyncCohortEventAdapter implements CohortEventAdapter {
 
     @Async("cohortEventExecutor")
     @Override
-    public void publish(CohortDomainEvent event) {
-        log.debug("Publishing async event: {}", event);
-        rabbitTemplate.convertAndSend(
-            getExchange(),
-            getRoutingKey(event),
+    public void publish(final CohortDomainEvent event) {
+        AsyncCohortEventAdapter.log.debug("Publishing async event: {}", event);
+        this.rabbitTemplate.convertAndSend(
+            EXCHANGE,
+            this.getRoutingKey(event),
             event
         );
     }
 
     @Override
-    public String getRoutingKey(CohortDomainEvent event) {
+    public String getRoutingKey(final CohortDomainEvent event) {
         return switch (event) {
-            case CohortDomainEvent.Created _ -> CohortRabbitMQConfig.COHORT_CREATED_KEY;
-            case CohortDomainEvent.Updated _ -> CohortRabbitMQConfig.COHORT_UPDATED_KEY;
-            case CohortDomainEvent.Deleted _ -> CohortRabbitMQConfig.COHORT_DELETED_KEY;
-            case CohortDomainEvent.Archived _ -> CohortRabbitMQConfig.COHORT_ARCHIVED_KEY;
-            case CohortDomainEvent.StudentAdded _ -> CohortRabbitMQConfig.COHORT_STUDENT_ADDED_KEY;
-            case CohortDomainEvent.StudentRemoved _ -> CohortRabbitMQConfig.COHORT_STUDENT_REMOVED_KEY;
+            case final CohortDomainEvent.Created _ -> CohortRabbitMQConfig.COHORT_CREATED_KEY;
+            case final CohortDomainEvent.Updated _ -> CohortRabbitMQConfig.COHORT_UPDATED_KEY;
+            case final CohortDomainEvent.Deleted _ -> CohortRabbitMQConfig.COHORT_DELETED_KEY;
+            case final CohortDomainEvent.Archived _ -> CohortRabbitMQConfig.COHORT_ARCHIVED_KEY;
+            case final CohortDomainEvent.StudentAdded _ -> CohortRabbitMQConfig.COHORT_STUDENT_ADDED_KEY;
+            case final CohortDomainEvent.StudentRemoved _ -> CohortRabbitMQConfig.COHORT_STUDENT_REMOVED_KEY;
             default -> throw new IllegalArgumentException("Unknown event type: " + event.getClass().getSimpleName());
         };
     }
 
     @Override
     public String getExchange() {
-        return EXCHANGE;
+        return AsyncCohortEventAdapter.EXCHANGE;
     }
 }

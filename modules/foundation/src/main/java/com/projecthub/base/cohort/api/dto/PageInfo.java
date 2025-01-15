@@ -8,7 +8,7 @@ public class PageInfo {
     boolean hasPreviousPage;
     long totalElements;
 
-    public PageInfo(boolean hasNextPage, boolean hasPreviousPage, long totalElements) {
+    public PageInfo(final boolean hasNextPage, final boolean hasPreviousPage, final long totalElements) {
         this.hasNextPage = hasNextPage;
         this.hasPreviousPage = hasPreviousPage;
         this.totalElements = totalElements;

@@ -17,9 +17,9 @@ public class CohortExceptionHandler implements DataFetcherExceptionHandler {
 
     @Override
     public CompletableFuture<DataFetcherExceptionHandlerResult> handleException(
-        DataFetcherExceptionHandlerParameters handlerParameters
+        final DataFetcherExceptionHandlerParameters handlerParameters
     ) {
-        Throwable exception = handlerParameters.getException();
+        final Throwable exception = handlerParameters.getException();
 
         if (exception instanceof GraphQLApiException) {
             return CompletableFuture.completedFuture(
@@ -32,7 +32,7 @@ public class CohortExceptionHandler implements DataFetcherExceptionHandler {
             );
         }
 
-        if (exception instanceof ConstraintViolationException e) {
+        if (exception instanceof final ConstraintViolationException e) {
             return CompletableFuture.completedFuture(
                 DataFetcherExceptionHandlerResult.newResult()
                     .error(TypedGraphQLError.newBuilder()
@@ -43,6 +43,6 @@ public class CohortExceptionHandler implements DataFetcherExceptionHandler {
             );
         }
 
-        return defaultHandler.handleException(handlerParameters);
+        return this.defaultHandler.handleException(handlerParameters);
     }
 }

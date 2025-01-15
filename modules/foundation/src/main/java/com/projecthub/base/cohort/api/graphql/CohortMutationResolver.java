@@ -25,70 +25,70 @@ public class CohortMutationResolver {
     private final CohortMapper cohortMapper;
 
     @DgsMutation
-    public CohortDTO createCohort(@InputArgument CreateCohortInput input) {
+    public CohortDTO createCohort(@InputArgument final CreateCohortInput input) {
         try {
-            var command = cohortMapper.toCreateCommand(input);
-            return commandService.createCohort(command);
-        } catch (Exception e) {
+            final var command = this.cohortMapper.toCreateCommand(input);
+            return this.commandService.createCohort(command);
+        } catch (final Exception e) {
             throw new GraphQLApiException(e.getMessage(), "CREATE_COHORT_ERROR");
         }
     }
 
     @DgsMutation
     public CohortDTO updateCohort(
-        @InputArgument String id,
-        @InputArgument UpdateCohortInput input
+        @InputArgument final String id,
+        @InputArgument final UpdateCohortInput input
     ) {
-        var command = cohortMapper.toUpdateCommand(input, UUID.fromString(id));
-        return commandService.updateCohort(command);
+        final var command = this.cohortMapper.toUpdateCommand(input, UUID.fromString(id));
+        return this.commandService.updateCohort(command);
     }
 
     @DgsMutation
     public Boolean deleteCohort(
-        @InputArgument String id,
-        @InputArgument String reason
+        @InputArgument final String id,
+        @InputArgument final String reason
     ) {
         try {
-            commandService.deleteCohort(
+            this.commandService.deleteCohort(
                 DeleteCohortCommand.builder()
                     .id(UUID.fromString(id))
                     .reason(reason)
                     .build()
             );
             return true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new GraphQLApiException(e.getMessage(), "DELETE_COHORT_ERROR");
         }
     }
 
     @DgsMutation
-    public Boolean completeCohort(@InputArgument String id) {
+    public Boolean completeCohort(@InputArgument final String id) {
         try {
-            commandService.completeCohort(
+            this.commandService.completeCohort(
                 CompleteCohortCommand.builder()
                     .id(UUID.fromString(id))
                     .build()
             );
             return true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new GraphQLApiException(e.getMessage(), "COMPLETE_COHORT_ERROR");
         }
     }
 
     @DgsMutation
     public Boolean assignTeamToCohort(
-        @InputArgument String teamId,
-        @InputArgument String cohortId
+        @InputArgument final String teamId,
+        @InputArgument final String cohortId
     ) {
         try {
-            teamCommandService.assignToCohort(
+            this.teamCommandService.assignToCohort(
                 AssignTeamToCohortCommand.builder()
                     .teamId(UUID.fromString(teamId))
                     .cohortId(UUID.fromString(cohortId))
                     .build()
             );
             return true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new GraphQLApiException(e.getMessage(), "ASSIGN_TEAM_ERROR");
         }
     }

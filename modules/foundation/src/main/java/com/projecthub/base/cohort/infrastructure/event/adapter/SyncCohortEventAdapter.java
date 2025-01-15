@@ -15,34 +15,34 @@ public class SyncCohortEventAdapter implements CohortEventAdapter {
     private final ApplicationEventPublisher publisher;
 
     @Override
-    public void publish(CohortDomainEvent event) {
-        if (event == null) {
+    public void publish(final CohortDomainEvent event) {
+        if (null == event) {
             throw new EventPublishingException("Event cannot be null");
         }
 
         try {
-            log.debug("Publishing sync event of type {}: {}", getEventType(event), event);
-            publisher.publishEvent(event);
-            log.debug("Successfully published sync event: {}", event);
-        } catch (Exception e) {
-            log.error("Failed to publish sync event: {}", event, e);
+            SyncCohortEventAdapter.log.debug("Publishing sync event of type {}: {}", this.getEventType(event), event);
+            this.publisher.publishEvent(event);
+            SyncCohortEventAdapter.log.debug("Successfully published sync event: {}", event);
+        } catch (final Exception e) {
+            SyncCohortEventAdapter.log.error("Failed to publish sync event: {}", event, e);
             throw new EventPublishingException("Failed to publish event: " + e.getMessage(), e);
         }
     }
 
-    private String getEventType(CohortDomainEvent event) {
+    private String getEventType(final CohortDomainEvent event) {
         return switch (event) {
-            case CohortDomainEvent.Created _ -> "CREATED";
-            case CohortDomainEvent.Updated _ -> "UPDATED";
-            case CohortDomainEvent.Deleted _ -> "DELETED";
-            case CohortDomainEvent.Archived _ -> "ARCHIVED";
-            case CohortDomainEvent.StudentAdded _ -> "STUDENT_ADDED";
-            case CohortDomainEvent.StudentRemoved _ -> "STUDENT_REMOVED";
+            case final CohortDomainEvent.Created _ -> "CREATED";
+            case final CohortDomainEvent.Updated _ -> "UPDATED";
+            case final CohortDomainEvent.Deleted _ -> "DELETED";
+            case final CohortDomainEvent.Archived _ -> "ARCHIVED";
+            case final CohortDomainEvent.StudentAdded _ -> "STUDENT_ADDED";
+            case final CohortDomainEvent.StudentRemoved _ -> "STUDENT_REMOVED";
         };
     }
 
     @Override
-    public String getRoutingKey(CohortDomainEvent event) {
+    public String getRoutingKey(final CohortDomainEvent event) {
         throw new UnsupportedOperationException("Routing key not needed for sync events");
     }
 

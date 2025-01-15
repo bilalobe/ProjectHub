@@ -167,14 +167,14 @@ public class CohortValidator {
             .filter(c -> c.getAssignment().year().equals(cohort.getAssignment().year()))
             .count();
 
-        if (cohortsInYear >= MAX_COHORTS_PER_YEAR) {
+        if (MAX_COHORTS_PER_YEAR <= cohortsInYear) {
             throw new ValidationException(ValidationError.YEAR_CAPACITY_EXCEEDED.code,
-                String.format("Maximum cohorts per year (%d) exceeded", MAX_COHORTS_PER_YEAR));
+                String.format("Maximum cohorts per year (%d) exceeded", CohortValidator.MAX_COHORTS_PER_YEAR));
         }
     }
 
-    private void validateUniqueName(Cohort cohort, School school) {
-        boolean isDuplicate = school.getCohorts().stream()
+    private void validateUniqueName(final Cohort cohort, final School school) {
+        final boolean isDuplicate = school.getCohorts().stream()
             .filter(c -> !c.getId().equals(cohort.getId()))
             .anyMatch(c -> c.getName().equalsIgnoreCase(cohort.getName()));
 
@@ -184,26 +184,26 @@ public class CohortValidator {
         }
     }
 
-    private void validateGradeLevel(Cohort cohort) {
-        CohortAssignment assignment = cohort.getAssignment();
-        if (assignment == null || assignment.level() == null) {
+    private void validateGradeLevel(final Cohort cohort) {
+        final CohortAssignment assignment = cohort.getAssignment();
+        if (null == assignment || null == assignment.level()) {
             throw new ValidationException("Cohort must have a valid grade level assigned");
         }
 
-        if (!isValidGradeLevel(assignment.level())) {
+        if (!this.isValidGradeLevel(assignment.level())) {
             throw new ValidationException("Invalid grade level assigned");
         }
     }
 
-    private void validateMaxStudents(Cohort cohort) {
-        if (cohort.getAssignment().maxStudents() > MAX_STUDENTS) {
+    private void validateMaxStudents(final Cohort cohort) {
+        if (MAX_STUDENTS < cohort.getAssignment().maxStudents()) {
             throw new ValidationException(
-                String.format("Cohort exceeds maximum student capacity of %d", MAX_STUDENTS));
+                String.format("Cohort exceeds maximum student capacity of %d", CohortValidator.MAX_STUDENTS));
         }
     }
 
-    private void validateYearScheduling(Cohort cohort, School school) {
-        boolean hasOverlap = school.getCohorts().stream()
+    private void validateYearScheduling(final Cohort cohort, final School school) {
+        final boolean hasOverlap = school.getCohorts().stream()
             .filter(c -> c.getAssignment().year().equals(cohort.getAssignment().year()))
             .filter(c -> !c.getId().equals(cohort.getId()))
             .anyMatch(c -> c.getAssignment().year().equals(cohort.getAssignment().year()));
@@ -213,32 +213,32 @@ public class CohortValidator {
         }
     }
 
-    private void validateStateTransition(Cohort cohort) {
+    private void validateStateTransition(final Cohort cohort) {
         if (cohort.isArchived() && cohort.isActive()) {
             throw new ValidationException(ValidationError.INVALID_STATE.code,
                 "Archived cohort cannot be active");
         }
     }
 
-    private boolean isValidGradeLevel(GradeLevel level) {
-        return level != null && !level.name().trim().isEmpty();
+    private boolean isValidGradeLevel(final GradeLevel level) {
+        return null != level && !level.name().trim().isEmpty();
     }
 
     private enum ValidationError {
-        INVALID_NAME(ERROR_PREFIX + "001", "Invalid cohort name"),
-        INVALID_DATES(ERROR_PREFIX + "002", "Invalid term dates"),
-        INVALID_CAPACITY(ERROR_PREFIX + "003", "Invalid student capacity"),
-        INVALID_SCHOOL(ERROR_PREFIX + "004", "Invalid school assignment"),
-        INVALID_STATE(ERROR_PREFIX + "005", "Invalid state transition"),
-        DUPLICATE_NAME(ERROR_PREFIX + "006", "Duplicate cohort name"),
-        YEAR_CAPACITY_EXCEEDED(ERROR_PREFIX + "007", "Year capacity exceeded"),
-        TEAM_LIMIT_EXCEEDED(ERROR_PREFIX + "008", "Team limit exceeded"),
-        ARCHIVED_MODIFICATION(ERROR_PREFIX + "009", "Cannot modify archived cohort");
+        INVALID_NAME(CohortValidator.ERROR_PREFIX + "001", "Invalid cohort name"),
+        INVALID_DATES(CohortValidator.ERROR_PREFIX + "002", "Invalid term dates"),
+        INVALID_CAPACITY(CohortValidator.ERROR_PREFIX + "003", "Invalid student capacity"),
+        INVALID_SCHOOL(CohortValidator.ERROR_PREFIX + "004", "Invalid school assignment"),
+        INVALID_STATE(CohortValidator.ERROR_PREFIX + "005", "Invalid state transition"),
+        DUPLICATE_NAME(CohortValidator.ERROR_PREFIX + "006", "Duplicate cohort name"),
+        YEAR_CAPACITY_EXCEEDED(CohortValidator.ERROR_PREFIX + "007", "Year capacity exceeded"),
+        TEAM_LIMIT_EXCEEDED(CohortValidator.ERROR_PREFIX + "008", "Team limit exceeded"),
+        ARCHIVED_MODIFICATION(CohortValidator.ERROR_PREFIX + "009", "Cannot modify archived cohort");
 
         final String code;
         final String message;
 
-        ValidationError(String code, String message) {
+        ValidationError(final String code, final String message) {
             this.code = code;
             this.message = message;
         }

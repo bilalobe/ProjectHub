@@ -43,15 +43,10 @@ import java.util.List;
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(
-    indexes = {
-        @Index(name = "idx_cohort_name", columnList = "name"),
-        @Index(name = "idx_cohort_school_name", columnList = "school_id, name")
-    },
-    uniqueConstraints = {
-        @UniqueConstraint(name = "uc_school_name", columnNames = {"school_id", "name"})
-    }
-)
+@Table(indexes = {
+    @Index(name = "idx_cohort_name", columnList = "name"),
+    @Index(name = "idx_cohort_school_name", columnList = "school_id, name")
+}, uniqueConstraints = @UniqueConstraint(name = "uc_school_name", columnNames = {"school_id", "name"}))
 @Getter
 @Setter
 @ToString(exclude = {"teams", "school"})
@@ -80,7 +75,7 @@ public class Cohort extends BaseEntity {
     private LocalDate endTerm;
 
     @Column(nullable = false)
-    private boolean isArchived = false;
+    private boolean isArchived;
 
     @Column(nullable = false)
     private boolean isActive = true;
@@ -102,58 +97,58 @@ public class Cohort extends BaseEntity {
     @OneToMany(mappedBy = "cohort", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Team> teams;
 
-    public void assignToSchool(School school, SchoolYear year, GradeLevel level, int maxStudents) {
+    public void assignToSchool(final School school, final SchoolYear year, final GradeLevel level, final int maxStudents) {
         this.school = school;
-        this.assignment = CohortAssignment.create(
-            getId(),
+        assignment = CohortAssignment.create(
+            this.getId(),
             year,
             level,
             maxStudents,
-            teams.size()
+            this.teams.size()
         );
     }
 
     public boolean isCompleted() {
-        return !isActive && !isArchived;
+        return !this.isActive && !this.isArchived;
     }
 
-    public void addTeam(Team team, CohortValidator validator) {
+    public void addTeam(final Team team, final CohortValidator validator) {
         validator.validateAddTeam(this, team);
         team.setCohort(this);
-        teams.add(team);
+        this.teams.add(team);
     }
 
-    public void removeTeam(Team team, CohortValidator validator) {
+    public void removeTeam(final Team team, final CohortValidator validator) {
         validator.validateRemoveTeam(this, team);
-        teams.remove(team);
+        this.teams.remove(team);
         team.setCohort(null);
     }
 
-    public void markAsCompleted(CohortValidator validator) {
+    public void markAsCompleted(final CohortValidator validator) {
         validator.validateMarkAsCompleted(this);
-        this.isActive = false;
+        isActive = false;
     }
 
-    public void archive(String reason, CohortValidator validator) {
+    public void archive(final String reason, final CohortValidator validator) {
         validator.validateArchive(this, reason);
-        this.isArchived = true;
-        this.isActive = false;
+        isArchived = true;
+        isActive = false;
     }
 
-    public void updateDetails(LocalDate startTerm, LocalDate endTerm, CohortValidator validator) {
+    public void updateDetails(final LocalDate startTerm, final LocalDate endTerm, final CohortValidator validator) {
         validator.validateUpdateDetails(this, startTerm, endTerm);
         this.startTerm = startTerm;
         this.endTerm = endTerm;
     }
 
-    public void updateMaxStudents(int maxStudents, CohortValidator validator) {
+    public void updateMaxStudents(final int maxStudents, final CohortValidator validator) {
         validator.validateUpdateMaxStudents(this, maxStudents);
-        this.assignment = CohortAssignment.create(
-            getId(),
-            assignment.year(),
-            assignment.level(),
+        assignment = CohortAssignment.create(
+            this.getId(),
+            this.assignment.year(),
+            this.assignment.level(),
             maxStudents,
-            teams.size()
+            this.teams.size()
         );
     }
 }

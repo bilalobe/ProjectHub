@@ -28,13 +28,13 @@ public class CohortRabbitMQConfig extends BaseRabbitMQConfig {
     public static final String COHORT_STUDENT_REMOVED_KEY = "cohort.student.removed";
 
 
-    public CohortRabbitMQConfig(RabbitMQProperties properties) {
+    public CohortRabbitMQConfig(final RabbitMQProperties properties) {
         super(properties);
     }
 
     @Bean
     public TopicExchange cohortExchange() {
-        return ExchangeBuilder.topicExchange(COHORT_EXCHANGE)
+        return ExchangeBuilder.topicExchange(CohortRabbitMQConfig.COHORT_EXCHANGE)
             .durable(true)
             .build();
     }
@@ -42,74 +42,74 @@ public class CohortRabbitMQConfig extends BaseRabbitMQConfig {
     // Queue definitions
     @Bean
     public Queue cohortCreatedQueue() {
-        return QueueBuilder.durable(COHORT_CREATED_QUEUE).build();
+        return QueueBuilder.durable(CohortRabbitMQConfig.COHORT_CREATED_QUEUE).build();
     }
 
     @Bean
     public Queue cohortUpdatedQueue() {
-        return QueueBuilder.durable(COHORT_UPDATED_QUEUE).build();
+        return QueueBuilder.durable(CohortRabbitMQConfig.COHORT_UPDATED_QUEUE).build();
     }
 
     @Bean
     public Queue cohortDeletedQueue() {
-        return QueueBuilder.durable(COHORT_DELETED_QUEUE).build();
+        return QueueBuilder.durable(CohortRabbitMQConfig.COHORT_DELETED_QUEUE).build();
     }
 
     @Bean
     public Queue cohortArchivedQueue() {
-        return QueueBuilder.durable(COHORT_ARCHIVED_QUEUE).build();
+        return QueueBuilder.durable(CohortRabbitMQConfig.COHORT_ARCHIVED_QUEUE).build();
     }
 
     @Bean
     public Queue cohortStudentAddedQueue() {
-        return QueueBuilder.durable(COHORT_STUDENT_ADDED_QUEUE).build();
+        return QueueBuilder.durable(CohortRabbitMQConfig.COHORT_STUDENT_ADDED_QUEUE).build();
     }
 
     @Bean
     public Queue cohortStudentRemovedQueue() {
-        return QueueBuilder.durable(COHORT_STUDENT_REMOVED_QUEUE).build();
+        return QueueBuilder.durable(CohortRabbitMQConfig.COHORT_STUDENT_REMOVED_QUEUE).build();
     }
 
     // Binding definitions
     @Bean
-    public Binding cohortCreatedBinding(Queue cohortCreatedQueue, TopicExchange cohortExchange) {
+    public Binding cohortCreatedBinding(final Queue cohortCreatedQueue, final TopicExchange cohortExchange) {
         return BindingBuilder.bind(cohortCreatedQueue)
             .to(cohortExchange)
-            .with(COHORT_CREATED_KEY);
+            .with(CohortRabbitMQConfig.COHORT_CREATED_KEY);
     }
 
     @Bean
-    public Binding cohortUpdatedBinding(Queue cohortUpdatedQueue, TopicExchange cohortExchange) {
+    public Binding cohortUpdatedBinding(final Queue cohortUpdatedQueue, final TopicExchange cohortExchange) {
         return BindingBuilder.bind(cohortUpdatedQueue)
             .to(cohortExchange)
-            .with(COHORT_UPDATED_KEY);
+            .with(CohortRabbitMQConfig.COHORT_UPDATED_KEY);
     }
 
     @Bean
-    public Binding cohortDeletedBinding(Queue cohortDeletedQueue, TopicExchange cohortExchange) {
+    public Binding cohortDeletedBinding(final Queue cohortDeletedQueue, final TopicExchange cohortExchange) {
         return BindingBuilder.bind(cohortDeletedQueue)
             .to(cohortExchange)
-            .with(COHORT_DELETED_KEY);
+            .with(CohortRabbitMQConfig.COHORT_DELETED_KEY);
     }
 
     @Bean
-    public Binding cohortArchivedBinding(Queue cohortArchivedQueue, TopicExchange cohortExchange) {
+    public Binding cohortArchivedBinding(final Queue cohortArchivedQueue, final TopicExchange cohortExchange) {
         return BindingBuilder.bind(cohortArchivedQueue)
             .to(cohortExchange)
-            .with(COHORT_ARCHIVED_KEY);
+            .with(CohortRabbitMQConfig.COHORT_ARCHIVED_KEY);
     }
 
     @Bean
-    public Binding cohortStudentAddedBinding(Queue cohortStudentAddedQueue, TopicExchange cohortExchange) {
+    public Binding cohortStudentAddedBinding(final Queue cohortStudentAddedQueue, final TopicExchange cohortExchange) {
         return BindingBuilder.bind(cohortStudentAddedQueue)
             .to(cohortExchange)
-            .with(COHORT_STUDENT_ADDED_KEY);
+            .with(CohortRabbitMQConfig.COHORT_STUDENT_ADDED_KEY);
     }
 
     @Bean
-    public Binding cohortStudentRemovedBinding(Queue cohortStudentRemovedQueue, TopicExchange cohortExchange) {
+    public Binding cohortStudentRemovedBinding(final Queue cohortStudentRemovedQueue, final TopicExchange cohortExchange) {
         return BindingBuilder.bind(cohortStudentRemovedQueue)
             .to(cohortExchange)
-            .with(COHORT_STUDENT_REMOVED_KEY);
+            .with(CohortRabbitMQConfig.COHORT_STUDENT_REMOVED_KEY);
     }
 }

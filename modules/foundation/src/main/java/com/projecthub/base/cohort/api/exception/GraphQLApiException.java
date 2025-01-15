@@ -12,10 +12,10 @@ public class GraphQLApiException extends RuntimeException implements GraphQLErro
     private final String errorCode;
     private final Map<String, Object> extensions;
 
-    public GraphQLApiException(String message, String errorCode) {
+    public GraphQLApiException(final String message, final String errorCode) {
         super(message);
         this.errorCode = errorCode;
-        this.extensions = Map.of("errorCode", errorCode);
+        extensions = Map.of("errorCode", errorCode);
     }
 
     @Override
@@ -30,6 +30,6 @@ public class GraphQLApiException extends RuntimeException implements GraphQLErro
 
     @Override
     public Map<String, Object> getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 }

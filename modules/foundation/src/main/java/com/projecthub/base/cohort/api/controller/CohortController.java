@@ -23,45 +23,45 @@ public class CohortController implements CohortApi {
     private final CohortCommandService cohortCommandService;
     private final CohortQueryService cohortQueryService;
 
-    public CohortController(CohortCommandService cohortCommandService, CohortQueryService cohortQueryService) {
+    public CohortController(final CohortCommandService cohortCommandService, final CohortQueryService cohortQueryService) {
         this.cohortCommandService = cohortCommandService;
         this.cohortQueryService = cohortQueryService;
     }
 
     @Override
     public ResponseEntity<List<CohortDTO>> getAllCohorts() {
-        logger.info("Retrieving all cohorts");
-        return ResponseEntity.ok(cohortQueryService.getAllCohorts());
+        CohortController.logger.info("Retrieving all cohorts");
+        return ResponseEntity.ok(this.cohortQueryService.getAllCohorts());
     }
 
     @Override
-    public ResponseEntity<CohortDTO> getById(UUID id) {
-        logger.info("Retrieving cohort with ID {}", id);
-        return ResponseEntity.ok(cohortQueryService.getCohortById(id));
+    public ResponseEntity<CohortDTO> getById(final UUID id) {
+        CohortController.logger.info("Retrieving cohort with ID {}", id);
+        return ResponseEntity.ok(this.cohortQueryService.getCohortById(id));
     }
 
     @Override
-    public ResponseEntity<CohortDTO> createCohort(@Valid @RequestBody CohortDTO cohort) {
-        logger.info("Creating new cohort");
-        return ResponseEntity.ok(cohortCommandService.createCohort(cohort));
+    public ResponseEntity<CohortDTO> createCohort(@Valid @RequestBody final CohortDTO cohort) {
+        CohortController.logger.info("Creating new cohort");
+        return ResponseEntity.ok(this.cohortCommandService.createCohort(cohort));
     }
 
     @Override
-    public ResponseEntity<CohortDTO> updateCohort(UUID id, @Valid @RequestBody CohortDTO cohort) {
-        logger.info("Updating cohort with ID {}", id);
-        return ResponseEntity.ok(cohortCommandService.updateCohort(id, cohort));
+    public ResponseEntity<CohortDTO> updateCohort(final UUID id, @Valid @RequestBody final CohortDTO cohort) {
+        CohortController.logger.info("Updating cohort with ID {}", id);
+        return ResponseEntity.ok(this.cohortCommandService.updateCohort(id, cohort));
     }
 
     @Override
-    public ResponseEntity<Void> deleteById(UUID id) {
-        logger.info("Deleting cohort with ID {}", id);
-        cohortCommandService.deleteCohort(id);
+    public ResponseEntity<Void> deleteById(final UUID id) {
+        CohortController.logger.info("Deleting cohort with ID {}", id);
+        this.cohortCommandService.deleteCohort(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<List<CohortDTO>> getCohortsBySchoolId(UUID schoolId) {
-        logger.info("Retrieving cohorts for school with ID {}", schoolId);
-        return ResponseEntity.ok(cohortQueryService.getCohortsBySchoolId(schoolId));
+    public ResponseEntity<List<CohortDTO>> getCohortsBySchoolId(final UUID schoolId) {
+        CohortController.logger.info("Retrieving cohorts for school with ID {}", schoolId);
+        return ResponseEntity.ok(this.cohortQueryService.getCohortsBySchoolId(schoolId));
     }
 }

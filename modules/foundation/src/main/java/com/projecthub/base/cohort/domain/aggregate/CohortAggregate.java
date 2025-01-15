@@ -29,15 +29,10 @@ import java.util.List;
  * </p>
  */
 @Entity
-@Table(name = "cohorts",
-    indexes = {
-        @Index(name = "idx_cohort_name", columnList = "name"),
-        @Index(name = "idx_cohort_school_name", columnList = "school_id, name")
-    },
-    uniqueConstraints = {
-        @UniqueConstraint(name = "uc_school_name", columnNames = {"school_id", "name"})
-    }
-)
+@Table(name = "cohorts", indexes = {
+    @Index(name = "idx_cohort_name", columnList = "name"),
+    @Index(name = "idx_cohort_school_name", columnList = "school_id, name")
+}, uniqueConstraints = @UniqueConstraint(name = "uc_school_name", columnNames = {"school_id", "name"}))
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
@@ -59,7 +54,7 @@ public class CohortAggregate extends BaseEntity {
     private LocalDate endTerm;
 
     @Column(nullable = false)
-    private boolean isArchived = false;
+    private boolean isArchived;
 
     @Column(nullable = false)
     private boolean isActive = true;
@@ -81,16 +76,16 @@ public class CohortAggregate extends BaseEntity {
     private List<Team> teams = new ArrayList<>();
 
     public static CohortAggregate create(
-        String name,
-        LocalDate startTerm,
-        LocalDate endTerm,
-        School school,
-        SchoolYear year,
-        GradeLevel level,
-        int maxStudents,
-        CohortValidator validator
+        final String name,
+        final LocalDate startTerm,
+        final LocalDate endTerm,
+        final School school,
+        final SchoolYear year,
+        final GradeLevel level,
+        final int maxStudents,
+        final CohortValidator validator
     ) {
-        CohortAggregate cohort = new CohortAggregate();
+        final CohortAggregate cohort = new CohortAggregate();
         cohort.name = name;
         cohort.startTerm = startTerm;
         cohort.endTerm = endTerm;
@@ -110,47 +105,47 @@ public class CohortAggregate extends BaseEntity {
         return cohort;
     }
 
-    public void addTeam(Team team, CohortValidator validator) {
+    public void addTeam(final Team team, final CohortValidator validator) {
         validator.validateAddTeam(this, team);
         team.setCohort(this);
-        teams.add(team);
+        this.teams.add(team);
     }
 
-    public void removeTeam(Team team, CohortValidator validator) {
+    public void removeTeam(final Team team, final CohortValidator validator) {
         validator.validateRemoveTeam(this, team);
-        teams.remove(team);
+        this.teams.remove(team);
         team.setCohort(null);
     }
 
-    public void archive(String reason, CohortValidator validator) {
+    public void archive(final String reason, final CohortValidator validator) {
         validator.validateArchive(this, reason);
-        this.isArchived = true;
-        this.isActive = false;
+        isArchived = true;
+        isActive = false;
     }
 
-    public void markAsCompleted(CohortValidator validator) {
+    public void markAsCompleted(final CohortValidator validator) {
         validator.validateMarkAsCompleted(this);
-        this.isActive = false;
+        isActive = false;
     }
 
-    public void updateDetails(LocalDate startTerm, LocalDate endTerm, CohortValidator validator) {
+    public void updateDetails(final LocalDate startTerm, final LocalDate endTerm, final CohortValidator validator) {
         validator.validateUpdateDetails(this, startTerm, endTerm);
         this.startTerm = startTerm;
         this.endTerm = endTerm;
     }
 
-    public void updateMaxStudents(int maxStudents, CohortValidator validator) {
+    public void updateMaxStudents(final int maxStudents, final CohortValidator validator) {
         validator.validateUpdateMaxStudents(this, maxStudents);
-        this.assignment = CohortAssignment.create(
-            getId(),
-            assignment.year(),
-            assignment.level(),
+        assignment = CohortAssignment.create(
+            this.getId(),
+            this.assignment.year(),
+            this.assignment.level(),
             maxStudents,
-            teams.size()
+            this.teams.size()
         );
     }
 
     public boolean isCompleted() {
-        return !isActive && !isArchived;
+        return !this.isActive && !this.isArchived;
     }
 }
