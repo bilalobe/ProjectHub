@@ -83,10 +83,10 @@ public class AuthenticationService {
             ipAddress,
             LocalDateTime.now().minusMinutes(MAX_ATTEMPTS_WINDOW_MINUTES)
         );
-        return recentAttempts >= MAX_LOGIN_ATTEMPTS;
+        return MAX_LOGIN_ATTEMPTS <= recentAttempts;
     }
 
-    private void validateSecurityStatus(AppUser user, String ipAddress) {
+    private void validateSecurityStatus(final AppUser user, final String ipAddress) {
         if (user.isRequiresMfaSetup()) {
             throw new MfaRequiredException("MFA setup required for this account");
         }
@@ -96,10 +96,10 @@ public class AuthenticationService {
         }
     }
 
-    private void handleFailedLogin(String principal, String ipAddress) {
-        auditService.logAuthenticationAttempt(principal, false, ipAddress);
-        if (isRateLimited(principal, ipAddress)) {
-            auditService.logAccountAction(
+    private void handleFailedLogin(final String principal, final String ipAddress) {
+        this.auditService.logAuthenticationAttempt(principal, false, ipAddress);
+        if (this.isRateLimited(principal, ipAddress)) {
+            this.auditService.logAccountAction(
                 null,
                 SecurityAuditAction.ACCOUNT_RATE_LIMITED,
                 "Rate limit reached for: " + principal,
@@ -108,21 +108,21 @@ public class AuthenticationService {
         }
     }
 
-    private AppUser validateAndGetUser(LoginRequestDTO loginRequest) {
-        AppUser user = userRepository.findByUsername(loginRequest.principal())
-            .orElseThrow(() -> new InvalidCredentialsException(INVALID_CREDENTIALS_MESSAGE));
+    private AppUser validateAndGetUser(final LoginRequestDTO loginRequest) {
+        final AppUser user = this.userRepository.findByUsername(loginRequest.principal())
+            .orElseThrow(() -> new InvalidCredentialsException(AuthenticationService.INVALID_CREDENTIALS_MESSAGE));
 
-        validateUserStatus(user);
-        validatePassword(user, loginRequest.password());
+        this.validateUserStatus(user);
+        this.validatePassword(user, loginRequest.password());
 
-        if (user.getFailedAttempts() > 0) {
-            lockingService.resetFailedAttempts(user);
+        if (0 < user.getFailedAttempts()) {
+            this.lockingService.resetFailedAttempts(user);
         }
 
         return user;
     }
 
-    private void validateUserStatus(AppUser user) {
+    private void validateUserStatus(final AppUser user) {
         if (!user.isEnabled()) {
             throw new AccountDisabledException("Account is disabled");
         }
@@ -131,61 +131,61 @@ public class AuthenticationService {
         }
     }
 
-    private void validatePassword(AppUser user, String password) {
+    private void validatePassword(final AppUser user, final String password) {
         try {
             validationService.validateCredentials(password, user.getPassword());
-        } catch (InvalidCredentialsException e) {
-            lockingService.incrementFailedAttempts(user);
+        } catch (final InvalidCredentialsException e) {
+            this.lockingService.incrementFailedAttempts(user);
             throw e;
         }
     }
 
-    private AuthenticationResultDTO handleSuccessfulLogin(AppUser user, LoginRequestDTO loginRequest, String accessToken) {
-        resetSecurityFlags(user);
-        updateLoginMetadata(user, loginRequest.ipAddress());
+    private AuthenticationResultDTO handleSuccessfulLogin(final AppUser user, final LoginRequestDTO loginRequest, final String accessToken) {
+        this.resetSecurityFlags(user);
+        this.updateLoginMetadata(user, loginRequest.ipAddress());
 
         if (loginRequest.rememberMe()) {
-            RememberMeToken rememberMeToken = rememberMeService.createToken(user);
+            final RememberMeToken rememberMeToken = this.rememberMeService.createToken(user);
             return new AuthenticationResultDTO(accessToken, rememberMeToken.getTokenValue(), user.getId());
         }
 
         return new AuthenticationResultDTO(accessToken, null, user.getId());
     }
 
-    private void resetSecurityFlags(AppUser user) {
+    private void resetSecurityFlags(final AppUser user) {
         user.setFailedAttempts(0);
         user.setLastLoginAttempt(LocalDateTime.now());
         if (user.isTemporarilyLocked()) {
             user.setLockExpiryTime(null);
         }
-        userRepository.save(user);
+        this.userRepository.save(user);
     }
 
-    private void updateLoginMetadata(AppUser user, String ipAddress) {
+    private void updateLoginMetadata(final AppUser user, final String ipAddress) {
         user.setLastLoginIp(ipAddress);
         user.setLastLoginDate(LocalDateTime.now());
         if (!user.getKnownIpAddresses().contains(ipAddress)) {
             user.getKnownIpAddresses().add(ipAddress);
         }
-        userRepository.save(user);
+        this.userRepository.save(user);
     }
 
-    private boolean isSuspiciousActivity(AppUser user, String ipAddress) {
+    private boolean isSuspiciousActivity(final AppUser user, final String ipAddress) {
         return !user.getKnownIpAddresses().contains(ipAddress) &&
-            user.getFailedAttempts() >= SUSPICIOUS_LOGIN_THRESHOLD;
+            SUSPICIOUS_LOGIN_THRESHOLD <= user.getFailedAttempts();
     }
 
     @Transactional
-    public void invalidateAllSessions(UUID userId) {
-        AppUser user = userRepository.findById(userId)
+    public void invalidateAllSessions(final UUID userId) {
+        final AppUser user = this.userRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        tokenService.revokeUserTokens(user.getUsername());
-        rememberMeService.clearUserTokens(user.getUsername());
+        this.tokenService.revokeUserTokens(user.getUsername());
+        this.rememberMeService.clearUserTokens(user.getUsername());
         user.setSecurityVersion(user.getSecurityVersion() + 1);
-        userRepository.save(user);
+        this.userRepository.save(user);
 
-        auditService.logAccountAction(
+        this.auditService.logAccountAction(
             userId,
             SecurityAuditAction.SESSIONS_INVALIDATED,
             "All sessions invalidated",
@@ -194,12 +194,12 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void logout(String username) {
-        logger.info("Logging out user: {}", username);
-        rememberMeService.clearUserTokens(username);
-        tokenService.revokeUserTokens(username);
-        auditService.logAccountAction(
-            userRepository.findByUsername(username)
+    public void logout(final String username) {
+        AuthenticationService.logger.info("Logging out user: {}", username);
+        this.rememberMeService.clearUserTokens(username);
+        this.tokenService.revokeUserTokens(username);
+        this.auditService.logAccountAction(
+            this.userRepository.findByUsername(username)
                 .map(AppUser::getId)
                 .orElse(null),
             SecurityAuditAction.LOGOUT

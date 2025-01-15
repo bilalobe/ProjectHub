@@ -14,22 +14,22 @@ public class TokenFactory {
     private final JwtUtil jwtUtil;
     private final TokenProperties properties;
 
-    public TokenFactory(JwtUtil jwtUtil, TokenProperties properties) {
+    public TokenFactory(final JwtUtil jwtUtil, final TokenProperties properties) {
         this.jwtUtil = jwtUtil;
         this.properties = properties;
     }
 
-    public String createAccessToken(AppUser user) {
-        Map<String, Object> claims = new HashMap<>();
+    public String createAccessToken(final AppUser user) {
+        final Map<String, Object> claims = new HashMap<>();
         claims.put("roles", user.getRoles().stream()
             .map(Role::getName)
             .collect(Collectors.toList()));
         claims.put("userId", user.getId().toString());
 
-        return jwtUtil.generateToken(user.getUsername(), claims);
+        return this.jwtUtil.generateToken(user.getUsername(), claims);
     }
 
-    public String createRefreshToken(AppUser user) {
-        return jwtUtil.generateRefreshToken(user.getUsername());
+    public String createRefreshToken(final AppUser user) {
+        return this.jwtUtil.generateRefreshToken(user.getUsername());
     }
 }

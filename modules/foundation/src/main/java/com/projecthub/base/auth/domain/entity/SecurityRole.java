@@ -17,7 +17,7 @@ public class SecurityRole implements GrantedAuthority {
 
     private String authority;
 
-    public SecurityRole(String authority) {
+    public SecurityRole(final String authority) {
         this.authority = authority;
     }
 }

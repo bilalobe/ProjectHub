@@ -14,25 +14,25 @@ public class TokenJpaRepository implements TokenRepository {
 
     @Override
     @Synchronized // For concurrent token operations
-    public Token save(Token token) {
-        log.debug("Saving token: {}", token.getId());
-        return jpaRepository.save(token);
+    public Token save(final Token token) {
+        TokenJpaRepository.log.debug("Saving token: {}", token.getId());
+        return this.jpaRepository.save(token);
     }
 
     @Override
-    public Optional<Token> findByToken(String token) {
-        return jpaRepository.findByToken(token);
+    public Optional<Token> findByToken(final String token) {
+        return this.jpaRepository.findByToken(token);
     }
 
     @Override
-    public Optional<Token> findById(UUID id) {
-        return jpaRepository.findById(id);
+    public Optional<Token> findById(final UUID id) {
+        return this.jpaRepository.findById(id);
     }
 
     @Override
     @SneakyThrows // For token validation exceptions
-    public boolean isValid(String token) {
-        return findByToken(token)
+    public boolean isValid(final String token) {
+        return this.findByToken(token)
             .map(Token::isValid)
             .orElse(false);
     }
@@ -40,6 +40,6 @@ public class TokenJpaRepository implements TokenRepository {
     @Override
     @FieldNameConstants // For JPA queries
     public void deleteExpired() {
-        jpaRepository.deleteByExpiresAtBefore(LocalDateTime.now());
+        this.jpaRepository.deleteByExpiresAtBefore(LocalDateTime.now());
     }
 }

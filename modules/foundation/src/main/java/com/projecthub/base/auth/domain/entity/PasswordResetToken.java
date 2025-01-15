@@ -29,7 +29,7 @@ public class PasswordResetToken extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime expiryDate;
 
-    public PasswordResetToken(String token, AppUser user, LocalDateTime expiryDate) {
+    public PasswordResetToken(final String token, final AppUser user, final LocalDateTime expiryDate) {
         this.token = token;
         this.user = user;
         this.expiryDate = expiryDate;
@@ -37,8 +37,8 @@ public class PasswordResetToken extends BaseEntity {
 
     @PrePersist
     protected void onCreate() {
-        if (this.expiryDate == null) {
-            this.expiryDate = LocalDateTime.now().plusHours(24); // Set expiry date to 24 hours from creation
+        if (null == this.expiryDate) {
+            expiryDate = LocalDateTime.now().plusHours(24); // Set expiry date to 24 hours from creation
         }
     }
 }

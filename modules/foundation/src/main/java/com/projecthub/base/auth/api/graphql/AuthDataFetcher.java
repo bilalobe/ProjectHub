@@ -20,36 +20,36 @@ public class AuthDataFetcher {
     private final AuthEventPublisher eventPublisher;
 
     @DgsMutation
-    public AuthResponseDTO login(@InputArgument String username, @InputArgument String password) {
-        LoginRequestDTO request = new LoginRequestDTO(
+    public AuthResponseDTO login(@InputArgument final String username, @InputArgument final String password) {
+        final LoginRequestDTO request = new LoginRequestDTO(
             username,
             password,
             false,
             null
         );
 
-        AuthenticationResultDTO result = authService.authenticate(request);
-        eventPublisher.publishUserLoggedIn(result.userId());
+        final AuthenticationResultDTO result = this.authService.authenticate(request);
+        this.eventPublisher.publishUserLoggedIn(result.userId());
 
-        AppUserDTO user = authService.getCurrentUser();
+        final AppUserDTO user = this.authService.getCurrentUser();
         return new AuthResponseDTO(result.token(), user);
     }
 
     @DgsMutation
-    public AppUserDTO register(@InputArgument RegisterInput input) {
-        AppUserCredentialsDTO credentials = new AppUserCredentialsDTO(
+    public AppUserDTO register(@InputArgument final RegisterInput input) {
+        final AppUserCredentialsDTO credentials = new AppUserCredentialsDTO(
             input.username(),
             input.password()
         );
 
-        RegisterRequestDTO request = new RegisterRequestDTO(
+        final RegisterRequestDTO request = new RegisterRequestDTO(
             credentials,
             input.email(),
             input.username()
         );
 
-        AppUserDTO user = registrationService.registerUser(request);
-        eventPublisher.publishUserRegistered(user.id());
+        final AppUserDTO user = this.registrationService.registerUser(request);
+        this.eventPublisher.publishUserRegistered(user.id());
         return user;
     }
 }

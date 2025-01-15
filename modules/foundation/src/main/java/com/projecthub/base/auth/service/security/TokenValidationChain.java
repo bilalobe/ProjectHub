@@ -13,51 +13,51 @@ public class TokenValidationChain {
     private final TokenRepository tokenRepository;
     private final TokenConfig tokenConfig;
 
-    public TokenValidationChain(JwtUtil jwtUtil, TokenRepository tokenRepository, TokenConfig tokenConfig) {
+    public TokenValidationChain(final JwtUtil jwtUtil, final TokenRepository tokenRepository, final TokenConfig tokenConfig) {
         this.jwtUtil = jwtUtil;
         this.tokenRepository = tokenRepository;
         this.tokenConfig = tokenConfig;
     }
 
-    public boolean validateAccessToken(String token) {
-        return validateBasicToken(token)
-            && !isTokenBlacklisted(token)
-            && isTokenActive(token)
-            && validateTokenSignature(token);
+    public boolean validateAccessToken(final String token) {
+        return this.validateBasicToken(token)
+            && !this.isTokenBlacklisted(token)
+            && this.isTokenActive(token)
+            && this.validateTokenSignature(token);
     }
 
-    public boolean validateRefreshToken(String token) {
-        return validateBasicToken(token)
-            && !isTokenBlacklisted(token)
-            && isTokenActive(token)
-            && validateTokenSignature(token)
-            && isRefreshTokenValid(token);
+    public boolean validateRefreshToken(final String token) {
+        return this.validateBasicToken(token)
+            && !this.isTokenBlacklisted(token)
+            && this.isTokenActive(token)
+            && this.validateTokenSignature(token)
+            && this.isRefreshTokenValid(token);
     }
 
-    private boolean validateBasicToken(String token) {
-        return token != null && !token.isEmpty();
+    private boolean validateBasicToken(final String token) {
+        return null != token && !token.isEmpty();
     }
 
-    private boolean isTokenBlacklisted(String token) {
-        return tokenRepository.isTokenBlacklisted(token);
+    private boolean isTokenBlacklisted(final String token) {
+        return this.tokenRepository.isTokenBlacklisted(token);
     }
 
-    private boolean isTokenActive(String token) {
-        return tokenRepository.findByToken(token)
+    private boolean isTokenActive(final String token) {
+        return this.tokenRepository.findByToken(token)
             .map(t -> t.getExpiresAt().isAfter(LocalDateTime.now()))
             .orElse(false);
     }
 
-    private boolean validateTokenSignature(String token) {
+    private boolean validateTokenSignature(final String token) {
         try {
-            return jwtUtil.validateToken(token);
-        } catch (Exception e) {
+            return this.jwtUtil.validateToken(token);
+        } catch (final Exception e) {
             return false;
         }
     }
 
-    private boolean isRefreshTokenValid(String token) {
-        return tokenRepository.findByToken(token)
+    private boolean isRefreshTokenValid(final String token) {
+        return this.tokenRepository.findByToken(token)
             .map(t -> t.getTokenType() == TokenType.REFRESH)
             .orElse(false);
     }

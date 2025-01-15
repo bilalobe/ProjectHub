@@ -15,18 +15,18 @@ public class AccountManagementService {
     private final SecurityAuditService auditService;
 
     public AccountManagementService(
-        AppUserJpaRepository userRepository,
-        SecurityAuditService auditService) {
+        final AppUserJpaRepository userRepository,
+        final SecurityAuditService auditService) {
         this.userRepository = userRepository;
         this.auditService = auditService;
     }
 
     @Transactional
-    public void lockAccount(UUID userId) {
-        AppUser user = userRepository.findById(userId)
+    public void lockAccount(final UUID userId) {
+        final AppUser user = this.userRepository.findById(userId)
             .orElseThrow(() -> new UserNotFoundException(userId));
         user.setLocked(true);
-        userRepository.save(user);
-        auditService.logAccountAction(userId, SecurityAuditAction.ACCOUNT_LOCKED);
+        this.userRepository.save(user);
+        this.auditService.logAccountAction(userId, SecurityAuditAction.ACCOUNT_LOCKED);
     }
 }

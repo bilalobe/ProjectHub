@@ -40,25 +40,25 @@ public class AuthController implements AuthApi {
     @ApiResponse(responseCode = "409", description = "User already exists")
     @PostMapping("/register")
     public ResponseEntity<AppUserDTO> registerUser(
-        @Valid @RequestBody RegisterRequestDTO request) {
-        log.debug("Processing registration request for user: {}", request.username());
+        @Valid @RequestBody final RegisterRequestDTO request) {
+        AuthController.log.debug("Processing registration request for user: {}", request.username());
 
-        var user = userRegistrationService.registerUser(request);
-        eventPublisher.publishUserRegistered(user.id());
+        final var user = this.userRegistrationService.registerUser(request);
+        this.eventPublisher.publishUserRegistered(user.id());
 
-        log.info("User registered successfully: {}", user.id());
+        AuthController.log.info("User registered successfully: {}", user.id());
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @Override
-    public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
-        log.debug("Processing login request for user: {}", loginRequest.principal());
+    public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody final LoginRequestDTO loginRequest) {
+        AuthController.log.debug("Processing login request for user: {}", loginRequest.principal());
 
-        var authResult = authenticationService.authenticate(loginRequest);
-        eventPublisher.publishUserLoggedIn(authResult.userId());
+        final var authResult = this.authenticationService.authenticate(loginRequest);
+        this.eventPublisher.publishUserLoggedIn(authResult.userId());
 
-        var user = authenticationService.getCurrentUser();
-        var response = new AuthenticationResponse(authResult.token(), user);
+        final var user = this.authenticationService.getCurrentUser();
+        final var response = new AuthenticationResponse(authResult.token(), user);
         return ResponseEntity.ok(response);
     }
 }

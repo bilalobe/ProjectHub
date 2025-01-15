@@ -10,55 +10,55 @@ public class TokenConfig {
     private int refreshTokenValidityDays = 7;
     private int maxActiveTokensPerUser = 5;
     private boolean rotateRefreshTokens = true;
-    private boolean reuseRefreshTokens = false;
+    private boolean reuseRefreshTokens;
     private int tokenRotationGracePeriodSeconds = 30;
 
     // Getters and setters
     public int getAccessTokenValidityMinutes() {
-        return accessTokenValidityMinutes;
+        return this.accessTokenValidityMinutes;
     }
 
-    public void setAccessTokenValidityMinutes(int value) {
-        this.accessTokenValidityMinutes = value;
+    public void setAccessTokenValidityMinutes(final int value) {
+        accessTokenValidityMinutes = value;
     }
 
     public int getRefreshTokenValidityDays() {
-        return refreshTokenValidityDays;
+        return this.refreshTokenValidityDays;
     }
 
-    public void setRefreshTokenValidityDays(int value) {
-        this.refreshTokenValidityDays = value;
+    public void setRefreshTokenValidityDays(final int value) {
+        refreshTokenValidityDays = value;
     }
 
     public int getMaxActiveTokensPerUser() {
-        return maxActiveTokensPerUser;
+        return this.maxActiveTokensPerUser;
     }
 
-    public void setMaxActiveTokensPerUser(int value) {
-        this.maxActiveTokensPerUser = value;
+    public void setMaxActiveTokensPerUser(final int value) {
+        maxActiveTokensPerUser = value;
     }
 
     public boolean isRotateRefreshTokens() {
-        return rotateRefreshTokens;
+        return this.rotateRefreshTokens;
     }
 
-    public void setRotateRefreshTokens(boolean value) {
-        this.rotateRefreshTokens = value;
+    public void setRotateRefreshTokens(final boolean value) {
+        rotateRefreshTokens = value;
     }
 
     public boolean isReuseRefreshTokens() {
-        return reuseRefreshTokens;
+        return this.reuseRefreshTokens;
     }
 
-    public void setReuseRefreshTokens(boolean value) {
-        this.reuseRefreshTokens = value;
+    public void setReuseRefreshTokens(final boolean value) {
+        reuseRefreshTokens = value;
     }
 
     public int getTokenRotationGracePeriodSeconds() {
-        return tokenRotationGracePeriodSeconds;
+        return this.tokenRotationGracePeriodSeconds;
     }
 
-    public void setTokenRotationGracePeriodSeconds(int value) {
-        this.tokenRotationGracePeriodSeconds = value;
+    public void setTokenRotationGracePeriodSeconds(final int value) {
+        tokenRotationGracePeriodSeconds = value;
     }
 }

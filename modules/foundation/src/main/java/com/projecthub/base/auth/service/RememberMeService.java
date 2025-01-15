@@ -17,28 +17,28 @@ public class RememberMeService {
     private final RememberMeTokenRepository tokenRepository;
     private final SecureRandom secureRandom;
 
-    public RememberMeService(RememberMeTokenRepository tokenRepository) {
+    public RememberMeService(final RememberMeTokenRepository tokenRepository) {
         this.tokenRepository = tokenRepository;
-        this.secureRandom = new SecureRandom();
+        secureRandom = new SecureRandom();
     }
 
     @Transactional
-    public RememberMeToken createToken(AppUser user) {
-        RememberMeToken token = new RememberMeToken();
+    public RememberMeToken createToken(final AppUser user) {
+        final RememberMeToken token = new RememberMeToken();
         token.setUser(user);
-        token.setTokenValue(generateTokenValue());
-        token.setExpiryDate(LocalDateTime.now().plusDays(VALIDITY_DAYS));
-        return tokenRepository.save(token);
+        token.setTokenValue(this.generateTokenValue());
+        token.setExpiryDate(LocalDateTime.now().plusDays(RememberMeService.VALIDITY_DAYS));
+        return this.tokenRepository.save(token);
     }
 
     @Transactional
-    public void clearUserTokens(String username) {
-        tokenRepository.deleteByUser_Username(username);
+    public void clearUserTokens(final String username) {
+        this.tokenRepository.deleteByUser_Username(username);
     }
 
     private String generateTokenValue() {
-        byte[] tokenBytes = new byte[TOKEN_LENGTH];
-        secureRandom.nextBytes(tokenBytes);
+        final byte[] tokenBytes = new byte[RememberMeService.TOKEN_LENGTH];
+        this.secureRandom.nextBytes(tokenBytes);
         return Base64.getEncoder().encodeToString(tokenBytes);
     }
 }

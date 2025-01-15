@@ -22,49 +22,49 @@ public class TokenManagementService {
     private final SecurityEventPublisher eventPublisher;
 
     @Transactional
-    public TokenPair generateTokenPair(AppUser user) {
-        String accessToken = tokenFactory.createAccessToken(user);
-        String refreshToken = tokenFactory.createRefreshToken(user);
+    public TokenPair generateTokenPair(final AppUser user) {
+        final String accessToken = this.tokenFactory.createAccessToken(user);
+        final String refreshToken = this.tokenFactory.createRefreshToken(user);
 
-        storeTokenPair(accessToken, refreshToken, user.getUsername());
-        eventPublisher.publish(new TokenCreatedEvent(user.getId(), accessToken));
+        this.storeTokenPair(accessToken, refreshToken, user.getUsername());
+        this.eventPublisher.publish(new TokenCreatedEvent(user.getId(), accessToken));
 
         return new TokenPair(
             accessToken,
             refreshToken,
-            properties.accessTokenValidityMinutes() * 60L
+            this.properties.accessTokenValidityMinutes() * 60L
         );
     }
 
     @Transactional
-    public void revokeUserTokens(String username) {
-        tokenRepository.revokeAllUserTokens(username);
-        eventPublisher.publish(new TokenRevokedEvent(username));
-        cleanupExpiredTokens();
+    public void revokeUserTokens(final String username) {
+        this.tokenRepository.revokeAllUserTokens(username);
+        this.eventPublisher.publish(new TokenRevokedEvent(username));
+        this.cleanupExpiredTokens();
     }
 
-    private void storeTokenPair(String accessToken, String refreshToken, String username) {
-        enforceMaximumTokenLimit(username);
+    private void storeTokenPair(final String accessToken, final String refreshToken, final String username) {
+        this.enforceMaximumTokenLimit(username);
 
-        TokenEntity accessTokenEntity = createTokenEntity(accessToken, username, TokenType.ACCESS);
-        TokenEntity refreshTokenEntity = createTokenEntity(refreshToken, username, TokenType.REFRESH);
+        final TokenEntity accessTokenEntity = createTokenEntity(accessToken, username, TokenType.ACCESS);
+        final TokenEntity refreshTokenEntity = createTokenEntity(refreshToken, username, TokenType.REFRESH);
 
-        tokenRepository.saveAll(List.of(accessTokenEntity, refreshTokenEntity));
+        this.tokenRepository.saveAll(List.of(accessTokenEntity, refreshTokenEntity));
     }
 
-    private void enforceMaximumTokenLimit(String username) {
-        long activeTokenCount = tokenRepository.countActiveTokensByUsername(username);
-        if (activeTokenCount >= properties.maxActiveTokens()) {
-            tokenRepository.deleteOldestTokenForUser(username);
+    private void enforceMaximumTokenLimit(final String username) {
+        final long activeTokenCount = this.tokenRepository.countActiveTokensByUsername(username);
+        if (activeTokenCount >= this.properties.maxActiveTokens()) {
+            this.tokenRepository.deleteOldestTokenForUser(username);
         }
     }
 
     @Scheduled(fixedRateString = "${app.security.token.cleanup-interval-ms}")
     public void cleanupExpiredTokens() {
-        tokenRepository.deleteExpiredTokens(LocalDateTime.now());
+        this.tokenRepository.deleteExpiredTokens(LocalDateTime.now());
     }
 
-    public String generateAccessToken(AppUser user) {
+    public String generateAccessToken(final AppUser user) {
         return null;
     }
 }

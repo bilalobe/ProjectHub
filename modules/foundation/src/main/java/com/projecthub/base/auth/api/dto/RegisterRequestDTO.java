@@ -43,7 +43,7 @@ public record RegisterRequestDTO(
      * @throws IllegalArgumentException if any field is invalid
      */
     public RegisterRequestDTO {
-        if (credentials == null || email == null || username == null) {
+        if (null == credentials || null == email || null == username) {
             throw new IllegalArgumentException("All fields must be non-null");
         }
     }

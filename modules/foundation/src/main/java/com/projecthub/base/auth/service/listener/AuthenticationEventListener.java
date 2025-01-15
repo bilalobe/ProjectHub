@@ -10,16 +10,16 @@ import org.springframework.stereotype.Component;
 public class AuthenticationEventListener {
     private final SecurityAuditService auditService;
 
-    public AuthenticationEventListener(SecurityAuditService auditService) {
+    public AuthenticationEventListener(final SecurityAuditService auditService) {
         this.auditService = auditService;
     }
 
     @EventListener
-    public void handleAuthenticationEvent(AuthenticationEvent event) {
+    public void handleAuthenticationEvent(final AuthenticationEvent event) {
         switch (event.eventType()) {
-            case LOGIN_SUCCESS -> auditService.logAuthenticationAttempt(event.username(), true, event.ipAddress());
-            case LOGIN_FAILURE -> auditService.logAuthenticationAttempt(event.username(), false, event.ipAddress());
-            case SUSPICIOUS_ACTIVITY -> auditService.logAccountAction(event.userId(),
+            case LOGIN_SUCCESS -> this.auditService.logAuthenticationAttempt(event.username(), true, event.ipAddress());
+            case LOGIN_FAILURE -> this.auditService.logAuthenticationAttempt(event.username(), false, event.ipAddress());
+            case SUSPICIOUS_ACTIVITY -> this.auditService.logAccountAction(event.userId(),
                 SecurityAuditAction.ACCESS_DENIED, event.details(), event.ipAddress());
         }
     }

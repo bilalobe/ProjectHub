@@ -6,12 +6,12 @@ import org.springframework.context.ApplicationEvent;
 public class UserVerifiedEvent extends ApplicationEvent {
     private final AppUser user;
 
-    public UserVerifiedEvent(AppUser user) {
+    public UserVerifiedEvent(final AppUser user) {
         super(user);
         this.user = user;
     }
 
     public AppUser getUser() {
-        return user;
+        return this.user;
     }
 }

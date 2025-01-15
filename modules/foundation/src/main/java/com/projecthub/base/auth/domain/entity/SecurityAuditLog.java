@@ -39,8 +39,8 @@ public class SecurityAuditLog extends BaseEntity {
 
     @PrePersist
     protected void onCreate() {
-        if (timestamp == null) {
-            timestamp = LocalDateTime.now();
+        if (null == timestamp) {
+            this.timestamp = LocalDateTime.now();
         }
     }
 }

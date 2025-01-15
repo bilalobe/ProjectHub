@@ -17,33 +17,33 @@ public class PasswordValidationService {
     private final PasswordValidator validator;
     private final PasswordEncoder passwordEncoder;
 
-    public PasswordValidationService(PasswordValidator validator, PasswordEncoder passwordEncoder) {
+    public PasswordValidationService(final PasswordValidator validator, final PasswordEncoder passwordEncoder) {
         this.validator = validator;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<String> validatePassword(String password) {
-        return validator.validatePassword(password);
+    public List<String> validatePassword(final String password) {
+        return this.validator.validatePassword(password);
     }
 
-    public boolean matches(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
+    public boolean matches(final String rawPassword, final String encodedPassword) {
+        return this.passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public String encode(String rawPassword) {
-        return passwordEncoder.encode(rawPassword);
+    public String encode(final String rawPassword) {
+        return this.passwordEncoder.encode(rawPassword);
     }
 
     /**
      * Validates a new password against security policies and current password
      */
-    public void validateNewPassword(String newPassword, String currentEncodedPassword) {
-        List<String> errors = validatePassword(newPassword);
+    public void validateNewPassword(final String newPassword, final String currentEncodedPassword) {
+        final List<String> errors = this.validatePassword(newPassword);
         if (!errors.isEmpty()) {
             throw new PasswordValidationException(String.join(", ", errors));
         }
 
-        if (matches(newPassword, currentEncodedPassword)) {
+        if (this.matches(newPassword, currentEncodedPassword)) {
             throw new PasswordValidationException("New password must be different");
         }
     }
@@ -51,13 +51,13 @@ public class PasswordValidationService {
     /**
      * Validates credentials and throws appropriate exceptions
      */
-    public void validateCredentials(String rawPassword, String encodedPassword) {
-        if (!matches(rawPassword, encodedPassword)) {
+    public void validateCredentials(final String rawPassword, final String encodedPassword) {
+        if (!this.matches(rawPassword, encodedPassword)) {
             throw new InvalidCredentialsException("Invalid credentials");
         }
     }
 
-    public String encodePassword(String rawPassword) {
-        return encode(rawPassword);
+    public String encodePassword(final String rawPassword) {
+        return this.encode(rawPassword);
     }
 }

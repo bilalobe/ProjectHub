@@ -33,58 +33,58 @@ public class SecurityUser implements UserDetails {
 
     private String password;
 
-    public SecurityUser(AppUser appUser) {
+    public SecurityUser(final AppUser appUser) {
         this.appUser = appUser;
     }
 
     @Override
     public String getUsername() {
-        return appUser.getUsername();
+        return this.appUser.getUsername();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return this.authorities;
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return IS_ACCOUNT_NON_EXPIRED;
+        return SecurityUser.IS_ACCOUNT_NON_EXPIRED;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return IS_ACCOUNT_NON_LOCKED;
+        return SecurityUser.IS_ACCOUNT_NON_LOCKED;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return IS_CREDENTIALS_NON_EXPIRED;
+        return SecurityUser.IS_CREDENTIALS_NON_EXPIRED;
     }
 
     @Override
     public boolean isEnabled() {
-        return IS_ENABLED;
+        return SecurityUser.IS_ENABLED;
     }
 
-    public void addAuthority(SecurityRole authority) {
-        authorities.add(authority);
+    public void addAuthority(final SecurityRole authority) {
+        this.authorities.add(authority);
     }
 
-    public void removeAuthority(SecurityRole authority) {
-        authorities.remove(authority);
+    public void removeAuthority(final SecurityRole authority) {
+        this.authorities.remove(authority);
     }
 
     public AppUser getAppUser() {
-        return appUser;
+        return this.appUser;
     }
 }

@@ -6,10 +6,10 @@ public record TokenPair(
     Long expiresIn
 ) {
     public TokenPair {
-        if (accessToken == null || refreshToken == null) {
+        if (null == accessToken || null == refreshToken) {
             throw new IllegalArgumentException("Tokens cannot be null");
         }
-        if (expiresIn <= 0) {
+        if (0 >= expiresIn) {
             throw new IllegalArgumentException("ExpiresIn must be positive");
         }
     }

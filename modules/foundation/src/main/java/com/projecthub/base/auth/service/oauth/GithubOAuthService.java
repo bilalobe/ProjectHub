@@ -23,22 +23,22 @@ public class GithubOAuthService {
     @Value("${github.client.secret}")
     private String githubClientSecret;
 
-    public GithubOAuthService(RestTemplate restTemplate) {
+    public GithubOAuthService(final RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public String getGithubAccessToken(String code) {
-        String tokenUrl = "https://github.com/login/oauth/access_token";
+    public String getGithubAccessToken(final String code) {
+        final String tokenUrl = "https://github.com/login/oauth/access_token";
 
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("client_id", githubClientId);
-        requestBody.put("client_secret", githubClientSecret);
+        final Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("client_id", this.githubClientId);
+        requestBody.put("client_secret", this.githubClientSecret);
         requestBody.put("code", code);
 
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+        final ResponseEntity<Map<String, Object>> response = this.restTemplate.exchange(
             tokenUrl,
             HttpMethod.POST,
             new HttpEntity<>(requestBody, headers),
@@ -46,35 +46,35 @@ public class GithubOAuthService {
             }
         );
 
-        Map<String, Object> responseBody = response.getBody();
-        if (responseBody != null && responseBody.containsKey("access_token")) {
+        final Map<String, Object> responseBody = response.getBody();
+        if (null != responseBody && responseBody.containsKey("access_token")) {
             return responseBody.get("access_token").toString();
         }
 
-        logger.error("Failed to get GitHub access token");
+        GithubOAuthService.logger.error("Failed to get GitHub access token");
         return null;
     }
 
-    public GithubUserInfo getGithubUserInfo(String accessToken) {
-        String userUrl = "https://api.github.com/user";
+    public GithubUserInfo getGithubUserInfo(final String accessToken) {
+        final String userUrl = "https://api.github.com/user";
 
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-        ResponseEntity<GithubUserInfo> response = restTemplate.exchange(
+        final ResponseEntity<GithubUserInfo> response = this.restTemplate.exchange(
             userUrl,
             HttpMethod.GET,
             new HttpEntity<>(headers),
             GithubUserInfo.class
         );
 
-        GithubUserInfo userInfo = response.getBody();
-        if (userInfo != null) {
+        final GithubUserInfo userInfo = response.getBody();
+        if (null != userInfo) {
             return userInfo;
         }
 
-        logger.error("Failed to get GitHub user info");
+        GithubOAuthService.logger.error("Failed to get GitHub user info");
         return null;
     }
 }

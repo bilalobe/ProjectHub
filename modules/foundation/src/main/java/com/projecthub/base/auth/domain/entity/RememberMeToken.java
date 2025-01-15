@@ -46,16 +46,16 @@ public class RememberMeToken extends BaseEntity {
     private AppUser user;
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RememberMeToken that = (RememberMeToken) o;
-        return Objects.equals(series, that.series);
+        if (null == o || this.getClass() != o.getClass()) return false;
+        final RememberMeToken that = (RememberMeToken) o;
+        return Objects.equals(this.series, that.series);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(series);
+        return Objects.hash(this.series);
     }
 
     public String getTokenValue() {
@@ -63,7 +63,7 @@ public class RememberMeToken extends BaseEntity {
         throw new UnsupportedOperationException("Unimplemented method 'getTokenValue'");
     }
 
-    public void setTokenValue(String tokenValue) {
+    public void setTokenValue(final String tokenValue) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setTokenValue'");
     }

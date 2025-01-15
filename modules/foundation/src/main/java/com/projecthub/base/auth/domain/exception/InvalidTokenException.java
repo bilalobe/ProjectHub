@@ -4,7 +4,7 @@ import com.projecthub.base.shared.exception.BaseException;
 import org.springframework.http.HttpStatus;
 
 public class InvalidTokenException extends BaseException {
-    public InvalidTokenException(String message) {
+    public InvalidTokenException(final String message) {
         super(message, HttpStatus.UNAUTHORIZED);
     }
 }

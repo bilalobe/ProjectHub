@@ -20,7 +20,7 @@ public class AuthenticationToken {
 
     @SneakyThrows
     @Synchronized
-    public static AuthenticationToken generate(UUID userId) {
+    public static AuthenticationToken generate(final UUID userId) {
         // Thread-safe token generation
         return new AuthenticationToken(
             UUID.randomUUID(),

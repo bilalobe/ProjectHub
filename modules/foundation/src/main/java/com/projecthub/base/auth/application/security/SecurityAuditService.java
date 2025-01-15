@@ -21,79 +21,79 @@ public class SecurityAuditService {
 
     private final SecurityAuditLogRepository auditLogRepository;
 
-    public SecurityAuditService(SecurityAuditLogRepository auditLogRepository) {
+    public SecurityAuditService(final SecurityAuditLogRepository auditLogRepository) {
         this.auditLogRepository = auditLogRepository;
     }
 
-    public void logAccountAction(UUID userId, SecurityAuditAction action) {
-        logAccountAction(userId, action, null, null);
+    public void logAccountAction(final UUID userId, final SecurityAuditAction action) {
+        this.logAccountAction(userId, action, null, null);
     }
 
-    public void logAccountAction(UUID userId, SecurityAuditAction action, String details) {
-        logAccountAction(userId, action, details, null);
+    public void logAccountAction(final UUID userId, final SecurityAuditAction action, final String details) {
+        this.logAccountAction(userId, action, details, null);
     }
 
-    public void logAccountAction(UUID userId, SecurityAuditAction action, String details, String ipAddress) {
-        SecurityAuditLog log = createAuditLog(userId, null, action, details, ipAddress);
-        auditLogRepository.save(log);
-        logger.info("Security audit logged - User: {}, Action: {}, Details: {}",
-            userId, action, details != null ? details : "none");
+    public void logAccountAction(final UUID userId, final SecurityAuditAction action, final String details, final String ipAddress) {
+        final SecurityAuditLog log = this.createAuditLog(userId, null, action, details, ipAddress);
+        this.auditLogRepository.save(log);
+        SecurityAuditService.logger.info("Security audit logged - User: {}, Action: {}, Details: {}",
+            userId, action, null != details ? details : "none");
     }
 
-    public void logAuthenticationAttempt(String username, boolean success, String ipAddress) {
-        SecurityAuditLog log = createAuditLog(
+    public void logAuthenticationAttempt(final String username, final boolean success, final String ipAddress) {
+        final SecurityAuditLog log = this.createAuditLog(
             null,
             username,
             success ? SecurityAuditAction.LOGIN_SUCCESS : SecurityAuditAction.LOGIN_FAILURE,
             null,
             ipAddress
         );
-        auditLogRepository.save(log);
-        logger.info("Authentication attempt - User: {}, Success: {}", username, success);
+        this.auditLogRepository.save(log);
+        SecurityAuditService.logger.info("Authentication attempt - User: {}, Success: {}", username, success);
     }
 
-    public void logPasswordValidationFailure(UUID userId, String reason) {
-        SecurityAuditLog log = createAuditLog(
+    public void logPasswordValidationFailure(final UUID userId, final String reason) {
+        final SecurityAuditLog log = this.createAuditLog(
             userId,
             null,
             SecurityAuditAction.PASSWORD_VALIDATION_FAILURE,
             reason,
-            DEFAULT_IP_ADDRESS
+            SecurityAuditService.DEFAULT_IP_ADDRESS
         );
-        auditLogRepository.save(log);
-        logger.warn("Password validation failed - User: {}, Reason: {}", userId, reason);
+        this.auditLogRepository.save(log);
+        SecurityAuditService.logger.warn("Password validation failed - User: {}, Reason: {}", userId, reason);
     }
 
-    public void logPasswordChange(UUID userId, boolean success, String ipAddress) {
-        SecurityAuditLog log = createAuditLog(
+    public void logPasswordChange(final UUID userId, final boolean success, final String ipAddress) {
+        final SecurityAuditLog log = this.createAuditLog(
             userId,
             null,
             success ? SecurityAuditAction.PASSWORD_CHANGED : SecurityAuditAction.PASSWORD_CHANGE_FAILED,
             null,
             ipAddress
         );
-        auditLogRepository.save(log);
-        logger.info("Password change attempt - User: {}, Success: {}", userId, success);
+        this.auditLogRepository.save(log);
+        SecurityAuditService.logger.info("Password change attempt - User: {}, Success: {}", userId, success);
     }
 
     private com.projecthub.base.auth.domain.entity.SecurityAuditLog createAuditLog(
-        UUID userId,
-        String username,
-        com.projecthub.base.auth.domain.entity.SecurityAuditLog action,
-        String details,
-        String ipAddress) {
-        SecurityAuditLog log = new SecurityAuditLog();
+        final UUID userId,
+        final String username,
+        final com.projecthub.base.auth.domain.entity.SecurityAuditLog action,
+        final String details,
+        final String ipAddress) {
+        final SecurityAuditLog log = new SecurityAuditLog();
         log.setUserId(userId);
         log.setUsername(username);
         log.setAction(action);
         log.setDetails(details);
         log.setTimestamp(LocalDateTime.now());
-        log.setIpAddress(ipAddress != null ? ipAddress : DEFAULT_IP_ADDRESS);
-        log.setSourceSystem(SOURCE_SYSTEM);
+        log.setIpAddress(null != ipAddress ? ipAddress : SecurityAuditService.DEFAULT_IP_ADDRESS);
+        log.setSourceSystem(SecurityAuditService.SOURCE_SYSTEM);
         return log;
     }
 
-    public int countRecentFailedAttempts(String username, String ipAddress, LocalDateTime localDateTime) {
+    public int countRecentFailedAttempts(final String username, final String ipAddress, final LocalDateTime localDateTime) {
         return 0;
     }
 }

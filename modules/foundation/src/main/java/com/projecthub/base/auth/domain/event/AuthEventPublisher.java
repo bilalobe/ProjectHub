@@ -14,18 +14,18 @@ import java.util.UUID;
 public class AuthEventPublisher {
     private final RabbitTemplate rabbitTemplate;
 
-    public void publishUserRegistered(UUID userId) {
-        log.debug("Publishing user registered event: {}", userId);
-        rabbitTemplate.convertAndSend(
+    public void publishUserRegistered(final UUID userId) {
+        AuthEventPublisher.log.debug("Publishing user registered event: {}", userId);
+        this.rabbitTemplate.convertAndSend(
             RabbitMQConfig.AUTH_EXCHANGE,
             "auth.user.registered",
             new UserRegisteredEvent(userId)
         );
     }
 
-    public void publishUserLoggedIn(UUID userId) {
-        log.debug("Publishing user login event: {}", userId);
-        rabbitTemplate.convertAndSend(
+    public void publishUserLoggedIn(final UUID userId) {
+        AuthEventPublisher.log.debug("Publishing user login event: {}", userId);
+        this.rabbitTemplate.convertAndSend(
             RabbitMQConfig.AUTH_EXCHANGE,
             "auth.user.login",
             new UserLoggedInEvent(userId)

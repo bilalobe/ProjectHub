@@ -53,8 +53,8 @@ public class PasswordService {
      * @param validationService the service responsible for password validation and encoding
      * @param userRepository    the repository used to access user data
      */
-    public PasswordService(PasswordValidationService validationService,
-                           AppUserJpaRepository userRepository) {
+    public PasswordService(final PasswordValidationService validationService,
+                           final AppUserJpaRepository userRepository) {
         this.validationService = validationService;
         this.userRepository = userRepository;
     }
@@ -79,14 +79,14 @@ public class PasswordService {
      * @throws ResourceNotFoundException   if no user is found with the provided user ID
      * @throws InvalidCredentialsException if the current password does not match the user's existing password
      */
-    public void securelyUpdatePassword(UUID userId, String currentPassword, String newPassword) {
-        AppUser user = userRepository.findById(userId)
+    public void securelyUpdatePassword(final UUID userId, final String currentPassword, final String newPassword) {
+        final AppUser user = this.userRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        validationService.validateCredentials(currentPassword, user.getPassword());
-        validationService.validateNewPassword(newPassword, user.getPassword());
+        this.validationService.validateCredentials(currentPassword, user.getPassword());
+        this.validationService.validateNewPassword(newPassword, user.getPassword());
 
-        user.setPassword(validationService.encodePassword(newPassword));
-        userRepository.save(user);
+        user.setPassword(this.validationService.encodePassword(newPassword));
+        this.userRepository.save(user);
     }
 }

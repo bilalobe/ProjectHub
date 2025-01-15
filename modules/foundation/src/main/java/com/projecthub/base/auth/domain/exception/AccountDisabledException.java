@@ -4,11 +4,11 @@ import com.projecthub.base.shared.exception.BaseException;
 import org.springframework.http.HttpStatus;
 
 public class AccountDisabledException extends BaseException {
-    public AccountDisabledException(String message) {
+    public AccountDisabledException(final String message) {
         super(message, HttpStatus.FORBIDDEN);
     }
 
-    public AccountDisabledException(String message, Throwable cause) {
+    public AccountDisabledException(final String message, final Throwable cause) {
         super(message, cause, HttpStatus.FORBIDDEN);
     }
 }

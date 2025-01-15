@@ -28,32 +28,32 @@ public class AccountLockingService {
     @Transactional
     public void incrementFailedAttempts(AppUser user) {
         int attempts = user.incrementFailedAttempts();
-        if (attempts >= MAX_FAILED_ATTEMPTS) {
-            self.lockAccount(user);
+        if (MAX_FAILED_ATTEMPTS <= attempts) {
+            this.self.lockAccount(user);
         }
-        userRepository.save(user);
+        this.userRepository.save(user);
     }
 
     @Transactional
-    public void lockAccount(AppUser user) {
+    public void lockAccount(final AppUser user) {
         user.setLocked(true);
-        userRepository.save(user);
-        auditService.logAccountAction(user.getId(), SecurityAuditAction.ACCOUNT_LOCKED,
-            "Account locked after " + MAX_FAILED_ATTEMPTS + " failed attempts");
+        this.userRepository.save(user);
+        this.auditService.logAccountAction(user.getId(), SecurityAuditAction.ACCOUNT_LOCKED,
+            "Account locked after " + AccountLockingService.MAX_FAILED_ATTEMPTS + " failed attempts");
     }
 
     @Transactional
-    public void unlockAccount(AppUser user) {
+    public void unlockAccount(final AppUser user) {
         user.setLocked(false);
         user.resetFailedAttempts();
-        userRepository.save(user);
-        auditService.logAccountAction(user.getId(), SecurityAuditAction.ACCOUNT_UNLOCKED,
+        this.userRepository.save(user);
+        this.auditService.logAccountAction(user.getId(), SecurityAuditAction.ACCOUNT_UNLOCKED,
             "Account manually unlocked");
     }
 
     @Transactional
-    public void resetFailedAttempts(AppUser user) {
+    public void resetFailedAttempts(final AppUser user) {
         user.resetFailedAttempts();
-        userRepository.save(user);
+        this.userRepository.save(user);
     }
 }

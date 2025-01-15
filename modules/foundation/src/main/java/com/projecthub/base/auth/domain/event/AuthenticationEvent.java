@@ -11,38 +11,38 @@ public record AuthenticationEvent(
     LocalDateTime timestamp,
     String details
 ) {
-    public static AuthenticationEvent createLoginSuccess(UUID userId, String username, String ipAddress) {
+    public static AuthenticationEvent createLoginSuccess(final UUID userId, final String username, final String ipAddress) {
         return new AuthenticationEvent(userId, username, ipAddress,
             AuthenticationEventType.LOGIN_SUCCESS, LocalDateTime.now(), null);
     }
 
-    public static AuthenticationEvent createLoginFailure(String username, String ipAddress, String details) {
+    public static AuthenticationEvent createLoginFailure(final String username, final String ipAddress, final String details) {
         return new AuthenticationEvent(null, username, ipAddress,
             AuthenticationEventType.LOGIN_FAILURE, LocalDateTime.now(), details);
     }
 
-    public static AuthenticationEvent createLogout(UUID userId, String username, String ipAddress) {
+    public static AuthenticationEvent createLogout(final UUID userId, final String username, final String ipAddress) {
         return new AuthenticationEvent(userId, username, ipAddress,
             AuthenticationEventType.LOGOUT, LocalDateTime.now(), null);
     }
 
-    public static AuthenticationEvent createTokenRefresh(UUID userId, String username, String ipAddress) {
+    public static AuthenticationEvent createTokenRefresh(final UUID userId, final String username, final String ipAddress) {
         return new AuthenticationEvent(userId, username, ipAddress,
             AuthenticationEventType.TOKEN_REFRESH, LocalDateTime.now(), null);
     }
 
-    public static AuthenticationEvent createAccountLocked(String username, String ipAddress, String reason) {
+    public static AuthenticationEvent createAccountLocked(final String username, final String ipAddress, final String reason) {
         return new AuthenticationEvent(null, username, ipAddress,
             AuthenticationEventType.ACCOUNT_LOCKED, LocalDateTime.now(), reason);
     }
 
-    public static AuthenticationEvent createSuspiciousActivity(String username, String ipAddress, String details) {
+    public static AuthenticationEvent createSuspiciousActivity(final String username, final String ipAddress, final String details) {
         return new AuthenticationEvent(null, username, ipAddress,
             AuthenticationEventType.SUSPICIOUS_ACTIVITY, LocalDateTime.now(), details);
     }
 
     public String routingKey() {
-        return "auth." + eventType.name().toLowerCase();
+        return "auth." + this.eventType.name().toLowerCase();
     }
 
     public enum AuthenticationEventType {

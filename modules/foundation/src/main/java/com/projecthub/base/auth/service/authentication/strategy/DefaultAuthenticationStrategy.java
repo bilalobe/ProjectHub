@@ -10,18 +10,18 @@ import org.springframework.stereotype.Component;
 public class DefaultAuthenticationStrategy implements AuthenticationStrategy {
     private final PasswordService passwordService;
 
-    public DefaultAuthenticationStrategy(PasswordService passwordService) {
+    public DefaultAuthenticationStrategy(final PasswordService passwordService) {
         this.passwordService = passwordService;
     }
 
     @Override
-    public boolean authenticate(AppUser user, LoginRequestDTO request) {
-        return passwordService.matches(request.password(), user.getPassword());
+    public boolean authenticate(final AppUser user, final LoginRequestDTO request) {
+        return this.passwordService.matches(request.password(), user.getPassword());
     }
 
     @Override
-    public boolean supports(LoginRequestDTO request) {
-        return request.authenticationType() == null ||
+    public boolean supports(final LoginRequestDTO request) {
+        return null == request.authenticationType() ||
             request.authenticationType().equals("password");
     }
 }

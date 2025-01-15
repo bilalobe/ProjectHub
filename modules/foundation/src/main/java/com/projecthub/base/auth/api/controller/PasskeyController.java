@@ -31,19 +31,19 @@ public class PasskeyController {
     @Operation(summary = "Start passkey registration")
     @ApiResponse(responseCode = "200", description = "Registration options created")
     @PostMapping("/register/start")
-    public ResponseEntity<PublicKeyCredentialCreationOptions> startRegistration(Authentication auth) {
-        log.debug("Starting passkey registration for user: {}", auth.getName());
-        return ResponseEntity.ok(passkeyService.startRegistration((AppUser) auth.getPrincipal()));
+    public ResponseEntity<PublicKeyCredentialCreationOptions> startRegistration(final Authentication auth) {
+        PasskeyController.log.debug("Starting passkey registration for user: {}", auth.getName());
+        return ResponseEntity.ok(this.passkeyService.startRegistration((AppUser) auth.getPrincipal()));
     }
 
     @Operation(summary = "Complete passkey registration")
     @ApiResponse(responseCode = "200", description = "Registration successful")
     @PostMapping("/register/finish")
     public ResponseEntity<Void> finishRegistration(
-        Authentication auth,
-        @Valid @RequestBody RegistrationResponse response) {
-        log.debug("Finishing passkey registration for user: {}", auth.getName());
-        passkeyService.finishRegistration((AppUser) auth.getPrincipal(), response);
+        final Authentication auth,
+        @Valid @RequestBody final RegistrationResponse response) {
+        PasskeyController.log.debug("Finishing passkey registration for user: {}", auth.getName());
+        this.passkeyService.finishRegistration((AppUser) auth.getPrincipal(), response);
         return ResponseEntity.ok().build();
     }
 
@@ -51,9 +51,9 @@ public class PasskeyController {
     @ApiResponse(responseCode = "200", description = "Authentication options created")
     @PostMapping("/authenticate/start")
     public ResponseEntity<PublicKeyCredentialRequestOptions> startAuthentication(
-        @RequestParam String username) {
-        log.debug("Starting passkey authentication for user: {}", username);
-        return ResponseEntity.ok(passkeyService.startAuthentication(username));
+        @RequestParam final String username) {
+        PasskeyController.log.debug("Starting passkey authentication for user: {}", username);
+        return ResponseEntity.ok(this.passkeyService.startAuthentication(username));
     }
 
     @Operation(summary = "Complete passkey authentication")
@@ -61,17 +61,17 @@ public class PasskeyController {
     @ApiResponse(responseCode = "400", description = "Authentication failed")
     @PostMapping("/authenticate/finish")
     public ResponseEntity<Object> finishAuthentication(
-        @Valid @RequestBody AuthenticationResponse response) {
-        log.debug("Finishing passkey authentication for credential: {}", response.getCredentialId());
+        @Valid @RequestBody final AuthenticationResponse response) {
+        PasskeyController.log.debug("Finishing passkey authentication for credential: {}", response.getCredentialId());
 
-        if (passkeyService.verifyAuthentication(response)) {
-            var user = passkeyService.getUserFromCredentialId(response.getCredentialId());
-            var result = authService.createAuthenticationResult(user);
-            log.info("Passkey authentication successful for user: {}", user.getId());
+        if (this.passkeyService.verifyAuthentication(response)) {
+            final var user = this.passkeyService.getUserFromCredentialId(response.getCredentialId());
+            final var result = this.authService.createAuthenticationResult(user);
+            PasskeyController.log.info("Passkey authentication successful for user: {}", user.getId());
             return ResponseEntity.ok(result);
         }
 
-        log.warn("Passkey authentication failed for credential: {}", response.getCredentialId());
+        PasskeyController.log.warn("Passkey authentication failed for credential: {}", response.getCredentialId());
         return ResponseEntity.badRequest().build();
     }
 }

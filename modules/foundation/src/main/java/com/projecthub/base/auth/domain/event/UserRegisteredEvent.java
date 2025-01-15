@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationEvent;
 public class UserRegisteredEvent extends ApplicationEvent {
     private final AppUser user;
 
-    public UserRegisteredEvent(AppUser user) {
+    public UserRegisteredEvent(final AppUser user) {
         super(user);
         this.user = user;
     }

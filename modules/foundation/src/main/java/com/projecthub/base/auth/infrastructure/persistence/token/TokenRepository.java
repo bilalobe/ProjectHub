@@ -10,31 +10,31 @@ import java.time.LocalDateTime;
 public class TokenRepository {
     private final EntityManager entityManager;
 
-    public TokenRepository(EntityManager entityManager) {
+    public TokenRepository(final EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     @Transactional
-    public void revokeAllUserTokens(String username) {
-        entityManager.createQuery(
+    public void revokeAllUserTokens(final String username) {
+        this.entityManager.createQuery(
                 "UPDATE Token t SET t.revoked = true WHERE t.user.username = :username")
             .setParameter("username", username)
             .executeUpdate();
     }
 
-    public boolean isTokenValid(String token) {
-        Long count = entityManager.createQuery(
+    public boolean isTokenValid(final String token) {
+        final Long count = this.entityManager.createQuery(
                 "SELECT COUNT(t) FROM Token t WHERE t.tokenValue = :token AND t.revoked = false AND t.expiryDate > :now",
                 Long.class)
             .setParameter("token", token)
             .setParameter("now", LocalDateTime.now())
             .getSingleResult();
-        return count > 0;
+        return 0 < count;
     }
 
     @Transactional
-    public void revokeToken(String token) {
-        entityManager.createQuery(
+    public void revokeToken(final String token) {
+        this.entityManager.createQuery(
                 "UPDATE Token t SET t.revoked = true WHERE t.tokenValue = :token")
             .setParameter("token", token)
             .executeUpdate();

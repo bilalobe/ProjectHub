@@ -21,11 +21,11 @@ public class WebAuthnService {
     private final PasskeyCredentialRepository credentialRepository;
 
     @Transactional
-    public PublicKeyCredentialCreationOptions startRegistration(SecurityUser user) {
+    public PublicKeyCredentialCreationOptions startRegistration(final SecurityUser user) {
         try {
-            log.debug("Starting WebAuthn registration for user: {}", user.getUsername());
+            WebAuthnService.log.debug("Starting WebAuthn registration for user: {}", user.getUsername());
 
-            return relyingParty.startRegistration(
+            return this.relyingParty.startRegistration(
                 StartRegistrationOptions.builder()
                     .user(UserIdentity.builder()
                         .name(user.getUsername())
@@ -38,18 +38,18 @@ public class WebAuthnService {
                         .authenticatorAttachment(AuthenticatorAttachment.CROSS_PLATFORM)
                         .build())
                     .build());
-        } catch (Exception e) {
-            log.error("Failed to start WebAuthn registration", e);
+        } catch (final Exception e) {
+            WebAuthnService.log.error("Failed to start WebAuthn registration", e);
             throw new WebAuthnRegistrationException("Failed to start registration", e);
         }
     }
 
     @Transactional
-    public void finishRegistration(SecurityUser user, RegistrationResult result) {
+    public void finishRegistration(final SecurityUser user, final RegistrationResult result) {
         try {
-            log.debug("Finishing WebAuthn registration for user: {}", user.getUsername());
+            WebAuthnService.log.debug("Finishing WebAuthn registration for user: {}", user.getUsername());
 
-            PasskeyCredential credential = new PasskeyCredential();
+            final PasskeyCredential credential = new PasskeyCredential();
             credential.setUser(user);
             credential.setCredentialId(result.getKeyId().getId().getBase64());
             credential.setPublicKey(result.getPublicKeyCose().getBase64());
@@ -57,67 +57,67 @@ public class WebAuthnService {
             credential.setRegistrationTime(LocalDateTime.now());
             credential.setLastUsedTime(LocalDateTime.now());
 
-            credentialRepository.save(credential);
-            log.info("WebAuthn registration completed for user: {}", user.getUsername());
-        } catch (Exception e) {
-            log.error("Failed to complete WebAuthn registration", e);
+            this.credentialRepository.save(credential);
+            WebAuthnService.log.info("WebAuthn registration completed for user: {}", user.getUsername());
+        } catch (final Exception e) {
+            WebAuthnService.log.error("Failed to complete WebAuthn registration", e);
             throw new WebAuthnRegistrationException("Failed to complete registration", e);
         }
     }
 
     @Transactional(readOnly = true)
-    public AssertionRequest startAuthentication(String username) {
+    public AssertionRequest startAuthentication(final String username) {
         try {
-            log.debug("Starting WebAuthn authentication for user: {}", username);
+            WebAuthnService.log.debug("Starting WebAuthn authentication for user: {}", username);
 
-            return relyingParty.startAssertion(
+            return this.relyingParty.startAssertion(
                 StartAssertionOptions.builder()
                     .username(username)
                     .userVerification(UserVerificationRequirement.PREFERRED)
                     .build());
-        } catch (Exception e) {
-            log.error("Failed to start WebAuthn authentication", e);
+        } catch (final Exception e) {
+            WebAuthnService.log.error("Failed to start WebAuthn authentication", e);
             throw new WebAuthnAuthenticationException("Failed to start authentication", e);
         }
     }
 
     @Transactional
-    public AssertionResult finishAuthentication(AssertionRequest request, AuthenticatorAssertionResponse response) {
+    public AssertionResult finishAuthentication(final AssertionRequest request, final AuthenticatorAssertionResponse response) {
         try {
-            log.debug("Finishing WebAuthn authentication");
+            WebAuthnService.log.debug("Finishing WebAuthn authentication");
 
-            AssertionResult result = relyingParty.finishAssertion(null);
+            final AssertionResult result = this.relyingParty.finishAssertion(null);
 
             if (result.isSuccess()) {
-                updateSignatureCount(result);
-                log.info("WebAuthn authentication successful for user: {}", result.getUsername());
+                this.updateSignatureCount(result);
+                WebAuthnService.log.info("WebAuthn authentication successful for user: {}", result.getUsername());
             }
 
             return result;
-        } catch (AssertionFailedException e) {
-            log.error("WebAuthn authentication failed", e);
+        } catch (final AssertionFailedException e) {
+            WebAuthnService.log.error("WebAuthn authentication failed", e);
             throw new WebAuthnAuthenticationException("Authentication failed", e);
         }
     }
 
-    private void updateSignatureCount(AssertionResult result) {
-        credentialRepository.findByCredentialId(result.getCredential().getCredentialId())
+    private void updateSignatureCount(final AssertionResult result) {
+        this.credentialRepository.findByCredentialId(result.getCredential().getCredentialId())
             .ifPresent(credential -> {
                 credential.setSignatureCount(result.getSignatureCount());
-                credentialRepository.save(credential);
+                this.credentialRepository.save(credential);
             });
     }
 }
 
 // Custom exceptions
 class WebAuthnRegistrationException extends RuntimeException {
-    public WebAuthnRegistrationException(String message, Throwable cause) {
+    public WebAuthnRegistrationException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }
 
 class WebAuthnAuthenticationException extends RuntimeException {
-    public WebAuthnAuthenticationException(String message, Throwable cause) {
+    public WebAuthnAuthenticationException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

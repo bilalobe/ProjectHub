@@ -20,8 +20,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public AuthenticationServiceImpl(
         // ...existing parameters...,
-        ApplicationEventPublisher eventPublisher,
-        List<AuthenticationStrategy> authenticationStrategies) {
+        final ApplicationEventPublisher eventPublisher,
+        final List<AuthenticationStrategy> authenticationStrategies) {
         // ...existing assignments...
         this.eventPublisher = eventPublisher;
         this.authenticationStrategies = authenticationStrategies;
@@ -29,39 +29,39 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @Transactional
-    public AuthenticationResultDTO authenticate(LoginRequestDTO loginRequest) {
+    public AuthenticationResultDTO authenticate(final LoginRequestDTO loginRequest) {
         try {
-            AppUser user = validateAndGetUser(loginRequest);
-            AuthenticationStrategy strategy = findAuthenticationStrategy(loginRequest);
+            final AppUser user = this.validateAndGetUser(loginRequest);
+            final AuthenticationStrategy strategy = this.findAuthenticationStrategy(loginRequest);
 
             if (!strategy.authenticate(user, loginRequest)) {
-                handleFailedLogin(loginRequest);
-                throw new InvalidCredentialsException(INVALID_CREDENTIALS_MESSAGE);
+                this.handleFailedLogin(loginRequest);
+                throw new InvalidCredentialsException(AuthenticationService.INVALID_CREDENTIALS_MESSAGE);
             }
 
-            AuthenticationResultDTO result = handleSuccessfulLogin(user, loginRequest);
-            publishAuthenticationEvent(AuthenticationEvent.createLoginSuccess(
+            final AuthenticationResultDTO result = this.handleSuccessfulLogin(user, loginRequest);
+            this.publishAuthenticationEvent(AuthenticationEvent.createLoginSuccess(
                 user.getId(), user.getUsername(), loginRequest.ipAddress()));
 
             return result;
-        } catch (Exception e) {
-            handleFailedLogin(loginRequest);
-            publishAuthenticationEvent(AuthenticationEvent.createLoginFailure(
+        } catch (final Exception e) {
+            this.handleFailedLogin(loginRequest);
+            this.publishAuthenticationEvent(AuthenticationEvent.createLoginFailure(
                 loginRequest.principal(), loginRequest.ipAddress(), e.getMessage()));
             throw e;
         }
     }
 
-    private AuthenticationStrategy findAuthenticationStrategy(LoginRequestDTO request) {
-        return authenticationStrategies.stream()
+    private AuthenticationStrategy findAuthenticationStrategy(final LoginRequestDTO request) {
+        return this.authenticationStrategies.stream()
             .filter(strategy -> strategy.supports(request))
             .findFirst()
             .orElseThrow(() -> new UnsupportedAuthenticationTypeException(
                 "No authentication strategy found for: " + request.authenticationType()));
     }
 
-    private void publishAuthenticationEvent(AuthenticationEvent event) {
-        eventPublisher.publishEvent(event);
+    private void publishAuthenticationEvent(final AuthenticationEvent event) {
+        this.eventPublisher.publishEvent(event);
     }
 
     // ...existing methods...

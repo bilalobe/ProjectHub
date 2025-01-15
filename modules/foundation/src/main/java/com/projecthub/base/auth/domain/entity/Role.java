@@ -25,11 +25,11 @@ public class Role extends BaseEntity implements Serializable {
     @Column(nullable = false, unique = true)
     private RoleType name;
 
-    @Column()
+    @Column
     private String description;
 
     public RoleType getRoleType() {
-        return this.name;
+        return name;
     }
 
 }
