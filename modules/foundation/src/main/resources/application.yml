@@ -36,6 +36,23 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
 
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+          max-interval: 10000
+          multiplier: 2.0
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        max-interval: 10000
+        multiplier: 2.0
+
 # Application Specific Configuration
 app:
   # CORS Configuration
