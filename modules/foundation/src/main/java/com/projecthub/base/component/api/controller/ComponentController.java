@@ -21,44 +21,44 @@ public class ComponentController implements ComponentApi {
     private static final Logger logger = LoggerFactory.getLogger(ComponentController.class);
     private final ComponentService componentService;
 
-    public ComponentController(ComponentService componentService) {
+    public ComponentController(final ComponentService componentService) {
         this.componentService = componentService;
     }
 
     @Override
     public ResponseEntity<List<ComponentDTO>> getAllComponents() {
-        logger.info("Retrieving all components");
-        return ResponseEntity.ok(componentService.getAllComponents());
+        ComponentController.logger.info("Retrieving all components");
+        return ResponseEntity.ok(this.componentService.getAllComponents());
     }
 
     @Override
-    public ResponseEntity<ComponentDTO> getById(UUID id) {
-        logger.info("Retrieving component with ID {}", id);
-        return ResponseEntity.ok(componentService.getComponentById(id));
+    public ResponseEntity<ComponentDTO> getById(final UUID id) {
+        ComponentController.logger.info("Retrieving component with ID {}", id);
+        return ResponseEntity.ok(this.componentService.getComponentById(id));
     }
 
     @Override
-    public ResponseEntity<ComponentDTO> saveComponent(@Valid @RequestBody ComponentDTO component) {
-        logger.info("Creating new component");
-        return ResponseEntity.ok(componentService.saveComponent(component));
+    public ResponseEntity<ComponentDTO> saveComponent(@Valid @RequestBody final ComponentDTO component) {
+        ComponentController.logger.info("Creating new component");
+        return ResponseEntity.ok(this.componentService.saveComponent(component));
     }
 
     @Override
-    public ResponseEntity<ComponentDTO> updateComponent(UUID id, @Valid @RequestBody ComponentDTO component) {
-        logger.info("Updating component with ID {}", id);
-        return ResponseEntity.ok(componentService.updateComponent(id, component));
+    public ResponseEntity<ComponentDTO> updateComponent(final UUID id, @Valid @RequestBody final ComponentDTO component) {
+        ComponentController.logger.info("Updating component with ID {}", id);
+        return ResponseEntity.ok(this.componentService.updateComponent(id, component));
     }
 
     @Override
-    public ResponseEntity<Void> deleteById(UUID id) {
-        logger.info("Deleting component with ID {}", id);
-        componentService.deleteComponent(id);
+    public ResponseEntity<Void> deleteById(final UUID id) {
+        ComponentController.logger.info("Deleting component with ID {}", id);
+        this.componentService.deleteComponent(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<List<ComponentDTO>> getComponentsByProject(UUID projectId) {
-        logger.info("Retrieving components for project with ID {}", projectId);
-        return ResponseEntity.ok(componentService.getComponentsByProjectId(projectId));
+    public ResponseEntity<List<ComponentDTO>> getComponentsByProject(final UUID projectId) {
+        ComponentController.logger.info("Retrieving components for project with ID {}", projectId);
+        return ResponseEntity.ok(this.componentService.getComponentsByProjectId(projectId));
     }
 }

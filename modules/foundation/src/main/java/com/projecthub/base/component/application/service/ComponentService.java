@@ -26,7 +26,7 @@ public class ComponentService {
     private final ComponentJpaRepository componentRepository;
     private final ComponentMapper componentMapper;
 
-    public ComponentService(ComponentJpaRepository componentRepository, ComponentMapper componentMapper) {
+    public ComponentService(final ComponentJpaRepository componentRepository, final ComponentMapper componentMapper) {
         this.componentRepository = componentRepository;
         this.componentMapper = componentMapper;
     }
@@ -39,15 +39,15 @@ public class ComponentService {
      * @throws IllegalArgumentException if componentDTO is null
      */
     @Transactional
-    public ComponentDTO saveComponent(ComponentDTO componentDTO) {
-        logger.info("Creating a new component");
-        if (componentDTO == null) {
+    public ComponentDTO saveComponent(final ComponentDTO componentDTO) {
+        ComponentService.logger.info("Creating a new component");
+        if (null == componentDTO) {
             throw new IllegalArgumentException("ComponentDTO cannot be null");
         }
-        Component component = componentMapper.toEntity(componentDTO);
-        Component savedComponent = componentRepository.save(component);
-        logger.info("Component created with ID {}", savedComponent.getId());
-        return componentMapper.toDto(savedComponent);
+        final Component component = this.componentMapper.toEntity(componentDTO);
+        final Component savedComponent = this.componentRepository.save(component);
+        ComponentService.logger.info("Component created with ID {}", savedComponent.getId());
+        return this.componentMapper.toDto(savedComponent);
     }
 
     /**
@@ -59,17 +59,17 @@ public class ComponentService {
      * @throws ResourceNotFoundException if the component is not found
      */
     @Transactional
-    public ComponentDTO updateComponent(UUID id, ComponentDTO componentDTO) {
-        logger.info("Updating component with ID {}", id);
-        if (componentDTO == null) {
+    public ComponentDTO updateComponent(final UUID id, final ComponentDTO componentDTO) {
+        ComponentService.logger.info("Updating component with ID {}", id);
+        if (null == componentDTO) {
             throw new IllegalArgumentException("ComponentDTO cannot be null");
         }
-        Component existingComponent = componentRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(COMPONENT_NOT_FOUND_MESSAGE + id));
-        componentMapper.updateEntityFromDto(componentDTO, existingComponent);
-        Component updatedComponent = componentRepository.save(existingComponent);
-        logger.info("Component updated with ID {}", updatedComponent.getId());
-        return componentMapper.toDto(updatedComponent);
+        final Component existingComponent = this.componentRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(ComponentService.COMPONENT_NOT_FOUND_MESSAGE + id));
+        this.componentMapper.updateEntityFromDto(componentDTO, existingComponent);
+        final Component updatedComponent = this.componentRepository.save(existingComponent);
+        ComponentService.logger.info("Component updated with ID {}", updatedComponent.getId());
+        return this.componentMapper.toDto(updatedComponent);
     }
 
     /**
@@ -79,13 +79,13 @@ public class ComponentService {
      * @throws ResourceNotFoundException if the component is not found
      */
     @Transactional
-    public void deleteComponent(UUID id) {
-        logger.info("Deleting component with ID {}", id);
-        if (!componentRepository.existsById(id)) {
-            throw new ResourceNotFoundException(COMPONENT_NOT_FOUND_MESSAGE + id);
+    public void deleteComponent(final UUID id) {
+        ComponentService.logger.info("Deleting component with ID {}", id);
+        if (!this.componentRepository.existsById(id)) {
+            throw new ResourceNotFoundException(ComponentService.COMPONENT_NOT_FOUND_MESSAGE + id);
         }
-        componentRepository.deleteById(id);
-        logger.info("Component deleted with ID {}", id);
+        this.componentRepository.deleteById(id);
+        ComponentService.logger.info("Component deleted with ID {}", id);
     }
 
     /**
@@ -95,11 +95,11 @@ public class ComponentService {
      * @return the component DTO
      * @throws ResourceNotFoundException if the component is not found
      */
-    public ComponentDTO getComponentById(UUID id) {
-        logger.info("Retrieving component with ID {}", id);
-        Component component = componentRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(COMPONENT_NOT_FOUND_MESSAGE + id));
-        return componentMapper.toDto(component);
+    public ComponentDTO getComponentById(final UUID id) {
+        ComponentService.logger.info("Retrieving component with ID {}", id);
+        final Component component = this.componentRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(ComponentService.COMPONENT_NOT_FOUND_MESSAGE + id));
+        return this.componentMapper.toDto(component);
     }
 
     /**
@@ -108,9 +108,9 @@ public class ComponentService {
      * @return a list of component DTOs
      */
     public List<ComponentDTO> getAllComponents() {
-        logger.info("Retrieving all components");
-        return componentRepository.findAll().stream()
-            .map(componentMapper::toDto)
+        ComponentService.logger.info("Retrieving all components");
+        return this.componentRepository.findAll().stream()
+            .map(this.componentMapper::toDto)
             .toList();
     }
 
@@ -120,10 +120,10 @@ public class ComponentService {
      * @param projectId the ID of the project
      * @return a list of component DTOs
      */
-    public List<ComponentDTO> getComponentsByProjectId(UUID projectId) {
-        logger.info("Retrieving components for project ID {}", projectId);
-        return componentRepository.findByProjectId(projectId).stream()
-            .map(componentMapper::toDto)
+    public List<ComponentDTO> getComponentsByProjectId(final UUID projectId) {
+        ComponentService.logger.info("Retrieving components for project ID {}", projectId);
+        return this.componentRepository.findByProjectId(projectId).stream()
+            .map(this.componentMapper::toDto)
             .toList();
     }
 }

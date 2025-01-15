@@ -12,12 +12,12 @@ class ComponentEventPublisherImpl implements ComponentEventPublisher {
     private final ApplicationEventPublisher publisher;
 
     @Override
-    public void publish(ComponentDomainEvent event) {
-        log.debug("Publishing event: {}", event);
+    public void publish(final ComponentDomainEvent event) {
+        ComponentEventPublisherImpl.log.debug("Publishing event: {}", event);
         try {
-            publisher.publishEvent(event);
-        } catch (Exception e) {
-            log.error("Error publishing event: {}", event, e);
+            this.publisher.publishEvent(event);
+        } catch (final Exception e) {
+            ComponentEventPublisherImpl.log.error("Error publishing event: {}", event, e);
         }
     }
 }

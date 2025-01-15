@@ -33,11 +33,7 @@ import java.util.Objects;
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(
-    indexes = {
-        @Index(name = "idx_component_name", columnList = "name")
-    }
-)
+@Table(indexes = @Index(name = "idx_component_name", columnList = "name"))
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -87,23 +83,23 @@ public class Component extends BaseEntity {
     private Project project;
 
 
-    public Component(String name, String description, Project project) {
+    public Component(final String name, final String description, final Project project) {
         this.name = name;
         this.description = description;
         this.project = project;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Component component = (Component) o;
-        return Objects.equals(name, component.name) &&
-            Objects.equals(project, component.project);
+        if (null == o || this.getClass() != o.getClass()) return false;
+        final Component component = (Component) o;
+        return Objects.equals(this.name, component.name) &&
+            Objects.equals(this.project, component.project);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, project);
+        return Objects.hash(this.name, this.project);
     }
 }

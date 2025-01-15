@@ -16,43 +16,43 @@ public class ComponentAggregate {
     private final ComponentEventPublisher eventPublisher;
     private final UUID initiatorId;
 
-    private ComponentAggregate(Component root, ComponentEventPublisher eventPublisher, UUID initiatorId) {
+    private ComponentAggregate(final Component root, final ComponentEventPublisher eventPublisher, final UUID initiatorId) {
         this.root = root;
         this.eventPublisher = eventPublisher;
         this.initiatorId = initiatorId;
-        this.events = new ArrayList<>();
+        events = new ArrayList<>();
     }
 
-    public static ComponentAggregate create(CreateComponentCommand command, ComponentEventPublisher eventPublisher) {
-        Component component = new Component(command.getName(), command.getDescription());
-        ComponentAggregate aggregate = new ComponentAggregate(component, eventPublisher, command.getInitiatorId());
+    public static ComponentAggregate create(final CreateComponentCommand command, final ComponentEventPublisher eventPublisher) {
+        final Component component = new Component(command.getName(), command.getDescription());
+        final ComponentAggregate aggregate = new ComponentAggregate(component, eventPublisher, command.getInitiatorId());
         aggregate.registerCreated();
         return aggregate;
     }
 
     private void registerCreated() {
-        eventPublisher.publishCreated(root, initiatorId);
+        this.eventPublisher.publishCreated(this.root, this.initiatorId);
     }
 
-    public void update(UpdateComponentCommand command) {
-        root.update(command.getName(), command.getDescription());
-        eventPublisher.publishUpdated(root, initiatorId);
+    public void update(final UpdateComponentCommand command) {
+        this.root.update(command.getName(), command.getDescription());
+        this.eventPublisher.publishUpdated(this.root, this.initiatorId);
     }
 
     public void delete() {
-        eventPublisher.publishDeleted(root.getId(), initiatorId);
+        this.eventPublisher.publishDeleted(this.root.getId(), this.initiatorId);
     }
 
     public List<ComponentDomainEvent> getDomainEvents() {
-        return List.copyOf(events);
+        return List.copyOf(this.events);
     }
 
     public void clearDomainEvents() {
-        events.clear();
+        this.events.clear();
     }
 
-    private void registerEvent(ComponentDomainEvent event) {
-        events.add(event);
-        eventPublisher.publish(event);
+    private void registerEvent(final ComponentDomainEvent event) {
+        this.events.add(event);
+        this.eventPublisher.publish(event);
     }
 }
