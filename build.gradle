@@ -1,6 +1,15 @@
 plugins {
-    id 'java'
-    id 'distribution'
+  id 'java'
+  id 'distribution'
+  id 'org.sonarqube'
+}
+
+sonar {
+    properties {
+      property "sonar.projectKey", "bilalobe_ProjectHub"
+      property "sonar.organization", "bilalobe"
+      property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 apply from: "buildSrc/src/main/groovy/dependencies.gradle"
