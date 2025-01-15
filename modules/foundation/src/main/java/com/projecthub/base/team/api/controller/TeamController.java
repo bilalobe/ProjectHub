@@ -21,44 +21,44 @@ public class TeamController implements TeamApi {
     private static final Logger logger = LoggerFactory.getLogger(TeamController.class);
     private final TeamService teamService;
 
-    public TeamController(TeamService teamService) {
+    public TeamController(final TeamService teamService) {
         this.teamService = teamService;
     }
 
     @Override
     public ResponseEntity<List<TeamDTO>> getAllTeams() {
-        logger.info("Retrieving all teams");
-        return ResponseEntity.ok(teamService.getAllTeams());
+        TeamController.logger.info("Retrieving all teams");
+        return ResponseEntity.ok(this.teamService.getAllTeams());
     }
 
     @Override
-    public ResponseEntity<TeamDTO> getById(UUID id) {
-        logger.info("Retrieving team with ID {}", id);
-        return ResponseEntity.ok(teamService.getTeamById(id));
+    public ResponseEntity<TeamDTO> getById(final UUID id) {
+        TeamController.logger.info("Retrieving team with ID {}", id);
+        return ResponseEntity.ok(this.teamService.getTeamById(id));
     }
 
     @Override
-    public ResponseEntity<TeamDTO> createTeam(@Valid @RequestBody TeamDTO team) {
-        logger.info("Creating new team");
-        return ResponseEntity.ok(teamService.createTeam(team));
+    public ResponseEntity<TeamDTO> createTeam(@Valid @RequestBody final TeamDTO team) {
+        TeamController.logger.info("Creating new team");
+        return ResponseEntity.ok(this.teamService.createTeam(team));
     }
 
-    public ResponseEntity<TeamDTO> updateTeam(UUID id, @Valid @RequestBody TeamDTO team) {
-        logger.info("Updating team with ID {}", id);
-        return ResponseEntity.ok(teamService.updateTeam(id, team));
+    public ResponseEntity<TeamDTO> updateTeam(final UUID id, @Valid @RequestBody final TeamDTO team) {
+        TeamController.logger.info("Updating team with ID {}", id);
+        return ResponseEntity.ok(this.teamService.updateTeam(id, team));
     }
 
     @Override
-    public ResponseEntity<Void> deleteById(UUID id) {
-        logger.info("Deleting team with ID {}", id);
-        teamService.deleteTeam(id);
+    public ResponseEntity<Void> deleteById(final UUID id) {
+        TeamController.logger.info("Deleting team with ID {}", id);
+        this.teamService.deleteTeam(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity addUserToTeam(UUID teamId, UUID userId) {
-        logger.info("Adding user with ID {} to team with ID {}", userId, teamId);
-        teamService.addUserToTeam(teamId, userId);
+    public ResponseEntity addUserToTeam(final UUID teamId, final UUID userId) {
+        TeamController.logger.info("Adding user with ID {} to team with ID {}", userId, teamId);
+        this.teamService.addUserToTeam(teamId, userId);
         return ResponseEntity.noContent().build();
     }
 }

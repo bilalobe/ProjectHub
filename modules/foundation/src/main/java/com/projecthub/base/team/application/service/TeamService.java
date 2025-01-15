@@ -36,7 +36,7 @@ public class TeamService {
     private final ProjectMapper projectMapper;
     private final AppUserMapper appUserMapper;
 
-    public TeamService(TeamJpaRepository teamRepository, AppUserJpaRepository appUserRepository, ProjectJpaRepository projectRepository, TeamMapper teamMapper, ProjectMapper projectMapper, AppUserMapper appUserMapper) {
+    public TeamService(final TeamJpaRepository teamRepository, final AppUserJpaRepository appUserRepository, final ProjectJpaRepository projectRepository, final TeamMapper teamMapper, final ProjectMapper projectMapper, final AppUserMapper appUserMapper) {
         this.teamRepository = teamRepository;
         this.appUserRepository = appUserRepository;
         this.projectRepository = projectRepository;
@@ -53,13 +53,13 @@ public class TeamService {
      * @throws IllegalArgumentException if teamDTO is null
      */
     @Transactional
-    public TeamDTO createTeam(TeamDTO teamDTO) {
-        logger.info("Creating a new team");
-        validateTeamDTO(teamDTO);
-        Team team = teamMapper.toEntity(teamDTO);
-        Team savedTeam = teamRepository.save(team);
-        logger.info("Team created with ID: {}", savedTeam.getId());
-        return teamMapper.toDto(savedTeam);
+    public TeamDTO createTeam(final TeamDTO teamDTO) {
+        TeamService.logger.info("Creating a new team");
+        this.validateTeamDTO(teamDTO);
+        final Team team = this.teamMapper.toEntity(teamDTO);
+        final Team savedTeam = this.teamRepository.save(team);
+        TeamService.logger.info("Team created with ID: {}", savedTeam.getId());
+        return this.teamMapper.toDto(savedTeam);
     }
 
     /**
@@ -72,14 +72,14 @@ public class TeamService {
      * @throws IllegalArgumentException  if teamDTO is null
      */
     @Transactional
-    public TeamDTO updateTeam(UUID id, TeamDTO teamDTO) {
-        logger.info("Updating team with ID: {}", id);
-        validateTeamDTO(teamDTO);
-        Team existingTeam = findTeamById(id);
-        teamMapper.updateEntityFromDto(teamDTO, existingTeam);
-        Team updatedTeam = teamRepository.save(existingTeam);
-        logger.info("Team updated with ID: {}", updatedTeam.getId());
-        return teamMapper.toDto(updatedTeam);
+    public TeamDTO updateTeam(final UUID id, final TeamDTO teamDTO) {
+        TeamService.logger.info("Updating team with ID: {}", id);
+        this.validateTeamDTO(teamDTO);
+        final Team existingTeam = this.findTeamById(id);
+        this.teamMapper.updateEntityFromDto(teamDTO, existingTeam);
+        final Team updatedTeam = this.teamRepository.save(existingTeam);
+        TeamService.logger.info("Team updated with ID: {}", updatedTeam.getId());
+        return this.teamMapper.toDto(updatedTeam);
     }
 
     /**
@@ -89,13 +89,13 @@ public class TeamService {
      * @throws ResourceNotFoundException if the team is not found
      */
     @Transactional
-    public void deleteTeam(UUID id) {
-        logger.info("Deleting team with ID: {}", id);
-        if (!teamRepository.existsById(id)) {
+    public void deleteTeam(final UUID id) {
+        TeamService.logger.info("Deleting team with ID: {}", id);
+        if (!this.teamRepository.existsById(id)) {
             throw new ResourceNotFoundException("Team not found with ID: " + id);
         }
-        teamRepository.deleteById(id);
-        logger.info("Team deleted with ID: {}", id);
+        this.teamRepository.deleteById(id);
+        TeamService.logger.info("Team deleted with ID: {}", id);
     }
 
     /**
@@ -105,10 +105,10 @@ public class TeamService {
      * @return the team DTO
      * @throws ResourceNotFoundException if the team is not found
      */
-    public TeamDTO getTeamById(UUID id) {
-        logger.info("Retrieving team with ID: {}", id);
-        Team team = findTeamById(id);
-        return teamMapper.toDto(team);
+    public TeamDTO getTeamById(final UUID id) {
+        TeamService.logger.info("Retrieving team with ID: {}", id);
+        final Team team = this.findTeamById(id);
+        return this.teamMapper.toDto(team);
     }
 
     /**
@@ -117,21 +117,21 @@ public class TeamService {
      * @return a list of team DTOs
      */
     public List<TeamDTO> getAllTeams() {
-        logger.info("Retrieving all teams");
-        return teamRepository.findAll().stream()
-            .map(teamMapper::toDto)
+        TeamService.logger.info("Retrieving all teams");
+        return this.teamRepository.findAll().stream()
+            .map(this.teamMapper::toDto)
             .toList();
     }
 
-    private void validateTeamDTO(TeamDTO teamDTO) {
-        if (teamDTO == null) {
+    private void validateTeamDTO(final TeamDTO teamDTO) {
+        if (null == teamDTO) {
             throw new IllegalArgumentException("TeamDTO cannot be null");
         }
         // Additional validation logic can be added here
     }
 
-    private Team findTeamById(UUID id) {
-        return teamRepository.findById(id)
+    private Team findTeamById(final UUID id) {
+        return this.teamRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Team not found with ID: " + id));
     }
 
@@ -144,16 +144,16 @@ public class TeamService {
      * @throws ResourceNotFoundException if the team or user is not found
      */
     @Transactional
-    public TeamDTO addUserToTeam(UUID teamId, UUID userId) {
-        logger.info("Adding user with ID: {} to team with ID: {}", userId, teamId);
-        Team team = findTeamById(teamId);
-        appUserRepository.findById(userId)
+    public TeamDTO addUserToTeam(final UUID teamId, final UUID userId) {
+        TeamService.logger.info("Adding user with ID: {} to team with ID: {}", userId, teamId);
+        final Team team = this.findTeamById(teamId);
+        this.appUserRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
-        Student student = new Student();
+        final Student student = new Student();
         team.getStudents().add(student);
-        Team updatedTeam = teamRepository.save(team);
-        logger.info("User added to team with ID: {}", updatedTeam.getId());
-        return teamMapper.toDto(updatedTeam);
+        final Team updatedTeam = this.teamRepository.save(team);
+        TeamService.logger.info("User added to team with ID: {}", updatedTeam.getId());
+        return this.teamMapper.toDto(updatedTeam);
     }
 
     /**
@@ -162,10 +162,10 @@ public class TeamService {
      * @param cohortId the ID of the cohort
      * @return a list of team DTOs
      */
-    public List<TeamDTO> getTeamsByCohortId(UUID cohortId) {
-        logger.info("Retrieving teams for cohort ID: {}", cohortId);
-        return teamRepository.findByCohortId(cohortId).stream()
-            .map(teamMapper::toDto)
+    public List<TeamDTO> getTeamsByCohortId(final UUID cohortId) {
+        TeamService.logger.info("Retrieving teams for cohort ID: {}", cohortId);
+        return this.teamRepository.findByCohortId(cohortId).stream()
+            .map(this.teamMapper::toDto)
             .toList();
     }
 
@@ -175,11 +175,11 @@ public class TeamService {
      * @param teamId the ID of the team
      * @return a list of project DTOs
      */
-    public List<ProjectDTO> getProjectsByTeamId(UUID teamId) {
-        logger.info("Retrieving projects for team ID: {}", teamId);
-        findTeamById(teamId);
-        return projectRepository.findAllByTeamId(teamId).stream()
-            .map(projectMapper::toDto)
+    public List<ProjectDTO> getProjectsByTeamId(final UUID teamId) {
+        TeamService.logger.info("Retrieving projects for team ID: {}", teamId);
+        this.findTeamById(teamId);
+        return this.projectRepository.findAllByTeamId(teamId).stream()
+            .map(this.projectMapper::toDto)
             .toList();
     }
 
@@ -189,19 +189,19 @@ public class TeamService {
      * @param teamId the ID of the team
      * @return a list of app user DTOs
      */
-    public List<AppUserDTO> getMembersByTeamId(UUID teamId) {
-        logger.info("Retrieving members for team ID: {}", teamId);
-        Team team = findTeamById(teamId);
+    public List<AppUserDTO> getMembersByTeamId(final UUID teamId) {
+        TeamService.logger.info("Retrieving members for team ID: {}", teamId);
+        final Team team = this.findTeamById(teamId);
         return team.getStudents().stream()
             .map(student -> {
-                UUID studentId = student.getId();
-                if (studentId == null) {
+                final UUID studentId = student.getId();
+                if (null == studentId) {
                     throw new IllegalArgumentException("Student ID cannot be null");
                 }
-                return appUserRepository.findById(studentId)
+                return this.appUserRepository.findById(studentId)
                     .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + studentId));
             })
-            .map(appUserMapper::toDto)
+            .map(this.appUserMapper::toDto)
             .toList();
     }
 
@@ -212,9 +212,9 @@ public class TeamService {
      * @return the name of the team
      * @throws ResourceNotFoundException if the team is not found
      */
-    public String getTeamNameById(UUID teamId) {
-        logger.info("Retrieving team name for team ID: {}", teamId);
-        Team team = findTeamById(teamId);
+    public String getTeamNameById(final UUID teamId) {
+        TeamService.logger.info("Retrieving team name for team ID: {}", teamId);
+        final Team team = this.findTeamById(teamId);
         return team.getName();
     }
 }

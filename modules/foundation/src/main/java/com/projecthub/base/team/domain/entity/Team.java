@@ -44,16 +44,11 @@ import java.util.Set;
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(
-    indexes = {
-        @Index(name = "idx_team_name", columnList = "name"),
-        @Index(name = "idx_team_cohort", columnList = "cohort_id"),
-        @Index(name = "idx_team_school", columnList = "school_id")
-    },
-    uniqueConstraints = {
-        @UniqueConstraint(name = "uc_team_name_school", columnNames = {"name", "school_id"})
-    }
-)
+@Table(indexes = {
+    @Index(name = "idx_team_name", columnList = "name"),
+    @Index(name = "idx_team_cohort", columnList = "cohort_id"),
+    @Index(name = "idx_team_school", columnList = "school_id")
+}, uniqueConstraints = @UniqueConstraint(name = "uc_team_name_school", columnNames = {"name", "school_id"}))
 @Getter
 @Setter
 @ToString(exclude = {"school", "cohort", "students", "members"})
@@ -134,17 +129,17 @@ public class Team extends BaseEntity {
     private Set<AppUser> members;
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Team team = (Team) o;
-        return Objects.equals(name, team.name) &&
-            Objects.equals(cohort, team.cohort);
+        if (null == o || this.getClass() != o.getClass()) return false;
+        final Team team = (Team) o;
+        return Objects.equals(this.name, team.name) &&
+            Objects.equals(this.cohort, team.cohort);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, cohort);
+        return Objects.hash(this.name, this.cohort);
     }
 
 }
