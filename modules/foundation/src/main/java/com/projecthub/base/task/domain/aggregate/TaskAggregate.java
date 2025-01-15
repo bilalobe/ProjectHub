@@ -18,43 +18,43 @@ public class TaskAggregate {
     private final TaskEventPublisher eventPublisher;
     private final UUID initiatorId;
 
-    private TaskAggregate(Task root, TaskEventPublisher eventPublisher, UUID initiatorId) {
+    private TaskAggregate(final Task root, final TaskEventPublisher eventPublisher, final UUID initiatorId) {
         this.root = root;
         this.eventPublisher = eventPublisher;
         this.initiatorId = initiatorId;
-        this.events = new ArrayList<>();
+        events = new ArrayList<>();
     }
 
-    public static TaskAggregate create(CreateTaskCommand command, TaskEventPublisher eventPublisher) {
-        Task task = new Task(command.getName(), command.getDescription());
-        TaskAggregate aggregate = new TaskAggregate(task, eventPublisher, command.getInitiatorId());
+    public static TaskAggregate create(final CreateTaskCommand command, final TaskEventPublisher eventPublisher) {
+        final Task task = new Task(command.getName(), command.getDescription());
+        final TaskAggregate aggregate = new TaskAggregate(task, eventPublisher, command.getInitiatorId());
         aggregate.registerCreated();
         return aggregate;
     }
 
     private void registerCreated() {
-        eventPublisher.publishCreated(root, initiatorId);
+        this.eventPublisher.publishCreated(this.root, this.initiatorId);
     }
 
-    public void update(UpdateTaskCommand command) {
-        root.update(command.getName(), command.getDescription());
-        eventPublisher.publishUpdated(root, initiatorId);
+    public void update(final UpdateTaskCommand command) {
+        this.root.update(command.getName(), command.getDescription());
+        this.eventPublisher.publishUpdated(this.root, this.initiatorId);
     }
 
     public void delete() {
-        eventPublisher.publishDeleted(root.getId(), initiatorId);
+        this.eventPublisher.publishDeleted(this.root.getId(), this.initiatorId);
     }
 
     public List<TaskDomainEvent> getDomainEvents() {
-        return List.copyOf(events);
+        return List.copyOf(this.events);
     }
 
     public void clearDomainEvents() {
-        events.clear();
+        this.events.clear();
     }
 
-    private void registerEvent(TaskDomainEvent event) {
-        events.add(event);
-        eventPublisher.publish(event);
+    private void registerEvent(final TaskDomainEvent event) {
+        this.events.add(event);
+        this.eventPublisher.publish(event);
     }
 }

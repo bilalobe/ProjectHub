@@ -39,8 +39,8 @@ public enum TaskStatus {
      * @param status The status string to validate
      * @return true if the status exists in the enum, false otherwise
      */
-    public static boolean isValidStatus(String status) {
-        for (TaskStatus ts : TaskStatus.values()) {
+    public static boolean isValidStatus(final String status) {
+        for (final TaskStatus ts : values()) {
             if (ts.name().equals(status)) {
                 return true;
             }

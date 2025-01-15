@@ -36,11 +36,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(
-    indexes = {
-        @Index(name = "idx_task_name", columnList = "name")
-    }
-)
+@Table(indexes = @Index(name = "idx_task_name", columnList = "name"))
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -73,10 +69,10 @@ public class Task extends BaseEntity {
     private Integer estimatedHours;
 
     @Column(nullable = false)
-    private boolean isOverdue = false;
+    private boolean isOverdue;
 
     @Column(nullable = false)
-    private boolean isBlocked = false;
+    private boolean isBlocked;
 
     private String blockedReason;
 
@@ -116,7 +112,7 @@ public class Task extends BaseEntity {
     @PrePersist
     @PreUpdate
     protected void validateDates() {
-        if (dueDate != null && dueDate.isBefore(LocalDate.now())) {
+        if (null != dueDate && this.dueDate.isBefore(LocalDate.now())) {
             throw new IllegalStateException("Due date cannot be in the past");
         }
     }

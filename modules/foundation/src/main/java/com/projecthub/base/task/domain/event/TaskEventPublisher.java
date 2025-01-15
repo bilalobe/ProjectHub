@@ -8,8 +8,8 @@ import java.util.UUID;
 public interface TaskEventPublisher {
     void publish(TaskDomainEvent event);
 
-    default void publishCreated(Task task, UUID initiatorId) {
-        publish(new TaskDomainEvent.Created(
+    default void publishCreated(final Task task, final UUID initiatorId) {
+        this.publish(new TaskDomainEvent.Created(
             UUID.randomUUID(),
             task.getId(),
             initiatorId,
@@ -17,8 +17,8 @@ public interface TaskEventPublisher {
         ));
     }
 
-    default void publishUpdated(Task task, UUID initiatorId) {
-        publish(new TaskDomainEvent.Updated(
+    default void publishUpdated(final Task task, final UUID initiatorId) {
+        this.publish(new TaskDomainEvent.Updated(
             UUID.randomUUID(),
             task.getId(),
             initiatorId,
@@ -26,8 +26,8 @@ public interface TaskEventPublisher {
         ));
     }
 
-    default void publishDeleted(UUID taskId, UUID initiatorId) {
-        publish(new TaskDomainEvent.Deleted(
+    default void publishDeleted(final UUID taskId, final UUID initiatorId) {
+        this.publish(new TaskDomainEvent.Deleted(
             UUID.randomUUID(),
             taskId,
             initiatorId,

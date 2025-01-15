@@ -22,56 +22,56 @@ public class TaskController implements TaskApi {
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
     private final TaskService taskService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(final TaskService taskService) {
         this.taskService = taskService;
     }
 
     @Override
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
-        logger.info("Retrieving all tasks");
-        return ResponseEntity.ok(taskService.getAllTasks());
+        TaskController.logger.info("Retrieving all tasks");
+        return ResponseEntity.ok(this.taskService.getAllTasks());
     }
 
     @Override
-    public ResponseEntity<TaskDTO> getById(UUID id) {
-        logger.info("Retrieving task with ID {}", id);
-        return ResponseEntity.ok(taskService.getTaskById(id));
+    public ResponseEntity<TaskDTO> getById(final UUID id) {
+        TaskController.logger.info("Retrieving task with ID {}", id);
+        return ResponseEntity.ok(this.taskService.getTaskById(id));
     }
 
     @Override
-    public ResponseEntity<TaskDTO> createTask(@Valid @RequestBody TaskDTO task) {
-        logger.info("Creating new task");
-        return ResponseEntity.ok(taskService.saveTask(task));
+    public ResponseEntity<TaskDTO> createTask(@Valid @RequestBody final TaskDTO task) {
+        TaskController.logger.info("Creating new task");
+        return ResponseEntity.ok(this.taskService.saveTask(task));
     }
 
-    public ResponseEntity<TaskDTO> updateTask(UUID id, @Valid @RequestBody TaskDTO task) {
-        logger.info("Updating task with ID {}", id);
-        return ResponseEntity.ok(taskService.updateTask(id, task));
+    public ResponseEntity<TaskDTO> updateTask(final UUID id, @Valid @RequestBody final TaskDTO task) {
+        TaskController.logger.info("Updating task with ID {}", id);
+        return ResponseEntity.ok(this.taskService.updateTask(id, task));
     }
 
     @Override
-    public ResponseEntity<Void> deleteById(UUID id) {
-        logger.info("Deleting task with ID {}", id);
-        taskService.deleteTask(id);
+    public ResponseEntity<Void> deleteById(final UUID id) {
+        TaskController.logger.info("Deleting task with ID {}", id);
+        this.taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<Void> updateTaskStatus(UUID id, @RequestParam String status) {
-        logger.info("Updating status of task with ID {}", id);
-        taskService.updateTaskStatus(id, status);
+    public ResponseEntity<Void> updateTaskStatus(final UUID id, @RequestParam final String status) {
+        TaskController.logger.info("Updating status of task with ID {}", id);
+        this.taskService.updateTaskStatus(id, status);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<List<TaskDTO>> getTasksByProjectId(UUID projectId) {
-        logger.info("Retrieving tasks for project with ID {}", projectId);
-        return ResponseEntity.ok(taskService.getTasksByProjectId(projectId));
+    public ResponseEntity<List<TaskDTO>> getTasksByProjectId(final UUID projectId) {
+        TaskController.logger.info("Retrieving tasks for project with ID {}", projectId);
+        return ResponseEntity.ok(this.taskService.getTasksByProjectId(projectId));
     }
 
     @Override
-    public ResponseEntity<List<TaskDTO>> getTasksByAssignedUserId(UUID userId) {
-        logger.info("Retrieving tasks assigned to user with ID {}", userId);
-        return ResponseEntity.ok(taskService.getTasksByAssignedUserId(userId));
+    public ResponseEntity<List<TaskDTO>> getTasksByAssignedUserId(final UUID userId) {
+        TaskController.logger.info("Retrieving tasks assigned to user with ID {}", userId);
+        return ResponseEntity.ok(this.taskService.getTasksByAssignedUserId(userId));
     }
 }

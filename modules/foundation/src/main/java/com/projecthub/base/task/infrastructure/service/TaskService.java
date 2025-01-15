@@ -27,7 +27,7 @@ public class TaskService {
 
     private final TaskService self;
 
-    public TaskService(TaskJpaRepository taskRepository, TaskMapper taskMapper, TaskService self) {
+    public TaskService(final TaskJpaRepository taskRepository, final TaskMapper taskMapper, final TaskService self) {
         this.taskRepository = taskRepository;
         this.taskMapper = taskMapper;
         this.self = self;
@@ -41,13 +41,13 @@ public class TaskService {
      * @throws IllegalArgumentException if taskDTO is null
      */
     @Transactional
-    public TaskDTO createTask(TaskDTO taskDTO) {
-        logger.info("Creating a new task");
-        validateTaskDTO(taskDTO);
-        Task task = taskMapper.toEntity(taskDTO);
-        Task savedTask = taskRepository.save(task);
-        logger.info("Task created with ID: {}", savedTask.getId());
-        return taskMapper.toDto(savedTask);
+    public TaskDTO createTask(final TaskDTO taskDTO) {
+        TaskService.logger.info("Creating a new task");
+        this.validateTaskDTO(taskDTO);
+        final Task task = this.taskMapper.toEntity(taskDTO);
+        final Task savedTask = this.taskRepository.save(task);
+        TaskService.logger.info("Task created with ID: {}", savedTask.getId());
+        return this.taskMapper.toDto(savedTask);
     }
 
     /**
@@ -60,14 +60,14 @@ public class TaskService {
      * @throws IllegalArgumentException  if taskDTO is null
      */
     @Transactional
-    public TaskDTO updateTask(UUID id, TaskDTO taskDTO) {
-        logger.info("Updating task with ID: {}", id);
-        validateTaskDTO(taskDTO);
-        Task existingTask = findTaskById(id);
-        taskMapper.updateEntityFromDto(taskDTO, existingTask);
-        Task updatedTask = taskRepository.save(existingTask);
-        logger.info("Task updated with ID: {}", updatedTask.getId());
-        return taskMapper.toDto(updatedTask);
+    public TaskDTO updateTask(final UUID id, final TaskDTO taskDTO) {
+        TaskService.logger.info("Updating task with ID: {}", id);
+        this.validateTaskDTO(taskDTO);
+        final Task existingTask = this.findTaskById(id);
+        this.taskMapper.updateEntityFromDto(taskDTO, existingTask);
+        final Task updatedTask = this.taskRepository.save(existingTask);
+        TaskService.logger.info("Task updated with ID: {}", updatedTask.getId());
+        return this.taskMapper.toDto(updatedTask);
     }
 
     /**
@@ -77,13 +77,13 @@ public class TaskService {
      * @throws ResourceNotFoundException if the task is not found
      */
     @Transactional
-    public void deleteTask(UUID id) {
-        logger.info("Deleting task with ID: {}", id);
-        if (!taskRepository.existsById(id)) {
+    public void deleteTask(final UUID id) {
+        TaskService.logger.info("Deleting task with ID: {}", id);
+        if (!this.taskRepository.existsById(id)) {
             throw new ResourceNotFoundException("Task not found with ID: " + id);
         }
-        taskRepository.deleteById(id);
-        logger.info("Task deleted with ID: {}", id);
+        this.taskRepository.deleteById(id);
+        TaskService.logger.info("Task deleted with ID: {}", id);
     }
 
     /**
@@ -93,10 +93,10 @@ public class TaskService {
      * @return the task DTO
      * @throws ResourceNotFoundException if the task is not found
      */
-    public TaskDTO getTaskById(UUID id) {
-        logger.info("Retrieving task with ID: {}", id);
-        Task task = findTaskById(id);
-        return taskMapper.toDto(task);
+    public TaskDTO getTaskById(final UUID id) {
+        TaskService.logger.info("Retrieving task with ID: {}", id);
+        final Task task = this.findTaskById(id);
+        return this.taskMapper.toDto(task);
     }
 
     /**
@@ -105,21 +105,21 @@ public class TaskService {
      * @return a list of task DTOs
      */
     public List<TaskDTO> getAllTasks() {
-        logger.info("Retrieving all tasks");
-        return taskRepository.findAll().stream()
-            .map(taskMapper::toDto)
+        TaskService.logger.info("Retrieving all tasks");
+        return this.taskRepository.findAll().stream()
+            .map(this.taskMapper::toDto)
             .toList();
     }
 
-    private void validateTaskDTO(TaskDTO taskDTO) {
-        if (taskDTO == null) {
+    private void validateTaskDTO(final TaskDTO taskDTO) {
+        if (null == taskDTO) {
             throw new IllegalArgumentException("TaskDTO cannot be null");
         }
         // Additional validation logic can be added here
     }
 
-    private Task findTaskById(UUID id) {
-        return taskRepository.findById(id)
+    private Task findTaskById(final UUID id) {
+        return this.taskRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Task not found with ID: " + id));
     }
 
@@ -129,10 +129,10 @@ public class TaskService {
      * @param projectId the ID of the project
      * @return a list of task DTOs
      */
-    public List<TaskDTO> getTasksByProjectId(UUID projectId) {
-        logger.info("Retrieving tasks for project ID: {}", projectId);
-        return taskRepository.findByProjectId(projectId).stream()
-            .map(taskMapper::toDto)
+    public List<TaskDTO> getTasksByProjectId(final UUID projectId) {
+        TaskService.logger.info("Retrieving tasks for project ID: {}", projectId);
+        return this.taskRepository.findByProjectId(projectId).stream()
+            .map(this.taskMapper::toDto)
             .toList();
     }
 
@@ -142,10 +142,10 @@ public class TaskService {
      * @param userId the ID of the user
      * @return a list of task DTOs
      */
-    public List<TaskDTO> getTasksByAssignedUserId(UUID userId) {
-        logger.info("Retrieving tasks for user ID: {}", userId);
-        return taskRepository.findByAssignedUserId(userId).stream()
-            .map(taskMapper::toDto)
+    public List<TaskDTO> getTasksByAssignedUserId(final UUID userId) {
+        TaskService.logger.info("Retrieving tasks for user ID: {}", userId);
+        return this.taskRepository.findByAssignedUserId(userId).stream()
+            .map(this.taskMapper::toDto)
             .toList();
     }
 
@@ -156,13 +156,13 @@ public class TaskService {
      * @throws IllegalArgumentException if taskDTO is null
      */
     @Transactional
-    public void saveTask(TaskDTO taskDTO) {
-        self.updateTask(taskDTO.id(), taskDTO);
-        validateTaskDTO(taskDTO);
-        if (taskDTO.id() != null) {
-            self.updateTask(taskDTO.id(), taskDTO);
+    public void saveTask(final TaskDTO taskDTO) {
+        this.self.updateTask(taskDTO.id(), taskDTO);
+        this.validateTaskDTO(taskDTO);
+        if (null != taskDTO.id()) {
+            this.self.updateTask(taskDTO.id(), taskDTO);
         } else {
-            self.createTask(taskDTO);
+            this.self.createTask(taskDTO);
         }
     }
 }

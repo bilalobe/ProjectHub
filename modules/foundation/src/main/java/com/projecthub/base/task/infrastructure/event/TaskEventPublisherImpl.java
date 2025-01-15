@@ -15,21 +15,21 @@ public class TaskEventPublisherImpl implements TaskEventPublisher {
     private final RabbitTemplate rabbitTemplate;
 
     @Override
-    public void publish(TaskDomainEvent event) {
-        log.debug("Publishing task event to RabbitMQ: {}", event);
+    public void publish(final TaskDomainEvent event) {
+        TaskEventPublisherImpl.log.debug("Publishing task event to RabbitMQ: {}", event);
         try {
-            String routingKey = determineRoutingKey(event);
-            rabbitTemplate.convertAndSend(RabbitMQConfig.TASK_EXCHANGE, routingKey, event);
-        } catch (Exception e) {
-            log.error("Error publishing task event: {}", event, e);
+            final String routingKey = this.determineRoutingKey(event);
+            this.rabbitTemplate.convertAndSend(RabbitMQConfig.TASK_EXCHANGE, routingKey, event);
+        } catch (final Exception e) {
+            TaskEventPublisherImpl.log.error("Error publishing task event: {}", event, e);
         }
     }
 
-    private String determineRoutingKey(TaskDomainEvent event) {
+    private String determineRoutingKey(final TaskDomainEvent event) {
         return switch (event) {
-            case TaskDomainEvent.Created _ -> "task.created";
-            case TaskDomainEvent.Updated _ -> "task.updated";
-            case TaskDomainEvent.Deleted _ -> "task.deleted";
+            case final TaskDomainEvent.Created _ -> "task.created";
+            case final TaskDomainEvent.Updated _ -> "task.updated";
+            case final TaskDomainEvent.Deleted _ -> "task.deleted";
         };
     }
 }

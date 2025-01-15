@@ -12,41 +12,41 @@ import java.util.Set;
 @Component
 public class TaskValidator {
 
-    public void validateTasks(Set<Task> tasks) {
-        log.debug("Validating {} tasks", tasks.size());
+    public void validateTasks(final Set<Task> tasks) {
+        TaskValidator.log.debug("Validating {} tasks", tasks.size());
         tasks.forEach(this::validateTask);
     }
 
-    private void validateTask(Task task) {
-        if (task.getValue() == null) {
+    private void validateTask(final Task task) {
+        if (null == task.getValue()) {
             throw new ValidationException("Task value cannot be null");
         }
-        validateTaskBasics(task);
-        validateTaskDates(task);
-        validateTaskAssignments(task);
+        this.validateTaskBasics(task);
+        this.validateTaskDates(task);
+        this.validateTaskAssignments(task);
     }
 
-    private void validateTaskBasics(Task task) {
-        TaskValue value = task.getValue();
-        if (value.name() == null || value.name().trim().isEmpty()) {
+    private void validateTaskBasics(final Task task) {
+        final TaskValue value = task.getValue();
+        if (null == value.name() || value.name().trim().isEmpty()) {
             throw new ValidationException("Task name is required");
         }
-        if (value.status() == null) {
+        if (null == value.status()) {
             throw new ValidationException("Task status is required");
         }
     }
 
-    private void validateTaskDates(Task task) {
-        TaskValue value = task.getValue();
-        if (value.dueDate() != null && value.plannedStartDate() != null
+    private void validateTaskDates(final Task task) {
+        final TaskValue value = task.getValue();
+        if (null != value.dueDate() && null != value.plannedStartDate()
             && value.dueDate().isBefore(value.plannedStartDate())) {
             throw new ValidationException("Task due date cannot be before planned start date");
         }
     }
 
-    private void validateTaskAssignments(Task task) {
-        TaskValue value = task.getValue();
-        if (value.isStarted() && value.assignee() == null) {
+    private void validateTaskAssignments(final Task task) {
+        final TaskValue value = task.getValue();
+        if (value.isStarted() && null == value.assignee()) {
             throw new ValidationException("Started task must have an assignee");
         }
     }

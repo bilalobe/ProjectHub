@@ -14,6 +14,6 @@ public record TaskValue(
     Integer progress
 ) {
     public boolean isStarted() {
-        return status == TaskStatus.STARTED;
+        return TaskStatus.STARTED == status;
     }
 }
