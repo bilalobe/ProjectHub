@@ -10,8 +10,8 @@ import org.springframework.modulith.core.ApplicationModules;
 @EnableModulith
 @EnableJpaRepositories(basePackages = "com.projecthub.base")
 public class CoreApplication {
-    public static void main(String[] args) {
-        ApplicationModules modules = ApplicationModules.of(CoreApplication.class);
+    public static void main(final String[] args) {
+        final ApplicationModules modules = ApplicationModules.of(CoreApplication.class);
         modules.verify();
         SpringApplication.run(CoreApplication.class, args);
     }
