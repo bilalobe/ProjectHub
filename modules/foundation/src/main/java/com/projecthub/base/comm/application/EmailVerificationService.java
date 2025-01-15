@@ -27,102 +27,102 @@ public class EmailVerificationService {
     @Value("${app.base-url}")
     private String baseUrl;
 
-    public EmailVerificationService(EmailService emailService, AppUserJpaRepository userRepository) {
+    public EmailVerificationService(final EmailService emailService, final AppUserJpaRepository userRepository) {
         this.emailService = emailService;
         this.userRepository = userRepository;
     }
 
     @Transactional
-    public void sendVerificationEmail(AppUser user) {
-        logger.info("Sending verification email to user: {}", user.getEmail());
+    public void sendVerificationEmail(final AppUser user) {
+        EmailVerificationService.logger.info("Sending verification email to user: {}", user.getEmail());
 
-        String token = generateVerificationToken();
-        AppUser updatedUser = user.toBuilder()
+        final String token = this.generateVerificationToken();
+        final AppUser updatedUser = user.toBuilder()
             .verificationToken(token)
-            .verificationTokenExpiry(LocalDateTime.now().plusHours(TOKEN_EXPIRY_HOURS))
+            .verificationTokenExpiry(LocalDateTime.now().plusHours(EmailVerificationService.TOKEN_EXPIRY_HOURS))
             .build();
 
-        userRepository.save(updatedUser);
+        this.userRepository.save(updatedUser);
 
-        Map<String, Object> templateVars = buildTemplateVariables(updatedUser, token);
-        sendVerificationEmailTemplate(updatedUser, templateVars);
+        final Map<String, Object> templateVars = this.buildTemplateVariables(updatedUser, token);
+        this.sendVerificationEmailTemplate(updatedUser, templateVars);
     }
 
-    private Map<String, Object> buildTemplateVariables(AppUser user, String token) {
+    private Map<String, Object> buildTemplateVariables(final AppUser user, final String token) {
         return Map.of(
             "name", user.getFirstName(),
-            "verificationLink", baseUrl + "/verify?token=" + token,
-            "expiryHours", TOKEN_EXPIRY_HOURS
+            "verificationLink", this.baseUrl + "/verify?token=" + token,
+            "expiryHours", EmailVerificationService.TOKEN_EXPIRY_HOURS
         );
     }
 
-    private void sendVerificationEmailTemplate(AppUser user, Map<String, Object> templateVars) {
-        emailService.sendTemplatedEmail(
+    private void sendVerificationEmailTemplate(final AppUser user, final Map<String, Object> templateVars) {
+        this.emailService.sendTemplatedEmail(
             user.getEmail(),
             "Verify your email address",
-            VERIFICATION_TEMPLATE,
+            EmailVerificationService.VERIFICATION_TEMPLATE,
             templateVars
         );
     }
 
     @Transactional
-    public void verifyEmail(String token) throws InvalidTokenException {
-        logger.info("Processing email verification token: {}", token);
+    public void verifyEmail(final String token) throws InvalidTokenException {
+        EmailVerificationService.logger.info("Processing email verification token: {}", token);
 
-        AppUser user = userRepository.findByVerificationToken(token)
+        final AppUser user = this.userRepository.findByVerificationToken(token)
             .orElseThrow(() -> new InvalidTokenException("Invalid verification token"));
 
-        validateVerification(user);
+        this.validateVerification(user);
 
-        AppUser verifiedUser = user.toBuilder()
+        final AppUser verifiedUser = user.toBuilder()
             .verified(true)
             .enabled(true)
             .verificationToken(null)
             .verificationTokenExpiry(null)
             .build();
 
-        userRepository.save(verifiedUser);
-        logger.info("Email verified successfully for user: {}", verifiedUser.getEmail());
+        this.userRepository.save(verifiedUser);
+        EmailVerificationService.logger.info("Email verified successfully for user: {}", verifiedUser.getEmail());
     }
 
-    private void validateVerification(AppUser user) throws InvalidTokenException {
+    private void validateVerification(final AppUser user) throws InvalidTokenException {
         if (user.isVerified()) {
-            logger.warn("Attempted to verify already verified user: {}", user.getUsername());
+            EmailVerificationService.logger.warn("Attempted to verify already verified user: {}", user.getUsername());
             throw new InvalidTokenException("Email already verified");
         }
 
-        if (user.getVerificationTokenExpiry() == null ||
+        if (null == user.getVerificationTokenExpiry() ||
             user.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
-            logger.error("Verification token expired for user: {}", user.getUsername());
+            EmailVerificationService.logger.error("Verification token expired for user: {}", user.getUsername());
             throw new InvalidTokenException("Verification token has expired");
         }
 
-        if (user.getVerificationToken() == null) {
-            logger.error("No verification token found for user: {}", user.getUsername());
+        if (null == user.getVerificationToken()) {
+            EmailVerificationService.logger.error("No verification token found for user: {}", user.getUsername());
             throw new InvalidTokenException("Invalid verification token");
         }
     }
 
     @Transactional
-    public void resendVerificationEmail(String email) {
-        logger.info("Resending verification email to: {}", email);
+    public void resendVerificationEmail(final String email) {
+        EmailVerificationService.logger.info("Resending verification email to: {}", email);
 
-        AppUser user = userRepository.findByEmail(email)
+        final AppUser user = this.userRepository.findByEmail(email)
             .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
         if (user.isVerified()) {
-            logger.warn("Attempted to resend verification email for already verified user: {}", email);
+            EmailVerificationService.logger.warn("Attempted to resend verification email for already verified user: {}", email);
             return;
         }
 
-        AppUser refreshedUser = user.toBuilder()
-            .verificationToken(generateVerificationToken())
-            .verificationTokenExpiry(LocalDateTime.now().plusHours(TOKEN_EXPIRY_HOURS))
+        final AppUser refreshedUser = user.toBuilder()
+            .verificationToken(this.generateVerificationToken())
+            .verificationTokenExpiry(LocalDateTime.now().plusHours(EmailVerificationService.TOKEN_EXPIRY_HOURS))
             .build();
 
-        userRepository.save(refreshedUser);
-        Map<String, Object> templateVars = buildTemplateVariables(refreshedUser, refreshedUser.getVerificationToken());
-        sendVerificationEmailTemplate(refreshedUser, templateVars);
+        this.userRepository.save(refreshedUser);
+        final Map<String, Object> templateVars = this.buildTemplateVariables(refreshedUser, refreshedUser.getVerificationToken());
+        this.sendVerificationEmailTemplate(refreshedUser, templateVars);
     }
 
     private String generateVerificationToken() {
@@ -132,9 +132,9 @@ public class EmailVerificationService {
     @Scheduled(cron = "0 0 2 * * *") // Run at 2 AM every day
     @Transactional
     public void cleanupExpiredTokens() {
-        logger.info("Cleaning up expired verification tokens");
-        LocalDateTime now = LocalDateTime.now();
-        int deleted = userRepository.deleteExpiredVerificationTokens(now);
-        logger.info("Cleaned up {} expired verification tokens", deleted);
+        EmailVerificationService.logger.info("Cleaning up expired verification tokens");
+        final LocalDateTime now = LocalDateTime.now();
+        final int deleted = this.userRepository.deleteExpiredVerificationTokens(now);
+        EmailVerificationService.logger.info("Cleaned up {} expired verification tokens", deleted);
     }
 }

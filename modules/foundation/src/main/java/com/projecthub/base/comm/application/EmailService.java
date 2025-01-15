@@ -28,7 +28,7 @@ public class EmailService {
     @Value("${spring.mail.from}")
     private String fromEmail;
 
-    public EmailService(JavaMailSender mailSender, SpringTemplateEngine templateEngine) {
+    public EmailService(final JavaMailSender mailSender, final SpringTemplateEngine templateEngine) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
     }
@@ -40,18 +40,18 @@ public class EmailService {
      * @param subject Subject of the email
      * @param body    Body of the email
      */
-    public void sendSimpleEmail(String to, String subject, String body) {
+    public void sendSimpleEmail(final String to, final String subject, final String body) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
+            final SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(this.fromEmail);
             message.setTo(to);
             message.setSubject(subject);
             message.setText(body);
 
-            mailSender.send(message);
-            logger.info("Email sent successfully to {}", to);
-        } catch (MailException e) {
-            logger.error("Failed to send simple email to {}", to, e);
+            this.mailSender.send(message);
+            EmailService.logger.info("Email sent successfully to {}", to);
+        } catch (final MailException e) {
+            EmailService.logger.error("Failed to send simple email to {}", to, e);
             throw new EmailSendingException("Failed to send simple email to " + to, e);
         }
     }
@@ -63,23 +63,23 @@ public class EmailService {
      * @param subject  Subject of the email
      * @param htmlBody HTML content of the email
      */
-    public void sendHtmlEmail(String to, String subject, String htmlBody) {
+    public void sendHtmlEmail(final String to, final String subject, final String htmlBody) {
         try {
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+            final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
-            helper.setFrom(fromEmail);
+            helper.setFrom(this.fromEmail);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlBody, true);
 
-            mailSender.send(mimeMessage);
-            logger.info("HTML email sent successfully to {}", to);
-        } catch (MessagingException e) {
-            logger.error("Failed to create or send HTML email to {} due to messaging error", to, e);
+            this.mailSender.send(mimeMessage);
+            EmailService.logger.info("HTML email sent successfully to {}", to);
+        } catch (final MessagingException e) {
+            EmailService.logger.error("Failed to create or send HTML email to {} due to messaging error", to, e);
             throw new EmailSendingException("Failed to create or send HTML email to " + to + " due to messaging error", e);
-        } catch (MailException e) {
-            logger.error("Failed to send HTML email to {} due to mail error", to, e);
+        } catch (final MailException e) {
+            EmailService.logger.error("Failed to send HTML email to {} due to mail error", to, e);
             throw new EmailSendingException("Failed to send HTML email to " + to + " due to mail error", e);
         }
     }
@@ -88,14 +88,14 @@ public class EmailService {
      * Sends a templated email asynchronously.
      */
     @Async
-    public void sendTemplatedEmail(String to, String subject, String template, Map<String, Object> variables) {
+    public void sendTemplatedEmail(final String to, final String subject, final String template, final Map<String, Object> variables) {
         try {
-            Context context = new Context();
+            final Context context = new Context();
             context.setVariables(variables);
-            String htmlContent = templateEngine.process(template, context);
-            sendHtmlEmail(to, subject, htmlContent);
-        } catch (Exception e) {
-            logger.error("Failed to send templated email to {}", to, e);
+            final String htmlContent = this.templateEngine.process(template, context);
+            this.sendHtmlEmail(to, subject, htmlContent);
+        } catch (final Exception e) {
+            EmailService.logger.error("Failed to send templated email to {}", to, e);
             throw new EmailSendingException("Failed to send templated email", e);
         }
     }
