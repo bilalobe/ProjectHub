@@ -5,7 +5,7 @@ ext {
         springDependencyManagement   : '1.1.7',
         springCloud                  : '2023.0.0',
         springModulith               : '1.1.0',
-        springAmqp                   : '3.1.2',
+        springAmqp                   : '3.2.1',
         springSecurity               : '6.4.2',
 
         // UI
