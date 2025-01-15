@@ -10,22 +10,24 @@ dependencies {
     implementation platform("org.springframework.boot:spring-boot-dependencies:${versions.springBoot}")
 
     // Spring Boot Core
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation "org.springframework.boot:spring-boot-starter:${versions.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${versions.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${versions.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${versions.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-validation:${versions.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-actuator:${versions.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${versions.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-mail:${versions.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-data-redis:${versions.springBoot}"
+
+    // Spring Security
+    implementation "org.springframework.security:spring-security-config:${versions.springSecurity}"
+    implementation "org.springframework.security:spring-security-core:${versions.springSecurity}"
 
     // Spring Modulith
     implementation "org.springframework.modulith:spring-modulith-starter-core:${versions.springModulith}"
     implementation "org.springframework.modulith:spring-modulith-api:${versions.springModulith}"
     implementation "org.springframework.modulith:spring-modulith-events-core:${versions.springModulith}"
-
-    // Additional Spring Boot starters
-    implementation "org.springframework.boot:spring-boot-starter-actuator:${versions.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-webflux:${versions.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-mail:${versions.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-data-redis:${versions.springBoot}"
 
     // Additional tools and utilities not in base plugin
     implementation "org.modelmapper:modelmapper:${versions.modelMapper}"
@@ -36,14 +38,16 @@ dependencies {
     implementation "org.springframework.retry:spring-retry:${versions.springRetry}"
     implementation "commons-net:commons-net:${versions.apacheCommonsNet}"
     implementation "org.passay:passay:${versions.passay}"
-    implementation "com.yubico:webauthn-server-base:${versions.yubicoWebAuthn}"
+    implementation "com.yubico:webauthn-server-core:${versions.yubicoWebAuthn}"
+
     // Thymeleaf
     implementation "org.thymeleaf:thymeleaf-spring5:${versions.thymeleaf}"
     implementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity5:${versions.thymeleafExtras}"
     implementation "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:${versions.thymeleafLayout}"
+
     // Documentation
-    implementation "io.swagger.base.v3:swagger-base:${versions.swagger}"
-    implementation "io.swagger.base.v3:swagger-annotations:${versions.swagger}"
+    implementation "io.swagger.core.v3:swagger-core:${versions.swagger}"
+    implementation "io.swagger.core.v3:swagger-annotations:${versions.swagger}"
 
     // Mail
     implementation "jakarta.mail:jakarta.mail-api:${versions.jakartaMail}"
@@ -59,8 +63,6 @@ dependencies {
     // Netflix DGS
     implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:${versions.dgsSpring}"
     implementation "com.netflix.graphql.dgs:graphql-dgs-extended-scalars:${versions.dgs}"
-    implementation "com.graphql-java:graphql-java:${versions.dgs}"
-    implementation "com.graphql-java:graphql-java-extended-scalars:${versions.dgs}"
 
     // RabbitMQ
     implementation "org.springframework.amqp:spring-rabbit:${versions.springAmqp}"
@@ -74,7 +76,6 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
     testImplementation "org.junit.jupiter:junit-jupiter-params:${versions.junit}"
-    testImplementation "org.mockito:mockito-base:${versions.mockito}"
     testImplementation "org.mockito:mockito-junit-jupiter:${versions.mockito}"
     testImplementation "org.springframework.modulith:spring-modulith-test:${versions.springModulith}"
     testImplementation "org.springframework.modulith:spring-modulith-docs:${versions.springModulith}"
