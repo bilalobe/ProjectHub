@@ -11,23 +11,23 @@ public record SyncStatus(
     String lastError,
     SyncState state
 ) {
-    public SyncStatus withStartTime(LocalDateTime now) {
-        return new SyncStatus(now, lastSuccessfulSync, lastError, SyncState.IN_PROGRESS);
+    public SyncStatus withStartTime(final LocalDateTime now) {
+        return new SyncStatus(now, this.lastSuccessfulSync, this.lastError, SyncState.IN_PROGRESS);
     }
 
-    public SyncStatus withEndTime(LocalDateTime now) {
-        return new SyncStatus(lastSyncAttempt, lastSuccessfulSync, lastError, SyncState.COMPLETED);
+    public SyncStatus withEndTime(final LocalDateTime now) {
+        return new SyncStatus(this.lastSyncAttempt, this.lastSuccessfulSync, this.lastError, SyncState.COMPLETED);
     }
 
-    public SyncStatus withLastSuccessful(LocalDateTime now) {
-        return new SyncStatus(lastSyncAttempt, now, lastError, SyncState.SUCCESS);
+    public SyncStatus withLastSuccessful(final LocalDateTime now) {
+        return new SyncStatus(this.lastSyncAttempt, now, this.lastError, SyncState.SUCCESS);
     }
 
-    public SyncStatus withSyncing(boolean syncing) {
-        return new SyncStatus(lastSyncAttempt, lastSuccessfulSync, lastError, syncing ? SyncState.IN_PROGRESS : SyncState.IDLE);
+    public SyncStatus withSyncing(final boolean syncing) {
+        return new SyncStatus(this.lastSyncAttempt, this.lastSuccessfulSync, this.lastError, syncing ? SyncState.IN_PROGRESS : SyncState.IDLE);
     }
 
-    public SyncStatus withError(String error) {
-        return new SyncStatus(lastSyncAttempt, lastSuccessfulSync, error, SyncState.FAILED);
+    public SyncStatus withError(final String error) {
+        return new SyncStatus(this.lastSyncAttempt, this.lastSuccessfulSync, error, SyncState.FAILED);
     }
 }

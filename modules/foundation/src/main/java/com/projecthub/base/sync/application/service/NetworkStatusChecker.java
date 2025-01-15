@@ -24,35 +24,35 @@ public class NetworkStatusChecker {
 
     public boolean isNetworkAvailable() {
         // First check if basic internet connectivity is available
-        if (!checkInternetConnectivity()) {
-            logger.warn("No internet connectivity available");
+        if (!this.checkInternetConnectivity()) {
+            NetworkStatusChecker.logger.warn("No internet connectivity available");
             return false;
         }
 
         // Then check if remote server is reachable
-        return checkRemoteServerConnection();
+        return this.checkRemoteServerConnection();
     }
 
     private boolean checkInternetConnectivity() {
         try {
-            InetAddress[] addresses = InetAddress.getAllByName("8.8.8.8");
-            return addresses.length > 0 && addresses[0].isReachable(timeout);
-        } catch (IOException e) {
-            logger.debug("Internet connectivity check failed", e);
+            final InetAddress[] addresses = InetAddress.getAllByName("8.8.8.8");
+            return 0 < addresses.length && addresses[0].isReachable(this.timeout);
+        } catch (final IOException e) {
+            NetworkStatusChecker.logger.debug("Internet connectivity check failed", e);
             return false;
         }
     }
 
     private boolean checkRemoteServerConnection() {
-        TelnetClient telnet = new TelnetClient();
-        telnet.setConnectTimeout(timeout);
+        final TelnetClient telnet = new TelnetClient();
+        telnet.setConnectTimeout(this.timeout);
 
         try {
-            telnet.connect(remoteHost, remotePort);
+            telnet.connect(this.remoteHost, this.remotePort);
             telnet.disconnect();
             return true;
-        } catch (IOException e) {
-            logger.debug("Remote server connection check failed", e);
+        } catch (final IOException e) {
+            NetworkStatusChecker.logger.debug("Remote server connection check failed", e);
             return false;
         }
     }

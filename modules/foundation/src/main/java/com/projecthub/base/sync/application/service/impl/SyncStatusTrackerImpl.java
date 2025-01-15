@@ -14,31 +14,31 @@ public class SyncStatusTrackerImpl implements SyncStatusTracker {
 
     @Override
     public void startSync() {
-        SyncStatus status = currentStatus.get().withStartTime(LocalDateTime.now()).withSyncing(true);
-        currentStatus.set(status);
+        final SyncStatus status = this.currentStatus.get().withStartTime(LocalDateTime.now()).withSyncing(true);
+        this.currentStatus.set(status);
     }
 
     @Override
     public void syncCompleted() {
-        SyncStatus status = currentStatus.get()
+        final SyncStatus status = this.currentStatus.get()
             .withEndTime(LocalDateTime.now())
             .withSyncing(false)
             .withLastSuccessful(LocalDateTime.now())
             .withError(null);
-        currentStatus.set(status);
+        this.currentStatus.set(status);
     }
 
     @Override
-    public void syncFailed(Exception e) {
-        SyncStatus status = currentStatus.get()
+    public void syncFailed(final Exception e) {
+        final SyncStatus status = this.currentStatus.get()
             .withEndTime(LocalDateTime.now())
             .withSyncing(false)
             .withError(e.getMessage());
-        currentStatus.set(status);
+        this.currentStatus.set(status);
     }
 
     @Override
     public SyncStatus getCurrentStatus() {
-        return currentStatus.get();
+        return this.currentStatus.get();
     }
 }

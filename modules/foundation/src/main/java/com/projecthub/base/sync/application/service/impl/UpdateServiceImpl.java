@@ -19,24 +19,24 @@ public class UpdateServiceImpl implements UpdateService {
     private final LocalDataService localDataService;
     private final RemoteDataService remoteDataService;
 
-    public UpdateServiceImpl(LocalDataService localDataService, RemoteDataService remoteDataService) {
+    public UpdateServiceImpl(final LocalDataService localDataService, final RemoteDataService remoteDataService) {
         this.localDataService = localDataService;
         this.remoteDataService = remoteDataService;
     }
 
     @Override
     @Transactional
-    public <T extends BaseEntity> void updateBothStores(List<T> mergedData, Class<T> entityClass) {
+    public <T extends BaseEntity> void updateBothStores(final List<T> mergedData, final Class<T> entityClass) {
         try {
-            logger.debug("Updating local store with {} entities of type {}", mergedData.size(), entityClass.getSimpleName());
-            localDataService.clearLocalData(entityClass);
-            localDataService.saveLocalData(mergedData);
+            UpdateServiceImpl.logger.debug("Updating local store with {} entities of type {}", mergedData.size(), entityClass.getSimpleName());
+            this.localDataService.clearLocalData(entityClass);
+            this.localDataService.saveLocalData(mergedData);
 
-            logger.debug("Updating remote store with {} entities", mergedData.size());
-            remoteDataService.saveRemoteData(mergedData);
-        } catch (Exception e) {
-            String errorMessage = String.format("Failed to update stores for entity type %s", entityClass.getSimpleName());
-            logger.error(errorMessage, e);
+            UpdateServiceImpl.logger.debug("Updating remote store with {} entities", mergedData.size());
+            this.remoteDataService.saveRemoteData(mergedData);
+        } catch (final Exception e) {
+            final String errorMessage = String.format("Failed to update stores for entity type %s", entityClass.getSimpleName());
+            UpdateServiceImpl.logger.error(errorMessage, e);
             throw new SynchronizationException(errorMessage, e);
         }
     }

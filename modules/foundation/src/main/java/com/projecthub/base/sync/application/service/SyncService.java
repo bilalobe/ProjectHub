@@ -21,22 +21,22 @@ public class SyncService {
 
     @Autowired
     public SyncService(
-        SyncStatusTracker syncStatusTracker,
-        NetworkStatusChecker networkChecker,
-        List<EntitySynchronizer<?>> synchronizers) {
+        final SyncStatusTracker syncStatusTracker,
+        final NetworkStatusChecker networkChecker,
+        final List<EntitySynchronizer<?>> synchronizers) {
         this.syncStatusTracker = syncStatusTracker;
         this.networkChecker = networkChecker;
         this.synchronizers = synchronizers;
     }
 
-    public SyncService(DataSource dataSource, SyncStatusTracker syncStatusTracker, NetworkStatusChecker networkChecker, List<EntitySynchronizer<?>> synchronizers) {
+    public SyncService(final DataSource dataSource, final SyncStatusTracker syncStatusTracker, final NetworkStatusChecker networkChecker, final List<EntitySynchronizer<?>> synchronizers) {
         //TODO Auto-generated constructor stub
         this.syncStatusTracker = syncStatusTracker;
         this.networkChecker = networkChecker;
         this.synchronizers = synchronizers;
     }
 
-    public SyncService(DataSource dataSource) {
+    public SyncService(final DataSource dataSource) {
         // This constructor is not supported
         throw new UnsupportedOperationException("Constructor with DataSource is not supported");
     }
@@ -44,32 +44,32 @@ public class SyncService {
     @Transactional
     @Scheduled(fixedDelay = 300000) // 5 minutes
     public void synchronizeData() {
-        if (!networkChecker.isNetworkAvailable()) {
-            logger.info("Network unavailable, skipping sync");
+        if (!this.networkChecker.isNetworkAvailable()) {
+            SyncService.logger.info("Network unavailable, skipping sync");
             return;
         }
 
         try {
-            syncStatusTracker.startSync();
-            synchronizeEntities();
-            syncStatusTracker.syncCompleted();
-            logger.info("Synchronization completed successfully");
-        } catch (Exception e) {
-            String errorMessage = "Synchronization failed unexpectedly";
-            logger.error(errorMessage, e);
-            syncStatusTracker.syncFailed(e);
+            this.syncStatusTracker.startSync();
+            this.synchronizeEntities();
+            this.syncStatusTracker.syncCompleted();
+            SyncService.logger.info("Synchronization completed successfully");
+        } catch (final Exception e) {
+            final String errorMessage = "Synchronization failed unexpectedly";
+            SyncService.logger.error(errorMessage, e);
+            this.syncStatusTracker.syncFailed(e);
             throw new SynchronizationException(errorMessage, e);
         }
     }
 
     private void synchronizeEntities() {
-        synchronizers.forEach(synchronizer -> {
+        this.synchronizers.forEach(synchronizer -> {
             try {
                 synchronizer.synchronize();
-            } catch (Exception e) {
-                String errorMessage = String.format("Failed to synchronize entity type: %s",
+            } catch (final Exception e) {
+                final String errorMessage = String.format("Failed to synchronize entity type: %s",
                     synchronizer.getEntityName());
-                logger.error(errorMessage, e);
+                SyncService.logger.error(errorMessage, e);
                 throw new SynchronizationException(errorMessage, e);
             }
         });

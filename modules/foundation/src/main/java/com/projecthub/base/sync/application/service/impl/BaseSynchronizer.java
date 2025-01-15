@@ -23,7 +23,7 @@ public abstract class BaseSynchronizer<T extends BaseEntity> implements EntitySy
     protected final RemoteDataService remoteDataService;
     protected final UpdateService updateService;
 
-    protected BaseSynchronizer(LocalDataService localDataService, RemoteDataService remoteDataService, UpdateService updateService) {
+    protected BaseSynchronizer(final LocalDataService localDataService, final RemoteDataService remoteDataService, final UpdateService updateService) {
         this.localDataService = localDataService;
         this.remoteDataService = remoteDataService;
         this.updateService = updateService;
@@ -31,42 +31,38 @@ public abstract class BaseSynchronizer<T extends BaseEntity> implements EntitySy
 
     @Override
     @Transactional
-    @Retryable(
-        maxAttempts = MAX_RETRY_ATTEMPTS,
-        backoff = @Backoff(delay = 1000),
-        retryFor = {SynchronizationException.class}
-    )
+    @Retryable(maxAttempts = BaseSynchronizer.MAX_RETRY_ATTEMPTS, backoff = @Backoff(delay = 1000), retryFor = SynchronizationException.class)
     public void synchronize() {
         try {
-            List<T> localData = fetchLocalData();
-            List<T> remoteData = fetchRemoteData();
-            List<T> mergedData = merge(localData, remoteData);
-            updateService.updateBothStores(mergedData, getEntityType());
-            logSyncSuccess();
-        } catch (Exception e) {
-            handleSyncError(e);
+            final List<T> localData = this.fetchLocalData();
+            final List<T> remoteData = this.fetchRemoteData();
+            final List<T> mergedData = this.merge(localData, remoteData);
+            this.updateService.updateBothStores(mergedData, this.getEntityType());
+            this.logSyncSuccess();
+        } catch (final Exception e) {
+            this.handleSyncError(e);
         }
     }
 
     private List<T> fetchLocalData() {
         try {
-            return localDataService.getLocalData(getEntityType());
-        } catch (Exception e) {
-            throw new SynchronizationException("Failed to fetch local " + getEntityName(), e);
+            return this.localDataService.getLocalData(this.getEntityType());
+        } catch (final Exception e) {
+            throw new SynchronizationException("Failed to fetch local " + this.getEntityName(), e);
         }
     }
 
     private List<T> fetchRemoteData() {
         try {
-            return remoteDataService.getRemoteData(getEntityType());
-        } catch (Exception e) {
-            throw new SynchronizationException("Failed to fetch remote " + getEntityName(), e);
+            return this.remoteDataService.getRemoteData(this.getEntityType());
+        } catch (final Exception e) {
+            throw new SynchronizationException("Failed to fetch remote " + this.getEntityName(), e);
         }
     }
 
-    protected List<T> merge(List<T> local, List<T> remote) {
-        Map<UUID, T> mergedMap = new HashMap<>();
-        Map<UUID, LocalDateTime> lastModifiedMap = new HashMap<>();
+    protected List<T> merge(final List<T> local, final List<T> remote) {
+        final Map<UUID, T> mergedMap = new HashMap<>();
+        final Map<UUID, LocalDateTime> lastModifiedMap = new HashMap<>();
 
         // Process remote entries first
         remote.forEach(item -> {
@@ -76,11 +72,11 @@ public abstract class BaseSynchronizer<T extends BaseEntity> implements EntitySy
 
         // Merge local entries with conflict resolution
         local.forEach(item -> {
-            UUID id = item.getId();
-            LocalDateTime localModified = item.getLastModifiedDate();
-            LocalDateTime remoteModified = lastModifiedMap.get(id);
+            final UUID id = item.getId();
+            final LocalDateTime localModified = item.getLastModifiedDate();
+            final LocalDateTime remoteModified = lastModifiedMap.get(id);
 
-            if (shouldUseLocalVersion(localModified, remoteModified)) {
+            if (this.shouldUseLocalVersion(localModified, remoteModified)) {
                 mergedMap.put(id, item);
             }
         });
@@ -88,19 +84,19 @@ public abstract class BaseSynchronizer<T extends BaseEntity> implements EntitySy
         return new ArrayList<>(mergedMap.values());
     }
 
-    private boolean shouldUseLocalVersion(LocalDateTime localModified, LocalDateTime remoteModified) {
-        if (localModified == null) return false;
-        if (remoteModified == null) return true;
+    private boolean shouldUseLocalVersion(final LocalDateTime localModified, final LocalDateTime remoteModified) {
+        if (null == localModified) return false;
+        if (null == remoteModified) return true;
         return localModified.isAfter(remoteModified);
     }
 
     private void logSyncSuccess() {
-        logger.debug("Successfully synchronized {} entities", getEntityName());
+        BaseSynchronizer.logger.debug("Successfully synchronized {} entities", this.getEntityName());
     }
 
-    private void handleSyncError(Exception e) {
-        String errorMessage = String.format("Failed to sync %s entities", getEntityName());
-        logger.error(errorMessage, e);
+    private void handleSyncError(final Exception e) {
+        final String errorMessage = String.format("Failed to sync %s entities", this.getEntityName());
+        BaseSynchronizer.logger.error(errorMessage, e);
         throw new SynchronizationException(errorMessage, e);
     }
 }

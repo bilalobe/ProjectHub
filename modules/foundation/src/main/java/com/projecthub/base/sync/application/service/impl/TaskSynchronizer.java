@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskSynchronizer extends BaseSynchronizer<Task> {
 
-    public TaskSynchronizer(LocalDataService localDataService,
-                            RemoteDataService remoteDataService,
-                            UpdateService updateService) {
+    public TaskSynchronizer(final LocalDataService localDataService,
+                            final RemoteDataService remoteDataService,
+                            final UpdateService updateService) {
         super(localDataService, remoteDataService, updateService);
     }
 
