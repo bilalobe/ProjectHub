@@ -34,7 +34,7 @@ ext {
 
         // Thymeleaf
         thymeleaf                  : '3.1.2.RELEASE',
-        thymeleafExtras            : '3.1.2.RELEASE',
+        thymeleafExtras            : '3.1.3.RELEASE',
         thymeleafLayout            : '3.2.1',
 
         // Utilities
