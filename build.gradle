@@ -1,21 +1,109 @@
+/*
+ * ProjectHub Build Configuration
+ * -------------------------------
+ * This is the root build file for the ProjectHub project.
+ * It configures core build settings and dependencies for all modules.
+ */
+
+// Apply standard plugins
 plugins {
-  id 'java'
-  id 'distribution'
-  id 'org.sonarqube'
+    id 'base'
+    id 'idea'
+    id 'java'
+    id 'distribution'
+    id 'org.sonarqube'
+    id 'com.projecthub.documentation'
 }
 
-sonar {
-    properties {
-      property "sonar.projectKey", "bilalobe_ProjectHub"
-      property "sonar.organization", "bilalobe"
-      property "sonar.host.url", "https://sonarcloud.io"
+// Apply common task output caching settings
+allprojects {
+    tasks.withType(JavaCompile).configureEach {
+        outputs.cacheIf { true }
+        options.incremental = true
+    }
+
+    tasks.withType(Test).configureEach {
+        outputs.cacheIf { true }
+        maxParallelForks = Runtime.getRuntime().availableProcessors().intdiv(2) ?: 1
+    }
+
+    // Configure task output caching globally
+    tasks.configureEach { task ->
+        if (!task.name.startsWith('clean')
+                && !task.name.contains('publish')
+                && !task.name.contains('upload')) {
+            task.outputs.cacheIf { true }
+        }
     }
 }
 
+// Apply settings to Android projects, if any
+subprojects {
+    plugins.withId('com.android.application') {
+        android {
+            dexOptions {
+                preDexLibraries = true
+            }
+            buildTypes.all { type ->
+                type.crunchPngs = false
+            }
+        }
+    }
+}
+
+// Apply core build configurations and load shared dependency profiles
 apply from: "buildSrc/src/main/groovy/dependencies.gradle"
 apply from: "buildSrc/src/main/groovy/projecthub.gradle"
+apply from: "buildSrc/src/main/groovy/projecthub.shared-dependencies.gradle"
 
+// Configure all subprojects with common settings
 allprojects {
     group = 'com.projecthub'
-    version = '1.0.0'
+    version = '0.8.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/milestone" }
+    }
+}
+
+// Documentation configuration
+projectHubDocs {
+    projectName = "ProjectHub"
+    version = project.version
+    includeArchitecture = true
+    includeSwagger = true
+    additionalAttributes = [
+        'toc'               : 'left',
+        'source-highlighter': 'prettify'
+    ]
+}
+
+// SonarCloud Integration Configuration
+sonarqube {
+    properties {
+        property "sonar.projectKey", "bilalobe_ProjectHub"
+        property "sonar.organization", "bilalobe"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
+}
+
+dependencies {
+    // Resilience4j dependencies
+    implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.1'
+    implementation 'io.github.resilience4j:resilience4j-circuitbreaker:1.7.1'
+    implementation 'io.github.resilience4j:resilience4j-retry:1.7.1'
+    
+    // Metrics and monitoring
+    implementation 'io.micrometer:micrometer-core:1.9.2'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.9.2'
+    
+    // OpenAPI documentation
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
+    implementation 'org.springdoc:springdoc-openapi-kotlin:1.6.11'
+    
+    // Test dependencies
+    testImplementation 'io.mockk:mockk:1.12.5'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }

@@ -1,23 +1,68 @@
+/*
+ * ProjectHub Code Style Configuration
+ * --------------------------------
+ * This file configures Spotless, a code formatting tool that helps maintain
+ * consistent code style across the project.
+ */
+
 spotless {
+    // Format for Java files
     java {
-        importOrder()
+        // Import orders
+        importOrder 'java', 'javax', 'org', 'com', ''
+        
+        // Remove unused imports
         removeUnusedImports()
-        cleanthat()
-        googleJavaFormat()
+        
+        // Apply Google Java Format
+        googleJavaFormat('1.17.0')
+        
+        // Custom rules
+        custom 'no trailing whitespace', { it.replaceAll('\\s+$', '') }
     }
-    groovy {
+
+    // Format for Kotlin files
+    kotlin {
+        // Use ktlint for Kotlin formatting
+        ktlint('1.0.1')
+        
+        // Licensing header
+        licenseHeader '/* Copyright $YEAR ProjectHub Contributors */'
+    }
+
+    // Format for Gradle files
+    groovyGradle {
+        // Target Gradle files
+        target '**/*.gradle'
         greclipse()
     }
-    kotlin {
-        target 'src/*/kotlin/**/*.kt'
-        ktlint()
-        trimTrailingWhitespace()
-        endWithNewline()
+
+    // Format for XML files
+    format 'xml', {
+        // Target XML files including FXML
+        target '**/*.xml', '**/*.fxml'
+        eclipseWtp('xml')
     }
-    format 'misc', {
-        target '*.gradle', '*.md', '.gitignore'
-        trimTrailingWhitespace()
-        indentWithSpaces(4)
-        endWithNewline()
+
+    // Format for YAML files
+    format 'yaml', {
+        target '**/*.yml', '**/*.yaml'
+        prettier(['parser': 'yaml', 'tabWidth': 2])
     }
+
+    // Format for documentation files
+    format 'documentation', {
+        target '**/*.md'
+        prettier(['parser': 'markdown', 'proseWrap': 'always'])
+    }
+}
+
+// Hook Spotless check into the build process
+tasks.named('check').configure {
+    dependsOn 'spotlessCheck'
+}
+
+// Apply formatting before build
+tasks.named('build').configure {
+    dependsOn 'spotlessApply'
 }
