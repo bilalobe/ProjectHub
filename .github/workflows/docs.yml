@@ -1,0 +1,26 @@
+name: Generate Documentation
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday midnight
+  workflow_dispatch:     # Manual trigger
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - name: Generate Documentation
+        run: ./gradlew generateDocs
+      - name: Commit and Push Documentation
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/
+          git commit -m "Update documentation" || echo "No changes to commit"
+          git push
