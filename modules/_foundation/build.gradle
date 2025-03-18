@@ -1,0 +1,73 @@
+apply from: "${rootProject.projectDir}/buildSrc/src/main/groovy/dependencies.gradle"
+
+dependencies {
+    // Apply all common dependency profiles needed for this module
+    rootProject.ext.applySecurityDependencies(project)
+    rootProject.ext.applyPersistenceDependencies(project)
+    rootProject.ext.applyMessagingDependencies(project)
+
+    // Apache Fortress - specific to foundation module
+    implementation "org.apache.directory.fortress:fortress-core:${versions.fortress}"
+    implementation "org.apache.directory.fortress:fortress-realm-impl:${versions.fortress}"
+    implementation "org.apache.directory.fortress:fortress-rest:${versions.fortress}"
+
+    // Spring Cloud specific dependencies
+    implementation "org.springframework.cloud:spring-cloud-starter-gateway:${versions.springCloud}"
+    implementation "org.springframework.cloud:spring-cloud-starter-config:${versions.springCloud}"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${versions.springCloud}"
+    
+    // GraphQL support
+    implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:${versions.dgsSpring}"
+    implementation "com.netflix.graphql.dgs:graphql-dgs-extended-scalars:${versions.dgs}"
+    
+    // Utility libraries specific to this module
+    implementation "org.modelmapper:modelmapper:${versions.modelMapper}"
+    implementation "org.passay:passay:${versions.passay}"
+    implementation "com.yubico:webauthn-server-core:${versions.yubicoWebAuthn}"
+    
+    // Redis support
+    implementation "org.springframework.boot:spring-boot-starter-data-redis:${versions.springBoot}"
+    
+    // Excel Export
+    implementation "org.apache.poi:poi:${versions.poi}"
+    implementation "org.apache.poi:poi-ooxml:${versions.poi}"
+    
+    // Architecture testing
+    testImplementation "com.tngtech.archunit:archunit-junit5:${versions.archunit}"
+    
+    // JMH dependencies for benchmarking
+    testImplementation 'org.openjdk.jmh:jmh-core:1.35'
+    testAnnotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.35'
+    testImplementation 'org.jfree:jfreechart:1.5.3'
+    
+    // Temporarily comment out to resolve circular dependency
+    // implementation project(':auth')
+}
+
+// JMH configuration
+jmh {
+    iterations = 5
+    warmupIterations = 3
+    fork = 2
+    warmupFork = 1
+    timeOnIteration = '1s'
+    resultFormat = 'CSV'
+    resultsFile = file("${buildDir}/reports/jmh/results.csv")
+    timeUnit = 'ms'
+    benchmarkMode = ['thrpt', 'avgt']
+}
+
+tasks.register('runSecurityBenchmarks') {
+    dependsOn 'jmh'
+    doLast {
+        javaexec {
+            classpath = sourceSets.test.runtimeClasspath
+            mainClass = 'com.projecthub.base.shared.security.benchmark.visualize.BenchmarkResultsVisualizer'
+        }
+        
+        println "Benchmark results available at:"
+        println "- CSV: ${buildDir}/reports/jmh/results.csv"
+        println "- Charts: ${buildDir}/reports/jmh/charts/"
+        println "- Report: ${buildDir}/reports/jmh/charts/benchmark-report.md"
+    }
+}

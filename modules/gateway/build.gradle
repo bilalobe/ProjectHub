@@ -1,0 +1,30 @@
+// Gateway module providing API gateway functionality
+
+plugins {
+    // Apply our gateway module convention plugin
+    id 'com.projecthub.module-gateway'
+}
+
+// Apply necessary dependency scripts
+apply from: "${rootProject.projectDir}/buildSrc/src/main/groovy/dependencies.gradle"
+
+description = 'ProjectHub Gateway Module'
+
+dependencies {
+    // Auth Module dependency
+    implementation project(':modules:auth')
+    
+    // Spring Cloud Gateway and resiliency
+    implementation "org.springframework.cloud:spring-cloud-starter-gateway:${versions.springCloud}"
+    implementation "org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j:${versions.springCloud}"
+    
+    // Reactive programming
+    implementation "io.projectreactor:reactor-core:${versions.reactor}"
+    testImplementation "io.projectreactor:reactor-test:${versions.reactor}"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${versions.springCloudBom}"
+    }
+}

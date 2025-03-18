@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.AutoConfiguration=\
+projecthub.csv.plugin.config.CsvConfig

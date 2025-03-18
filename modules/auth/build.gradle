@@ -1,0 +1,23 @@
+// Authentication module providing security services to other modules
+
+// Apply necessary plugins
+plugins {
+    id 'java-library'
+    id 'com.projecthub.module-data'  // This applies our persistence dependencies
+}
+
+description = 'ProjectHub Authentication Module'
+
+dependencies {
+    // Additional auth-specific dependencies
+    api "org.springframework.security:spring-security-oauth2-resource-server:${versions.springSecurity}"
+    api "org.springframework.security:spring-security-oauth2-jose:${versions.springSecurity}"
+    
+    // Apache Fortress
+    api "org.apache.directory.fortress:fortress-core:${versions.fortress}"
+    api "org.apache.directory.fortress:fortress-realm-impl:${versions.fortress}"
+
+    // WebAuthn/Passkey
+    api "com.yubico:webauthn-server-core:${versions.yubicoWebAuthn}"
+    api "com.yubico:webauthn-server-attestation:${versions.yubicoWebAuthn}"
+}

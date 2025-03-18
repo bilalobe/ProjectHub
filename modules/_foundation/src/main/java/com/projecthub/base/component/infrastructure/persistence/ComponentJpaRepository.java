@@ -1,0 +1,24 @@
+package com.projecthub.base.component.infrastructure.persistence;
+
+import com.projecthub.base.component.domain.entity.Component;
+import com.projecthub.base.shared.repository.common.BaseRepository;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Repository interface for {@link Component} entities.
+ */
+@Repository("componentRepository")
+@Profile("jpa")
+public interface ComponentJpaRepository extends BaseRepository<Component, UUID> {
+    /**
+     * Finds components by project ID.
+     *
+     * @param projectId the UUID of the project
+     * @return a list of {@code Component} objects belonging to the project
+     */
+    List<Component> findByProjectId(UUID projectId);
+}

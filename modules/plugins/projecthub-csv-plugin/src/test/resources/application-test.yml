@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: test
+
+csv:
+  storage:
+    base-path: test-data/csv
+
+logging:
+  level:
+    projecthub.csv.plugin: DEBUG

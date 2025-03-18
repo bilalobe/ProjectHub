@@ -1,0 +1,76 @@
+type Submission {
+    submissionId: ID!
+    studentId: ID!
+    projectId: ID!
+    content: String
+    filePath: String
+    grade: Int
+    feedback: String
+    status: SubmissionStatus!
+    isLate: Boolean!
+    submittedAt: DateTime
+    comments: [Comment!]!
+    createdAt: DateTime!
+    lastModifiedAt: DateTime!
+}
+
+type Comment {
+    commentId: ID!
+    text: String!
+    authorId: ID!
+    createdAt: DateTime!
+}
+
+enum SubmissionStatus {
+    DRAFT
+    SUBMITTED
+    GRADED
+    REVOKED
+}
+
+input CreateSubmissionInput {
+    studentId: ID!
+    projectId: ID!
+    content: String
+    filePath: String
+    isLate: Boolean = false
+}
+
+input UpdateSubmissionInput {
+    content: String
+    filePath: String
+}
+
+input GradeSubmissionInput {
+    grade: Int!
+    feedback: String!
+}
+
+input SubmissionSearchInput {
+    studentId: ID
+    projectId: ID
+    status: SubmissionStatus
+    submittedAfter: DateTime
+    submittedBefore: DateTime
+    minGrade: Int
+    maxGrade: Int
+    isLate: Boolean
+    hasComments: Boolean
+}
+
+type Query {
+    submission(id: ID!): Submission
+    submissions(criteria: SubmissionSearchInput): [Submission!]!
+    studentSubmissions(studentId: ID!): [Submission!]!
+    projectSubmissions(projectId: ID!): [Submission!]!
+    pendingSubmissions(projectId: ID!): [Submission!]!
+}
+
+type Mutation {
+    createSubmission(input: CreateSubmissionInput!): Submission!
+    updateSubmission(id: ID!, input: UpdateSubmissionInput!): Submission!
+    submitSubmission(id: ID!): Submission!
+    gradeSubmission(id: ID!, input: GradeSubmissionInput!): Submission!
+    revokeSubmission(id: ID!, reason: String!): Submission!
+    addComment(submissionId: ID!, text: String!): Submission!
+}

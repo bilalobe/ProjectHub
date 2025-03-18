@@ -1,0 +1,37 @@
+app:
+  components:
+    filepath: classpath:data/components.csv
+  projects:
+    filepath: classpath:data/projects.csv
+  schools:
+    filepath: classpath:data/schools.csv
+  students:
+    filepath: classpath:data/students.csv
+  submissions:
+    filepath: classpath:data/submissions.csv
+    tempdir: classpath:data/tempdir
+  tasks:
+    filepath: classpath:data/tasks.csv
+  teachers:
+    filepath: classpath:data/teachers.csv
+  teams:
+    filepath: classpath:data/teams.csv
+  cohorts:
+    filepath: classpath:data/cohorts.csv
+
+spring:
+  profiles:
+    active: csv
+
+csv:
+  storage:
+    base-path: ${CSV_STORAGE_PATH:data/csv}
+    # Individual file paths can be overridden if needed
+    # components-filepath: ${csv.storage.base-path}/components.csv
+    # projects-filepath: ${csv.storage.base-path}/projects.csv
+    # etc...
+
+logging:
+  level:
+    projecthub.csv.plugin: INFO
+    org.springframework: WARN
