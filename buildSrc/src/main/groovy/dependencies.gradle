@@ -1,12 +1,13 @@
 ext {
     versions = [
         // Core
-        springBoot                   : '3.4.1',
+        springBoot                   : '3.4.3',
         springDependencyManagement   : '1.1.7',
-        springCloud                  : '2023.0.0',
-        springModulith               : '1.3.1',
+        springCloud                  : '4.2.0',
+        springModulith               : '1.1.0',
         springAmqp                   : '3.1.2',
         springSecurity               : '6.4.2',
+        fortress                     : '3.0.0',
 
         // UI
         controlsFx                   : '11.2.1',
@@ -17,6 +18,7 @@ ext {
 
         // Android
         compose                     :'1.5.1',
+        hilt                        : '2.39.1',
 
         // Tools
         sonarqube                    : '6.0.1.5171',
@@ -31,6 +33,7 @@ ext {
         h2                          : '2.2.224',
         postgresql                  : '42.6.0',
         querydsl                    : '5.0.0',
+        flyway                      : '9.22.3',
 
         // Thymeleaf
         thymeleaf                  : '3.1.2.RELEASE',
@@ -45,6 +48,7 @@ ext {
         slf4j                       : '2.0.16',
         junit                       : '5.11.4',
         mockito                     : '5.7.0',
+        archunit                    : '1.4.0',
         springdoc                   : '2.1.0',
         swagger                     : '2.2.28',
         jakartaMail                 : '2.0.1',
@@ -56,6 +60,23 @@ ext {
         dgs                         : '10.0.1',
         dgsSpring                   :'9.2.2',
         dgsCodegen                  : '6.1.0',
-    spotlessPlugin                 : '6.25.0'
+        spotlessPlugin              : '6.25.0',
+
+        // Documentation
+        snakeYaml                   : '2.4',
+        asciidoctorJvmConvert       : '4.0.3',
+        asciidoctorJvmPdf           : '4.0.3',
+        asciidoctorjPdf             : '2.3.19',
+        asciidoctorjDiagram         : '2.3.1',
+        flexmarkAll                 : '0.64.8',
+        freemarker                  : '2.3.32',
+        jrubyComplete               : '9.4.5.0',
+        swagger2markup              : '1.3.3',
+        plantuml                    : '1.2025.0',
+        mermaid                     : '10.6.1',
+
+        // Kotlin
+        kotlin                      : '1.9.22',
+        kotlinCoroutines            : '1.7.3'
     ]
 }

@@ -7,7 +7,8 @@ tasks.withType(Jar).configureEach {
             'Implementation-Title': project.name,
             'Implementation-Version': project.version,
             'Created-By': "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})",
-            'Build-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+            'Build-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
+            'Build-Jdk': System.getProperty('java.version')
         )
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -15,17 +16,27 @@ tasks.withType(Jar).configureEach {
 
 // Unified distribution packaging
 distributions {
-    main {
-      contents {
-        from jar
-        into('lib') {
-          from configurations.runtimeClasspath
+    main(({
+        contents {
+            from jar
+            into('lib') {
+                from configurations.runtimeClasspath
+            }
+            into('docs') {
+                from 'README.md', 'LICENSE'
+            }
         }
-      }
-    }
+    } as String))
 }
 
+// Ensure clean distribution
 tasks.register('cleanDist', Delete) {
     group = 'build'
+    description = 'Cleans the distributions directory'
     delete fileTree(dir: "${buildDir}/distributions")
+}
+
+// Hook into the build lifecycle
+tasks.named('build').configure {
+    dependsOn tasks.named('assembleDist')
 }

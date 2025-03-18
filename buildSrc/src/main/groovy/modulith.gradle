@@ -1,9 +1,8 @@
 apply from: "${rootProject.projectDir}/buildSrc/src/main/groovy/dependencies.gradle"
 
 dependencies {
-    // Use implementation instead of direct notation
-    implementation("org.springframework.modulith:spring-modulith-starter:${versions.springModulith}")
-    testImplementation("org.springframework.modulith:spring-modulith-test:${versions.springModulith}")
-    testImplementation("org.springframework.modulith:spring-modulith-docs:${versions.springModulith}")
-    runtimeOnly("org.springframework.modulith:spring-modulith-runtime:${versions.springModulith}")
+    implementation "org.springframework.modulith:spring-modulith-starter-core:${versions.springModulith}"
+    testImplementation "org.springframework.modulith:spring-modulith-test:${versions.springModulith}"
+    testImplementation "org.springframework.modulith:spring-modulith-docs:${versions.springModulith}"
+    runtimeOnly "org.springframework.modulith:spring-modulith-runtime:${versions.springModulith}"
 }

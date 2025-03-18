@@ -1,0 +1,167 @@
+plugins {
+        id 'org.asciidoctor.jvm.convert'
+        id 'org.asciidoctor.jvm.pdf'
+    }
+
+    configurations {
+        asciidoctorExtensions
+    }
+
+    dependencies {
+        asciidoctorExtensions 'org.asciidoctor:asciidoctorj-diagram'
+        asciidoctorExtensions 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
+    }
+
+    def docOutputDir = project.layout.buildDirectory.dir("docs").get().asFile
+    def docProperties = new Properties()
+    docProperties.load(new FileInputStream(file('gradle/documentation.properties')))
+
+    tasks.register('downloadDocToolchain', Exec) {
+        commandLine 'git', 'clone', 'https://github.com/docToolchain/docToolchain.git'
+        onlyIf { !file('docToolchain').exists() }
+    }
+
+    tasks.register('initDocumentation', Exec) {
+        dependsOn downloadDocToolchain
+        commandLine './docToolchain/bin/doctoolchain', '.', 'init'
+        onlyIf { !file('src/docs').exists() }
+    }
+
+    tasks.register('generateArchitectureTests', org.asciidoctor.gradle.jvm.AsciidoctorTask) {
+        dependsOn ':modules:foundation:test'
+
+        sourceDir = file('src/docs')
+        sources {
+            include 'architecture-tests.adoc'
+        }
+        outputDir = file("${docOutputDir}/architecture")
+
+        attributes = [
+            'source-highlighter': 'prettify',
+            'toc'               : 'left',
+            'toclevels'         : '3',
+            'sectlinks'         : '',
+            'project-version'   : project.version,
+            'testResultsDir'    : project.file('modules/foundation/build/test-results/test')
+        ]
+    }
+
+    tasks.register('generateApiDocs', Javadoc) {
+        source = sourceSets.main.allJava
+        classpath = configurations.compileClasspath
+        options.memberLevel = JavadocMemberLevel.PROTECTED
+        options.author = true
+        options.version = true
+        options.header = "ProjectHub API Documentation"
+        options.footer = "Generated on ${new Date().format('yyyy-MM-dd')}"
+
+        doLast {
+            copy {
+                from layout.buildDirectory.dir("docs/javadoc").get().asFile
+                into "${docOutputDir}/api"
+            }
+        }
+    }
+
+    tasks.register('generateAsciiDocs', org.asciidoctor.gradle.jvm.AsciidoctorTask) {
+        sourceDir = file('src/docs')
+        outputDir = file("${docOutputDir}/guides")
+
+        sources {
+            include '*.adoc'
+        }
+
+        attributes = [
+            'source-highlighter': 'prettify',
+            'toc'               : 'left',
+            'toclevels'         : '3',
+            'sectlinks'         : '',
+            'project-version'   : project.version
+        ]
+    }
+
+    tasks.register('generatePdfDocs', org.asciidoctor.gradle.jvm.pdf.AsciidoctorPdfTask) {
+        sourceDir = file('src/docs')
+        outputDir = file("${docOutputDir}/pdf")
+
+        sources {
+            include '*.adoc'
+        }
+    }
+
+    tasks.register('generateSwaggerDocs', Copy) {
+        from layout.buildDirectory.dir("swagger-ui-custom").get().asFile
+        into "${docOutputDir}/swagger"
+
+        doFirst {
+            // Generate OpenAPI spec using SpringDoc
+            tasks.bootRun.args += ["--spring.profiles.active=docs"]
+        }
+    }
+
+    tasks.register('assembleDocumentation') {
+        dependsOn generateArchitectureTests,
+            generateApiDocs,
+            generateAsciiDocs,
+            generatePdfDocs,
+            generateSwaggerDocs
+
+        doLast {
+            // Create documentation index
+            def indexHtml = file("${docOutputDir}/index.html")
+            indexHtml.text = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>ProjectHub Documentation</title>
+                    <link rel="stylesheet" href="css/projecthub.css">
+                </head>
+                <body>
+                    <h1>ProjectHub Documentation</h1>
+                    <ul>
+                        <li><a href="architecture/index.html">Architecture Documentation</a></li>
+                        <li><a href="api/index.html">API Documentation</a></li>
+                        <li><a href="guides/index.html">User Guides</a></li>
+                        <li><a href="swagger/index.html">API Reference</a></li>
+                        <li><a href="pdf/projecthub.pdf">PDF Documentation</a></li>
+                    </ul>
+                </body>
+                </html>
+            """
+        }
+    }
+
+    tasks.register('generateArchitectureDocs', org.asciidoctor.gradle.jvm.AsciidoctorTask) {
+        group = 'documentation'
+        description = 'Generates architecture documentation'
+        sourceDir = file('src/docs/architecture')
+        outputDir = file("${docOutputDir}/architecture")
+        sources {
+            include 'overview.adoc', 'decisions.adoc', 'architecture-tests.adoc'
+        }
+        attributes docProperties
+    }
+
+    tasks.register('generateUserGuides', Exec) {
+        group = 'documentation'
+        description = 'Generates user guides using MkDocs'
+        commandLine 'mkdocs', 'build'
+        workingDir file('src/docs/user-guides')
+    }
+
+    tasks.register('generateDocs') {
+        description = 'Generates all documentation'
+        dependsOn downloadDocToolchain, initDocumentation, assembleDocumentation,
+            'generateArchitectureDocs', 'generateApiDocs', 'generateUserGuides', 'generatePdfDocs'
+
+        doLast {
+            exec {
+                workingDir projectDir
+                commandLine './docToolchain/bin/doctoolchain', '.', 'generateHTML'
+            }
+            exec {
+                workingDir projectDir
+                commandLine './docToolchain/bin/doctoolchain', '.', 'generatePDF'
+            }
+        }
+    }

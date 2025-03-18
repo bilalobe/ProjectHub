@@ -1,0 +1,90 @@
+project:
+  name: ProjectHub
+  version: ${project.version}
+  description: A comprehensive platform for managing student projects
+  copyright: Copyright (c) 2025 ProjectHub Team
+  repository: https://github.com/bilalobe/projecthub
+
+documentation:
+  directories:
+    source: src/docs
+    output: build/docs
+    templates: src/docs/templates
+    architecture: architecture
+    api: api
+    guides: guides
+    testResults: test-results
+
+  tools:
+    docToolchain:
+      version: 2.0.0
+      plugins:
+        - asciidoctor-diagram
+        - asciidoctor-pdf
+        - docbook
+        
+    asciidoctor:
+      attributes:
+        source-highlighter: prettify
+        icons: font
+        experimental: true
+        toc: left
+        toclevels: 3
+        sectlinks: true
+        
+    java:
+      source: 17
+      encoding: UTF-8
+      
+    mkdocs:
+      source: projecthub_documentation-main/docs
+      output: build/docs/mkdocs
+      serve:
+        port: 8000
+        
+    swagger:
+      basePackage: com.projecthub
+      
+    plantuml:
+      enabled: true
+      format: svg
+      
+    mermaid:
+      enabled: true
+      theme: default
+
+  testing:
+    architecture:
+      packages: 
+        - com.projecthub.architecture
+      outputPath: architecture/tests
+      
+    coverage:
+      enabled: true
+      outputPath: coverage
+      
+    results:
+      directory: test-results
+      includeStandardOutput: true
+
+  sections:
+    - name: architecture
+      title: Architecture Documentation
+      files:
+        - overview.adoc
+        - decisions.adoc
+        - testing.adoc
+        
+    - name: development
+      title: Development Guide
+      files:
+        - setup.adoc
+        - contributing.adoc
+        - testing.adoc
+        
+    - name: operations
+      title: Operations Manual  
+      files:
+        - deployment.adoc
+        - monitoring.adoc
+        - backup.adoc

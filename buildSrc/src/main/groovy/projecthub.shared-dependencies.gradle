@@ -1,20 +1,96 @@
-dependencies {
-    // Platform dependencies
-    implementation platform("org.springframework.boot:spring-boot-dependencies:${versions.springBoot}")
+// Common dependency profiles that can be applied across modules
 
-    // Modulith
-    implementation "org.springframework.modulith:spring-modulith-starter-core:${versions.springModulith}"
-    implementation "org.springframework.modulith:spring-modulith-api:${versions.springModulith}"
-    implementation "org.springframework.modulith:spring-modulith-events-core:${versions.springModulith}"
+// Base dependencies applied to all modules
+def applyBaseDependencies = { project ->
+    project.dependencies {
+        // Platform dependencies
+        implementation platform("org.springframework.boot:spring-boot-dependencies:${versions.springBoot}")
 
-    // Testing
-    testImplementation "org.springframework.boot:spring-boot-starter-test:${versions.springBoot}"
-    testImplementation "org.springframework.modulith:spring-modulith-test:${versions.springModulith}"
-    testImplementation "org.springframework.modulith:spring-modulith-docs:${versions.springModulith}"
+        // Modulith
+        implementation "org.springframework.modulith:spring-modulith-starter-core:${versions.springModulith}"
+        implementation "org.springframework.modulith:spring-modulith-api:${versions.springModulith}"
+        implementation "org.springframework.modulith:spring-modulith-events-core:${versions.springModulith}"
 
-    // Common Tools
-    implementation "org.mapstruct:mapstruct:${versions.mapstruct}"
-    compileOnly "org.projectlombok:lombok:${versions.lombok}"
-    annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
-    annotationProcessor "org.mapstruct:mapstruct-processor:${versions.mapstruct}"
+        // Common Tools
+        implementation "org.mapstruct:mapstruct:${versions.mapstruct}"
+        implementation "org.jmolecules:jmolecules-ddd:${versions.jmolecules}"
+        compileOnly "org.projectlombok:lombok:${versions.lombok}"
+        annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+        annotationProcessor "org.mapstruct:mapstruct-processor:${versions.mapstruct}"
+
+        // Standard testing dependencies
+        testImplementation "org.springframework.boot:spring-boot-starter-test:${versions.springBoot}"
+        testImplementation "org.springframework.modulith:spring-modulith-test:${versions.springModulith}"
+        testImplementation "org.springframework.modulith:spring-modulith-docs:${versions.springModulith}"
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}"
+        testImplementation "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
+        testImplementation "org.mockito:mockito-junit-jupiter:${versions.mockito}"
+    }
+}
+
+// Web module dependencies (for modules that expose REST APIs)
+def applyWebDependencies = { project ->
+    project.dependencies {
+        implementation "org.springframework.boot:spring-boot-starter-web:${versions.springBoot}"
+        implementation "org.springframework.boot:spring-boot-starter-validation:${versions.springBoot}"
+        implementation "org.springframework.boot:spring-boot-starter-actuator:${versions.springBoot}"
+        
+        // API Documentation
+        implementation "io.swagger.core.v3:swagger-core:${versions.swagger}"
+        implementation "io.swagger.core.v3:swagger-annotations:${versions.swagger}"
+    }
+}
+
+// Security module dependencies
+def applySecurityDependencies = { project ->
+    project.dependencies {
+        implementation "org.springframework.boot:spring-boot-starter-security:${versions.springBoot}"
+        implementation "org.springframework.security:spring-security-config:${versions.springSecurity}"
+        implementation "org.springframework.security:spring-security-core:${versions.springSecurity}"
+        implementation "io.jsonwebtoken:jjwt-api:${versions.jwt}"
+        implementation "io.jsonwebtoken:jjwt-impl:${versions.jwt}"
+        implementation "io.jsonwebtoken:jjwt-jackson:${versions.jwt}"
+        
+        testImplementation "org.springframework.security:spring-security-test:${versions.springSecurity}"
+    }
+}
+
+// Data persistence module dependencies
+def applyPersistenceDependencies = { project ->
+    project.dependencies {
+        implementation "org.springframework.boot:spring-boot-starter-data-jpa:${versions.springBoot}"
+        implementation "com.zaxxer:HikariCP:${versions.hikari}"
+        implementation "com.h2database:h2:${versions.h2}"
+        implementation "org.postgresql:postgresql:${versions.postgresql}"
+    }
+}
+
+// Messaging module dependencies
+def applyMessagingDependencies = { project ->
+    project.dependencies {
+        implementation "org.springframework.cloud:spring-cloud-stream:${versions.springCloud}"
+        implementation "org.springframework.cloud:spring-cloud-stream-binder-rabbit:${versions.springCloud}"
+        implementation "org.springframework.amqp:spring-rabbit:${versions.springAmqp}"
+        implementation "org.springframework.retry:spring-retry:${versions.springRetry}"
+        implementation "org.springframework.boot:spring-boot-starter-aop:${versions.springBoot}"
+    }
+}
+
+// UI module dependencies
+def applyUiDependencies = { project ->
+    project.dependencies {
+        implementation "org.thymeleaf:thymeleaf-spring6:${versions.thymeleaf}"
+        implementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity6:${versions.thymeleafExtras}"
+        implementation "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:${versions.thymeleafLayout}"
+    }
+}
+
+// Expose these functions for use in build scripts
+ext {
+    applyBaseDependencies = applyBaseDependencies
+    applyWebDependencies = applyWebDependencies
+    applySecurityDependencies = applySecurityDependencies
+    applyPersistenceDependencies = applyPersistenceDependencies
+    applyMessagingDependencies = applyMessagingDependencies
+    applyUiDependencies = applyUiDependencies
 }

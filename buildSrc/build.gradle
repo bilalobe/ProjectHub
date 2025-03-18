@@ -1,33 +1,88 @@
 plugins {
-    id 'groovy-gradle-plugin'
+    id 'groovy'
+    id 'java-gradle-plugin'
 }
 
+version = '1.0.0'
+
 repositories {
+    google()
     mavenCentral()
     gradlePluginPortal()
 }
 
-apply from: "${projectDir}/src/main/groovy/dependencies.gradle"
+// Apply the dependencies file
+apply from: 'src/main/groovy/dependencies.gradle'
+
+// Configure duplicates strategy for all Copy tasks
+tasks.withType(Copy).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
 
 dependencies {
+    // Explicitly oyuse Gradle API to avoid classpath issues
     implementation gradleApi()
     implementation localGroovy()
-    implementation 'org.springframework.boot:spring-boot-gradle-plugin:3.4.1'
+    
+    // Documentation - using centralized versions
+    implementation "org.yaml:snakeyaml:${versions.snakeYaml}"
+    implementation "org.asciidoctor:asciidoctorj-pdf:${versions.asciidoctorjPdf}"
+    implementation "org.asciidoctor:asciidoctorj-diagram:${versions.asciidoctorjDiagram}"
+    implementation "org.jruby:jruby-complete:${versions.jrubyComplete}"
+    implementation "org.asciidoctor:asciidoctor-gradle-jvm:${versions.asciidoctorJvmConvert}"
+    implementation "org.asciidoctor:asciidoctor-gradle-jvm-pdf:${versions.asciidoctorJvmPdf}"
+    
+    // Spring Boot plugin and related
+    implementation "org.springframework.boot:spring-boot-gradle-plugin:${versions.springBoot}"
+    implementation "io.spring.gradle:dependency-management-plugin:${versions.springDependencyManagement}"
+}
+
+tasks.withType(GroovyCompile).configureEach {
+    // Disable indy optimization to avoid compatibility issues
+    groovyOptions.optimizationOptions.indy = false
+    
+    // Enable incremental compilation
+    options.incremental = true
+    
+    // Configure modern worker API usage
+    options.fork = true
+    options.forkOptions.jvmArgs = ['-XX:+UseParallelGC']
 }
 
 gradlePlugin {
-    plugins {
-        projecthubCore {
-            id = 'com.projecthub.core'
-            implementationClass = 'com.projecthub.gradle.core.CorePlugin'
+    // Disable configuration caching for plugins to avoid worker API issues
+    plugins {        
+        documentation {
+            id = 'com.projecthub.documentation'
+            implementationClass = 'com.projecthub.gradle.convention.DocumentationConventionPlugin'
         }
-        projecthubBase {
-            id = 'com.projecthub.base'
-            implementationClass = 'com.projecthub.gradle.convention.BaseConventionPlugin'
+        moduleBase {
+            id = 'com.projecthub.module-base'
+            implementationClass = 'com.projecthub.gradle.convention.ModuleConventionPlugin'
         }
-        projecthubDist {
-            id = 'com.projecthub.distribution'
-            implementationClass = 'com.projecthub.gradle.plugins.distribution.DistributionPlugin'
+        moduleWeb {
+            id = 'com.projecthub.module-web'
+            implementationClass = 'com.projecthub.gradle.convention.WebModuleConventionPlugin'
         }
-    }
+        moduleLibrary {
+            id = 'com.projecthub.module-library'
+            implementationClass = 'com.projecthub.gradle.convention.LibraryModuleConventionPlugin'
+        }
+        moduleData {
+            id = 'com.projecthub.module-data'
+            implementationClass = 'com.projecthub.gradle.convention.PersistenceDependenciesPlugin'  // Updated to match actual plugin class
+        }
+        moduleSecurity {
+            id = 'com.projecthub.module-security'
+            implementationClass = 'com.projecthub.gradle.convention.SecurityModuleConventionPlugin'
+        }
+        moduleUi {
+            id = 'com.projecthub.module-ui'
+            implementationClass = 'com.projecthub.gradle.convention.UiModuleConventionPlugin'
+        }
+        moduleGateway {
+            id = 'com.projecthub.module-gateway'
+            implementationClass = 'com.projecthub.gradle.convention.GatewayModuleConventionPlugin'
+        }
+            }
 }
