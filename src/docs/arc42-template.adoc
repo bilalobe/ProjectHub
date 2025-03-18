@@ -1,0 +1,94 @@
+= ProjectHub Software Architecture
+:doctype: book
+:toc:
+:sectlinks:
+:numbered:
+
+== Introduction and Goals
+
+[role="arc42help"]
+****
+ProjectHub is a modular monolith application providing project management capabilities with strong architectural validation.
+****
+
+// ...existing arc42 sections...
+
+== Quality Requirements
+
+=== Architecture Rules and Testing
+
+ProjectHub implements automated architectural validation using ArchUnit to enforce:
+
+* *Layered Architecture*: Strict enforcement of component layering
+* *Module Boundaries*: Clear separation between modules
+* *Security Controls*: Mandatory security patterns
+* *API Evolution*: Version control and backward compatibility
+* *Performance Patterns*: Prevention of N+1 queries and proper caching
+
+==== Test Categories
+
+1. *Core Architecture Tests*
+* Layering rules
+* Module boundaries
+* Dependency management
+* Event-based communication
+
+2. *Security Architecture Tests*
+* Security annotation enforcement
+* Protected configurations
+* Fortress integration
+* WebAuthn/Passkey structure
+
+3. *API Evolution Tests*
+* Version control
+* Breaking change detection
+* Model immutability
+* Documentation requirements
+
+4. *Performance Architecture Tests*
+* N+1 query prevention
+* Caching requirements
+* Batch operation patterns
+* Resource monitoring
+
+==== Custom Annotations
+
+ProjectHub uses custom annotations to mark architectural constraints:
+
+[source,java]
+----
+@SecurityCritical(
+    justification = "Required for...",
+    reviewedBy = "security-team"
+)
+
+@ExpensiveOperation(
+    description = "Heavy computation",
+    expectedExecutionTime = 5000
+)
+
+@ApiVersion(
+    major = 1,
+    minor = 0
+)
+----
+
+==== Continuous Validation
+
+Architecture tests are integrated into:
+
+* Pre-commit hooks
+* CI/CD pipeline
+* Documentation generation
+* Release process
+
+=== Documentation Generation
+
+Documentation is automatically generated using docToolchain:
+
+* Architecture tests results
+* Test coverage reports
+* API documentation
+* Performance metrics
+
+// ...rest of arc42 template...

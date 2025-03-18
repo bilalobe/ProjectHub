@@ -1,0 +1,212 @@
+:root {
+    --primary-color: #6c8ebf;
+    --secondary-color: #82b366;
+    --text-color: #333;
+    --background-color: #fff;
+    --sidebar-bg: #f5f5f5;
+    --code-bg: #f8f8f8;
+}
+
+/* ProjectHub Documentation Stylesheet */
+
+/* Base styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+/* Navigation */
+.top-nav {
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    margin-left: 2rem;
+}
+
+main {
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+    width: 300px;
+    background: var(--sidebar-bg);
+    padding: 2rem;
+    height: calc(100vh - 60px);
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+}
+
+/* Main content */
+.content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    min-height: 80vh;
+}
+
+.toc {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.toc ul {
+    padding-left: 1.5rem;
+}
+
+pre {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+.mermaid {
+    margin: 2rem 0;
+}
+
+footer {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+    }
+
+    .content {
+        padding: 1rem;
+    }
+}
+
+/* Documentation sections */
+.doc-section {
+    margin-bottom: 2.5rem;
+}
+
+.doc-section h2 {
+    color: #3498db;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid #eee;
+}
+
+.doc-section ul {
+    list-style-type: none;
+    padding-left: 1rem;
+}
+
+.doc-section li {
+    margin-bottom: 0.5rem;
+}
+
+.doc-section a {
+    color: #2980b9;
+    text-decoration: none;
+    padding: 5px;
+    display: inline-block;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+}
+
+.doc-section a:hover {
+    background-color: #f0f7fd;
+    color: #3498db;
+    text-decoration: underline;
+}
+
+/* Code formatting */
+pre, code {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    background-color: #f7f7f7;
+    border-radius: 3px;
+}
+
+pre {
+    padding: 1rem;
+    overflow-x: auto;
+    border: 1px solid #e1e4e8;
+}
+
+code {
+    padding: 0.2rem 0.4rem;
+    font-size: 90%;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+th, td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* Print styles */
+@media print {
+    body {
+        background-color: #fff;
+        color: #000;
+    }
+
+    .content {
+        max-width: 100%;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .top-nav, footer {
+        display: none;
+    }
+}

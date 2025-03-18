@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>${projectTitle}</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="css/projecthub.css" rel="stylesheet">
+    <link href="images/favicon.ico" rel="icon">
+</head>
+<body>
+<header>
+    <nav class="top-nav">
+        <div class="nav-logo">${projectTitle}</div>
+    </nav>
+</header>
+<main>
+    <div class="content">
+        <h1>${projectTitle}</h1>
+        <p class="version-info">Version ${projectVersion}</p>
+
+        <% sections.each { section -> %>
+        <section class="doc-section">
+            <h2>${section.title}</h2>
+            <ul>
+                <% section.links.each { link -> %>
+                <li><a href="${link.href}">${link.title}</a></li>
+                <% } %>
+            </ul>
+        </section>
+        <% } %>
+
+    </div>
+</main>
+<footer>
+    <p>Generated on ${generationDate} - ${projectName} ${projectVersion}</p>
+</footer>
+</body>
+</html>

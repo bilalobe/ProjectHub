@@ -1,0 +1,231 @@
+= API Gateway Security with Fortress RBAC
+:doctype: book
+:toc: left
+:toclevels: 3
+:icons: font
+:source-highlighter: highlight.js
+:sectlinks:
+:sectnums:
+
+== Introduction
+
+This document describes how the ProjectHub API Gateway functions as a central Policy Enforcement Point (PEP) in the application's security architecture, enforcing Apache Fortress RBAC policies for all incoming API requests.
+
+== Gateway Security Architecture
+
+The API Gateway serves as the entry point for all API requests in ProjectHub, making it the ideal location for centralized security enforcement. The implementation has been designed to provide:
+
+* Stateless token-based authorization using JWT tokens
+* Integration with Apache Fortress for RBAC policy decisions
+* Fine-grained access control at the API endpoint level
+* Consistent security application across all services
+
+[plantuml]
+----
+@startuml
+!include <C4/C4_Container>
+
+Person(user, "User", "ProjectHub user with various roles")
+
+System_Boundary(c1, "ProjectHub") {
+    Container(gateway, "API Gateway", "Spring Cloud Gateway", "Central PEP - enforces security policies")
+    Container(auth_service, "Auth Service", "Spring Boot", "Authentication service and JWT issuer")
+    Container(user_service, "User Service", "Spring Boot", "User management")
+    Container(project_service, "Project Service", "Spring Boot", "Project management")
+    Container(submission_service, "Submission Service", "Spring Boot", "Handles submissions")
+
+    ContainerDb(fortress_db, "Apache Directory", "LDAP", "Stores RBAC policies")
+}
+
+Rel(user, gateway, "Makes API requests", "HTTPS + JWT")
+Rel(user, auth_service, "Authenticates", "HTTPS")
+Rel(gateway, auth_service, "Validates tokens", "REST")
+Rel(gateway, user_service, "Routes requests", "REST")
+Rel(gateway, project_service, "Routes requests", "REST")
+Rel(gateway, submission_service, "Routes requests", "REST")
+Rel(gateway, fortress_db, "Checks permissions", "LDAP")
+Rel(auth_service, fortress_db, "Validates credentials, retrieves roles & permissions", "LDAP")
+
+@enduml
+----
+
+== Token-Based Authorization Flow
+
+The ProjectHub gateway implements a stateless token-based authorization mechanism using JWT (JSON Web Tokens), with the following flow:
+
+1. A user authenticates against the Auth Service and receives a JWT
+2. The JWT contains user identity, roles, and permissions encoded as claims
+3. The client includes this JWT in the `Authorization` header of all subsequent requests
+4. The API Gateway validates the JWT and extracts the claims
+5. The Gateway translates JWT claims into Fortress roles and permissions
+6. The Gateway makes an authorization decision by consulting the Fortress PDP
+7. If authorized, the request is routed to the appropriate backend service
+8. If unauthorized, the Gateway returns a 403 Forbidden response
+
+[plantuml]
+----
+@startuml
+actor User
+participant "API Gateway" as Gateway
+participant "Auth Service" as Auth
+participant "Fortress PDP" as Fortress
+participant "Backend Service" as Backend
+
+User -> Auth: 1. Login request
+Auth -> Fortress: 2. Authenticate user
+Fortress -> Auth: 3. Return user + roles/permissions
+Auth -> User: 4. Return JWT token
+
+User -> Gateway: 5. API request with JWT
+Gateway -> Gateway: 6. Validate JWT
+Gateway -> Gateway: 7. Extract roles & permissions from JWT
+Gateway -> Fortress: 8. Check authorization
+Fortress -> Gateway: 9. Authorization decision
+alt Authorized
+    Gateway -> Backend: 10a. Forward request
+    Backend -> Gateway: 11a. Response
+    Gateway -> User: 12a. Return response
+else Unauthorized
+    Gateway -> User: 10b. Return 403 Forbidden
+end
+@enduml
+----
+
+== API Gateway as a Policy Enforcement Point
+
+The API Gateway acts as a central Policy Enforcement Point (PEP) in the security architecture, with the following responsibilities:
+
+* Extract security credentials from incoming requests
+* Verify token signatures and validity
+* Map API resources to Fortress permissions
+* Make authorization requests to Fortress PDP
+* Enforce PDP decisions by allowing or denying access
+* Handle security errors and produce appropriate responses
+* Add security-related headers to responses
+
+=== Permission Mapping
+
+The API Gateway maps HTTP requests to Fortress permissions based on the following pattern:
+
+[source,text]
+----
+HTTP Method + API Path → Fortress Object:Operation
+----
+
+For example:
+
+* `GET /api/users` → `USER:SEARCH`
+* `GET /api/users/123` → `USER:READ`
+* `POST /api/projects` → `PROJECT:CREATE`
+* `PUT /api/submissions/456` → `SUBMISSION:UPDATE`
+* `DELETE /api/teams/789` → `TEAM:DELETE`
+
+This mapping is defined in the `FortressServerAuthorizationManager` class.
+
+== Implementation Components
+
+The key components that implement the gateway security are:
+
+=== FortressServerAuthorizationManager
+
+This component is the heart of the authorization system, implementing Spring's `ReactiveAuthorizationManager` interface. It:
+
+* Maps API paths to Fortress object/operation pairs
+* Creates user sessions for Fortress authorization checks
+* Makes authorization decisions based on Fortress policies
+* Handles authorization errors gracefully
+
+[source,java]
+----
+@Component
+public class FortressServerAuthorizationManager 
+    implements ReactiveAuthorizationManager<AuthorizationContext> {
+
+    /* Configuration and mapping logic */
+    
+    @Override
+    public Mono<AuthorizationDecision> check(
+        Mono<Authentication> authentication, 
+        AuthorizationContext context) {
+    
+        // Map the request to a Fortress permission
+        // Check the permission against Fortress PDP
+        // Return authorization decision
+    }
+}
+----
+
+=== FortressGrantedAuthoritiesConverter
+
+This component extracts role and permission information from JWT tokens and converts them into Spring Security `GrantedAuthority` objects:
+
+* Extracts roles from JWT claims
+* Extracts permissions from JWT claims
+* Converts these to Spring Security authorities
+* Handles special formats for Fortress-specific claims
+
+=== SecurityConfig
+
+This class configures Spring Security to use JWT for authentication and Fortress for authorization:
+
+* Configures JWT validation
+* Sets up security for different API paths
+* Integrates the FortressServerAuthorizationManager
+* Configures security headers and error handlers
+
+== Security Headers and Cross-cutting Concerns
+
+The API Gateway adds several security headers to all responses:
+
+* Content-Security-Policy
+* X-Content-Type-Options
+* X-XSS-Protection
+* X-Frame-Options
+* Strict-Transport-Security
+
+These headers are applied through the `SecurityHeadersFilter` which acts as a global filter in the gateway.
+
+=== CORS Configuration
+
+The gateway also provides centralized CORS (Cross-Origin Resource Sharing) configuration:
+
+* Controls which origins can access the API
+* Limits HTTP methods allowed
+* Manages preflight requests
+* Configures caching for CORS responses
+
+This configuration is managed in the `CorsConfig` class and can be customized through application properties.
+
+== Testing the Gateway Security
+
+The security implementation includes comprehensive tests to verify its functionality:
+
+=== Integration Tests
+
+Integration tests verify that the gateway correctly enforces RBAC policies:
+
+* `GatewaySecurityIntegrationTest`: Tests access control for different user roles
+* Mock Fortress components to simulate authorization decisions
+* Verify access control for admins, instructors, and students
+* Test public endpoints and protected resources
+
+=== Manual Testing Procedures
+
+To manually test the gateway security:
+
+1. Obtain JWTs for different user roles using the Auth Service
+2. Use these tokens to access various API endpoints
+3. Verify that access is granted or denied according to the user's roles and permissions
+4. Check that appropriate error responses are returned for unauthorized requests
+
+== Conclusion
+
+The ProjectHub API Gateway provides a robust, centralized security enforcement mechanism using Apache Fortress RBAC. By acting as a Policy Enforcement Point (PEP), it ensures consistent application of security policies across all services while maintaining a stateless architecture with JWT tokens.
+
+This approach offers several benefits:
+
+* Consistent security enforcement across all services
+* Centralized policy management through Apache Fortress
+* Reduced duplication of security code in individual services
+* Stateless authentication and authorization using JWT
+* Fine-grained permission control at the API endpoint level

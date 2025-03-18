@@ -1,0 +1,228 @@
+= ProjectHub Architecture Tests
+:doctype: book
+:icons: font
+:source-highlighter: prettify
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+== Overview
+
+ProjectHub uses ArchUnit to enforce architectural rules and patterns through automated tests.
+This document is automatically generated from our architecture test suite.
+
+== Core Architecture Rules
+
+=== Hexagonal Architecture Rules
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/HexagonalArchitectureTest.java[tags=hexagonal_rules]
+----
+
+=== Layered Architecture
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/ArchitectureTest.java[tags=layered_architecture]
+----
+
+=== Module Boundaries
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/ArchitectureTest.java[tags=module_boundaries]
+----
+
+=== Domain Isolation
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/HexagonalArchitectureTest.java[tags=domain_isolation]
+----
+
+=== Port Interface Rules
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/HexagonalArchitectureTest.java[tags=port_interfaces]
+----
+
+=== Adapter Implementation Rules
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/HexagonalArchitectureTest.java[tags=adapter_implementations]
+----
+
+== Migration Validation
+
+=== UI Reference Detection
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/MigrationValidationTest.java[tags=ui_reference_detection]
+----
+
+=== Infrastructure Coupling Detection
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/MigrationValidationTest.java[tags=infrastructure_coupling]
+----
+
+== Security Architecture
+
+=== Security Critical Components
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/SecurityArchitectureTest.java[tags=security_critical]
+----
+
+=== Fortress Integration
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/SecurityArchitectureTest.java[tags=fortress_integration]
+----
+
+== API Evolution
+
+=== Version Control
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/ApiEvolutionTest.java[tags=api_versioning]
+----
+
+=== Breaking Changes
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/ApiEvolutionTest.java[tags=breaking_changes]
+----
+
+== Performance Rules
+
+=== Query Optimization
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/PerformanceArchitectureTest.java[tags=query_optimization]
+----
+
+=== Caching Requirements
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/PerformanceArchitectureTest.java[tags=caching]
+----
+
+== Plugin Architecture
+
+=== Plugin Conventions
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/PluginArchitectureTest.java[tags=plugin_conventions]
+----
+
+=== Plugin Boundaries
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/PluginArchitectureTest.java[tags=plugin_boundaries]
+----
+
+=== Plugin Discovery Mechanisms
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/PluginArchitectureTest.java[tags=plugin_discovery]
+----
+
+=== Plugin Security Validation
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/PluginArchitectureTest.java[tags=plugin_security]
+----
+
+== Security Integration
+
+=== Fortress RBAC Validation
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/SecurityArchitectureTest.java[tags=fortress_rbac]
+----
+
+=== Permission Checking
+[source,java]
+----
+include::../../modules/foundation/src/test/java/com/projecthub/foundation/architecture/SecurityArchitectureTest.java[tags=permission_checking]
+----
+
+== Annotations Reference
+
+=== @DomainEntity
+[source,java]
+----
+include::../../modules/foundation/src/main/java/com/projecthub/foundation/core/architecture/annotations/DomainEntity.java[]
+----
+
+=== @Port
+[source,java]
+----
+include::../../modules/foundation/src/main/java/com/projecthub/foundation/core/architecture/annotations/Port.java[]
+----
+
+=== @Adapter
+[source,java]
+----
+include::../../modules/foundation/src/main/java/com/projecthub/foundation/core/architecture/annotations/Adapter.java[]
+----
+
+=== @SecurityCritical
+[source,java]
+----
+include::../../modules/foundation/src/main/java/com/projecthub/foundation/core/architecture/annotations/SecurityCritical.java[]
+----
+
+=== @ExpensiveOperation
+[source,java]
+----
+include::../../modules/foundation/src/main/java/com/projecthub/foundation/core/architecture/annotations/ExpensiveOperation.java[]
+----
+
+=== @ApiVersion
+[source,java]
+----
+include::../../modules/foundation/src/main/java/com/projecthub/foundation/core/architecture/annotations/ApiVersion.java[]
+----
+
+== Discrepancy Reports
+
+=== Architecture Discrepancy Dashboard
+[source,html]
+----
+include::../../modules/foundation/build/reports/architecture-discrepancies/dashboard.html[]
+----
+
+=== UI References in Domain Layer
+[source]
+----
+include::../../modules/foundation/build/reports/architecture-discrepancies/ui-references.txt[]
+----
+
+=== Infrastructure Coupling
+[source]
+----
+include::../../modules/foundation/build/reports/architecture-discrepancies/infrastructure-coupling.txt[]
+----
+
+== Test Results
+
+=== Architecture Test Summary
+[source,json]
+----
+include::../../modules/foundation/build/test-results/test/TEST-*.xml[]
+----
+
+== Violations Report
+
+=== Current Violations
+[source]
+----
+include::../../modules/foundation/build/reports/archunit/results.txt[]
+----
+
+== Remediation Plan
+
+=== Violation Remediation Timeline
+[source,csv]
+----
+include::../../modules/foundation/build/reports/architecture-remediation/timeline.csv[]
+----

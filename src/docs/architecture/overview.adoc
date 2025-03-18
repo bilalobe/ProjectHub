@@ -1,0 +1,294 @@
+= ProjectHub Architecture Overview
+:doctype: book
+:toc: left
+:toclevels: 3
+:icons: font
+:source-highlighter: highlight.js
+:sectlinks:
+:sectnums:
+
+== Introduction
+
+This document provides an overview of the ProjectHub architecture, a comprehensive platform for managing student projects. The architecture follows a hexagonal (ports and adapters) model with clear domain separation.
+
+== System Context
+
+ProjectHub is designed to provide a platform where students, instructors, and industry partners can collaborate on academic and real-world projects.
+
+[plantuml]
+----
+@startuml
+!include <C4/C4_Context>
+
+Person(student, "Student", "A student working on projects")
+Person(instructor, "Instructor", "Faculty member overseeing projects")
+Person(partner, "Industry Partner", "External organization providing projects")
+
+System(projecthub, "ProjectHub", "Project management platform")
+
+Rel(student, projecthub, "Submits work, views feedback")
+Rel(instructor, projecthub, "Creates assignments, provides feedback")
+Rel(partner, projecthub, "Proposes projects, reviews results")
+
+@enduml
+----
+
+== Container View
+
+The ProjectHub system consists of several containers (applications and data stores) that work together, organized following a hexagonal architecture approach.
+
+[plantuml]
+----
+@startuml
+!include <C4/C4_Container>
+
+Person(student, "Student", "A student working on projects")
+Person(instructor, "Instructor", "Faculty member overseeing projects")
+Person(partner, "Industry Partner", "External organization providing projects")
+
+System_Boundary(c1, "ProjectHub") {
+    Container(ui_layer, "UI Layer", "Compose Multiplatform", "Provides cross-platform user interfaces")
+    Container(api_app, "API Application", "Ktor + Spring Boot", "Provides project functionality via API")
+    Container(domain_core, "Domain Core", "Kotlin/Java", "Core business logic and domain models")
+    Container(auth_service, "Authentication Service", "Spring Security + Apache Fortress", "Handles user authentication")
+    ContainerDb(database, "Database", "PostgreSQL", "Stores project data, users, etc.")
+    ContainerDb(ldap, "LDAP Directory", "ApacheDS", "Stores user credentials and roles")
+    Container(file_store, "File Storage", "MinIO", "Stores project files and submissions")
+}
+
+Rel(student, ui_layer, "Uses", "Multiple platforms")
+Rel(instructor, ui_layer, "Uses", "Multiple platforms")
+Rel(partner, ui_layer, "Uses", "Multiple platforms")
+
+Rel(ui_layer, api_app, "Makes API calls to", "JSON/HTTPS")
+Rel(ui_layer, auth_service, "Authenticates using", "HTTPS")
+Rel(api_app, domain_core, "Uses")
+Rel(api_app, database, "Reads from and writes to", "JDBC/R2DBC")
+Rel(api_app, file_store, "Reads from and writes to", "S3 API")
+Rel(auth_service, ldap, "Reads from", "LDAP")
+Rel(api_app, auth_service, "Validates tokens with")
+
+@enduml
+----
+
+== Component View
+
+The API Application is composed of several key components following the hexagonal architecture pattern.
+
+[plantuml]
+----
+@startuml
+!include <C4/C4_Component>
+
+Container_Boundary(api, "API Application") {
+    Component(api_controllers, "API Controllers", "Spring MVC/Ktor", "API endpoints adapters")
+    
+    Component(application_services, "Application Services", "Service Layer", "Orchestrates domain operations")
+    
+    Component(domain_layer, "Domain Layer", "Core", "Domain models and business logic")
+    
+    Component(port_interfaces, "Port Interfaces", "API", "Defines how domain interacts with external systems")
+    
+    Component(persistence_adapters, "Persistence Adapters", "JPA/R2DBC", "Implements repository ports")
+    Component(messaging_adapters, "Messaging Adapters", "RabbitMQ", "Implements messaging ports")
+    Component(external_adapters, "External Service Adapters", "HTTP/gRPC", "Implements external system ports")
+}
+
+Rel(api_controllers, application_services, "Uses")
+Rel(application_services, domain_layer, "Uses")
+Rel(application_services, port_interfaces, "Uses")
+Rel(persistence_adapters, port_interfaces, "Implements")
+Rel(messaging_adapters, port_interfaces, "Implements") 
+Rel(external_adapters, port_interfaces, "Implements")
+
+@enduml
+----
+
+== Technology Stack
+
+ProjectHub is built using the following technologies:
+
+[options="header"]
+|===
+|Layer|Technology|Description
+|UI|Compose Multiplatform|Cross-platform UI framework (replacing Angular)
+|Desktop UI|JavaFX (legacy)|Desktop interface (being migrated)
+|API|Ktor + Spring Boot|Backend API frameworks
+|Security|Apache Fortress + Spring Security|Authentication and authorization
+|Persistence|JDBC + R2DBC|Data access strategies
+|Database|PostgreSQL|Relational database for storing application data
+|Directory|ApacheDS|LDAP directory for user authentication
+|Storage|MinIO|Object storage for files
+|Documentation|AsciiDoc + PlantUML + Mermaid|Documentation with diagrams
+|Networking|Ktor Client|Cross-platform networking layer
+|===
+
+== Hexagonal Architecture Implementation
+
+Our implementation of hexagonal architecture follows these principles:
+
+* *Domain Core*: Contains business logic independent of external systems
+* *Ports*: Interfaces that define how the domain interacts with external systems
+* *Adapters*: Implementation of ports for specific technologies
+* *Application Services*: Orchestration of domain operations
+
+[plantuml]
+----
+@startuml
+!include <C4/C4_Component>
+
+rectangle "Hexagonal Architecture" {
+    circle "Domain\nCore" as core
+    
+    circle "Ports" as ports
+    
+    rectangle "UI Adapters" as uiAdapter
+    rectangle "Persistence Adapters" as persistenceAdapter
+    rectangle "External Service Adapters" as externalAdapter
+    rectangle "Messaging Adapters" as messagingAdapter
+    
+    core -- ports
+    ports -- uiAdapter
+    ports -- persistenceAdapter
+    ports -- externalAdapter
+    ports -- messagingAdapter
+}
+
+@enduml
+----
+
+== Plugin System
+
+The plugin system enables dynamic discovery and execution of plugins. It supports:
+- **Hybrid Discovery Mechanisms**: SPI, directory-based, and configuration-based discovery.
+- **Security Integration**: Plugins are validated against Apache Fortress RBAC policies.
+
+[plantuml]
+----
+@startuml
+rectangle "Plugin Registry" {
+    rectangle "SPI Discovery" as spi
+    rectangle "Directory Discovery" as dir
+    rectangle "Config Discovery" as config
+}
+rectangle "Fortress Security Adapter" as fortress
+rectangle "Plugins" {
+    rectangle "Environmental Plugin"
+    rectangle "CSV Export Plugin"
+}
+
+spi --> "Plugin Registry"
+dir --> "Plugin Registry"
+config --> "Plugin Registry"
+"Plugin Registry" --> fortress
+fortress --> Plugins
+@enduml
+----
+
+== Security Integration
+
+Security is implemented at multiple levels:
+- **Authentication**: LDAP and OAuth 2.0
+- **Authorization**: Apache Fortress RBAC
+- **Permission Checking**: Validates user actions against RBAC policies.
+
+[plantuml]
+----
+@startuml
+rectangle "User Session" as session
+rectangle "Fortress Security Adapter" as fortress
+rectangle "RBAC Policies" as rbac
+
+session --> fortress
+fortress --> rbac
+@enduml
+----
+
+== Security Architecture
+
+Security is implemented at multiple levels:
+
+* Authentication through LDAP or OAuth 2.0
+* Role-based access control for different user types
+* API security with JWT tokens
+* Input validation and output encoding to prevent injection attacks
+* Encrypted storage of sensitive data
+
+== Deployment Architecture
+
+ProjectHub can be deployed in multiple environments:
+
+[plantuml]
+----
+@startuml
+!include <kubernetes/k8s-sprites-unlabeled-25pct>
+
+skinparam rectangle {
+    BackgroundColor<<pod>> Azure
+    BorderColor DarkBlue
+}
+
+rectangle "<$master>\nKubernetes Cluster" {
+    rectangle "Ingress" {
+        rectangle "<$ing>\nNGINX Ingress Controller"
+    }
+    
+    rectangle "Frontend" {
+        rectangle "<<pod>>\nAngular Frontend" as frontend
+    }
+    
+    rectangle "Backend" {
+        rectangle "<<pod>>\nSpring Boot API" as api
+        rectangle "<<pod>>\nAuthentication Service" as auth
+    }
+    
+    rectangle "Database" {
+        rectangle "<<pod>>\nPostgreSQL" as db
+    }
+    
+    rectangle "Storage" {
+        rectangle "<<pod>>\nMinIO" as minio
+    }
+    
+    rectangle "Directory" {
+        rectangle "<<pod>>\nApacheDS" as ldap
+    }
+}
+
+"<$ing>\nNGINX Ingress Controller" --> frontend
+"<$ing>\nNGINX Ingress Controller" --> api
+frontend --> api
+api --> db
+api --> minio
+auth --> ldap
+api --> auth
+
+@enduml
+----
+
+== Documentation Structure
+
+The documentation for ProjectHub is organized as follows:
+
+* Architecture Documentation (this document)
+* Architecture Tests and Validations
+* API Documentation (Javadoc, Swagger, and GraphQL Schema)
+* Feature Blocks and Discrepancy Tooltips
+* User Guides
+* Development Guides
+* Deployment Guides
+* Migration Guides
+
+== Migration Strategy
+
+The project is transitioning from a traditional Spring MVC architecture to a more modern hexagonal architecture with Ktor and Kotlin. Key aspects of the migration include:
+
+* Gradual transition from Spring Boot to Ktor for new services
+* Replacement of Angular with Compose Multiplatform for UI
+* Introduction of cross-platform networking layer with Ktor Client
+* Refactoring domain logic to follow hexagonal architecture principles
+* Integration of existing Apache Fortress security with the new architecture
+
+== Conclusion
+
+This overview provides a high-level understanding of the ProjectHub architecture. For more detailed information, refer to the specific architecture documents and the architecture tests documentation.
