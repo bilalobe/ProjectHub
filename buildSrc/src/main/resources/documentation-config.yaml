@@ -56,7 +56,7 @@ documentation:
   testing:
     architecture:
       packages: 
-        - com.projecthub.architecture
+        - com.projecthub.foundation.architecture
       outputPath: architecture/tests
       
     coverage:
